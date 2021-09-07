@@ -8,8 +8,8 @@ class BaseTypesTests extends AnyFunSpec with Matchers {
     describe("when first created") {
       it("should not have neither a width nor an height") {
         val d: Dimensionable = Dimensionable()
-        d.width should be(None)
-        d.height should be(None)
+        d.width shouldBe empty
+        d.height shouldBe empty
       }
     }
 
@@ -28,8 +28,8 @@ class BaseTypesTests extends AnyFunSpec with Matchers {
     describe("when first created") {
       it("should not have neither an x coordinate nor a y coordinate") {
         val p: Positionable = Positionable()
-        p.x should be(None)
-        p.y should be(None)
+        p.x shouldBe empty
+        p.y shouldBe empty
       }
     }
 
