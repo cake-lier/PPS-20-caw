@@ -43,4 +43,30 @@ class BaseTypesTests extends AnyFunSpec with Matchers {
       }
     }
   }
+
+  describe("A playable area") {
+    describe("when first created") {
+      it("should not have neither a position nor dimensions") {
+        val a: PlayableArea = PlayableArea()
+        a.width shouldBe empty
+        a.height shouldBe empty
+        a.x shouldBe empty
+        a.y shouldBe empty
+      }
+    }
+
+    describe("when given a position and its dimensions") {
+      it("should return the given position and the given dimensions") {
+        val width: Int = 10
+        val height: Int = 20
+        val x: Int = 1
+        val y: Int = 2
+        val a: PlayableArea = PlayableArea(width, height)(x, y)
+        a.width should contain(width)
+        a.height should contain(height)
+        a.x should contain(x)
+        a.y should contain(y)
+      }
+    }
+  }
 }
