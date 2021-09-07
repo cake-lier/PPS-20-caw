@@ -4,6 +4,11 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 class BoardTests extends AnyFunSpec with Matchers {
+  private val x: Int = 1
+  private val y: Int = 2
+  private val width: Int = 10
+  private val height: Int = 20
+
   describe("A board") {
     describe("when first created") {
       it("should be empty") {
@@ -21,7 +26,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when dimensions are set") {
       it("should return the given dimensions") {
-        val dimensions: Dimensions = Dimensions(10, 20)
+        val dimensions: Dimensions = Dimensions(width, height)
         val board: Board = Board(dimensions = Some(dimensions))
         board.dimensions should contain(dimensions)
       }
@@ -29,7 +34,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when the playable area is set") {
       it("should return the given playable area") {
-        val playableArea: PlayableArea = PlayableArea(10, 20)(1, 2)
+        val playableArea: PlayableArea = PlayableArea(width, height)(x, y)
         val board: Board = Board(playableArea = Some(playableArea))
         board.playableArea should contain(playableArea)
       }
@@ -37,7 +42,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when a mover cell is added") {
       it("should contain the added mover cell") {
-        val moverCell: OrientedCell = OrientedCell(Orientation.Right, 1, 2)
+        val moverCell: OrientedCell = OrientedCell(Orientation.Right, x, y)
         val board: Board = Board(moverCells = Set(moverCell))
         board.moverCells should contain(moverCell)
       }
@@ -45,7 +50,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when a generator cell is added") {
       it("should contain the added generator cell") {
-        val generatorCell: OrientedCell = OrientedCell(Orientation.Right, 1, 2)
+        val generatorCell: OrientedCell = OrientedCell(Orientation.Right, x, y)
         val board: Board = Board(generatorCells = Set(generatorCell))
         board.generatorCells should contain(generatorCell)
       }
@@ -53,7 +58,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when a rotator cell is added") {
       it("should contain the added rotator cell") {
-        val rotatorCell: DirectedCell = DirectedCell(Direction.Clockwise, 1, 2)
+        val rotatorCell: DirectedCell = DirectedCell(Direction.Clockwise, x, y)
         val board: Board = Board(rotatorCells = Set(rotatorCell))
         board.rotatorCells should contain(rotatorCell)
       }
@@ -62,7 +67,7 @@ class BoardTests extends AnyFunSpec with Matchers {
     describe("when a block cell is added") {
       it("should contain the added block cell") {
         val blockCell: MovableCell =
-          MovableCell(MovementDirection.Vertical, 1, 2)
+          MovableCell(MovementDirection.Vertical, x, y)
         val board: Board = Board(blockCells = Set(blockCell))
         board.blockCells should contain(blockCell)
       }
@@ -70,7 +75,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when a enemy cell is added") {
       it("should contain the added enemy cell") {
-        val enemyCell: Cell = Cell(1, 2)
+        val enemyCell: Cell = Cell(x, y)
         val board: Board = Board(enemyCells = Set(enemyCell))
         board.enemyCells should contain(enemyCell)
       }
@@ -78,7 +83,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when a wall cell is added") {
       it("should contain the added wall cell") {
-        val wallCell: Cell = Cell(1, 2)
+        val wallCell: Cell = Cell(x, y)
         val board: Board = Board(wallCells = Set(wallCell))
         board.wallCells should contain(wallCell)
       }
