@@ -118,7 +118,7 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>Realizzazione delle funzionalità del DSL</td>
             <td>Matteo Castellucci</td>
             <td>10</td>
-            <td></td>
+            <td>8</td>
             <td></td>
             <td></td>
             <td></td>
