@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" styleClass="background" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.unibo.pps.caw.view.MainMenuController">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="20.0" />
+        <ColumnConstraints percentWidth="60.0" />
+        <ColumnConstraints percentWidth="20.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="5.0" />
+        <RowConstraints percentHeight="20.0" />
+        <RowConstraints percentHeight="5.0" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="10.0" />
+    </rowConstraints>
+    <Button fx:id="playButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" onAction="#onPlaySelection" text="Play" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+    <Button fx:id="editorButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Level Editor" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+    <Button fx:id="loadButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Load a level" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+    <Button fx:id="settingsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Settings" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+    <Button fx:id="exitButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" onAction="#onExitSelection" text="Exit" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Cells at Work" GridPane.columnIndex="1" GridPane.rowIndex="1">
+        <font>
+            <Font size="36.0" />
+        </font>
+    </Label>
+</GridPane>
