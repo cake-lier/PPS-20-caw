@@ -4,7 +4,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 class PositionTests extends AnyFunSpec with Matchers {
-  describe("A positionable") {
+  describe("A position object") {
     describe("when first created") {
       it("should return the given x coordinate and the given y coordinate") {
         val x: Int = 1

@@ -4,10 +4,8 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 class BoardTests extends AnyFunSpec with Matchers {
-  private val x: Int = 1
-  private val y: Int = 2
-  private val width: Int = 10
-  private val height: Int = 20
+  private val position: Position = Position(1, 2)
+  private val dimensions: Dimensions = Dimensions(10, 20)
 
   describe("A board") {
     describe("when first created") {
@@ -26,7 +24,6 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when dimensions are set") {
       it("should return the given dimensions") {
-        val dimensions: Dimensions = Dimensions(width, height)
         val board: Board = Board(dimensions = Some(dimensions))
         board.dimensions should contain(dimensions)
       }
@@ -34,7 +31,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when the playable area is set") {
       it("should return the given playable area") {
-        val playableArea: PlayableArea = PlayableArea(width, height)(x, y)
+        val playableArea: PlayableArea = PlayableArea(dimensions)(position)
         val board: Board = Board(playableArea = Some(playableArea))
         board.playableArea should contain(playableArea)
       }
@@ -42,7 +39,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when a mover cell is added") {
       it("should contain the added mover cell") {
-        val moverCell: OrientedCell = OrientedCell(Orientation.Right, x, y)
+        val moverCell: OrientedCell = OrientedCell(Orientation.Right)(position)
         val board: Board = Board(moverCells = Set(moverCell))
         board.moverCells should contain(moverCell)
       }
@@ -50,7 +47,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when a generator cell is added") {
       it("should contain the added generator cell") {
-        val generatorCell: OrientedCell = OrientedCell(Orientation.Right, x, y)
+        val generatorCell: OrientedCell = OrientedCell(Orientation.Right)(position)
         val board: Board = Board(generatorCells = Set(generatorCell))
         board.generatorCells should contain(generatorCell)
       }
@@ -58,7 +55,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when a rotator cell is added") {
       it("should contain the added rotator cell") {
-        val rotatorCell: DirectedCell = DirectedCell(Direction.Clockwise, x, y)
+        val rotatorCell: DirectedCell = DirectedCell(Direction.Clockwise)(position)
         val board: Board = Board(rotatorCells = Set(rotatorCell))
         board.rotatorCells should contain(rotatorCell)
       }
@@ -67,7 +64,7 @@ class BoardTests extends AnyFunSpec with Matchers {
     describe("when a block cell is added") {
       it("should contain the added block cell") {
         val blockCell: MovableCell =
-          MovableCell(MovementDirection.Vertical, x, y)
+          MovableCell(MovementDirection.Vertical)(position)
         val board: Board = Board(blockCells = Set(blockCell))
         board.blockCells should contain(blockCell)
       }
@@ -75,7 +72,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when a enemy cell is added") {
       it("should contain the added enemy cell") {
-        val enemyCell: Cell = Cell(x, y)
+        val enemyCell: Cell = Cell(position)
         val board: Board = Board(enemyCells = Set(enemyCell))
         board.enemyCells should contain(enemyCell)
       }
@@ -83,7 +80,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when a wall cell is added") {
       it("should contain the added wall cell") {
-        val wallCell: Cell = Cell(x, y)
+        val wallCell: Cell = Cell(position)
         val board: Board = Board(wallCells = Set(wallCell))
         board.wallCells should contain(wallCell)
       }
@@ -91,8 +88,7 @@ class BoardTests extends AnyFunSpec with Matchers {
 
     describe("when created by copy constructor") {
       it("should have the same properties of the cloned board") {
-        val board: Board =
-          Board(dimensions = Some(Dimensions(width, height)), playableArea = Some(PlayableArea(width, height)(x, y)))
+        val board: Board = Board(dimensions = Some(dimensions), playableArea = Some(PlayableArea(dimensions)(position)))
         val newBoard: Board = board.copy()
         newBoard shouldBe board
       }

@@ -4,15 +4,13 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 class CellsTests extends AnyFunSpec with Matchers {
-  private val x: Int = 1
-  private val y: Int = 2
+  private val position: Position = Position(1, 2)
 
   describe("A generic cell") {
     describe("when first created") {
       it("should return the given position") {
-        val cell: Cell = Cell(x, y)
-        cell.x shouldBe x
-        cell.y shouldBe y
+        val cell: Cell = Cell(position)
+        cell.position shouldBe position
       }
     }
   }
@@ -21,9 +19,8 @@ class CellsTests extends AnyFunSpec with Matchers {
     describe("when first created") {
       it("should return the given orientation and position") {
         val orientation: Orientation = Orientation.Right
-        val cell: OrientedCell = OrientedCell(orientation, x, y)
-        cell.x shouldBe x
-        cell.y shouldBe y
+        val cell: OrientedCell = OrientedCell(orientation)(position)
+        cell.position shouldBe position
         cell.orientation shouldBe orientation
       }
     }
@@ -33,9 +30,8 @@ class CellsTests extends AnyFunSpec with Matchers {
     describe("when first created") {
       it("should return the given direction and position") {
         val direction: Direction = Direction.Clockwise
-        val cell: DirectedCell = DirectedCell(direction, x, y)
-        cell.x shouldBe x
-        cell.y shouldBe y
+        val cell: DirectedCell = DirectedCell(direction)(position)
+        cell.position shouldBe position
         cell.direction shouldBe direction
       }
     }
@@ -45,9 +41,8 @@ class CellsTests extends AnyFunSpec with Matchers {
     describe("when first created") {
       it("should return the given direction of movement and position") {
         val movementDirection: MovementDirection = MovementDirection.Vertical
-        val cell: MovableCell = MovableCell(movementDirection, x, y)
-        cell.x shouldBe x
-        cell.y shouldBe y
+        val cell: MovableCell = MovableCell(movementDirection)(position)
+        cell.position shouldBe position
         cell.movementDirection shouldBe movementDirection
       }
     }

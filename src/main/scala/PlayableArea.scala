@@ -1,9 +1,13 @@
 package it.unibo.pps.caw.dsl
 
-trait PlayableArea extends Dimensions with Position
+trait PlayableArea {
+  val dimensions: Dimensions
+  
+  val position: Position
+}
 
 object PlayableArea {
-  private case class PlayableAreaImpl(width: Int, height: Int, x: Int, y: Int) extends PlayableArea
+  private case class PlayableAreaImpl(dimensions: Dimensions, position: Position) extends PlayableArea
 
-  def apply(width: Int, height: Int)(x: Int, y: Int): PlayableArea = PlayableAreaImpl(width, height, x, y)
+  def apply(dimensions: Dimensions)(position: Position): PlayableArea = PlayableAreaImpl(dimensions, position)
 }

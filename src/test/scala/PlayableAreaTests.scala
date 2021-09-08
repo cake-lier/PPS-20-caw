@@ -7,15 +7,11 @@ class PlayableAreaTests extends AnyFunSpec with Matchers {
   describe("A playable area") {
     describe("when first created") {
       it("should return the given position and the given dimensions") {
-        val width: Int = 10
-        val height: Int = 20
-        val x: Int = 1
-        val y: Int = 2
-        val a: PlayableArea = PlayableArea(width, height)(x, y)
-        a.width shouldBe width
-        a.height shouldBe height
-        a.x shouldBe x
-        a.y shouldBe y
+        val dimensions: Dimensions = Dimensions(10, 20)
+        val position: Position = Position(1, 2)
+        val area: PlayableArea = PlayableArea(dimensions)(position)
+        area.dimensions shouldBe dimensions
+        area.position shouldBe position
       }
     }
   }

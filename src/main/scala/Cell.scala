@@ -1,11 +1,13 @@
 package it.unibo.pps.caw.dsl
 
-sealed trait Cell extends Position
+sealed trait Cell {
+  val position: Position
+}
 
 object Cell {
-  private case class CellImpl(x: Int, y: Int) extends Cell
+  private case class CellImpl(position: Position) extends Cell
 
-  def apply(x: Int, y: Int): Cell = CellImpl(x, y)
+  def apply(position: Position): Cell = CellImpl(position)
 }
 
 enum Orientation {
@@ -20,9 +22,9 @@ sealed trait OrientedCell extends Cell {
 }
 
 object OrientedCell {
-  private case class OrientedCellImpl(orientation: Orientation, x: Int, y: Int) extends OrientedCell
+  private case class OrientedCellImpl(orientation: Orientation, position: Position) extends OrientedCell
 
-  def apply(orientation: Orientation, x: Int, y: Int): OrientedCell = OrientedCellImpl(orientation, x, y)
+  def apply(orientation: Orientation)(position: Position): OrientedCell = OrientedCellImpl(orientation, position)
 }
 
 enum Direction {
@@ -35,9 +37,9 @@ sealed trait DirectedCell extends Cell {
 }
 
 object DirectedCell {
-  private case class DirectedCellImpl(direction: Direction, x: Int, y: Int) extends DirectedCell
+  private case class DirectedCellImpl(direction: Direction, position: Position) extends DirectedCell
 
-  def apply(direction: Direction, x: Int, y: Int): DirectedCell = DirectedCellImpl(direction, x, y)
+  def apply(direction: Direction)(position: Position): DirectedCell = DirectedCellImpl(direction, position)
 }
 
 enum MovementDirection {
@@ -51,7 +53,7 @@ sealed trait MovableCell extends Cell {
 }
 
 object MovableCell {
-  private case class MovableCellImpl(movementDirection: MovementDirection, x: Int, y: Int) extends MovableCell
+  private case class MovableCellImpl(movementDirection: MovementDirection, position: Position) extends MovableCell
 
-  def apply(movementDirection: MovementDirection, x: Int, y: Int): MovableCell = MovableCellImpl(movementDirection, x, y)
+  def apply(movementDirection: MovementDirection)(position: Position): MovableCell = MovableCellImpl(movementDirection, position)
 }
