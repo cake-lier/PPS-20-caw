@@ -49,4 +49,26 @@ object Board {
     enemyCells,
     wallCells
   )
+
+  extension(board: Board) {
+    def copy(
+        dimensions: Option[Dimensions] = board.dimensions,
+        playableArea: Option[PlayableArea] = board.playableArea,
+        moverCells: Set[OrientedCell] = board.moverCells,
+        generatorCells: Set[OrientedCell] = board.generatorCells,
+        rotatorCells: Set[DirectedCell] = board.rotatorCells,
+        blockCells: Set[MovableCell] = board.blockCells,
+        enemyCells: Set[Cell] = board.enemyCells,
+        wallCells: Set[Cell] = board.wallCells
+    ): Board = apply(
+      dimensions,
+      playableArea,
+      moverCells,
+      generatorCells,
+      rotatorCells,
+      blockCells,
+      enemyCells,
+      wallCells
+    )
+  }
 }

@@ -88,5 +88,14 @@ class BoardTests extends AnyFunSpec with Matchers {
         board.wallCells should contain(wallCell)
       }
     }
+
+    describe("when created by copy constructor") {
+      it("should have the same properties of the cloned board") {
+        val board: Board =
+          Board(dimensions = Some(Dimensions(width, height)), playableArea = Some(PlayableArea(width, height)(x, y)))
+        val newBoard: Board = board.copy()
+        newBoard shouldBe board
+      }
+    }
   }
 }
