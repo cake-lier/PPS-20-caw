@@ -69,8 +69,8 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>Menu principale</td>
             <td>Yuqi Sun</td>
             <td>5</td>
-            <td></td>
-            <td></td>
+            <td>4</td>
+            <td>2</td>
             <td></td>
             <td></td>
             <td></td>
