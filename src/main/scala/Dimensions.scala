@@ -7,9 +7,7 @@ trait Dimensions {
 }
 
 object Dimensions {
-  private case class DimensionableImpl(width: Int, height: Int)
-      extends Dimensions
+  private case class DimensionableImpl(width: Int, height: Int) extends Dimensions
 
-  def apply(width: Int, height: Int): Dimensions =
-    DimensionableImpl(width, height)
+  def apply(width: Int, height: Int): Dimensions = DimensionableImpl(width, height)
 }

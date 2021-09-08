@@ -20,11 +20,9 @@ sealed trait OrientedCell extends Cell {
 }
 
 object OrientedCell {
-  private case class OrientedCellImpl(orientation: Orientation, x: Int, y: Int)
-      extends OrientedCell
+  private case class OrientedCellImpl(orientation: Orientation, x: Int, y: Int) extends OrientedCell
 
-  def apply(orientation: Orientation, x: Int, y: Int): OrientedCell =
-    OrientedCellImpl(orientation, x, y)
+  def apply(orientation: Orientation, x: Int, y: Int): OrientedCell = OrientedCellImpl(orientation, x, y)
 }
 
 enum Direction {
@@ -37,11 +35,9 @@ sealed trait DirectedCell extends Cell {
 }
 
 object DirectedCell {
-  private case class DirectedCellImpl(direction: Direction, x: Int, y: Int)
-      extends DirectedCell
+  private case class DirectedCellImpl(direction: Direction, x: Int, y: Int) extends DirectedCell
 
-  def apply(direction: Direction, x: Int, y: Int): DirectedCell =
-    DirectedCellImpl(direction, x, y)
+  def apply(direction: Direction, x: Int, y: Int): DirectedCell = DirectedCellImpl(direction, x, y)
 }
 
 enum MovementDirection {
@@ -55,12 +51,7 @@ sealed trait MovableCell extends Cell {
 }
 
 object MovableCell {
-  private case class MovableCellImpl(
-      movementDirection: MovementDirection,
-      x: Int,
-      y: Int
-  ) extends MovableCell
+  private case class MovableCellImpl(movementDirection: MovementDirection, x: Int, y: Int) extends MovableCell
 
-  def apply(movementDirection: MovementDirection, x: Int, y: Int): MovableCell =
-    MovableCellImpl(movementDirection, x, y)
+  def apply(movementDirection: MovementDirection, x: Int, y: Int): MovableCell = MovableCellImpl(movementDirection, x, y)
 }
