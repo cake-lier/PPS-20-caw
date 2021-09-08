@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.dsl
+package it.unibo.pps.caw.dsl.entities
 
 sealed trait Cell {
   val position: Position

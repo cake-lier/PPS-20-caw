@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.dsl
+package it.unibo.pps.caw.dsl.entities
 
 trait PlayableArea {
   val dimensions: Dimensions
