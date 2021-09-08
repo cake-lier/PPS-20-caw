@@ -6,9 +6,11 @@ import scalafx.scene.Scene
 
 class AppView(stage: PrimaryStage) {
   private val gameTitle = "Cells at Work"
+  private val scene = new Scene()
 
   def drawMenu(): Unit = {
-    stage.scene = new Scene(MainMenu.getRoot)
+    scene.root.value = MainMenu().innerComponent
+    stage.scene = scene
     stage.resizable = false
     stage.maximized = false
     stage.title = gameTitle
