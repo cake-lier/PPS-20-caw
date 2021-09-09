@@ -9,7 +9,7 @@ import javafx.scene.control.{Button, Label}
 /** Factory for new [[MainMenu]] instance. */
 object MainMenu {
   /** Creates a main menu component. */
-  def apply(): Component[Pane] = new MainMenuImpl().innerComponent
+  def apply(): Component[Pane] = new MainMenuImpl()
 
   /** Implementation of the MainMenu. */
   private final class MainMenuImpl
