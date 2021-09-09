@@ -30,7 +30,17 @@ object LevelSelection {
     var levels: List[Level] = dir.listFiles()
             .filter(_.getName.endsWith(".json")).toList
             .zipWithIndex.map((file, i) => Level(i)(file))
-    println(levels)
 
+    // Draw level buttons
+    var col = 1
+    var row = 3
+    levels.foreach(l => {
+      levelSelectionGridPane.add(LevelButton(l.number).innerComponent, col, row)
+      if (col + 1 > 10) {
+        col = 1
+        row += 2
+        //TODO slider for rows > 7
+      } else col += 1
+    })
   }
 }
