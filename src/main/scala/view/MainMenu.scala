@@ -27,7 +27,7 @@ object MainMenu {
 
     override val innerComponent: Pane = loader.load[GridPane]
 
-    playButton.setOnMouseClicked(_ => println("CLICKED PLAY"))
+    playButton.setOnMouseClicked(_ => playButton.getScene.setRoot(LevelSelection().innerComponent))
 
     exitButton.setOnMouseClicked(_ => {
       import scalafx.application.Platform
