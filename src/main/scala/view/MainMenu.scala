@@ -6,9 +6,12 @@ import javafx.fxml.FXML
 import javafx.scene.layout.{Pane, GridPane}
 import javafx.scene.control.{Button, Label}
 
+/** Factory for new [[MainMenu]] instance. */
 object MainMenu {
-  def apply(): Component[Pane] = new MainMenuImpl()
+  /** Creates a main menu component. */
+  def apply(): Component[Pane] = new MainMenuImpl().innerComponent
 
+  /** Implementation of the MainMenu. */
   private final class MainMenuImpl
       extends AbstractViewComponent[Pane]("main_menu_page.fxml") {
     @FXML
