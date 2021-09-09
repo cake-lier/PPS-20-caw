@@ -9,8 +9,7 @@ object CellsAtWorkDSL extends CellsAdders {
   def board(fun: ListBuffer[Board => Board] ?=> Unit): Unit = {
     given ops: ListBuffer[Board => Board] = ListBuffer()
     fun
-    val built: Board = ops.foldLeft(Board())((b, op) => op(b))
-    print(built)
+    ops.foldLeft(Board())((b, op) => op(b))
   }
 
   def withDimensions(width: Int, height: Int)(using ops: ListBuffer[Board => Board]): Unit =
@@ -18,4 +17,7 @@ object CellsAtWorkDSL extends CellsAdders {
 
   def hasPlayableArea(using ops: ListBuffer[Board => Board]): WithDimensionsWord =
     WithDimensionsWord(d => AtWord(p => ops += (_.copy(playableArea = Some(PlayableArea(d)(p))))))
+
+  def printIt(using ops: ListBuffer[Board => Board]): Unit =
+    ops += (b => { print(b); b })
 }

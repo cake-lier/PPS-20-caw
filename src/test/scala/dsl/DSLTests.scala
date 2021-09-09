@@ -44,6 +44,7 @@ class DSLTests extends AnyFunSpec with Matchers {
             hasBlockCell pushable block.push at (block.position.x, block.position.y)
             hasEnemyCell at (enemy.position.x, enemy.position.y)
             hasWallCell at (wall.position.x, wall.position.y)
+            printIt
           }
         }
         out.toString shouldBe effectiveBoard.toString
@@ -87,6 +88,7 @@ class DSLTests extends AnyFunSpec with Matchers {
               .at(block.position.x, block.position.y)
             hasEnemyCells inAnArea (cellsArea.width, cellsArea.height) at (enemy.position.x, enemy.position.y)
             hasWallCells inAnArea (cellsArea.width, cellsArea.height) at (wall.position.x, wall.position.y)
+            printIt
           }
         }
         out.toString shouldBe effectiveBoard.toString
