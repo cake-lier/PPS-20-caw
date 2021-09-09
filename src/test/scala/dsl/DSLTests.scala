@@ -10,10 +10,10 @@ import java.io.ByteArrayOutputStream
 class DSLTests extends AnyFunSpec with Matchers {
   private val boardDimensions: Dimensions = Dimensions(30, 40)
   private val playableArea: PlayableArea = PlayableArea(Dimensions(10, 20))(Position(0, 0))
-  private val mover: OrientedCell = OrientedCell(Orientation.Right)(Position(1, 2))
-  private val generator: OrientedCell = OrientedCell(Orientation.Left)(Position(3, 4))
-  private val rotator: DirectedCell = DirectedCell(Direction.Clockwise)(Position(5, 6))
-  private val block: MovableCell = MovableCell(MovementDirection.Vertical)(Position(7, 8))
+  private val mover: OrientableCell = OrientableCell(Orientation.Right)(Position(1, 2))
+  private val generator: OrientableCell = OrientableCell(Orientation.Left)(Position(3, 4))
+  private val rotator: RotatableCell = RotatableCell(Rotation.Clockwise)(Position(5, 6))
+  private val block: PushableCell = PushableCell(Push.Vertical)(Position(7, 8))
   private val enemy: Cell = Cell(Position(9, 10))
   private val wall: Cell = Cell(Position(11, 12))
   private val cellsArea: Dimensions = Dimensions(2, 2)
@@ -40,8 +40,8 @@ class DSLTests extends AnyFunSpec with Matchers {
               .at(playableArea.position.x, playableArea.position.y)
             hasMoverCell facing mover.orientation at (mover.position.x, mover.position.y)
             hasGeneratorCell facing generator.orientation at (generator.position.x, generator.position.y)
-            hasRotatorCell directed rotator.direction at (rotator.position.x, rotator.position.y)
-            hasBlockCell movable block.movementDirection at (block.position.x, block.position.y)
+            hasRotatorCell rotating rotator.rotation at (rotator.position.x, rotator.position.y)
+            hasBlockCell pushable block.push at (block.position.x, block.position.y)
             hasEnemyCell at (enemy.position.x, enemy.position.y)
             hasWallCell at (wall.position.x, wall.position.y)
           }
@@ -55,10 +55,10 @@ class DSLTests extends AnyFunSpec with Matchers {
         val effectiveBoard: Board = Board(
           Some(boardDimensions),
           Some(playableArea),
-          duplicateCells(OrientedCell(mover.orientation), mover.position),
-          duplicateCells(OrientedCell(generator.orientation), generator.position),
-          duplicateCells(DirectedCell(rotator.direction), rotator.position),
-          duplicateCells(MovableCell(block.movementDirection), block.position),
+          duplicateCells(OrientableCell(mover.orientation), mover.position),
+          duplicateCells(OrientableCell(generator.orientation), generator.position),
+          duplicateCells(RotatableCell(rotator.rotation), rotator.position),
+          duplicateCells(PushableCell(block.push), block.position),
           duplicateCells(Cell.apply, enemy.position),
           duplicateCells(Cell.apply, wall.position)
         )
@@ -79,11 +79,11 @@ class DSLTests extends AnyFunSpec with Matchers {
               .at(generator.position.x, generator.position.y)
             hasRotatorCells
               .inAnArea(cellsArea.width, cellsArea.height)
-              .directed(rotator.direction)
+              .rotating(rotator.rotation)
               .at(rotator.position.x, rotator.position.y)
             hasBlockCells
               .inAnArea(cellsArea.width, cellsArea.height)
-              .movable(block.movementDirection)
+              .pushable(block.push)
               .at(block.position.x, block.position.y)
             hasEnemyCells inAnArea (cellsArea.width, cellsArea.height) at (enemy.position.x, enemy.position.y)
             hasWallCells inAnArea (cellsArea.width, cellsArea.height) at (wall.position.x, wall.position.y)
@@ -94,9 +94,9 @@ class DSLTests extends AnyFunSpec with Matchers {
     }
   }
 
-  private def duplicateCells[A <: Cell](fun: Position => A, position: Position): Set[A] =
+  private def duplicateCells[A <: Cell](cellBuilder: Position => A, position: Position): Set[A] =
     Set.from(for {
       x <- 0 until cellsArea.width
       y <- 0 until cellsArea.height
-    } yield fun(Position(position.x + x, position.y + y)))
+    } yield cellBuilder(Position(position.x + x, position.y + y)))
 }

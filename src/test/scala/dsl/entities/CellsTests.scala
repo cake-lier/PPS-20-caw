@@ -19,7 +19,7 @@ class CellsTests extends AnyFunSpec with Matchers {
     describe("when first created") {
       it("should return the given orientation and position") {
         val orientation: Orientation = Orientation.Right
-        val cell: OrientedCell = OrientedCell(orientation)(position)
+        val cell: OrientableCell = OrientableCell(orientation)(position)
         cell.position shouldBe position
         cell.orientation shouldBe orientation
       }
@@ -28,22 +28,22 @@ class CellsTests extends AnyFunSpec with Matchers {
 
   describe("A directed cell") {
     describe("when first created") {
-      it("should return the given direction and position") {
-        val direction: Direction = Direction.Clockwise
-        val cell: DirectedCell = DirectedCell(direction)(position)
+      it("should return the given rotation and position") {
+        val rotation: Rotation = Rotation.Clockwise
+        val cell: RotatableCell = RotatableCell(rotation)(position)
         cell.position shouldBe position
-        cell.direction shouldBe direction
+        cell.rotation shouldBe rotation
       }
     }
   }
 
   describe("A movable cell") {
     describe("when first created") {
-      it("should return the given direction of movement and position") {
-        val movementDirection: MovementDirection = MovementDirection.Vertical
-        val cell: MovableCell = MovableCell(movementDirection)(position)
+      it("should return the given push and position") {
+        val push: Push = Push.Vertical
+        val cell: PushableCell = PushableCell(push)(position)
         cell.position shouldBe position
-        cell.movementDirection shouldBe movementDirection
+        cell.push shouldBe push
       }
     }
   }

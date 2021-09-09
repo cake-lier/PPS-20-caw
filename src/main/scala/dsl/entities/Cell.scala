@@ -17,43 +17,43 @@ enum Orientation {
   case Down
 }
 
-sealed trait OrientedCell extends Cell {
+sealed trait OrientableCell extends Cell {
   val orientation: Orientation
 }
 
-object OrientedCell {
-  private case class OrientedCellImpl(orientation: Orientation, position: Position) extends OrientedCell
+object OrientableCell {
+  private case class OrientedCellImpl(orientation: Orientation, position: Position) extends OrientableCell
 
-  def apply(orientation: Orientation)(position: Position): OrientedCell = OrientedCellImpl(orientation, position)
+  def apply(orientation: Orientation)(position: Position): OrientableCell = OrientedCellImpl(orientation, position)
 }
 
-enum Direction {
+enum Rotation {
   case Clockwise
   case Counterclockwise
 }
 
-sealed trait DirectedCell extends Cell {
-  val direction: Direction
+sealed trait RotatableCell extends Cell {
+  val rotation: Rotation
 }
 
-object DirectedCell {
-  private case class DirectedCellImpl(direction: Direction, position: Position) extends DirectedCell
+object RotatableCell {
+  private case class DirectedCellImpl(rotation: Rotation, position: Position) extends RotatableCell
 
-  def apply(direction: Direction)(position: Position): DirectedCell = DirectedCellImpl(direction, position)
+  def apply(rotation: Rotation)(position: Position): RotatableCell = DirectedCellImpl(rotation, position)
 }
 
-enum MovementDirection {
+enum Push {
   case Vertical
   case Horizontal
   case Both
 }
 
-sealed trait MovableCell extends Cell {
-  val movementDirection: MovementDirection
+sealed trait PushableCell extends Cell {
+  val push: Push
 }
 
-object MovableCell {
-  private case class MovableCellImpl(movementDirection: MovementDirection, position: Position) extends MovableCell
+object PushableCell {
+  private case class PushableCellImpl(push: Push, position: Position) extends PushableCell
 
-  def apply(movementDirection: MovementDirection)(position: Position): MovableCell = MovableCellImpl(movementDirection, position)
+  def apply(push: Push)(position: Position): PushableCell = PushableCellImpl(push, position)
 }
