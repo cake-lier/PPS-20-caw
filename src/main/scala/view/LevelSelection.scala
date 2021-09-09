@@ -4,8 +4,8 @@ package view
 import view.ViewComponent.AbstractViewComponent
 
 import javafx.fxml.FXML
-import javafx.scene.control.Button
-import javafx.scene.layout.{GridPane, Pane}
+import javafx.scene.control.{Button, ScrollPane}
+import javafx.scene.layout.{GridPane, Pane, RowConstraints}
 
 import java.io.File
 
@@ -20,6 +20,10 @@ object LevelSelection {
     var backButton: Button = _
     @FXML
     var levelSelectionGridPane: GridPane = _
+    @FXML
+    var scrollablePane: GridPane = _
+    @FXML
+    var scrollPane: ScrollPane = _
 
     override val innerComponent: Pane = loader.load[GridPane]
 
@@ -32,15 +36,24 @@ object LevelSelection {
             .zipWithIndex.map((file, i) => Level(i)(file))
 
     // Draw level buttons
+    val rowCons1: RowConstraints = RowConstraints()
+    rowCons1.setPercentHeight(2.5)
+    val rowCons2: RowConstraints = RowConstraints()
+    rowCons2.setPercentHeight(10.0)
+
     var col = 1
-    var row = 3
+    var row = 0
     levels.foreach(l => {
-      levelSelectionGridPane.add(LevelButton(l.number).innerComponent, col, row)
+      scrollablePane.add(LevelButton(l.number).innerComponent, col, row)
       if (col + 1 > 10) {
         col = 1
         row += 2
-        //TODO slider for rows > 7
+        if (row >= 5) {
+          scrollablePane.getRowConstraints.addAll(rowCons1, rowCons2)
+          scrollPane.setVmax(1) // allow scrolling
+        }
       } else col += 1
     })
+
   }
 }
