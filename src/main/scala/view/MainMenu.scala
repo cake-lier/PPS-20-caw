@@ -3,7 +3,7 @@ package view
 
 import ViewComponent.AbstractViewComponent
 import javafx.fxml.FXML
-import javafx.scene.layout.{Pane, GridPane}
+import javafx.scene.layout.{GridPane, Pane}
 import javafx.scene.control.{Button, Label}
 
 /** Factory for new [[MainMenu]] instance. */

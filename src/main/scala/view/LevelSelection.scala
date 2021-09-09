@@ -7,8 +7,11 @@ import javafx.fxml.FXML
 import javafx.scene.control.Button
 import javafx.scene.layout.{GridPane, Pane}
 
+import java.io.File
+
 /** Factory for new [[LevelSelection]] instance. */
 object LevelSelection {
+
   /** Creates a level selection component. */
   def apply(): ViewComponent[Pane] = new LevelSelectionImpl()
 
@@ -21,5 +24,13 @@ object LevelSelection {
     override val innerComponent: Pane = loader.load[GridPane]
 
     backButton.setOnMouseClicked(_ => backButton.getScene.setRoot(MainMenu().innerComponent))
+
+    // Read levels
+    val dir = new File(ClassLoader.getSystemResource("levels/").toURI)
+    var levels: List[Level] = dir.listFiles()
+            .filter(_.getName.endsWith(".json")).toList
+            .zipWithIndex.map((file, i) => Level(i)(file))
+    println(levels)
+
   }
 }
