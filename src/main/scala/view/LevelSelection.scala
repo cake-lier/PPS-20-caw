@@ -30,25 +30,22 @@ object LevelSelection {
     backButton.setOnMouseClicked(_ => backButton.getScene.setRoot(MainMenu().innerComponent))
 
     // Read levels
-    val dir = new File(ClassLoader.getSystemResource("levels/").toURI)
-    var levels: List[Level] = dir.listFiles()
-            .filter(_.getName.endsWith(".json")).toList
-            .zipWithIndex.map((file, i) => Level(i)(file))
+    val numFiles = new File(ClassLoader.getSystemResource("levels/").toURI)
+                        .listFiles(_.getName.endsWith(".json")).length
 
     // Draw level buttons
-    val rowCons1: RowConstraints = RowConstraints()
+    val rowCons1, rowCons2 = RowConstraints()
     rowCons1.setPercentHeight(2.5)
-    val rowCons2: RowConstraints = RowConstraints()
     rowCons2.setPercentHeight(10.0)
 
     var col = 1
     var row = 0
-    levels.foreach(l => {
-      scrollablePane.add(LevelButton(l.number).innerComponent, col, row)
+    (1 to numFiles).foreach(i => {
+      scrollablePane.add(LevelButton(i).innerComponent, col, row)
       if (col + 1 > 10) {
         col = 1
         row += 2
-        if (row >= 5) {
+        if (row >= 6) {
           scrollablePane.getRowConstraints.addAll(rowCons1, rowCons2)
           scrollPane.setVmax(1) // allow scrolling
         }
