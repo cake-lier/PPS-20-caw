@@ -29,4 +29,16 @@ object CellsAtWorkDSL extends CellsAdders {
       }
       b
     })
+
+  import java.nio.file.Paths
+  import java.nio.file.{Files, StandardOpenOption}
+
+  def saveIt(path: String)(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit =
+    ops += (b => {
+      ErrorChecker.checkBoard(b) match {
+        case Right(v) => Files.writeString(Paths.get(path), BoardSerializer.serialize(v), StandardOpenOption.CREATE_NEW)
+        case Left(e)  => Console.err.print(e)
+      }
+      b
+    })
 }

@@ -8,6 +8,8 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 import java.io.ByteArrayOutputStream
+import java.io.File
+import java.nio.file.{Files, Paths}
 
 class DSLTests extends AnyFunSpec with Matchers {
   private val boardDimensions: Dimensions = Dimensions(30, 40)
@@ -177,6 +179,28 @@ class DSLTests extends AnyFunSpec with Matchers {
           buildBoardWithDSL(block = PushableCell(Push.Vertical)(Position(50, 50)))
         }
         err.toString shouldBe BoardBuilderError.CellOutsideBounds.message
+      }
+    }
+
+    describe("when asked to save a board to file") {
+      it("should produce the correct file") {
+        val fileName: String = "level.json"
+        val path: String = System.getProperty("user.home") + File.separator + fileName
+        board {
+          withDimensions(boardDimensions.width, boardDimensions.height)
+          hasPlayableArea
+            .withDimensions(playableArea.dimensions.width, playableArea.dimensions.height)
+            .at(playableArea.position.x, playableArea.position.y)
+          hasMoverCell facing (mover.orientation) at (mover.position.x, mover.position.y)
+          hasGeneratorCell facing (generator.orientation) at (generator.position.x, generator.position.y)
+          hasRotatorCell rotating (rotator.rotation) at (rotator.position.x, rotator.position.y)
+          hasBlockCell pushable (block.push) at (block.position.x, block.position.y)
+          hasEnemyCell at (enemy.position.x, enemy.position.y)
+          hasWallCell at (wall.position.x, wall.position.y)
+          saveIt(path)
+        }
+        Files.readString(Paths.get(path)) shouldBe Files.readString(Paths.get(ClassLoader.getSystemResource(fileName).toURI))
+        Files.delete(Paths.get(path))
       }
     }
   }
