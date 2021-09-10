@@ -3,6 +3,7 @@ package it.unibo.pps.caw.dsl
 import it.unibo.pps.caw.dsl.entities.*
 import it.unibo.pps.caw.dsl.CellsAtWorkDSL.*
 import it.unibo.pps.caw.dsl.errors.BoardBuilderError
+import it.unibo.pps.caw.dsl.BoardSerializer
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -28,16 +29,18 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withOut(out) {
           buildBoardWithDSL()
         }
-        out.toString shouldBe Board(
-          boardDimensions,
-          playableArea,
-          Set(mover),
-          Set(generator),
-          Set(rotator),
-          Set(block),
-          Set(enemy),
-          Set(wall)
-        ).toString
+        out.toString shouldBe BoardSerializer.serialize(
+          Board(
+            boardDimensions,
+            playableArea,
+            Set(mover),
+            Set(generator),
+            Set(rotator),
+            Set(block),
+            Set(enemy),
+            Set(wall)
+          )
+        )
       }
     }
 
@@ -71,16 +74,18 @@ class DSLTests extends AnyFunSpec with Matchers {
             printIt
           }
         }
-        out.toString shouldBe Board(
-          boardDimensions,
-          playableArea,
-          duplicateCells(OrientableCell(mover.orientation), mover.position),
-          duplicateCells(OrientableCell(generator.orientation), generator.position),
-          duplicateCells(RotatableCell(rotator.rotation), rotator.position),
-          duplicateCells(PushableCell(block.push), block.position),
-          duplicateCells(Cell.apply, enemy.position),
-          duplicateCells(Cell.apply, wall.position)
-        ).toString
+        out.toString shouldBe BoardSerializer.serialize(
+          Board(
+            boardDimensions,
+            playableArea,
+            duplicateCells(OrientableCell(mover.orientation), mover.position),
+            duplicateCells(OrientableCell(generator.orientation), generator.position),
+            duplicateCells(RotatableCell(rotator.rotation), rotator.position),
+            duplicateCells(PushableCell(block.push), block.position),
+            duplicateCells(Cell.apply, enemy.position),
+            duplicateCells(Cell.apply, wall.position)
+          )
+        )
       }
     }
 

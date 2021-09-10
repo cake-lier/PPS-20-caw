@@ -51,7 +51,8 @@ object ErrorChecker {
   import Checkers.*
 
   def checkBoard(board: BoardBuilder): Either[BoardBuilderError, Board] = {
-    val positions: Seq[Position] = board.moverCells.map(_.position).toSeq ++
+    val positions: Seq[Position] = 
+      board.moverCells.map(_.position).toSeq ++
       board.generatorCells.map(_.position) ++
       board.rotatorCells.map(_.position) ++
       board.blockCells.map(_.position) ++
