@@ -5,7 +5,7 @@ import it.unibo.pps.caw.dsl.words.{AtWord, WithDimensionsWord}
 
 import scala.collection.mutable.ListBuffer
 
-object CellsAtWorkDSL extends CellsAdders {
+object CellsAtWorkDSL extends CellsAdders with BoardConsumers {
   def board(fun: ListBuffer[BoardBuilder => BoardBuilder] ?=> Unit): Unit = {
     given ops: ListBuffer[BoardBuilder => BoardBuilder] = ListBuffer()
     fun
@@ -17,28 +17,4 @@ object CellsAtWorkDSL extends CellsAdders {
 
   def hasPlayableArea(using ops: ListBuffer[BoardBuilder => BoardBuilder]): WithDimensionsWord =
     WithDimensionsWord(d => AtWord(p => ops += (_.copy(playableArea = Some(PlayableArea(d)(p))))))
-
-  import it.unibo.pps.caw.dsl.errors.ErrorChecker
-  import it.unibo.pps.caw.dsl.BoardSerializer
-
-  def printIt(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit =
-    ops += (b => {
-      ErrorChecker.checkBoard(b) match {
-        case Right(v) => print(BoardSerializer.serialize(v))
-        case Left(e)  => Console.err.print(e.message)
-      }
-      b
-    })
-
-  import java.nio.file.Paths
-  import java.nio.file.{Files, StandardOpenOption}
-
-  def saveIt(path: String)(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit =
-    ops += (b => {
-      ErrorChecker.checkBoard(b) match {
-        case Right(v) => Files.writeString(Paths.get(path), BoardSerializer.serialize(v), StandardOpenOption.CREATE_NEW)
-        case Left(e)  => Console.err.print(e)
-      }
-      b
-    })
 }
