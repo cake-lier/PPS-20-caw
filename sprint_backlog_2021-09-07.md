@@ -81,9 +81,9 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>Selezione livelli</td>
             <td>Elena Rughi</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>2</td>
+            <td>0</td>
             <td></td>
             <td></td>
             <td></td>
