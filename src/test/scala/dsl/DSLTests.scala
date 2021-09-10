@@ -16,10 +16,14 @@ class DSLTests extends AnyFunSpec with Matchers {
   private val playableAreaDimensions: Dimensions = Dimensions(10, 20)
   private val playableAreaPosition: Position = Position(0, 0)
   private val playableArea: PlayableArea = PlayableArea(playableAreaDimensions)(playableAreaPosition)
-  private val mover: OrientableCell = OrientableCell(Orientation.Right)(Position(1, 2))
-  private val generator: OrientableCell = OrientableCell(Orientation.Left)(Position(3, 4))
-  private val rotator: RotatableCell = RotatableCell(Rotation.Clockwise)(Position(5, 6))
-  private val block: PushableCell = PushableCell(Push.Vertical)(Position(7, 8))
+  private val moverOrientation: OrientationWord = right
+  private val mover: OrientableCell = OrientableCell(moverOrientation.orientation)(Position(1, 2))
+  private val generatorOrientation: OrientationWord = left
+  private val generator: OrientableCell = OrientableCell(generatorOrientation.orientation)(Position(3, 4))
+  private val rotatorRotation: RotationWord = clockwise
+  private val rotator: RotatableCell = RotatableCell(rotatorRotation.rotation)(Position(5, 6))
+  private val blockPush: PushWord = vertically
+  private val block: PushableCell = PushableCell(blockPush.push)(Position(7, 8))
   private val enemy: Cell = Cell(Position(9, 10))
   private val wall: Cell = Cell(Position(11, 12))
   private val cellsArea: Dimensions = Dimensions(2, 2)
@@ -57,19 +61,19 @@ class DSLTests extends AnyFunSpec with Matchers {
               .at(playableArea.position.x, playableArea.position.y)
             hasMoverCells
               .inAnArea(cellsArea.width, cellsArea.height)
-              .facing(mover.orientation)
+              .facing(moverOrientation)
               .at(mover.position.x, mover.position.y)
             hasGeneratorCells
               .inAnArea(cellsArea.width, cellsArea.height)
-              .facing(generator.orientation)
+              .facing(generatorOrientation)
               .at(generator.position.x, generator.position.y)
             hasRotatorCells
               .inAnArea(cellsArea.width, cellsArea.height)
-              .rotating(rotator.rotation)
+              .rotating(rotatorRotation)
               .at(rotator.position.x, rotator.position.y)
             hasBlockCells
               .inAnArea(cellsArea.width, cellsArea.height)
-              .pushable(block.push)
+              .pushable(blockPush)
               .at(block.position.x, block.position.y)
             hasEnemyCells inAnArea (cellsArea.width, cellsArea.height) at (enemy.position.x, enemy.position.y)
             hasWallCells inAnArea (cellsArea.width, cellsArea.height) at (wall.position.x, wall.position.y)
@@ -191,10 +195,10 @@ class DSLTests extends AnyFunSpec with Matchers {
           hasPlayableArea
             .withDimensions(playableArea.dimensions.width, playableArea.dimensions.height)
             .at(playableArea.position.x, playableArea.position.y)
-          hasMoverCell facing (mover.orientation) at (mover.position.x, mover.position.y)
-          hasGeneratorCell facing (generator.orientation) at (generator.position.x, generator.position.y)
-          hasRotatorCell rotating (rotator.rotation) at (rotator.position.x, rotator.position.y)
-          hasBlockCell pushable (block.push) at (block.position.x, block.position.y)
+          hasMoverCell facing (moverOrientation) at (mover.position.x, mover.position.y)
+          hasGeneratorCell facing (generatorOrientation) at (generator.position.x, generator.position.y)
+          hasRotatorCell rotating (rotatorRotation) at (rotator.position.x, rotator.position.y)
+          hasBlockCell pushable (blockPush) at (block.position.x, block.position.y)
           hasEnemyCell at (enemy.position.x, enemy.position.y)
           hasWallCell at (wall.position.x, wall.position.y)
           saveIt(path)
@@ -226,10 +230,10 @@ class DSLTests extends AnyFunSpec with Matchers {
       playableArea.foreach(a =>
         hasPlayableArea withDimensions (a.dimensions.width, a.dimensions.height) at (a.position.x, a.position.y)
       )
-      hasMoverCell facing mover.orientation at (mover.position.x, mover.position.y)
-      hasGeneratorCell facing generator.orientation at (generator.position.x, generator.position.y)
-      hasRotatorCell rotating rotator.rotation at (rotator.position.x, rotator.position.y)
-      hasBlockCell pushable block.push at (block.position.x, block.position.y)
+      hasMoverCell facing moverOrientation at (mover.position.x, mover.position.y)
+      hasGeneratorCell facing generatorOrientation at (generator.position.x, generator.position.y)
+      hasRotatorCell rotating rotatorRotation at (rotator.position.x, rotator.position.y)
+      hasBlockCell pushable blockPush at (block.position.x, block.position.y)
       hasEnemyCell at (enemy.position.x, enemy.position.y)
       hasWallCell at (wall.position.x, wall.position.y)
       printIt

@@ -6,6 +6,21 @@ import it.unibo.pps.caw.dsl.words.{AtWord, FacingWord, InAnAreaWord, PushableWor
 import scala.collection.mutable.ListBuffer
 
 trait CellsAdders {
+  sealed trait OrientationWord(val orientation: Orientation)
+  case object left extends OrientationWord(Orientation.Left)
+  case object right extends OrientationWord(Orientation.Right)
+  case object top extends OrientationWord(Orientation.Top)
+  case object down extends OrientationWord(Orientation.Down)
+
+  sealed trait RotationWord(val rotation: Rotation)
+  case object clockwise extends RotationWord(Rotation.Clockwise)
+  case object counterclockwise extends RotationWord(Rotation.Counterclockwise)
+
+  sealed trait PushWord(val push: Push)
+  case object vertically extends PushWord(Push.Vertical)
+  case object horizontally extends PushWord(Push.Horizontal)
+  case object inBothDirections extends PushWord(Push.Both)
+
   private object CellsDuplicators {
     private def duplicateCells[A <: Cell](cellBuilder: Position => A)(dimensions: Dimensions, position: Position): Iterable[A] =
       for {
