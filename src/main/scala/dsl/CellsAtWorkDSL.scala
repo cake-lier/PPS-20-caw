@@ -18,6 +18,14 @@ object CellsAtWorkDSL extends CellsAdders {
   def hasPlayableArea(using ops: ListBuffer[BoardBuilder => BoardBuilder]): WithDimensionsWord =
     WithDimensionsWord(d => AtWord(p => ops += (_.copy(playableArea = Some(PlayableArea(d)(p))))))
 
+  import it.unibo.pps.caw.dsl.errors.ErrorChecker.checkBoard
+
   def printIt(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit =
-    ops += (b => { println(b); b })
+    ops += (b => {
+      checkBoard(b) match {
+        case Right(v) => print(v)
+        case Left(e)  => Console.err.print(e.message)
+      }
+      b
+    })
 }
