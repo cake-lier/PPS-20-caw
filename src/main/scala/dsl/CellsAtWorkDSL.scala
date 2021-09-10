@@ -1,23 +1,23 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.dsl.entities.{Board, Dimensions, PlayableArea}
+import it.unibo.pps.caw.dsl.entities.{BoardBuilder, Dimensions, PlayableArea}
 import it.unibo.pps.caw.dsl.words.{AtWord, WithDimensionsWord}
 
 import scala.collection.mutable.ListBuffer
 
 object CellsAtWorkDSL extends CellsAdders {
-  def board(fun: ListBuffer[Board => Board] ?=> Unit): Unit = {
-    given ops: ListBuffer[Board => Board] = ListBuffer()
+  def board(fun: ListBuffer[BoardBuilder => BoardBuilder] ?=> Unit): Unit = {
+    given ops: ListBuffer[BoardBuilder => BoardBuilder] = ListBuffer()
     fun
-    ops.foldLeft(Board())((b, op) => op(b))
+    ops.foldLeft(BoardBuilder())((b, op) => op(b))
   }
 
-  def withDimensions(width: Int, height: Int)(using ops: ListBuffer[Board => Board]): Unit =
+  def withDimensions(width: Int, height: Int)(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit =
     ops += (_.copy(dimensions = Some(Dimensions(width, height))))
 
-  def hasPlayableArea(using ops: ListBuffer[Board => Board]): WithDimensionsWord =
+  def hasPlayableArea(using ops: ListBuffer[BoardBuilder => BoardBuilder]): WithDimensionsWord =
     WithDimensionsWord(d => AtWord(p => ops += (_.copy(playableArea = Some(PlayableArea(d)(p))))))
 
-  def printIt(using ops: ListBuffer[Board => Board]): Unit =
-    ops += (b => { print(b); b })
+  def printIt(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit =
+    ops += (b => { println(b); b })
 }

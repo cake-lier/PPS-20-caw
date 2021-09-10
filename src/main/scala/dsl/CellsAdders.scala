@@ -28,76 +28,92 @@ trait CellsAdders {
 
   private object CellsAddersHelpers {
     private def addOrientableCells(
-        ops: ListBuffer[Board => Board],
-        build: Board => Orientation => Position => Board
+        ops: ListBuffer[BoardBuilder => BoardBuilder],
+        build: BoardBuilder => Orientation => Position => BoardBuilder
     ): FacingWord =
       FacingWord(o => AtWord(p => ops += (b => build(b)(o)(p))))
 
-    def addMoverCells(ops: ListBuffer[Board => Board], build: Orientation => Position => Iterable[OrientableCell]): FacingWord =
+    def addMoverCells(
+        ops: ListBuffer[BoardBuilder => BoardBuilder],
+        build: Orientation => Position => Iterable[OrientableCell]
+    ): FacingWord =
       addOrientableCells(ops, b => o => p => b.copy(moverCells = b.moverCells ++ build(o)(p)))
 
     def addGeneratorCells(
-        ops: ListBuffer[Board => Board],
+        ops: ListBuffer[BoardBuilder => BoardBuilder],
         build: Orientation => Position => Iterable[OrientableCell]
     ): FacingWord =
       addOrientableCells(ops, b => o => p => b.copy(generatorCells = b.generatorCells ++ build(o)(p)))
 
-    private def addRotatableCells(ops: ListBuffer[Board => Board], build: Board => Rotation => Position => Board): RotatingWord =
+    private def addRotatableCells(
+        ops: ListBuffer[BoardBuilder => BoardBuilder],
+        build: BoardBuilder => Rotation => Position => BoardBuilder
+    ): RotatingWord =
       RotatingWord(d => AtWord(p => ops += (b => build(b)(d)(p))))
 
-    def addRotatorCells(ops: ListBuffer[Board => Board], build: Rotation => Position => Iterable[RotatableCell]): RotatingWord =
+    def addRotatorCells(
+        ops: ListBuffer[BoardBuilder => BoardBuilder],
+        build: Rotation => Position => Iterable[RotatableCell]
+    ): RotatingWord =
       addRotatableCells(ops, b => d => p => b.copy(rotatorCells = b.rotatorCells ++ build(d)(p)))
 
-    private def addPushableCells(ops: ListBuffer[Board => Board], build: Board => Push => Position => Board): PushableWord =
+    private def addPushableCells(
+        ops: ListBuffer[BoardBuilder => BoardBuilder],
+        build: BoardBuilder => Push => Position => BoardBuilder
+    ): PushableWord =
       PushableWord(m => AtWord(p => ops += (b => build(b)(m)(p))))
 
-    def addBlockCells(ops: ListBuffer[Board => Board], build: Push => Position => Iterable[PushableCell]): PushableWord =
+    def addBlockCells(
+        ops: ListBuffer[BoardBuilder => BoardBuilder],
+        build: Push => Position => Iterable[PushableCell]
+    ): PushableWord =
       addPushableCells(ops, b => m => p => b.copy(blockCells = b.blockCells ++ build(m)(p)))
 
-    private def addCells(ops: ListBuffer[Board => Board], build: Board => Position => Board): AtWord =
+    private def addCells(ops: ListBuffer[BoardBuilder => BoardBuilder], build: BoardBuilder => Position => BoardBuilder): AtWord =
       AtWord(p => ops += (b => build(b)(p)))
 
-    def addEnemyCells(ops: ListBuffer[Board => Board], build: Position => Iterable[Cell]): AtWord =
+    def addEnemyCells(ops: ListBuffer[BoardBuilder => BoardBuilder], build: Position => Iterable[Cell]): AtWord =
       addCells(ops, b => p => b.copy(enemyCells = b.enemyCells ++ build(p)))
 
-    def addWallCells(ops: ListBuffer[Board => Board], build: Position => Iterable[Cell]): AtWord =
+    def addWallCells(ops: ListBuffer[BoardBuilder => BoardBuilder], build: Position => Iterable[Cell]): AtWord =
       addCells(ops, b => p => b.copy(wallCells = b.wallCells ++ build(p)))
   }
 
   import CellsAddersHelpers.*
   import CellsDuplicators.*
 
-  def hasMoverCell(using ops: ListBuffer[Board => Board]): FacingWord = addMoverCells(ops, o => p => Set(OrientableCell(o)(p)))
+  def hasMoverCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): FacingWord =
+    addMoverCells(ops, o => p => Set(OrientableCell(o)(p)))
 
-  def hasMoverCells(using ops: ListBuffer[Board => Board]): InAnAreaWord[FacingWord] =
+  def hasMoverCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[FacingWord] =
     InAnAreaWord(d => addMoverCells(ops, o => p => duplicateOrientableCells(d)(o)(p)))
 
-  def hasGeneratorCell(using ops: ListBuffer[Board => Board]): FacingWord =
+  def hasGeneratorCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): FacingWord =
     addGeneratorCells(ops, o => p => Set(OrientableCell(o)(p)))
 
-  def hasGeneratorCells(using ops: ListBuffer[Board => Board]): InAnAreaWord[FacingWord] =
+  def hasGeneratorCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[FacingWord] =
     InAnAreaWord(d => addGeneratorCells(ops, o => p => duplicateOrientableCells(d)(o)(p)))
 
-  def hasRotatorCell(using ops: ListBuffer[Board => Board]): RotatingWord =
+  def hasRotatorCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): RotatingWord =
     addRotatorCells(ops, d => p => Set(RotatableCell(d)(p)))
 
-  def hasRotatorCells(using ops: ListBuffer[Board => Board]): InAnAreaWord[RotatingWord] =
+  def hasRotatorCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[RotatingWord] =
     InAnAreaWord(w => addRotatorCells(ops, d => p => duplicateRotatableCells(w)(d)(p)))
 
-  def hasBlockCell(using ops: ListBuffer[Board => Board]): PushableWord =
+  def hasBlockCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): PushableWord =
     addBlockCells(ops, m => p => Set(PushableCell(m)(p)))
 
-  def hasBlockCells(using ops: ListBuffer[Board => Board]): InAnAreaWord[PushableWord] =
+  def hasBlockCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[PushableWord] =
     InAnAreaWord(d => addBlockCells(ops, m => p => duplicatePushableCells(d)(m)(p)))
 
-  def hasEnemyCell(using ops: ListBuffer[Board => Board]): AtWord = addEnemyCells(ops, p => Set(Cell(p)))
+  def hasEnemyCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): AtWord = addEnemyCells(ops, p => Set(Cell(p)))
 
-  def hasEnemyCells(using ops: ListBuffer[Board => Board]): InAnAreaWord[AtWord] =
+  def hasEnemyCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[AtWord] =
     InAnAreaWord(d => addEnemyCells(ops, p => duplicateBaseCells(d)(p)))
 
-  def hasWallCell(using ops: ListBuffer[Board => Board]): AtWord =
+  def hasWallCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): AtWord =
     addWallCells(ops, p => Set(Cell(p)))
 
-  def hasWallCells(using ops: ListBuffer[Board => Board]): InAnAreaWord[AtWord] =
+  def hasWallCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[AtWord] =
     InAnAreaWord(d => addWallCells(ops, p => duplicateBaseCells(d)(p)))
 }

@@ -21,7 +21,7 @@ class DSLTests extends AnyFunSpec with Matchers {
   describe("The DSL") {
     describe("when asked to print a board") {
       it("should correctly print the constructed board") {
-        val effectiveBoard: Board = Board(
+        val effectiveBoard: BoardBuilder = BoardBuilder(
           Some(boardDimensions),
           Some(playableArea),
           Set(mover),
@@ -53,7 +53,7 @@ class DSLTests extends AnyFunSpec with Matchers {
 
     describe("when using the words for inserting multiple cells at the same time") {
       it("should correctly print the constructed board") {
-        val effectiveBoard: Board = Board(
+        val effectiveBoard: BoardBuilder = BoardBuilder(
           Some(boardDimensions),
           Some(playableArea),
           duplicateCells(OrientableCell(mover.orientation), mover.position),

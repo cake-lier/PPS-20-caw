@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.dsl.entities
 
-trait Board {
+trait BoardBuilder {
   val dimensions: Option[Dimensions]
 
   val playableArea: Option[PlayableArea]
@@ -18,8 +18,8 @@ trait Board {
   val wallCells: Set[Cell]
 }
 
-object Board {
-  private case class BoardImpl(
+object BoardBuilder {
+  private case class BoardBuilderImpl(
       dimensions: Option[Dimensions],
       playableArea: Option[PlayableArea],
       moverCells: Set[OrientableCell],
@@ -28,7 +28,7 @@ object Board {
       blockCells: Set[PushableCell],
       enemyCells: Set[Cell],
       wallCells: Set[Cell]
-  ) extends Board
+  ) extends BoardBuilder
 
   def apply(
       dimensions: Option[Dimensions] = None,
@@ -39,7 +39,7 @@ object Board {
       blockCells: Set[PushableCell] = Set.empty,
       enemyCells: Set[Cell] = Set.empty,
       wallCells: Set[Cell] = Set.empty
-  ): Board = BoardImpl(
+  ): BoardBuilder = BoardBuilderImpl(
     dimensions,
     playableArea,
     moverCells,
@@ -50,7 +50,7 @@ object Board {
     wallCells
   )
 
-  extension (board: Board) {
+  extension (board: BoardBuilder) {
     def copy(
         dimensions: Option[Dimensions] = board.dimensions,
         playableArea: Option[PlayableArea] = board.playableArea,
@@ -60,7 +60,7 @@ object Board {
         blockCells: Set[PushableCell] = board.blockCells,
         enemyCells: Set[Cell] = board.enemyCells,
         wallCells: Set[Cell] = board.wallCells
-    ): Board = apply(
+    ): BoardBuilder = apply(
       dimensions,
       playableArea,
       moverCells,
