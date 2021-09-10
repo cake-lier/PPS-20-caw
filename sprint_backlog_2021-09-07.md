@@ -43,11 +43,11 @@ Realizzare la struttura base del gioco standalone e del DSL.
         </tr>
         <tr>
             <td>Visualizzazione contenuto file livello</td>
-            <td></td>
+            <td>Yuqi Sun</td>
             <td>10</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>10</td>
+            <td>10</td>
+            <td>9</td>
             <td></td>
             <td></td>
             <td></td>
@@ -71,7 +71,7 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>5</td>
             <td>4</td>
             <td>2</td>
-            <td></td>
+            <td>0</td>
             <td></td>
             <td></td>
             <td></td>
