@@ -38,18 +38,18 @@ object LevelSelection {
     rowCons1.setPercentHeight(2.5)
     rowCons2.setPercentHeight(10.0)
 
-    var col = 1
-    var row = 0
+    val coords = (for {
+      row <- LazyList.from(0, 2)
+      col <- 1 to 10
+    } yield (col, row)).iterator
+
     (1 to numFiles).foreach(i => {
+      val (col, row) = coords.next()
+      if (row >= 6) {
+        scrollablePane.getRowConstraints.addAll(rowCons1, rowCons2)
+        scrollPane.setVmax(1) // allow scrolling
+      }
       scrollablePane.add(LevelButton(i).innerComponent, col, row)
-      if (col + 1 > 10) {
-        col = 1
-        row += 2
-        if (row >= 6) {
-          scrollablePane.getRowConstraints.addAll(rowCons1, rowCons2)
-          scrollPane.setVmax(1) // allow scrolling
-        }
-      } else col += 1
     })
 
   }
