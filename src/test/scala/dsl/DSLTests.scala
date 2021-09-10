@@ -8,8 +8,6 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 import java.io.ByteArrayOutputStream
-import java.io.File
-import java.nio.file.{Files, Paths}
 
 class DSLTests extends AnyFunSpec with Matchers {
   private val boardDimensions: Dimensions = Dimensions(30, 40)
@@ -186,6 +184,11 @@ class DSLTests extends AnyFunSpec with Matchers {
       }
     }
 
+    import java.util.stream.Collectors
+    import java.io.{File, InputStreamReader, BufferedReader, InputStream}
+    import java.nio.file.{Files, Paths}
+    import scala.util.Using
+
     describe("when asked to save a board to file") {
       it("should produce the correct file") {
         val fileName: String = "level.json"
@@ -203,7 +206,9 @@ class DSLTests extends AnyFunSpec with Matchers {
           hasWallCell at (wall.position.x, wall.position.y)
           saveIt(path)
         }
-        Files.readString(Paths.get(path)) shouldBe Files.readString(Paths.get(ClassLoader.getSystemResource(fileName).toURI))
+        Using(new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(fileName)))) { r =>
+          Files.readString(Paths.get(path)) shouldBe r.lines.collect(Collectors.joining(System.lineSeparator))
+        }
         Files.delete(Paths.get(path))
       }
     }
