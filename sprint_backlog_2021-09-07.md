@@ -95,7 +95,7 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>2</td>
             <td>2</td>
             <td>0</td>
-            <td>0</td>
+            <td></td>
             <td></td>
             <td></td>
             <td></td>
@@ -108,7 +108,7 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>9</td>
             <td>9</td>
             <td>8</td>
-            <td></td>
+            <td>7</td>
             <td></td>
             <td></td>
             <td></td>
