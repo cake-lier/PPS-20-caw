@@ -3,6 +3,7 @@ package it.unibo.pps.caw.dsl.entities
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
+/** Tests for the [[BoardBuilder]] trait. */
 class BoardBuilderTests extends AnyFunSpec with Matchers {
   private val position: Position = Position(1, 2)
   private val dimensions: Dimensions = Dimensions(10, 20)

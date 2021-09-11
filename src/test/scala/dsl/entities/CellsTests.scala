@@ -3,6 +3,7 @@ package it.unibo.pps.caw.dsl.entities
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
+/** Tests for the [[Cell]] trait and all its subtypes. */
 class CellsTests extends AnyFunSpec with Matchers {
   private val position: Position = Position(1, 2)
 

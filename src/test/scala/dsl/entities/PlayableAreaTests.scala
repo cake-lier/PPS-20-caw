@@ -3,6 +3,7 @@ package it.unibo.pps.caw.dsl.entities
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
+/** Tests for the [[PlayableArea]] trait. */
 class PlayableAreaTests extends AnyFunSpec with Matchers {
   describe("A playable area") {
     describe("when first created") {

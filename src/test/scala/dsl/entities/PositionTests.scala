@@ -3,6 +3,7 @@ package it.unibo.pps.caw.dsl.entities
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
+/** Tests for the [[Position]] trait. */
 class PositionTests extends AnyFunSpec with Matchers {
   describe("A position object") {
     describe("when first created") {

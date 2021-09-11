@@ -9,6 +9,7 @@ import org.scalatest.matchers.should.Matchers
 
 import java.io.ByteArrayOutputStream
 
+/** Tests for all the DSL operations, even when wrongly used. */
 class DSLTests extends AnyFunSpec with Matchers {
   private val boardDimensions: Dimensions = Dimensions(30, 40)
   private val playableAreaDimensions: Dimensions = Dimensions(10, 20)
@@ -206,6 +207,7 @@ class DSLTests extends AnyFunSpec with Matchers {
           hasWallCell at (wall.position.x, wall.position.y)
           saveIt(path)
         }
+        // see https://github.com/openfaas/templates/issues/158
         Using(new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(fileName)))) { r =>
           Files.readString(Paths.get(path)) shouldBe r.lines.collect(Collectors.joining(System.lineSeparator))
         }
@@ -214,21 +216,23 @@ class DSLTests extends AnyFunSpec with Matchers {
     }
   }
 
-  private def duplicateCells[A <: Cell](cellBuilder: Position => A, position: Position): Set[A] =
+  /* Duplicates a given cell given a function for building it and the needed properties. */
+  private def duplicateCells[A <: Cell](builder: Position => A, position: Position): Set[A] =
     Set.from(for {
       x <- 0 until cellsArea.width
       y <- 0 until cellsArea.height
-    } yield cellBuilder(Position(position.x + x, position.y + y)))
+    } yield builder(Position(position.x + x, position.y + y)))
 
+  /* Uses the DSL in a standard way so as to repeat with different parameters the use of the DSL operations. */
   private def buildBoardWithDSL(
-      boardDimensions: Option[Dimensions] = Some(boardDimensions),
-      playableArea: Option[PlayableArea] = Some(playableArea),
-      mover: OrientableCell = mover,
-      generator: OrientableCell = generator,
-      rotator: RotatableCell = rotator,
-      block: PushableCell = block,
-      enemy: Cell = enemy,
-      wall: Cell = wall
+    boardDimensions: Option[Dimensions] = Some(boardDimensions),
+    playableArea: Option[PlayableArea] = Some(playableArea),
+    mover: OrientableCell = mover,
+    generator: OrientableCell = generator,
+    rotator: RotatableCell = rotator,
+    block: PushableCell = block,
+    enemy: Cell = enemy,
+    wall: Cell = wall
   ): Unit = {
     board {
       boardDimensions.foreach(d => withDimensions(d.width, d.height))
