@@ -1,6 +1,12 @@
 package it.unibo.pps.caw.controller
 
+import it.unibo.pps.caw.model.Deserializer
+import it.unibo.pps.caw.model.Level
 import it.unibo.pps.caw.view.View
+
+import java.io.File
+import scala.io.Source
+import scala.util.{Using, Success, Failure}
 
 /** The Controller of a game session.
  *
@@ -41,8 +47,26 @@ sealed trait GameController {
 object GameController {
 
   private final class GameControllerImpl(view: View) extends GameController {
+    val deserializer = Deserializer
 
-    def loadLevel(index: Int): Unit = ???
+    def loadLevel(index: Int): Unit = {
+      val files: List[File] = File(ClassLoader.getSystemResource("levels/").toURI)
+                          .listFiles(_.getName.endsWith(".json")).toList
+
+      val stringLevel: String = Using(Source.fromFile(files(index - 1)))(_.mkString) match {
+        case Success(v) => v
+        case Failure(e) => throw IllegalArgumentException("There is no level of index " + index)
+      }
+
+      val level: Level = deserializer.deserializeLevel(stringLevel) match {
+        case Right(level) => {
+          view.drawLevel(level)
+          level
+        }
+        case Left(e) => throw e
+      }
+
+    }
 
     def startUpdates(): Unit = ???
     def pauseUpdates(): Unit = ???
