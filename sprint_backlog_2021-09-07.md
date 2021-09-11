@@ -93,9 +93,9 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>Deserializzazione file del livello</td>
             <td>Lorenzo Gardini</td>
             <td>2</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>2</td>
+            <td>0</td>
+            <td>0</td>
             <td></td>
             <td></td>
             <td></td>
@@ -103,11 +103,11 @@ Realizzare la struttura base del gioco standalone e del DSL.
         </tr>
         <tr>
             <td>Struttura del model</td>
-            <td></td>
+            <td>Lorenzo Gardini</td>
             <td>10</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>9</td>
+            <td>9</td>
+            <td>8</td>
             <td></td>
             <td></td>
             <td></td>
