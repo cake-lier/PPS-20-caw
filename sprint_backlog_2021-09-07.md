@@ -31,12 +31,12 @@ Realizzare la struttura base del gioco standalone e del DSL.
         </tr>
         <tr>
             <td>Controller gioco</td>
-            <td></td>
+            <td>Elena Rughi</td>
             <td>5</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>5</td>
+            <td>5</td>
+            <td>5</td>
+            <td>4</td>
             <td></td>
             <td></td>
             <td></td>
