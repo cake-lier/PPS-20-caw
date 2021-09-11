@@ -50,8 +50,11 @@ object GameController {
     val deserializer = Deserializer
 
     def loadLevel(index: Int): Unit = {
-      val files: List[File] = File(ClassLoader.getSystemResource("levels/").toURI)
-                          .listFiles(_.getName.endsWith(".json")).toList
+//      val files: List[File] = File(ClassLoader.getSystemResource("levels/").toURI)
+//                          .listFiles(_.getName.endsWith(".json")).toList
+
+      val files: List[File] = File(getClass.getClassLoader.getResource("levels/").toURI)
+                                .listFiles(_.getName.endsWith(".json")).toList
 
       val stringLevel: String = Using(Source.fromFile(files(index - 1)))(_.mkString) match {
         case Success(v) => v

@@ -23,7 +23,7 @@ class GameControllerTests extends AnyFunSpec with Matchers {
 
         val t : ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withOut(t){
-          val levelFile: File = File(ClassLoader.getSystemResource("levels/level1.json").toURI)
+          val levelFile: File = File(getClass.getClassLoader.getResource("levels/level1.json").toURI)
           val target: String = Using(Source.fromFile(levelFile))(_.mkString).get
           println(target)
         }
