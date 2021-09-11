@@ -19,12 +19,12 @@ Realizzare la struttura base del gioco standalone e del DSL.
         <tr>
             <td rowspan="8">Creazione di un gioco standalone con i livelli di default</td>
             <td>Controller applicazione</td>
-            <td></td>
+            <td>Matteo Castellucci</td>
             <td>5</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>5</td>
+            <td>5</td>
+            <td>5</td>
+            <td>5</td>
             <td></td>
             <td></td>
             <td></td>
@@ -72,10 +72,10 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>4</td>
             <td>2</td>
             <td>0</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Selezione livelli</td>
@@ -84,10 +84,10 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>3</td>
             <td>2</td>
             <td>0</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Deserializzazione file del livello</td>
@@ -95,11 +95,11 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>2</td>
             <td>2</td>
             <td>0</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Struttura del model</td>
@@ -121,31 +121,31 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>8</td>
             <td>4</td>
             <td>2</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Serializzatore per i livelli</td>
-            <td></td>
+            <td>Matteo Castellucci</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>3</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>View per mostrare i risultati del DSL</td>
             <td></td>
             <td>7</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>7</td>
+            <td>7</td>
+            <td>7</td>
+            <td>7</td>
             <td></td>
             <td></td>
             <td></td>
