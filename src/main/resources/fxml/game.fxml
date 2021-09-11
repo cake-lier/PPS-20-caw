@@ -44,5 +44,4 @@
         </GridPane.margin>
     </Button>
    <Button fx:id="nextButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Next" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-   <Pane prefHeight="200.0" prefWidth="200.0" />
 </GridPane>
