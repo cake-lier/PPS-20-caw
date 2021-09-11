@@ -26,7 +26,7 @@ enum BoardBuilderError(val message: String) {
   /** The error which arises when it has been given to a [[it.unibo.pps.caw.dsl.entities.Cell]] a
     * [[it.unibo.pps.caw.dsl.entities.Position]] outside the [[it.unibo.pps.caw.dsl.entities.Board]] bounds.
     */
-  case CellOutsideBounds extends BoardBuilderError("A cell was place outside the level bounds")
+  case CellOutsideBounds extends BoardBuilderError("A cell was placed outside the level bounds")
 
   /** The error which arises when the [[it.unibo.pps.caw.dsl.entities.Dimensions]] of the [[it.unibo.pps.caw.dsl.entities.Board]]
     * have been left unset.

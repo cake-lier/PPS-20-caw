@@ -18,7 +18,7 @@ trait BoardDisplayers {
     ops += (b => {
       ErrorChecker.checkBuilderData(b) match {
         case Right(v) => action(v)
-        case Left(e)  => Console.err.print(e.message)
+        case Left(l)  => Console.err.print(l.map(_.message).mkString("\n"))
       }
       b
     })

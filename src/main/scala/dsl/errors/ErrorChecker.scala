@@ -1,6 +1,9 @@
 package it.unibo.pps.caw.dsl.errors
 
 import it.unibo.pps.caw.dsl.entities.*
+import cats.data.ValidatedNel
+import cats.implicits.given
+import cats.syntax.apply.given
 
 /** Contains the method for checking the correctness of a [[BoardBuilder]] entity.
   *
@@ -16,50 +19,64 @@ object ErrorChecker {
   private object Checkers {
 
     /* Checks if a Dimensions instance contains only positive values. */
-    def checkNonNegativeDimensions(dimensions: Dimensions): Either[BoardBuilderError, Unit] =
-      Either.cond(dimensions.width >= 0 && dimensions.height >= 0, (), BoardBuilderError.NegativeDimensions)
+    private def checkNonNegativeDimensions(dimensions: Dimensions): ValidatedNel[BoardBuilderError, Unit] =
+      if (dimensions.width >= 0 && dimensions.height >= 0) ().validNel else BoardBuilderError.NegativeDimensions.invalidNel
 
     /* Checks if a Position instance contains only positive values. */
-    def checkNonNegativePosition(position: Position): Either[BoardBuilderError, Unit] =
-      Either.cond(position.x >= 0 && position.y >= 0, (), BoardBuilderError.NegativePosition)
+    private def checkNonNegativePosition(position: Position): ValidatedNel[BoardBuilderError, Unit] =
+      if (position.x >= 0 && position.y >= 0) ().validNel else BoardBuilderError.NegativePosition.invalidNel
 
     /* Checks whether the given PlayableArea is fully contained into the given Dimensions. */
-    def checkAreaInBounds(bounds: Dimensions, area: PlayableArea): Either[BoardBuilderError, Unit] =
-      Either.cond(
-        area.position.x + area.dimensions.width <= bounds.width && area.position.y + area.dimensions.height <= bounds.height,
-        (),
-        BoardBuilderError.PlayableAreaNotInBounds
-      )
+    private def checkAreaInBounds(bounds: Dimensions, area: PlayableArea): ValidatedNel[BoardBuilderError, Unit] =
+      if (area.position.x + area.dimensions.width <= bounds.width && area.position.y + area.dimensions.height <= bounds.height) {
+        ().validNel
+      } else {
+        BoardBuilderError.PlayableAreaNotInBounds.invalidNel
+      }
 
     /* Checks if there are no duplicate Position instances between the given Positions. */
-    def checkNonDuplicatePositions(positions: Seq[Position]): Either[BoardBuilderError, Unit] = {
-      Either.cond(positions.toSet.size == positions.size, (), BoardBuilderError.SamePositionForDifferentCells)
+    private def checkNonDuplicatePositions(positions: Seq[Position]): ValidatedNel[BoardBuilderError, Unit] = {
+      if (positions.toSet.size == positions.size) ().validNel else BoardBuilderError.SamePositionForDifferentCells.invalidNel
     }
 
     /* Checks if the given Position is contained into the given Dimensions bounds. */
-    def checkPositionInBounds(position: Position, bounds: Dimensions): Either[BoardBuilderError, Unit] =
-      Either.cond(position.x <= bounds.width && position.y <= bounds.height, (), BoardBuilderError.CellOutsideBounds)
+    private def checkPositionInBounds(position: Position, bounds: Dimensions): ValidatedNel[BoardBuilderError, Unit] =
+      if (position.x <= bounds.width && position.y <= bounds.height) {
+        ().validNel
+      } else {
+        BoardBuilderError.CellOutsideBounds.invalidNel
+      }
 
     /* Checks whether the given Dimensions are set or not. */
-    def checkSetDimensions(dimensions: Option[Dimensions]): Either[BoardBuilderError, Dimensions] =
-      dimensions.toRight(BoardBuilderError.DimensionsUnset)
+    private def checkSetDimensions(dimensions: Option[Dimensions]): ValidatedNel[BoardBuilderError, Dimensions] =
+      dimensions.toRight(BoardBuilderError.DimensionsUnset).toValidatedNel
 
     /* Checks whether the given PlayableArea is set or not. */
-    def checkSetPlayableArea(area: Option[PlayableArea]): Either[BoardBuilderError, PlayableArea] =
-      area.toRight(BoardBuilderError.PlayableAreaUnset)
+    private def checkSetPlayableArea(area: Option[PlayableArea]): ValidatedNel[BoardBuilderError, PlayableArea] =
+      area.toRight(BoardBuilderError.PlayableAreaUnset).toValidatedNel
 
-    /* Utility method for composing a collection of Eithers with Unit as a Right type. The Eithers are composed in a way such
-     * that, if a Left is found while traversing, is then returned. If only Rights are found, a Unit inside a Right is returned.
-     */
-    def composeEithers[A](check: A => Either[BoardBuilderError, Unit], items: Iterable[A]): Either[BoardBuilderError, Unit] =
-      items
-        .map(check)
-        .foldLeft[Either[BoardBuilderError, Unit]](Right(())) { (a, e) =>
-          for {
-            _ <- a
-            error <- e.left
-          } yield error
-        }
+    /* Checks whether or not the given board Dimensions are valid. */
+    def checkBoardDimensions(dimensions: Option[Dimensions]): ValidatedNel[BoardBuilderError, Dimensions] =
+      checkSetDimensions(dimensions).andThen(d => checkNonNegativeDimensions(d).map(_ => d))
+
+    /* Checks whether or not the given PlayableArea is valid. */
+    def checkPlayableArea(
+      playableArea: Option[PlayableArea],
+      boardDimensions: Dimensions
+    ): ValidatedNel[BoardBuilderError, PlayableArea] =
+      checkSetPlayableArea(playableArea).andThen(a =>
+        checkNonNegativeDimensions(a.dimensions)
+          .product(checkNonNegativePosition(a.position))
+          .andThen(_ => checkAreaInBounds(boardDimensions, a))
+          .map(_ => a)
+      )
+
+    /* Checks whether or not the given cells Positions are valid. */
+    def checkCellPositions(positions: Seq[Position], boardDimensions: Dimensions): ValidatedNel[BoardBuilderError, Unit] =
+      checkNonDuplicatePositions(positions)
+        .product(positions.map(checkNonNegativePosition(_)).sequence_)
+        .andThen(_ => positions.map(checkPositionInBounds(_, boardDimensions)).sequence_)
+
   }
 
   import Checkers.*
@@ -75,33 +92,35 @@ object ErrorChecker {
     *   an [[scala.util.Either]] with the built [[Board]] if the check succeedes or with the first encountered
     *   [[BoardBuilderError]] if the check fails
     */
-  def checkBuilderData(builder: BoardBuilder): Either[BoardBuilderError, Board] = {
-    val positions: Seq[Position] =
-      builder.moverCells.map(_.position).toSeq ++
-        builder.generatorCells.map(_.position) ++
-        builder.rotatorCells.map(_.position) ++
-        builder.blockCells.map(_.position) ++
-        builder.enemyCells.map(_.position) ++
-        builder.wallCells.map(_.position)
-    for {
-      d <- checkSetDimensions(builder.dimensions)
-      _ <- checkNonNegativeDimensions(d)
-      a <- checkSetPlayableArea(builder.playableArea)
-      _ <- checkNonNegativeDimensions(a.dimensions)
-      _ <- checkNonNegativePosition(a.position)
-      _ <- checkAreaInBounds(d, a)
-      _ <- checkNonDuplicatePositions(positions)
-      _ <- composeEithers(checkNonNegativePosition(_), positions)
-      _ <- composeEithers(checkPositionInBounds(_, d), positions)
-    } yield Board(
-      d,
-      a,
-      builder.moverCells,
-      builder.generatorCells,
-      builder.rotatorCells,
-      builder.blockCells,
-      builder.enemyCells,
-      builder.wallCells
-    )
+  def checkBuilderData(builder: BoardBuilder): Either[Seq[BoardBuilderError], Board] = {
+    checkBoardDimensions(builder.dimensions)
+      .andThen(d =>
+        (
+          checkPlayableArea(builder.playableArea, d),
+          checkCellPositions(
+            builder.moverCells.map(_.position).toSeq ++
+              builder.generatorCells.map(_.position) ++
+              builder.rotatorCells.map(_.position) ++
+              builder.blockCells.map(_.position) ++
+              builder.enemyCells.map(_.position) ++
+              builder.wallCells.map(_.position),
+            d
+          )
+        ).mapN((a, _) => (d, a))
+      )
+      .map(t =>
+        Board(
+          t._1,
+          t._2,
+          builder.moverCells,
+          builder.generatorCells,
+          builder.rotatorCells,
+          builder.blockCells,
+          builder.enemyCells,
+          builder.wallCells
+        )
+      )
+      .leftMap(_.toList)
+      .toEither
   }
 }
