@@ -1,6 +1,6 @@
 package it.unibo.pps.caw
 
-import it.unibo.pps.caw.view.AppView
+import view.AppView
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
 
