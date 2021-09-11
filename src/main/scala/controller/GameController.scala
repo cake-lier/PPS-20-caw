@@ -5,8 +5,9 @@ import it.unibo.pps.caw.model.Level
 import it.unibo.pps.caw.view.View
 
 import java.io.File
+import java.util
 import scala.io.Source
-import scala.util.{Using, Success, Failure}
+import scala.util.{Failure, Success, Using}
 
 /** The Controller of a game session.
  *
@@ -54,7 +55,7 @@ object GameController {
 //                          .listFiles(_.getName.endsWith(".json")).toList
 
       val files: List[File] = File(getClass.getClassLoader.getResource("levels/").toURI)
-                                .listFiles(_.getName.endsWith(".json")).toList
+                                .listFiles(_.getName.endsWith(".json")).toList.sorted
 
       val stringLevel: String = Using(Source.fromFile(files(index - 1)))(_.mkString) match {
         case Success(v) => v
