@@ -3,8 +3,7 @@ package view.game
 
 import view.ViewComponent
 import view.ViewComponent.AbstractViewComponent
-
-import it.unibo.pps.caw.FakeCell
+import it.unibo.pps.caw.model.{Cell, EnemyCell, GeneratorCell, Level, MoverCell, Orientation, PlayableArea, Position}
 import javafx.fxml.FXML
 import javafx.geometry.{HPos, Insets}
 import javafx.scene.control.Button
@@ -42,10 +41,18 @@ object Game {
 
     private def createBoard(): Unit = {
       val board: GridPane = Board(
-        8,
-        8,
-        Set(new FakeCell("push_right", 5, 3), new FakeCell("enemy", 6, 6))
+        Level(
+          10,
+          10,
+          Set(
+            MoverCell(Position(2,2),true, Orientation.Right),
+            MoverCell(Position(6,3),false,Orientation.Top),
+            GeneratorCell(Position(1,2),true,Orientation.Right),
+            GeneratorCell(Position(7,5),false,Orientation.Top),
+            EnemyCell(Position(7,7), false)),
+          PlayableArea(Position(1,1),5,5))
       ).innerComponent
+
       GridPane.setHalignment(board, HPos.CENTER)
       GridPane.setMargin(board, new Insets(25, 0, 25, 0))
       innerComponent.add(board, 2, 3, 3, 1)

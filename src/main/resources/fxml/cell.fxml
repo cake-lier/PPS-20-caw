@@ -2,5 +2,5 @@
 
 <?import javafx.scene.image.*?>
 
-<ImageView fx:id="cell" xmlns:fx="http://javafx.com/fxml/1"/>
+<ImageView/>
 

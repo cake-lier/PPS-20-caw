@@ -104,4 +104,4 @@ case class BlockCell(position: Position, playable: Boolean,  allowedMovement: Al
 /** Represent the wall [[Cell]]
  * @param position: the coordinates of the cell
  * @param playable: if the cell is playable (is in the [[PlayableArea]])*/
-case class WallCel(position: Position, playable: Boolean) extends Cell
+case class WallCell(position: Position, playable: Boolean) extends Cell

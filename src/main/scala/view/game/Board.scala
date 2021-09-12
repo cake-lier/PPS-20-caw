@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.view.game
 
-import it.unibo.pps.caw.FakeCell
+import it.unibo.pps.caw.model.{Level, Position, WallCell}
 import it.unibo.pps.caw.view.ViewComponent
 import it.unibo.pps.caw.view.ViewComponent.AbstractViewComponent
 import javafx.geometry.Pos
@@ -10,31 +10,21 @@ import javafx.scene.layout.{GridPane, Pane}
 
 object Board {
 
-  def apply(
-      gameWidht: Int,
-      gameHeight: Int,
-      cells: Set[FakeCell]
-  ): ViewComponent[GridPane] =
-    new BoardImpl(gameWidht, gameHeight, cells)
+  def apply(levelInfo:Level): ViewComponent[GridPane] = new BoardImpl(levelInfo)
 
   private final class BoardImpl(
-      gameWidth: Int,
-      gameHeight: Int,
-      cells: Set[FakeCell]
-  ) extends AbstractViewComponent[GridPane](fxmlFileName = "board.fxml") {
+    levelInfo: Level) extends AbstractViewComponent[GridPane](fxmlFileName = "board.fxml") with DragAndDrop {
 
     override val innerComponent: GridPane = loader.load[GridPane]
-    innerComponent.setGridLinesVisible(true)
-    private val wallRowCol: Int = 2
-    private val numRow: Int = gameHeight + wallRowCol
-    private val numCol: Int = gameWidth + wallRowCol
+    private val defaultImage:String = "default.png"
+    private val playableImage:String = "play_area.png"
     private val boardHeight: Double = 500
-    private val boardWidth: Double = boardHeight / numRow * numCol
-    private val cellSize = boardHeight / numRow
+    private val boardWidth: Double = boardHeight / levelInfo.width * levelInfo.height
+    private val cellSize = boardHeight / levelInfo.width
     setUpBoard()
     placePavement()
     placeWall()
-    placeCells()
+    drawLevel()
 
     private def setUpBoard(): Unit = {
       innerComponent.setPrefHeight(boardHeight)
@@ -42,83 +32,34 @@ object Board {
     }
 
     private def placePavement(): Unit = {
-      for (x <- 1 until numCol - 1; y <- 1 until numRow - 1) {
-        val pane = new Pane() {
-          getChildren.add(new ImageView(new Image("imgs/default.png")) {
-            setFitWidth(cellSize)
-            setFitHeight(cellSize)
-          })
-        }
-        addDropHandling(pane)
-        innerComponent.add(pane, x, y)
+      for (x <- 1 until levelInfo.height - 1; y <- 1 until levelInfo.width - 1) {
+        innerComponent.add(TileView(defaultImage, cellSize).innerComponent, x, y)
       }
     }
 
     private def placeWall(): Unit = {
-      for (x <- 0 until numCol; y <- Set(0, numRow - 1)) {
-        innerComponent.add(Cell("wall.png", cellSize, x, y).innerComponent, x, y)
+      for (x <- 0 until levelInfo.height; y <- Set(0, levelInfo.width - 1)) {
+        innerComponent.add(CellView(WallCell(Position(x, y), false), cellSize).innerComponent, x, y)
       }
-      for (x <- Set(0, numCol - 1); y <- 1 until numRow - 1) {
-        innerComponent.add(Cell("wall.png", cellSize, x, y).innerComponent, x, y)
-        innerComponent.add(new Pane(), x, y)
+      for (x <- Set(0, levelInfo.height - 1); y <- 1 until levelInfo.width - 1) {
+        innerComponent.add(CellView(WallCell(Position(x, y), false), cellSize).innerComponent, x, y)
       }
     }
 
-    import javafx.scene.input.DragEvent
-    import javafx.scene.input.Dragboard
-    import javafx.scene.input.TransferMode
-
-    private def addDropHandling(tile: Pane): Unit = {
-      tile.setOnDragDropped(e => {
-        val db = e.getDragboard
-        if (db.hasString) {
-          val coordinates = db.getString.split("\\s+")
-          removeAndReplace(tile, coordinates(0).toDouble, coordinates(1).toDouble, coordinates(2))
-          e.setDropCompleted(true);
-          e.consume()
+    private def drawLevel() = {
+      val playableArea = levelInfo.playableArea
+      for (x <- playableArea.position.x to playableArea.width; y <- playableArea.position.y to playableArea.height) {
+        val node = TileView(playableImage, cellSize).innerComponent
+        addDropFeature(node, innerComponent)
+        innerComponent.add(node, x, y)
+      }
+      levelInfo.cells.foreach(c => {
+        val node = CellView(c, cellSize).innerComponent
+        if (c.playable) {
+          addDragFeature(node)
         }
+        innerComponent.add(node, c.position.x, c.position.y)
       })
-
-      tile.setOnDragOver(e => {
-        if (!e.getGestureSource.equals(tile) && e.getDragboard.hasString) {
-          e.acceptTransferModes(TransferMode.MOVE)
-          e.consume()
-        }
-      })
-    }
-
-    private def removeAndReplace(tile: Pane, x: Double, y: Double, background: String): Unit = {
-      val node = innerComponent.getChildren
-        .stream()
-        .filter(n =>
-          (GridPane.getRowIndex(n).toDouble == y && GridPane.getColumnIndex(n).toDouble == x && n.isInstanceOf[ImageView])
-        )
-        .findAny()
-        .get()
-      innerComponent.getChildren.remove(node)
-
-      val newX = GridPane.getColumnIndex(tile).toDouble
-      val newY = GridPane.getRowIndex(tile).toDouble
-      innerComponent.add(
-        Cell(
-          background,
-          cellSize,
-          newX,
-          newY
-        ).innerComponent,
-        newX.toInt,
-        newY.toInt
-      )
-    }
-
-    private def placeCells() = {
-      cells.foreach(f =>
-        innerComponent.add(
-          Cell(f.typeOfCell + ".png", cellSize, f.xCoor, f.yCoor).innerComponent,
-          f.xCoor,
-          f.yCoor
-        )
-      )
     }
   }
 }
