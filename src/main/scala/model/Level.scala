@@ -13,7 +13,7 @@ object Area{
   private case class AreaImpl(width: Int, height: Int, cells: Set[Cell]) extends Area
   def apply(width: Int, height: Int, cells: Set[Cell]): Area = AreaImpl(width, height, cells)
 }
-/** Represent the area in witch one the player can move [[Cell]] on it*/
+/** Represent the area in whitch one the player can move [[Cell]] on it*/
 trait PlayableArea extends Area{
   /** top-left area coordiantes*/
   def position: Position
