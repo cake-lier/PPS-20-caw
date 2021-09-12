@@ -1,0 +1,36 @@
+{
+    "width": 50,
+    "height": 60,
+    "playableArea": {
+        "width": 20,
+        "height": 30,
+        "x": 1,
+        "y": 2
+    },
+    "cells": {
+        "mover": [
+            {
+                "orientation": "right",
+                "x": 1,
+                "y": 2
+            },
+            {
+                "orientation": "top",
+                "x": 0,
+                "y": 0
+            }
+        ],
+        "generator": [
+            {
+                "orientation": "right",
+                "x": 1,
+                "y": 2
+            },
+            {
+                "orientation": "top",
+                "x": 0,
+                "y": 0
+            }
+        ]
+    }
+}
