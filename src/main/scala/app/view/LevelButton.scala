@@ -1,7 +1,6 @@
-package it.unibo.pps.caw
-package view
+package it.unibo.pps.caw.app.view
 
-import view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.app.view.ViewComponent.AbstractViewComponent
 
 import javafx.fxml.FXML
 import javafx.scene.control.Button
@@ -10,9 +9,10 @@ import javafx.scene.control.Button
 object LevelButton {
 
   /** Creates a level button component.
-   *
-   *  @param number Used to represent the level in the selection menu.
-   */
+    *
+    * @param number
+    *   Used to represent the level in the selection menu.
+    */
   def apply(number: Int): ViewComponent[Button] = new LevelButtonImpl(number)
 
   private final class LevelButtonImpl(number: Int) extends AbstractViewComponent[Button]("level_button.fxml") {

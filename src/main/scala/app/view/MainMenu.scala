@@ -1,5 +1,4 @@
-package it.unibo.pps.caw
-package view
+package it.unibo.pps.caw.app.view
 
 import ViewComponent.AbstractViewComponent
 import javafx.fxml.FXML

@@ -1,8 +1,9 @@
-package it.unibo.pps.caw
+package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.view.AppView
 import scalafx.application.JFXApp3
 import scalafx.application.JFXApp3.PrimaryStage
+
+import it.unibo.pps.caw.app.view.AppView
 
 /** Main class of the application. */
 object Main extends JFXApp3 {

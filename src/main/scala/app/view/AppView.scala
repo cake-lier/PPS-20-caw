@@ -1,5 +1,4 @@
-package it.unibo.pps.caw
-package view
+package it.unibo.pps.caw.app.view
 
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene

@@ -1,7 +1,6 @@
-package it.unibo.pps.caw
-package view
+package it.unibo.pps.caw.app.view
 
-import view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.app.view.ViewComponent.AbstractViewComponent
 
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, ScrollPane}
@@ -31,7 +30,8 @@ object LevelSelection {
 
     // Read levels
     val numFiles = new File(ClassLoader.getSystemResource("levels/").toURI)
-                        .listFiles(_.getName.endsWith(".json")).length
+      .listFiles(_.getName.endsWith(".json"))
+      .length
 
     // Draw level buttons
     val rowCons1, rowCons2 = RowConstraints()
