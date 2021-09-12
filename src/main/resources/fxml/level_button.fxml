@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<Button xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+        fx:id="levelButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity">
+    <GridPane.margin>
+        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+    </GridPane.margin>
+    <font>
+        <Font size="14.0" />
+    </font>
+</Button>

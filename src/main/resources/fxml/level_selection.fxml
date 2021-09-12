@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<GridPane fx:id="levelSelectionGridPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0"
+          prefWidth="1080.0" styleClass="background" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/11.0.2"
+          xmlns:fx="http://javafx.com/fxml/1">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="15.0" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="15.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="17.5" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="5.0" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="5.0" />
+        <RowConstraints percentHeight="7.5" />
+        <RowConstraints percentHeight="20.0" />
+    </rowConstraints>
+    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Choose a level"
+           GridPane.columnIndex="1" GridPane.columnSpan="10" GridPane.rowIndex="1">
+        <font>
+            <Font size="18.0" />
+        </font>
+    </Label>
+
+    <ScrollPane fx:id="scrollPane" maxHeight="Infinity" maxWidth="Infinity"
+                GridPane.columnIndex="0" GridPane.columnSpan="12" GridPane.rowIndex="3" GridPane.rowSpan="5"
+                vbarPolicy="NEVER" hbarPolicy="NEVER" hmax="-Infinity" hmin="-Infinity"
+                fitToHeight="true" vmax="-Infinity"
+                >
+            <content>
+                <GridPane fx:id="scrollablePane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                          prefHeight="720.0" prefWidth="1080">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="15.0" />
+                        <ColumnConstraints percentWidth="7.0" />
+                        <ColumnConstraints percentWidth="7.0" />
+                        <ColumnConstraints percentWidth="7.0" />
+                        <ColumnConstraints percentWidth="7.0" />
+                        <ColumnConstraints percentWidth="7.0" />
+                        <ColumnConstraints percentWidth="7.0" />
+                        <ColumnConstraints percentWidth="7.0" />
+                        <ColumnConstraints percentWidth="7.0" />
+                        <ColumnConstraints percentWidth="7.0" />
+                        <ColumnConstraints percentWidth="7.0" />
+                        <ColumnConstraints percentWidth="15.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints percentHeight="10.0" />
+                        <RowConstraints percentHeight="2.5" />
+                        <RowConstraints percentHeight="10.0" />
+                        <RowConstraints percentHeight="2.5" />
+                        <RowConstraints percentHeight="10.0" />
+                    </rowConstraints>
+                </GridPane>
+            </content>
+    </ScrollPane>
+
+    <Button fx:id="backButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Back"
+            GridPane.columnIndex="1" GridPane.columnSpan="10" GridPane.rowIndex="9">
+        <GridPane.margin>
+            <Insets left="100.0" right="100.0" />
+        </GridPane.margin>
+        <font>
+            <Font size="14.0" />
+        </font>
+    </Button>
+</GridPane>
