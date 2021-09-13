@@ -1,0 +1,31 @@
+@font-face {
+    font-family: Minecraftia;
+    src: url('../fonts/Minecraftia.ttf');
+}
+
+.background {
+    -fx-background-image: url('../imgs/background.png');
+}
+
+.button {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+    -fx-border-style:  dashed;
+    -fx-padding: 0;
+    -fx-font-size: 18.0;
+    -fx-font-family: 'Minecraftia';
+}
+
+.label {
+    -fx-font-family: 'Minecraftia';
+    -fx-text-fill: white;
+}
+
+.scroll-pane{
+   -fx-background-color:transparent;
+}
+
+.scroll-pane .viewport {
+       -fx-background-color: transparent;
+}
