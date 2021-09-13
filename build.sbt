@@ -4,6 +4,8 @@ version := "0.1"
 
 scalaVersion := "3.0.2"
 
+scalacOptions ++= Seq("-language:implicitConversions")
+
 idePackagePrefix := Some("it.unibo.pps.caw")
 
 lazy val osName = System.getProperty("os.name") match {

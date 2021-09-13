@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.app.model
+package it.unibo.pps.caw.game.model
 
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject

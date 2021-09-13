@@ -1,23 +1,23 @@
-package it.unibo.pps.caw.app.view
+package it.unibo.pps.caw
 
 /** Wraps another view component.
   *
   * This trait creates modular view components that can be re-instantied multiple times without specifying how to initialize them
   * since it incapsulates all the logic needed to create and style view components. The instantiation is made through its
   * companion object.
+ *
   * @tparam A
   *   the type of component wrapped
   */
 trait ViewComponent[A] {
 
   /** Returns the inner JavaFX component wrapped by this [[ViewComponent]]. */
-  def innerComponent: A
+  val innerComponent: A
 }
 
 /** Factory for new [[ViewComponent]] instances. */
 object ViewComponent {
   import javafx.fxml.FXMLLoader
-  import scala.language.implicitConversions
 
   /** A wrapper for JavaFX components instantied throught FXML files.
     *

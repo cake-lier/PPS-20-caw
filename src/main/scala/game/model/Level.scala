@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.app.model
+package it.unibo.pps.caw.game.model
 
 /** Represent the concept of a game area */
 trait Area {

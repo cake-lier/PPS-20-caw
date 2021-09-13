@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.app.model
+package it.unibo.pps.caw.game.model
 
 /** Represent a cell of the game */
 trait Cell {

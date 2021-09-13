@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.app.model
+package it.unibo.pps.caw.game.model
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers

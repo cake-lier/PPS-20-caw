@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.app.model
+package it.unibo.pps.caw.game.model
 
 /** Represent the coordinates of an item in the game */
 trait Position {
