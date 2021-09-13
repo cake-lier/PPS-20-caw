@@ -1,7 +1,6 @@
-package it.unibo.pps.caw.gameController
+package it.unibo.pps.caw.app.controller
 
-import it.unibo.pps.caw.controller.GameController
-import it.unibo.pps.caw.view.View
+import it.unibo.pps.caw.app.controller.GameController
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -9,9 +8,10 @@ import java.io.{ByteArrayOutputStream, File}
 import scala.io.Source
 import scala.util.Using
 
+import it.unibo.pps.caw.app.model._
+
 class GameControllerTests extends AnyFunSpec with Matchers {
-  private val view: View = View()
-  private val gameController: GameController = GameController(view)
+  private val gameController: GameController = GameController(GameView(), ApplicationController())
 
   describe("The game controller"){
     describe("when asked to load a level"){
@@ -21,14 +21,21 @@ class GameControllerTests extends AnyFunSpec with Matchers {
           gameController.loadLevel(1)
         }
 
-        val t : ByteArrayOutputStream = ByteArrayOutputStream()
-        Console.withOut(t){
-          val levelFile: File = File(getClass.getClassLoader.getResource("levels/level1.json").toURI)
-          val target: String = Using(Source.fromFile(levelFile))(_.mkString).get
-          println(target)
+        val target: ByteArrayOutputStream = ByteArrayOutputStream()
+        Console.withOut(target){
+          println(Level(
+            50,
+            60,
+            Set(
+              MoverCell(Position(1,2),true, Orientation.Right),
+              MoverCell(Position(0,0),false,Orientation.Top),
+              GeneratorCell(Position(1,2),true,Orientation.Right),
+              GeneratorCell(Position(0,0),false,Orientation.Top)),
+            PlayableArea(Position(1,2),20,30)))
         }
 
-        out.toString shouldBe t.toString
+        out.toString shouldBe target.toString
+
       }
 
       it("should produce IllegalArgumentException when given wrong level index (too low)"){

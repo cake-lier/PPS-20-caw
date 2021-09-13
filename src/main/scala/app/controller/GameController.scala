@@ -1,8 +1,7 @@
-package it.unibo.pps.caw.controller
+package it.unibo.pps.caw.app.controller
 
-import it.unibo.pps.caw.model.Deserializer
-import it.unibo.pps.caw.model.Level
-import it.unibo.pps.caw.view.View
+
+import it.unibo.pps.caw.app.model.{Deserializer, Level}
 
 import java.io.File
 import java.util
@@ -47,22 +46,20 @@ sealed trait GameController {
 
 object GameController {
 
-  private final class GameControllerImpl(view: View) extends GameController {
-    val deserializer = Deserializer
+  private final class GameControllerImpl(view: GameView, parentController: ParentGameController) extends GameController {
 
     def loadLevel(index: Int): Unit = {
 //      val files: List[File] = File(ClassLoader.getSystemResource("levels/").toURI)
 //                          .listFiles(_.getName.endsWith(".json")).toList
-
       val files: List[File] = File(getClass.getClassLoader.getResource("levels/").toURI)
-                                .listFiles(_.getName.endsWith(".json")).toList.sorted
+        .listFiles(_.getName.endsWith(".json")).toList
 
-      val stringLevel: String = Using(Source.fromFile(files(index - 1)))(_.mkString) match {
+      val stringLevel: String = Using(Source.fromFile(files(index - 1)))(_.getLines.mkString) match {
         case Success(v) => v
         case Failure(e) => throw IllegalArgumentException("There is no level of index " + index)
       }
 
-      val level: Level = deserializer.deserializeLevel(stringLevel) match {
+      val level: Level = Deserializer.deserializeLevel(stringLevel) match {
         case Right(level) => {
           view.drawLevel(level)
           level
@@ -81,7 +78,34 @@ object GameController {
     def back(): Unit = ???
   }
 
-  def apply(view: View): GameController = new GameControllerImpl(view)
+  def apply(view: GameView, parentController: ParentGameController): GameController
+              = GameControllerImpl(view, parentController)
+
+}
+
+/* Mock objects */
+
+class GameView {
+
+  def drawLevel(level: Level): Unit = println(level)
+
+}
+
+trait ParentGameController { // Parent controller of GameController
+
+}
+
+trait ApplicationController extends ParentGameController {
+
+}
+
+object ApplicationController {
+
+  private final class ApplicationControllerImpl() extends ApplicationController {
+
+  }
+
+  def apply(): ApplicationController = ApplicationControllerImpl()
 
 }
 
