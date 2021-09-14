@@ -3,9 +3,13 @@ package view.game
 
 import javafx.scene.image.Image
 
+/** Provides all the images necessary to draw a board.
+  *
+  * The singleton provides a map that returns its [[Image]] given the enum key [[Images.CellsImage]].
+  */
 object Images {
   import CellsImage._
-  val images:Map[CellsImage, Image] = Map(
+  val images: Map[CellsImage, Image] = Map(
     (Block, createImage(Block.getType)),
     (BlockHorizontal, createImage(BlockHorizontal.getType)),
     (BlockVertical, createImage(BlockVertical.getType)),
@@ -25,7 +29,8 @@ object Images {
     (PlayAreaTile, createImage(PlayAreaTile.getType))
   )
 
-  enum CellsImage(cellType: String){
+  /** Represents all the possible cells. */
+  enum CellsImage(cellType: String) {
     case Enemy extends CellsImage("enemy")
     case RotatorRight extends CellsImage("rotator_right")
     case RotatorLeft extends CellsImage("rotator_left")
@@ -43,11 +48,13 @@ object Images {
     case GeneratorDown extends CellsImage("generator_down")
     case DefaultTile extends CellsImage("default")
     case PlayAreaTile extends CellsImage("play_area")
+
     /** Getter of [[CellsImage]] value
-     *
-     * @return the value as string */
+      * @return
+      *   the value as string
+      */
     def getType = cellType
   }
 
-  private def createImage(imageName:String): Image = new Image("imgs/" + imageName + ".png")
+  private def createImage(imageName: String): Image = new Image("imgs/" + imageName + ".png")
 }

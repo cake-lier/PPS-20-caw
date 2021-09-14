@@ -8,6 +8,7 @@ import javafx.scene.input.{ClipboardContent, Dragboard, TransferMode}
 import javafx.scene.Node
 import javafx.scene.layout.GridPane
 
+/** Provides the necessary functions to drag and drop an ImageView. */
 trait DragAndDrop {
 
   def addDragFeature(node: ImageView) = {
@@ -39,6 +40,14 @@ trait DragAndDrop {
   }
 }
 
+/** Removes a cell from the gridpane and replace it with same cell but in a new position.
+  * @param gridPane
+  *   the [[GridPane]] that containes the [[CellView]]
+  * @param tile
+  *   the [[TileView]] where the [[cell]] was dropped
+  * @param cell
+  *   the [[CellView]] to be removed and re-inserted in the [[gridPane]] with a new position
+  */
 private def removeAndReplace(gridPane: GridPane, tile: Node, cell: AnyRef): Unit = {
   val node = gridPane.getChildren
     .stream()

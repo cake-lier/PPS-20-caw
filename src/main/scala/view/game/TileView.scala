@@ -5,12 +5,18 @@ import it.unibo.pps.caw.view.ViewComponent.AbstractViewComponent
 import javafx.scene.layout.Pane
 import javafx.scene.image.{Image, ImageView}
 
+/** Factory for new [[CellView]] instance. */
 object TileView {
-  def apply(tileImage:Image): ViewComponent[Pane] =
+
+  /** Creates a new cell component.
+    * @param tileImage
+    *   the [[Image]] this [[TileView]] will have
+    */
+  def apply(tileImage: Image): ViewComponent[Pane] =
     new CellImpl(tileImage)
 
-  private final class CellImpl(tileImage: Image)
-    extends ViewComponent[Pane]{
+  /** Implementation of the TileView. */
+  private final class CellImpl(tileImage: Image) extends ViewComponent[Pane] {
 
     override val innerComponent = new Pane()
     private val image: ImageView = new ImageView()

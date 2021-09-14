@@ -12,18 +12,30 @@ import javafx.scene.layout.{GridPane}
 
 object Game {
 
-  /** Creates a main menu component. */
+  /** Creates a Game component. */
   def apply(): ViewComponent[GridPane] = new GameImpl()
 
-  //add new board with a new level
+  /** Adds a new board to the Game.
+    * @param gameView
+    *   the [[Game]] in which will be add the [[boardView]]
+    * @param boardView
+    *   the board to be inserted into the [[gameView]]
+    */
   def addNewBoard(gameView: GridPane, boardView: GridPane) = {
+    val board = gameView.getChildren
+      .stream()
+      .filter(n => GridPane.getRowIndex(n).equals(3) && GridPane.getColumnIndex(n).equals(2))
+      .findAny()
+    if (board.isPresent) {
+      gameView.getChildren.remove(board.get())
+    }
     GridPane.setValignment(boardView, VPos.CENTER)
     GridPane.setHalignment(boardView, HPos.CENTER)
     GridPane.setMargin(boardView, new Insets(25, 0, 25, 0))
     gameView.add(boardView, 2, 3, 3, 1)
   }
 
-  /** Implementation of the MainMenu. */
+  /** Implementation of the Game. */
   private final class GameImpl extends AbstractViewComponent[GridPane]("game.fxml") {
     @FXML
     var resetButton: Button = _
@@ -37,8 +49,6 @@ object Game {
     var nextButton: Button = _
 
     override val innerComponent: GridPane = loader.load[GridPane]
-    innerComponent.setGridLinesVisible(true)
-    createBoard()
 
     //buttons controls
     resetButton.setOnMouseClicked(_ => println("RESET CLICKED"))
@@ -47,21 +57,5 @@ object Game {
     backToLevelsButton.setOnMouseClicked(_ => println("BACK CLICKED"))
     nextButton.setVisible(true)
     nextButton.setOnMouseClicked(_ => println("NEXT CLICKED"))
-
-    private def createBoard(): Unit = {
-      val board: GridPane = Board(
-        Level(
-          10,
-          10,
-          Set(
-            MoverCell(Position(1,4),true, Orientation.Right),
-            EnemyCell(Position(4,4), false)),
-          PlayableArea(Position(1,1),8,8))
-      ).innerComponent
-      GridPane.setValignment(board, VPos.CENTER)
-      GridPane.setHalignment(board, HPos.CENTER)
-      GridPane.setMargin(board, new Insets(25, 0, 25, 0))
-      innerComponent.add(board, 2, 3, 3, 1)
-    }
   }
 }
