@@ -16,10 +16,10 @@ object Area {
   def apply(width: Int, height: Int, cells: Set[Cell]): Area = AreaImpl(width, height, cells)
 }
 
-/** Represent the area in witch one the player can move [[Cell]] on it */
+/** Represent the area in which one the player can move [[Cell]] on it */
 trait PlayableArea extends Area {
 
-  /** top-left area coordiantes */
+  /** top-left area coordinates */
   def position: Position
 }
 
