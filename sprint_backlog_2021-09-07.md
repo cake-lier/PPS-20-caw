@@ -152,3 +152,6 @@ Realizzare la struttura base del gioco standalone e del DSL.
         </tr>
     </tbody>
 </table>
+
+#### Sprint result:
+L'obiettivo è stato raggiunto. Il DSL, a meno di un'interfaccia grafica opzionale, è stato interamente realizzato ed è perciò pronto per essere utilizzato e dimostrato. Per quanto riguarda il gioco standalone, è stata costruita la sua struttura base così come preventivato. Ora è possibile vedere il menu principale, visualizzare le sue pagine e lanciare un'interfaccia di gioco prototipo, che al momento è vuota. 
