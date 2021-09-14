@@ -1,63 +1,64 @@
 package it.unibo.pps.caw.view.game
 
-import it.unibo.pps.caw.model._
+import it.unibo.pps.caw.model.*
 import it.unibo.pps.caw.view.ViewComponent
 import it.unibo.pps.caw.view.ViewComponent.AbstractViewComponent
 import javafx.fxml.FXML
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{ClipboardContent, TransferMode}
+import it.unibo.pps.caw.view.game.Images.CellsImage
+import javafx.scene.layout.GridPane
+
+import scala.collection.immutable.HashMap
 
 
 object CellView {
-  def apply(cell: Cell, size: Double): ViewComponent[ImageView] =
-    new CellImpl(cell, size)
+  def apply(cell: Cell, gridPane: GridPane): ViewComponent[ImageView] =
+    new CellImpl(cell, gridPane)
 
-  private class CellImpl(cell: Cell, size: Double) extends AbstractViewComponent[ImageView]("cell.fxml") {
-    override val innerComponent: ImageView = loader.load[ImageView]
-    innerComponent.setFitWidth(size)
-    innerComponent.setFitHeight(size)
+  private class CellImpl(cell: Cell, gridPane: GridPane) extends ViewComponent[ImageView] {
+    override val innerComponent: ImageView = new ImageView()
+    innerComponent.fitWidthProperty().bind(gridPane.heightProperty().divide(gridPane.getRowConstraints.size()))
+    innerComponent.setPreserveRatio(true)
     getImage()
 
     private def getImage(): Unit = {
+      import Images.CellsImage._
       cell match {
         case RotatorCell(_, _, rotationDirection) =>
-          setImage(CellTypes.Rotator.getType.toLowerCase())
-          innerComponent.setScaleX(rotationDirection match {
-            case RotationDirection.Right => 0
-            case RotationDirection.Left => -1
-          })
+          rotationDirection match {
+            case RotationDirection.Right => setComponentImage(RotatorRight)
+            case RotationDirection.Left => setComponentImage(RotatorLeft)
+          }
         case GeneratorCell(_, _, orientation) =>
-          setImage(CellTypes.Generator.getType.toLowerCase())
-          setImageViewOrientation(orientation)
+          orientation match {
+            case Orientation.Right => setComponentImage(GeneratorRight)
+            case Orientation.Down => setComponentImage(GeneratorDown)
+            case Orientation.Left => setComponentImage(GeneratorLeft)
+            case Orientation.Top => setComponentImage(GeneratorTop)
+          }
         case EnemyCell(_, _) =>
-          setImage(CellTypes.Enemy.getType.toLowerCase())
+          setComponentImage(Enemy)
         case MoverCell(_, _, orientation) =>
-          setImage(CellTypes.Mover.getType.toLowerCase())
-          setImageViewOrientation(orientation)
+          orientation match {
+            case Orientation.Right => setComponentImage(MoverRight)
+            case Orientation.Down => setComponentImage(MoverDown)
+            case Orientation.Left => setComponentImage(MoverLeft)
+            case Orientation.Top => setComponentImage(MoverTop)
+          }
         case BlockCell(_, _, allowedMovement) =>
           allowedMovement match {
-            case AllowedMovement.Both => setImage(CellTypes.Block.getType.toLowerCase())
-            case AllowedMovement.Vertical => setImage("slide")
-            case AllowedMovement.Horizontal =>
-              setImage("slide")
-              innerComponent.setRotate(90)
+            case AllowedMovement.Both => setComponentImage(Block)
+            case AllowedMovement.Vertical => setComponentImage(BlockHorizontal)
+            case AllowedMovement.Horizontal => setComponentImage(BlockVertical)
           }
         case WallCell(_, _) =>
-          setImage(CellTypes.Wall.getType.toLowerCase)
+          setComponentImage(Wall)
       }
     }
 
-    private def setImageViewOrientation(orientation: Orientation): Unit = {
-      innerComponent.setRotate(orientation match {
-        case Orientation.Right => 0
-        case Orientation.Down => 90
-        case Orientation.Left => 180
-        case Orientation.Top => 270
-      })
-    }
-
-    private def setImage(cellType: String):Unit = {
-      innerComponent.setImage(new Image("imgs/" + cellType + ".png"))
+    private def setComponentImage(cellType:CellsImage):Unit = {
+      innerComponent.setImage(Images.images(cellType))
     }
   }
 }

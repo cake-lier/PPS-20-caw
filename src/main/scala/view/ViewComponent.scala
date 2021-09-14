@@ -15,7 +15,6 @@ trait ViewComponent[A] {
 /** Factory for new [[ViewComponent]] instances. */
 object ViewComponent {
   import javafx.fxml.FXMLLoader
-  import scala.language.implicitConversions
 
   /** A wrapper for JavaFX components instantied throught FXML files.
    *

@@ -10,8 +10,6 @@ import javafx.scene.layout.GridPane
 
 trait DragAndDrop {
 
-  private val position = new DataFormat("position")
-
   def addDragFeature(node:ImageView) = {
     node.setOnDragDetected(e => {
       val db = node.startDragAndDrop(TransferMode.MOVE)

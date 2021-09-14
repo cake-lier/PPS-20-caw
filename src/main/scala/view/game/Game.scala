@@ -3,9 +3,10 @@ package view.game
 
 import view.ViewComponent
 import view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.model.{Cell, EnemyCell, GeneratorCell, Level, MoverCell, Orientation, PlayableArea, Position}
+
+import it.unibo.pps.caw.model.*
 import javafx.fxml.FXML
-import javafx.geometry.{HPos, Insets}
+import javafx.geometry.{HPos, Insets, VPos}
 import javafx.scene.control.Button
 import javafx.scene.layout.{GridPane, Pane}
 
@@ -13,6 +14,14 @@ object Game {
 
   /** Creates a main menu component. */
   def apply(): ViewComponent[GridPane] = new GameImpl()
+
+  //add new board with a new level
+  def addNewBoard(gameView: GridPane, boardView: GridPane) = {
+    GridPane.setValignment(boardView, VPos.CENTER)
+    GridPane.setHalignment(boardView, HPos.CENTER)
+    GridPane.setMargin(boardView, new Insets(25, 0, 25, 0))
+    gameView.add(boardView, 2, 3, 3, 1)
+  }
 
   /** Implementation of the MainMenu. */
   private final class GameImpl extends AbstractViewComponent[GridPane]("game.fxml") {
@@ -45,14 +54,11 @@ object Game {
           10,
           10,
           Set(
-            MoverCell(Position(2,2),true, Orientation.Right),
-            MoverCell(Position(6,3),false,Orientation.Top),
-            GeneratorCell(Position(1,2),true,Orientation.Right),
-            GeneratorCell(Position(7,5),false,Orientation.Top),
-            EnemyCell(Position(7,7), false)),
-          PlayableArea(Position(1,1),5,5))
+            MoverCell(Position(1,4),true, Orientation.Right),
+            EnemyCell(Position(4,4), false)),
+          PlayableArea(Position(1,1),8,8))
       ).innerComponent
-
+      GridPane.setValignment(board, VPos.CENTER)
       GridPane.setHalignment(board, HPos.CENTER)
       GridPane.setMargin(board, new Insets(25, 0, 25, 0))
       innerComponent.add(board, 2, 3, 3, 1)
