@@ -1,6 +1,5 @@
 package it.unibo.pps.caw.app.controller
 
-
 import it.unibo.pps.caw.app.model.{Deserializer, Level}
 
 import java.io.File
@@ -63,23 +62,16 @@ object GameController {
       currentIndex = Some(index)
       val files: List[File] = File(ClassLoader.getSystemResource("levels/").toURI)
                           .listFiles(_.getName.endsWith(".json")).toList
-      if (index < 1 || index > files.length) throw IllegalArgumentException("There is no level of index " + index)
-      loadLevel(files(index-1))
+      if (index < 1 || index > files.length)
+        Console.err.println("Level index out of bounds")
+      else
+        loadLevel(files(index-1))
     }
 
     def loadLevel(file: File): Unit = {
-
-      val stringLevel: String = Using(Source.fromFile(file))(_.getLines.mkString) match {
-        case Success(v) => v
-        case Failure(e) => throw e
-      }
-
-      currentLevel = Deserializer.deserializeLevel(stringLevel) match {
-        case Right(level) => {
-          view.drawLevel(level)
-          Some(level)
-        }
-        case Left(e) => throw e
+      Loader.loadLevel(file) match {
+        case Success(l) => view.drawLevel(l)
+        case _ => view.showError("Could not load level")
       }
     }
 
@@ -89,11 +81,11 @@ object GameController {
 
     def reset(): Unit = currentLevel match {
       case Some(l) => view.drawLevel(l)
-      case _ => throw NoSuchElementException("There is no loaded level to reset")
+      case _ => Console.err.println("There is no loaded level to reset")
     }
 
     def next(): Unit = currentIndex match {
-      case Some(i) => loadLevel(i + 1) /* how do we manage next() after last level? do we just not show the button? */
+      case Some(i) => loadLevel(i + 1)
       case _ => back() // This case is executed when playing a non-default level
     }
 
@@ -107,14 +99,17 @@ object GameController {
 }
 
 object Test extends App{
-  GameController(GameView(), ApplicationController()).next()
+  GameController( GameView(), ApplicationController()).loadLevel(4)
 }
+
 
 /* Mock objects */
 
 class GameView {
 
   def drawLevel(level: Level): Unit = println(level)
+
+  def showError(msg: String): Unit = ???
 
 }
 
@@ -129,7 +124,7 @@ trait ApplicationController extends ParentGameController {
 object ApplicationController {
 
   private final class ApplicationControllerImpl() extends ApplicationController {
-    override def toMenu(): Unit = ???
+    override def toMenu(): Unit = println("[ApplicationController] toMenu()")
   }
 
   def apply(): ApplicationController = ApplicationControllerImpl()

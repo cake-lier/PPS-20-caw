@@ -15,12 +15,22 @@ class GameControllerTests extends AnyFunSpec with Matchers {
 
   describe("The game controller"){
     describe("when asked to load a level"){
-      it("should produce IllegalArgumentException when given wrong level index (too low)"){
-        assertThrows[IllegalArgumentException](gameController.loadLevel(0))
+      it("should produce error message when given wrong level index (too low)"){
+        val err: ByteArrayOutputStream = ByteArrayOutputStream()
+        Console.withErr(err) {
+          gameController.loadLevel(0)
+        }
+
+        err.toString().trim shouldBe "Level index out of bounds"
       }
 
-      it("should produce IllegalArgumentException when given wrong level index (too high)"){
-        assertThrows[IllegalArgumentException](gameController.loadLevel(3))
+      it("should produce error message when given wrong level index (too high)"){
+        val err: ByteArrayOutputStream = ByteArrayOutputStream()
+        Console.withErr(err) {
+          gameController.loadLevel(4)
+        }
+
+        err.toString().trim shouldBe "Level index out of bounds"
       }
 
       /* This test passes, however GitHub automated testing fails it because
@@ -32,21 +42,15 @@ class GameControllerTests extends AnyFunSpec with Matchers {
           gameController.loadLevel(1)
         }
 
-        val target: ByteArrayOutputStream = ByteArrayOutputStream()
-        Console.withOut(target){
-          println(Level(
-            50,
-            60,
-            Set(
-              MoverCell(Position(1,2),true, Orientation.Right),
-              MoverCell(Position(0,0),false,Orientation.Top),
-              GeneratorCell(Position(1,2),true,Orientation.Right),
-              GeneratorCell(Position(0,0),false,Orientation.Top)),
-            PlayableArea(Position(1,2),20,30)))
-        }
-
-        out.toString shouldBe target.toString
-
+        out.toString.trim shouldBe Level(
+          50,
+          60,
+          Set(
+            MoverCell(Position(1,2),true, Orientation.Right),
+            MoverCell(Position(0,0),false,Orientation.Top),
+            GeneratorCell(Position(1,2),true,Orientation.Right),
+            GeneratorCell(Position(0,0),false,Orientation.Top)),
+          PlayableArea(Position(1,2),20,30)).toString
       }
     }
   }
