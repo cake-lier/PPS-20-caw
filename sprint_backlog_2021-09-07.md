@@ -49,9 +49,9 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>10</td>
             <td>9</td>
             <td>7</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>6</td>
+            <td>4</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Manipolazione del livello via GUI</td>
@@ -61,9 +61,9 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>10</td>
             <td>10</td>
             <td>10</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>7</td>
+            <td>4</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Menu principale</td>
