@@ -5,12 +5,8 @@ import it.unibo.pps.caw.view.ViewComponent
 import it.unibo.pps.caw.view.ViewComponent.AbstractViewComponent
 import javafx.fxml.FXML
 import javafx.scene.image.{Image, ImageView}
-import javafx.scene.input.{ClipboardContent, TransferMode}
 import it.unibo.pps.caw.view.game.Images.CellsImage
 import javafx.scene.layout.GridPane
-
-import scala.collection.immutable.HashMap
-
 
 object CellView {
   def apply(cell: Cell, gridPane: GridPane): ViewComponent[ImageView] =
@@ -20,9 +16,9 @@ object CellView {
     override val innerComponent: ImageView = new ImageView()
     innerComponent.fitWidthProperty().bind(gridPane.heightProperty().divide(gridPane.getRowConstraints.size()))
     innerComponent.setPreserveRatio(true)
-    getImage()
+    setImage()
 
-    private def getImage(): Unit = {
+    private def setImage(): Unit = {
       import Images.CellsImage._
       cell match {
         case RotatorCell(_, _, rotationDirection) =>

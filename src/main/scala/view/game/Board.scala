@@ -1,9 +1,8 @@
 package it.unibo.pps.caw.view.game
 
-import it.unibo.pps.caw.model.{Cell, Level, Position, WallCell}
+import it.unibo.pps.caw.model.{Cell, Level, Position}
 import it.unibo.pps.caw.view.ViewComponent
 import it.unibo.pps.caw.view.ViewComponent.AbstractViewComponent
-import javafx.geometry.Pos
 import javafx.fxml.FXML
 import Images.*
 import javafx.application.Platform
@@ -13,6 +12,7 @@ import javafx.scene.layout.{ColumnConstraints, GridPane, Pane, RowConstraints}
 object Board {
   def apply(levelInfo:Level): ViewComponent[GridPane] = new BoardImpl(levelInfo)
 
+  //TODO change to new type of cell
   def updateBoard(board:GridPane, updatedCells: Set[Cell]):Unit = {
     Platform.runLater(() => {
       val cells = board.getChildren.stream()
@@ -34,7 +34,6 @@ object Board {
     override val innerComponent: GridPane = loader.load[GridPane]
     private val boardHeight: Double = 500
     private val boardWidth: Double = (boardHeight / levelInfo.height)*levelInfo.width
-    private val cellSize = boardHeight / levelInfo.width
     setUpBoard()
     placePavement()
     placeWall()
@@ -42,9 +41,6 @@ object Board {
 
     private def setUpBoard(): Unit = {
       innerComponent.setPrefSize(boardWidth, boardHeight)
-      println(boardWidth)
-      println(boardHeight)
-      innerComponent.setGridLinesVisible(true)
       for (n <- 0 until levelInfo.width) {
         innerComponent.getColumnConstraints.add(new ColumnConstraints() {
           setPercentWidth(boardWidth/levelInfo.width)
@@ -84,8 +80,6 @@ object Board {
         if (c.playable) {
           addDragFeature(node)
         }
-        GridPane.setFillWidth(node, true)
-        GridPane.setFillHeight(node, true)
         innerComponent.add(node, c.position.x, c.position.y)
       })
     }

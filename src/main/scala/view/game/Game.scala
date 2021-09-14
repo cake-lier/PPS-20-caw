@@ -8,7 +8,7 @@ import it.unibo.pps.caw.model.*
 import javafx.fxml.FXML
 import javafx.geometry.{HPos, Insets, VPos}
 import javafx.scene.control.Button
-import javafx.scene.layout.{GridPane, Pane}
+import javafx.scene.layout.{GridPane}
 
 object Game {
 

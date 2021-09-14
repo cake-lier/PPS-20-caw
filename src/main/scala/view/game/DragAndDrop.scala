@@ -4,13 +4,13 @@ package view.game
 import it.unibo.pps.caw.model.Position
 import it.unibo.pps.caw.view.ViewComponent
 import javafx.scene.image.ImageView
-import javafx.scene.input.{ClipboardContent, DataFormat, Dragboard, TransferMode}
+import javafx.scene.input.{ClipboardContent, Dragboard, TransferMode}
 import javafx.scene.Node
 import javafx.scene.layout.GridPane
 
 trait DragAndDrop {
 
-  def addDragFeature(node:ImageView) = {
+  def addDragFeature(node: ImageView) = {
     node.setOnDragDetected(e => {
       val db = node.startDragAndDrop(TransferMode.MOVE)
       val content = new ClipboardContent()
@@ -20,7 +20,7 @@ trait DragAndDrop {
     });
   }
 
-  def addDropFeature(node:Node, gridPane: GridPane): Unit = {
+  def addDropFeature(node: Node, gridPane: GridPane): Unit = {
     node.setOnDragDropped(e => {
       val db = e.getDragboard
       if (db.hasImage) {
@@ -39,7 +39,7 @@ trait DragAndDrop {
   }
 }
 
-private def removeAndReplace(gridPane: GridPane, tile: Node, cell:AnyRef): Unit = {
+private def removeAndReplace(gridPane: GridPane, tile: Node, cell: AnyRef): Unit = {
   val node = gridPane.getChildren
     .stream()
     .filter(_.equals(cell))
