@@ -22,9 +22,9 @@ import scala.util.{Failure, Success, Using}
 sealed trait GameController {
 
   /** Loads deafult level to display it to the player.
-   *
-   * @param index Used to identify the desired level.
-   */
+    *
+    * @param index Identifies the level.
+    */
   def loadLevel(index: Int): Unit
 
   /** Loads level from file to display it to the player.
@@ -33,16 +33,25 @@ sealed trait GameController {
     */
   def loadLevel(file: File): Unit
 
-  /** Starts automatic execution of game steps */
+  /** Starts automatic execution of game steps
+    *
+    * Should be called when updates are paused or not yet started.
+    */
   def startUpdates(): Unit
 
-  /** Pauses automatic game steps */
+  /** Pauses automatic game steps
+    *
+    * Should be called while periodic updates are happening.
+    */
   def pauseUpdates(): Unit
 
   /** Executes one game step */
   def step(): Unit
 
-  /** Resets level */
+  /** Resets level
+    *
+    * Should be called only after level has been loaded.
+    */
   def reset(): Unit
 
   /** Go to next level if current level is a default one,
