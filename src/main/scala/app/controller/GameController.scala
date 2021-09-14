@@ -6,6 +6,7 @@ import java.io.File
 import java.nio.file.Path
 import java.util
 import java.util.NoSuchElementException
+import java.util.concurrent.{Executors, ScheduledExecutorService, ScheduledFuture, TimeUnit}
 import scala.io.Source
 import scala.util.{Failure, Success, Using}
 
@@ -54,9 +55,12 @@ sealed trait GameController {
 
 object GameController {
 
-  private final class GameControllerImpl(view: GameView, parentController: ParentGameController) extends GameController {
+  private final class GameControllerImpl(parentController: ParentGameController, view: GameView) extends GameController {
     private var currentLevel: Option[Level] = None
     private var currentIndex: Option[Int] = None
+
+    private final var scheduler: ScheduledExecutorService = Executors.newScheduledThreadPool(1)
+    private var updatesHandler: Option[ScheduledFuture[?]] = None
 
     def loadLevel(index: Int): Unit = {
       currentIndex = Some(index)
@@ -75,9 +79,26 @@ object GameController {
       }
     }
 
-    def startUpdates(): Unit = ???
-    def pauseUpdates(): Unit = ???
-    def step(): Unit = ???
+    def startUpdates(): Unit = {
+      updatesHandler match {
+        case Some(_) => Console.err.println("Updates are already happening")
+        case _ => updatesHandler = Some(scheduler.scheduleAtFixedRate(
+            new Runnable(){def run():Unit = step()}, 0, 1, TimeUnit.SECONDS))
+      }
+    }
+
+    def pauseUpdates(): Unit = updatesHandler match {
+      case Some(handler) => {
+        handler.cancel(false)
+        updatesHandler = None
+      }
+      case _ => Console.err.println("There is nothing to pause")
+    }
+
+    def step(): Unit = {
+      val currentBoard = Model.update()
+      view.drawGame(currentBoard)
+    }
 
     def reset(): Unit = currentLevel match {
       case Some(l) => view.drawLevel(l)
@@ -89,45 +110,51 @@ object GameController {
       case _ => back() // This case is executed when playing a non-default level
     }
 
-    def back(): Unit = parentController.toMenu()
+    def back(): Unit = {
+      parentController.toMenu()
+      scheduler.shutdown()
+    }
 
   }
 
-  def apply(view: GameView, parentController: ParentGameController): GameController
-              = GameControllerImpl(view, parentController)
+  def apply(parentController: ParentGameController, view: GameView): GameController
+  = GameControllerImpl(parentController, view)
 
-}
-
-object Test extends App{
-  GameController( GameView(), ApplicationController()).loadLevel(4)
 }
 
 
 /* Mock objects */
 
 class GameView {
-
   def drawLevel(level: Level): Unit = println(level)
+  def drawGame(game: Board): Unit = println("draw new step")
+  def showError(msg: String): Unit = println("[VIEW] error: " + msg)
+}
 
-  def showError(msg: String): Unit = ???
+trait Board { } //placeholder
+object Board {
+  private case class BoardImpl() extends Board
+  def apply(): Board = BoardImpl()
+}
 
+object Model {
+  def update(): Board = {
+    println("step")
+    Board()
+  }
+  def reset(): Unit = println("[MODEL] reset")
 }
 
 trait ParentGameController { // Parent controller of GameController
   def toMenu(): Unit
 }
 
-trait ApplicationController extends ParentGameController {
-
-}
+trait ApplicationController extends ParentGameController { }
 
 object ApplicationController {
-
   private final class ApplicationControllerImpl() extends ApplicationController {
     override def toMenu(): Unit = println("[ApplicationController] toMenu()")
   }
-
   def apply(): ApplicationController = ApplicationControllerImpl()
-
 }
 
