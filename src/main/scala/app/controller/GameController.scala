@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.app.controller
 
 import it.unibo.pps.caw.app.model.{Deserializer, Level}
+import it.unibo.pps.caw.app.controller.errors.GameControllerError
 
 import java.io.File
 import java.nio.file.Path
@@ -76,7 +77,7 @@ object GameController {
       val files: List[File] = File(ClassLoader.getSystemResource("levels/").toURI)
                           .listFiles(_.getName.endsWith(".json")).toList
       if (index < 1 || index > files.length)
-        Console.err.println("Level index out of bounds")
+        Console.err.println(GameControllerError.LevelIndexOutOfBounds.message)
       else
         loadLevel(files(index-1))
     }
@@ -84,13 +85,13 @@ object GameController {
     def loadLevel(file: File): Unit = {
       Loader.loadLevel(file) match {
         case Success(l) => view.drawLevel(l)
-        case _ => view.showError("Could not load level")
+        case _ => view.showError(GameControllerError.LevelNotLoaded.message)
       }
     }
 
     def startUpdates(): Unit = {
       updatesHandler match {
-        case Some(_) => Console.err.println("Updates are already happening")
+        case Some(_) => Console.err.println(GameControllerError.RunningUpdates.message)
         case _ => updatesHandler = Some(scheduler.scheduleAtFixedRate(
             new Runnable(){def run():Unit = step()}, 0, 1, TimeUnit.SECONDS))
       }
@@ -101,7 +102,7 @@ object GameController {
         handler.cancel(false)
         updatesHandler = None
       }
-      case _ => Console.err.println("There is nothing to pause")
+      case _ => Console.err.println(GameControllerError.NothingToPause.message)
     }
 
     def step(): Unit = {
@@ -111,7 +112,7 @@ object GameController {
 
     def reset(): Unit = currentLevel match {
       case Some(l) => view.drawLevel(l)
-      case _ => Console.err.println("There is no loaded level to reset")
+      case _ => Console.err.println(GameControllerError.NothingToReset.message)
     }
 
     def next(): Unit = currentIndex match {
@@ -130,7 +131,6 @@ object GameController {
   = GameControllerImpl(parentController, view)
 
 }
-
 
 /* Mock objects */
 
