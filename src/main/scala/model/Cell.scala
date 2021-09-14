@@ -8,6 +8,7 @@ sealed trait Cell {
   val position: Position
 
 }
+/** Represent a [[Cell]] during the setup phase, a [[Cell]] could be playable*/
 sealed trait SetupCell extends Cell {
 
   /** if the [[Cell]] is movable by the player (is in the [[PlayableArea]] */
@@ -101,6 +102,16 @@ object EnumHelper {
     RotationDirection.values.find(_.getDirection == stringRotationDirection)
 }
 
+object CellConverter {
+  def fromSetup(setupCell: SetupCell) = setupCell match {
+    case SetupEnemyCell(position, _)                      => EnemyCell(position)
+    case SetupWallCell(position, _)                       => WallCell(position)
+    case SetupRotatorCell(position, rotationDirection, _) => RotatorCell(position, rotationDirection)
+    case SetupMoverCell(position, orientation, _)         => MoverCell(position, orientation)
+    case SetupGeneratorCell(position, orientation, _)     => GeneratorCell(position, orientation)
+    case SetupBlockCell(position, movement, _)            => BlockCell(position, movement)
+  }
+}
 
 /** Represent the rotator [[Cell]]
   * @param position:
