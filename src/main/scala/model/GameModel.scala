@@ -1,32 +1,57 @@
-package it.unibo.pps.caw
 package model
 
+import engine.GameEngine
+import it.unibo.pps.caw.model._
+
+/** Trait representing the model of the game. Changing the state creates another [[GameModel]] instance */
 sealed trait GameModel {
-  def update(oldCellCordinates: Position, newCellCoordinates: Position): GameModel
+
+  /** Update the position of a cell during setup phase
+    * @param oldCellCordinates:
+    *   previuos [[Position]] for previuos [[Cell]]
+    * @param newCellCoordinates:
+    *   new [[Position]] for [[Cell]]
+    * @return
+    *   updated instance of [[GameModel]]
+    */
+  def updateCell(oldCellCordinates: Position, newCellCoordinates: Position): GameModel
+
+  /** Calculate the next state of the current [[Board]]
+   * @return
+    *   updated instance of [[GameModel]]
+    */
+  def update(): GameModel
+
+  /** Set the current board as the initial [[Board]]
+   * @return
+    *   resetted instance of [[GameModel]]
+    */
   def reset: GameModel
+
+  /** Get the current [[Board]] 
+   * @return the current [[Board]] */
   val currentBoard: Board
+  /** Get the initial [[SetupBoard]]
+   * @return the initial [[SetupBoard]]*/
   val initialBoard: SetupBoard
 }
 
+/** Companion object for trai [[GameModel]]*/
 object GameModel {
   private case class GameModelImpl(initialBoard: SetupBoard, optionCurrentBoard: Option[Board]) extends GameModel {
     override val currentBoard: Board = optionCurrentBoard.getOrElse(
       Board(
         initialBoard.cells
-          .map(_ match {
-            case SetupEnemyCell(position, _)                      => EnemyCell(position)
-            case SetupWallCell(position, _)                       => WallCell(position)
-            case SetupRotatorCell(position, rotationDirection, _) => RotatorCell(position, rotationDirection)
-            case SetupMoverCell(position, orientation, _)         => MoverCell(position, orientation)
-            case SetupGeneratorCell(position, orientation, _)     => GeneratorCell(position, orientation)
-          })
+          .map(CellConverter.fromSetup)
           .toSet
       )
     )
 
-    override def reset: GameModel = GameModel(initialBoard, None)
+    override def update(): GameModel = GameModel(initialBoard,currentBoard)
 
-    override def update(oldCellCordinates: Position, newCellCoordinates: Position): GameModel = {
+    override def reset: GameModel = GameModel(initialBoard)
+
+    override def updateCell(oldCellCordinates: Position, newCellCoordinates: Position): GameModel = {
       val updatedCell: Cell = currentBoard.cells
         .find(_.position == oldCellCordinates)
         .map(_ match {
@@ -40,8 +65,8 @@ object GameModel {
       GameModelImpl(initialBoard, Some(Board(currentBoard.cells.filter(_.position != oldCellCordinates).toSet + updatedCell)))
     }
   }
-  def apply(initialBoard: SetupBoard, optionCurrentBoard: Option[Board]): GameModel =
-    GameModelImpl(initialBoard: SetupBoard, optionCurrentBoard)
+  def apply(initialBoard: SetupBoard, optionCurrentBoard: Board): GameModel =
+    GameModelImpl(initialBoard: SetupBoard, Some(optionCurrentBoard))
 
   def apply(initialBoard: SetupBoard): GameModel =
     GameModelImpl(initialBoard: SetupBoard, None)
