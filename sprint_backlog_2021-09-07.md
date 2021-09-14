@@ -37,9 +37,9 @@ Realizzare la struttura base del gioco standalone e del DSL.
             <td>5</td>
             <td>5</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>2</td>
+            <td>1</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Visualizzazione contenuto file livello</td>
