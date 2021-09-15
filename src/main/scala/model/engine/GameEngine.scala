@@ -20,7 +20,7 @@ import scala.util.matching.Regex
 /** Engine of game rules */
 sealed trait GameEngine {
 
-  /** Calculate the next [[Board]] starting from the current [[Board]] and the [[Cell]] to be updated*/
+  /** Calculate the next [[Board]] starting from the current [[Board]] and the [[Cell]] to be updated */
   def nextState(board: Board, cell: Cell): Board
 }
 
@@ -32,10 +32,9 @@ object GameEngine {
       Using(Source.fromResource("cellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
 
     def nextState(board: Board, cell: Cell): Board =
-      PrologParser.deserializeBoard({
-        println(engine(PrologParser.createSerializedPredicate(board, cell)));
+      PrologParser.deserializeBoard(
         extractTerm(engine(PrologParser.createSerializedPredicate(board, cell)), 3).toString
-      })
+      )
   }
   def apply(): GameEngine = GameEngineImpl()
 }
