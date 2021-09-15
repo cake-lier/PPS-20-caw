@@ -2,7 +2,7 @@ package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.game.GameView
 import it.unibo.pps.caw.menu.MainMenuView
-import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.{AudioManager, Track, ViewComponent}
 import javafx.scene.layout.Pane
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
@@ -40,14 +40,17 @@ object ApplicationView {
     stage.title = "Cells at Work"
     scene.root.value = visibleView.innerComponent
     stage.scene = scene
+    AudioManager.play(Track.Menu)
     stage.show()
 
     override def showGame(): Unit = {
+      AudioManager.play(Track.Game)
       visibleView = GameView(controller, scene)
       scene.root.value = visibleView.innerComponent
     }
 
     override def showMainMenu(): Unit = {
+      AudioManager.play(Track.Menu)
       visibleView = MainMenuView(controller, scene)
       scene.root.value = visibleView.innerComponent
     }

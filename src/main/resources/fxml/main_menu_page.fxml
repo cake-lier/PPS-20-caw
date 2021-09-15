@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
+<?import it.unibo.pps.caw.app.controller.ClickButton?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" styleClass="background" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints percentWidth="20.0" />
@@ -29,15 +30,15 @@
         <RowConstraints percentHeight="10.0" />
         <RowConstraints percentHeight="10.0" />
     </rowConstraints>
-    <Button fx:id="playButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Play"
-            GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-    <Button fx:id="editorButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Level Editor"
+    <ClickButton fx:id="playButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Play"
+                 GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+    <ClickButton fx:id="editorButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Level Editor"
             GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-    <Button fx:id="loadButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Load a level"
+    <ClickButton fx:id="loadButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Load a level"
             GridPane.columnIndex="1" GridPane.rowIndex="7"/>
-    <Button fx:id="settingsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Settings"
+    <ClickButton fx:id="settingsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Settings"
             GridPane.columnIndex="1" GridPane.rowIndex="9"/>
-    <Button fx:id="exitButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Exit"
+    <ClickButton fx:id="exitButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Exit"
             GridPane.columnIndex="1" GridPane.rowIndex="11"/>
     <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Cells at Work" GridPane.columnIndex="1"
            GridPane.rowIndex="1">

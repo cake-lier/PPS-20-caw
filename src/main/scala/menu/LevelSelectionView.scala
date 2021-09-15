@@ -2,7 +2,7 @@ package it.unibo.pps.caw.menu
 
 import it.unibo.pps.caw.ViewComponent
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
-
+import it.unibo.pps.caw.app.controller.ClickButton
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, ScrollPane}
 import javafx.scene.image.ImageView
@@ -10,7 +10,7 @@ import javafx.scene.layout.{GridPane, Pane, RowConstraints}
 import scalafx.scene.Scene
 
 import java.nio.file.{Files, Paths}
-import scala.jdk.StreamConverters.given
+import scala.jdk.StreamConverters.StreamHasToScala
 
 /** The "level selection" page on the main menu.
   *
@@ -43,10 +43,10 @@ object LevelSelectionView {
 
   /* Default implementation of the LevelSelectionView trait. */
   private final class LevelSelectionViewImpl(scene: Scene, parentView: MainMenuView, controller: MainMenuController)
-    extends AbstractViewComponent[Pane]("level_selection_page.fxml")
-    with LevelSelectionView {
+      extends AbstractViewComponent[Pane]("level_selection_page.fxml")
+      with LevelSelectionView {
     @FXML
-    var backButton: Button = _
+    var backButton: ClickButton = _
     @FXML
     var buttonsPane: GridPane = _
     @FXML

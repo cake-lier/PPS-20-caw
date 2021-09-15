@@ -12,6 +12,7 @@
 <?import javafx.scene.text.Font?>
 
 <?import java.net.URL?>
+<?import it.unibo.pps.caw.app.controller.ClickButton?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0"
           prefWidth="1080.0" styleClass="background" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
@@ -53,7 +54,7 @@
             </columnConstraints>
         </GridPane>
     </ScrollPane>
-    <Button styleClass="backButton" fx:id="backButton" maxHeight="Infinity" maxWidth="Infinity" text="Back" GridPane.columnIndex="1"
+    <ClickButton styleClass="backButton" fx:id="backButton" maxHeight="Infinity" maxWidth="Infinity" text="Back" GridPane.columnIndex="1"
             GridPane.rowIndex="5" />
     <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
         <center>

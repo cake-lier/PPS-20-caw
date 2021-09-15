@@ -1,8 +1,8 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.{AudioManager, Track, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
-
+import it.unibo.pps.caw.app.controller.ClickButton
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.{GridPane, Pane}
@@ -37,23 +37,24 @@ object MainMenuView {
 
   /* Default implementation of the MainMenuView trait. */
   private final class MainMenuViewImpl(parentController: ParentMainMenuController, scene: Scene)
-    extends AbstractViewComponent[Pane]("main_menu_page.fxml")
-    with MainMenuView {
+      extends AbstractViewComponent[Pane]("main_menu_page.fxml")
+      with MainMenuView {
     @FXML
-    var playButton: Button = _
+    var playButton: ClickButton = _
     @FXML
-    var editorButton: Button = _
+    var editorButton: ClickButton = _
     @FXML
-    var loadButton: Button = _
+    var loadButton: ClickButton = _
     @FXML
-    var settingsButton: Button = _
+    var settingsButton: ClickButton = _
     @FXML
-    var exitButton: Button = _
+    var exitButton: ClickButton = _
 
     override val innerComponent: Pane = loader.load[GridPane]
 
     private val controller: MainMenuController = MainMenuController(parentController, this)
 
+    settingsButton.setOnMouseClicked(_ => AudioManager.play(Track.Button))
     playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, this, controller))
     loadButton.setOnMouseClicked(_ => {
       val chooser: FileChooser = FileChooser()

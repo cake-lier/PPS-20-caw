@@ -1,7 +1,6 @@
 package it.unibo.pps.caw.game
 
-import it.unibo.pps.caw.ViewComponent
-
+import it.unibo.pps.caw.{AudioManager, ViewComponent, Track}
 import javafx.scene.layout.Pane
 import scalafx.scene.Scene
 
@@ -23,6 +22,8 @@ object GameView {
 
   /* Default implementation of the GameView trait. */
   private class GameViewImpl(parentController: ParentGameController, scene: Scene) extends GameView {
+    AudioManager.play(Track.Game, stopAll = true)
+
     private val controller: GameController = GameController(parentController, this)
 
     override val innerComponent: Pane = Pane()
