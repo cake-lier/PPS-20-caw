@@ -17,26 +17,31 @@ sealed trait GameModel {
   def updateCell(oldCellCordinates: Position, newCellCoordinates: Position): GameModel
 
   /** Calculate the next state of the current [[Board]]
-   * @return
+    * @return
     *   updated instance of [[GameModel]]
     */
   def update(): GameModel
 
   /** Set the current board as the initial [[Board]]
-   * @return
+    * @return
     *   resetted instance of [[GameModel]]
     */
   def reset: GameModel
 
-  /** Get the current [[Board]] 
-   * @return the current [[Board]] */
+  /** Get the current [[Board]]
+    * @return
+    *   the current [[Board]]
+    */
   val currentBoard: Board
+
   /** Get the initial [[SetupBoard]]
-   * @return the initial [[SetupBoard]]*/
+    * @return
+    *   the initial [[SetupBoard]]
+    */
   val initialBoard: SetupBoard
 }
 
-/** Companion object for trai [[GameModel]]*/
+/** Companion object for trai [[GameModel]] */
 object GameModel {
   private case class GameModelImpl(initialBoard: SetupBoard, optionCurrentBoard: Option[Board]) extends GameModel {
     override val currentBoard: Board = optionCurrentBoard.getOrElse(
@@ -47,7 +52,21 @@ object GameModel {
       )
     )
 
-    override def update(): GameModel = GameModel(initialBoard,currentBoard)
+    override def update(): GameModel = {
+      val updatableCell = Seq(
+        currentBoard.cells.filter(_.isInstanceOf[GeneratorCell]).toSeq.sorted,
+        currentBoard.cells.filter(_.isInstanceOf[RotatorCell]).toSeq.sorted,
+        currentBoard.cells.filter(_.isInstanceOf[MoverCell]).toSeq.sorted
+      ).flatten
+
+      println(updatableCell)
+
+      def update(cells: Seq[Cell], board: Board): Board = cells match {
+        case h :: t => update(t, GameEngine().nextState(board, h))
+        case _      => board
+      }
+      GameModel(initialBoard, update(updatableCell, currentBoard))
+    }
 
     override def reset: GameModel = GameModel(initialBoard)
 

@@ -2,13 +2,15 @@ package it.unibo.pps.caw
 package model
 
 /** Represent a cell of the game */
-sealed trait Cell {
+sealed trait Cell extends Ordered[Cell] {
 
   /** the position of the [[Cell]] in coorinates */
   val position: Position
 
+  override def compare(that: Cell): Int = (position.x - that.position.x) + (position.y - that.position.y)
 }
-/** Represent a [[Cell]] during the setup phase, a [[Cell]] could be playable*/
+
+/** Represent a [[Cell]] during the setup phase, a [[Cell]] could be playable */
 sealed trait SetupCell extends Cell {
 
   /** if the [[Cell]] is movable by the player (is in the [[PlayableArea]] */
