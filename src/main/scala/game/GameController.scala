@@ -73,7 +73,7 @@ object GameController {
     protected val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     protected var updatesHandler: Option[ScheduledFuture[?]] = None
     protected var model = createModel()
-
+    
     view.drawLevel(model.level)
 
     protected def createModel(): Model
@@ -93,13 +93,13 @@ object GameController {
 
     def step(): Unit = {
       model = model.update()
-      view.drawLevel(model.level)
+      view.drawUpdate(model.level)
     }
 
     def resetLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
       model = model.reset()
-      view.drawLevel(model.level)
+      view.drawUpdate(model.level)
     }
 
     def goBack(): Unit = {

@@ -3,6 +3,7 @@ package it.unibo.pps.caw.app
 import it.unibo.pps.caw.game.{GameView, ParentGameView}
 import it.unibo.pps.caw.menu.MainMenuView
 import it.unibo.pps.caw.ViewComponent
+import javafx.application.Platform
 import scalafx.scene.control.Alert
 import javafx.scene.layout.Pane
 import scalafx.application.JFXApp3.PrimaryStage
@@ -31,17 +32,19 @@ trait ApplicationView extends ParentGameView {
   /** Shows the [[MainMenuView]] to the user, hiding the currently displayed view. */
   def showMainMenu(): Unit
 
-  /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing the level which is contained into 
-   * the file which [[Path]] is given.
-   * 
-   * @param levelPath the [[Path]] of the file containing the level which will be first displayed
-   */
+  /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing the level which is contained into the
+    * file which [[Path]] is given.
+    *
+    * @param levelPath
+    *   the [[Path]] of the file containing the level which will be first displayed
+    */
   def showGame(levelPath: Path): Unit
 
   /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing the default level given its index.
-   * 
-   * @param levelIndex the index of the level which will be first displayed
-   */
+    *
+    * @param levelIndex
+    *   the index of the level which will be first displayed
+    */
   def showGame(levelIndex: Int): Unit
 }
 
@@ -52,7 +55,7 @@ object ApplicationView {
   private class ApplicationViewImpl(stage: PrimaryStage) extends ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
     private val scene: Scene = Scene(1080, 720)
-    private var visibleView: ViewComponent[Pane] = MainMenuView(controller, scene)
+    private var visibleView: ViewComponent[? <: Pane] = MainMenuView(controller, scene)
 
     stage.resizable = false
     stage.maximized = false
@@ -61,22 +64,22 @@ object ApplicationView {
     stage.scene = scene
     stage.show()
 
-    override def showError(message: String): Unit = Alert(Alert.AlertType.Error, message)
+    override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(levelPath: Path): Unit = {
+    override def showGame(levelPath: Path): Unit = Platform.runLater(() => {
       visibleView = GameView(controller, this, levelPath, scene)
       scene.root.value = visibleView.innerComponent
-    }
-    
-    override def showGame(levelIndex: Int): Unit = {
+    })
+
+    override def showGame(levelIndex: Int): Unit = Platform.runLater(() => {
       visibleView = GameView(controller, this, levelIndex, scene)
       scene.root.value = visibleView.innerComponent
-    }
+    })
 
-    override def showMainMenu(): Unit = {
+    override def showMainMenu(): Unit = Platform.runLater(() => {
       visibleView = MainMenuView(controller, scene)
       scene.root.value = visibleView.innerComponent
-    }
+    })
   }
 
   /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX's [[PrimaryStage]] for creating a view for the

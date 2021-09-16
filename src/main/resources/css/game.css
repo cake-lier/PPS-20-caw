@@ -1,0 +1,38 @@
+.button {
+    -fx-font-size: 14.0;
+}
+
+.block-button {
+	-fx-border-color: transparent;
+	-fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: auto 100%;
+}
+
+#push-button {
+	-fx-background-image: url('../imgs/push_right.png');
+}
+
+#generate-button {
+	-fx-background-image: url('../imgs/generate_right.png');
+}
+
+#rotate-button {
+	-fx-background-image: url('../imgs/rotate_right.png');
+}
+
+#block-button {
+	-fx-background-image: url('../imgs/block.png');
+}
+
+#enemy-button {
+	-fx-background-image: url('../imgs/enemy.png');
+}
+
+#wall-button {
+	-fx-background-image: url('../imgs/wall.png');
+}
+
+#play-area-button {
+	-fx-background-image: url('../imgs/play_area.png');
+}

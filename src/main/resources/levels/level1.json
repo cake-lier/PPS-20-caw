@@ -1,9 +1,9 @@
 {
-  "width": 50,
-  "height": 60,
+  "width": 10,
+  "height": 10,
   "playableArea": {
-    "width": 20,
-    "height": 30,
+    "width": 5,
+    "height": 5,
     "x": 1,
     "y": 2
   },
@@ -23,13 +23,13 @@
     "generator": [
       {
         "orientation": "right",
-        "x": 1,
-        "y": 2
+        "x": 3,
+        "y": 4
       },
       {
         "orientation": "top",
-        "x": 0,
-        "y": 0
+        "x": 5,
+        "y": 6
       }
     ]
   }

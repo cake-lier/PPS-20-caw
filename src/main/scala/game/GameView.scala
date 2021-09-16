@@ -1,8 +1,14 @@
 package it.unibo.pps.caw.game
 
 import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.game.model.Level
-import javafx.scene.layout.Pane
+import it.unibo.pps.caw.game.view.BoardView
+import javafx.application.Platform
+import javafx.fxml.FXML
+import javafx.geometry.{HPos, Insets, VPos}
+import javafx.scene.control.Button
+import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
 
 import java.io.File
@@ -31,7 +37,7 @@ trait ParentGameView {
   * processed the input, the [[GameView]] should be used to display the current state of the game. It must be constructed through
   * its companion object.
   */
-trait GameView extends ViewComponent[Pane] {
+trait GameView extends ViewComponent[GridPane] {
 
   /** Makes the application view go back to the main menu, displaying it. */
   def backToMenu(): Unit
@@ -42,6 +48,8 @@ trait GameView extends ViewComponent[Pane] {
     *   the [[Level]] to display
     */
   def drawLevel(level: Level): Unit
+
+  def drawUpdate(level: Level): Unit
 
   /** Displays the given error message to the player.
     *
@@ -59,16 +67,52 @@ object GameView {
     parentController: ParentGameController,
     parentView: ParentGameView,
     scene: Scene
-  ) extends GameView {
+  ) extends AbstractViewComponent[GridPane]("game.fxml")
+    with GameView {
+    @FXML
+    var resetButton: Button = _
+    @FXML
+    var stepSimulationButton: Button = _
+    @FXML
+    var playSimulationButton: Button = _
+    @FXML
+    var backToLevelsButton: Button = _
+    @FXML
+    var nextButton: Button = _
+    override val innerComponent: GridPane = loader.load[GridPane]
     private val controller: GameController = createController()
+    private var boardView: Option[BoardView] = None
+
+    resetButton.setOnMouseClicked(_ => controller.resetLevel())
+    stepSimulationButton.setOnMouseClicked(_ => controller.step())
+    playSimulationButton.setOnMouseClicked(_ => {
+      controller.startUpdates()
+      playSimulationButton.setText("Pause")
+    })
+    backToLevelsButton.setOnMouseClicked(_ => controller.goBack())
+    nextButton.setVisible(true)
+    nextButton.setOnMouseClicked(_ => controller.nextLevel())
 
     protected def createController(): GameController
 
-    override val innerComponent: Pane = Pane()
-
     override def showError(message: String): Unit = parentView.showError(message)
 
-    override def drawLevel(level: Level): Unit = ???
+    override def drawUpdate(level: Level): Unit = Platform.runLater(() => {
+      boardView match {
+        case Some(b) => b.updateBoard(level)
+        case None    => Console.err.print("The board was not initialized")
+      }
+    })
+
+    override def drawLevel(level: Level): Unit = Platform.runLater(() => {
+      val newBoardView: BoardView = BoardView(level)
+      boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
+      GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
+      GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
+      GridPane.setMargin(newBoardView.innerComponent, new Insets(25, 0, 25, 0))
+      innerComponent.add(newBoardView.innerComponent, 2, 3, 3, 1)
+      boardView = Some(newBoardView)
+    })
 
     override def backToMenu(): Unit = controller.goBack()
   }

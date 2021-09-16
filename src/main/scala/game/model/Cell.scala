@@ -152,4 +152,4 @@ case class BlockCell(position: Position, playable: Boolean, allowedMovement: All
   * @param playable
   *   if the cell is playable (is in the [[PlayableArea]])
   */
-case class WallCel(position: Position, playable: Boolean) extends Cell
+case class WallCell(position: Position, playable: Boolean) extends Cell

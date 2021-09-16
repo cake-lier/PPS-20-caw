@@ -63,7 +63,7 @@ object Deserializer {
               case CellTypes.Enemy => EnemyCell(position, isInside)
               case CellTypes.Rotator =>
                 RotatorCell(position, isInside, EnumHelper.toRotation((jsCell \ "direction").as[String]).get)
-              case CellTypes.Wall => WallCel(position, isInside)
+              case CellTypes.Wall => WallCell(position, isInside)
               case CellTypes.Generator =>
                 GeneratorCell(position, isInside, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get)
               case _ => throw IllegalStateException()
