@@ -59,7 +59,7 @@ object MainMenuView {
       val chooser: FileChooser = FileChooser()
       chooser.title = "Choose a level file"
       chooser.extensionFilters.add(FileChooser.ExtensionFilter("Level file", "*.json"))
-      Option(chooser.showOpenDialog(scene.getWindow)).foreach(controller.startGame(_))
+      Option(chooser.showOpenDialog(scene.getWindow)).foreach(f => controller.startGame(f.toPath))
     })
     exitButton.setOnMouseClicked(_ => controller.exit())
   }
