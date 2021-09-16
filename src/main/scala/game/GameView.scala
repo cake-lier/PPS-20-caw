@@ -22,7 +22,7 @@ object GameView {
 
   /* Default implementation of the GameView trait. */
   private class GameViewImpl(parentController: ParentGameController, scene: Scene) extends GameView {
-    AudioManager.play(Track.Game, stopAll = true)
+    AudioManager.play(Track.Game)
 
     private val controller: GameController = GameController(parentController, this)
 

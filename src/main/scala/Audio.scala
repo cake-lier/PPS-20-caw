@@ -4,38 +4,17 @@ import scalafx.scene.media.{Media, MediaPlayer, MediaView}
 
 import java.util.concurrent.{Executors, TimeUnit}
 
-/** Volume values for music and sound */
-enum Volume(value: Double) {
-  case Mute extends Volume(0)
-  case Low extends Volume(0.25)
-  case Medium extends Volume(0.5)
-  case High extends Volume(0.75)
-  case Max extends Volume(1)
-
-  def getVolume = value
-}
-
 /** Audio tipes, [[AudioType.Loop]] for looping tracks, [[AudioType.Once]] for play-once tracks */
 enum AudioType {
-  case Loop, Once
+  case Music, Sound
 }
 
 /** Player types. Each [[Track]] has audio file path and an [[AudioType]] */
-enum Track(filePath: String, audioType: AudioType, volume: Volume) {
-  case Menu extends Track("sounds/menu_music.mp3", AudioType.Loop, Volume.Max)
-  case Game extends Track("sounds/game_music.mp3", AudioType.Loop, Volume.Max)
-  case Button extends Track("sounds/button_click.mp3", AudioType.Once, Volume.Max)
-
-  def getAudioType = audioType
-  def getFilePath = filePath
-  def getVolume = volume
+enum Track(val filePath: String, val audioType: AudioType) {
+  case Menu extends Track("sounds/menu_music.mp3", AudioType.Music)
+  case Game extends Track("sounds/game_music.mp3", AudioType.Music)
+  case Button extends Track("sounds/button_click.mp3", AudioType.Sound)
 }
-
-/*sealed trait AudioManager {
-  def setVolume(volume: Volume): Unit
-  def play(player: Player, stopAll: Boolean = false): Unit
-  def disposeAll(): Unit
-}*/
 
 /** Singleton for audio management */
 object AudioManager {
@@ -44,22 +23,27 @@ object AudioManager {
   /** Reproduce the specified track
     * @param track:
     *   track to be reproduced
-    * @param stopAll:
-    *   optional param, if set to true stops all tracks befor starting the track
     */
-  def play(track: Track, stopAll: Boolean = false): Unit = {
-    if (stopAll) players.foreach(_._2.stop())
-    players(track).setVolume(track.getVolume.getVolume)
+  def play(track: Track): Unit = {
+    if (track.audioType == AudioType.Music) players.filter(_._1.audioType == AudioType.Music).foreach(_._2.stop())
     players(track).play()
   }
+
+  /** set volume of all media to the specified value
+    * @param volume:
+    *   volume to be set
+    */
+  def globalVolume(volume: Double): Unit = players.foreach(_._2.setVolume(volume))
 
   /** release all resources used by the player */
   def disposeAll(): Unit = players.map(_._2).foreach(_.dispose())
 
   private def createPlayer(track: Track): MediaPlayer = {
-    val mediaPlayer = MediaPlayer(Media(ClassLoader.getSystemResource(track.getFilePath).toExternalForm))
-    if (track.getAudioType == AudioType.Loop) mediaPlayer.setCycleCount(MediaPlayer.Indefinite)
-    if (track.getAudioType == AudioType.Once) mediaPlayer.onEndOfMedia = () => mediaPlayer.stop()
+    val mediaPlayer = MediaPlayer(Media(ClassLoader.getSystemResource(track.filePath).toExternalForm))
+    track.audioType match {
+      case AudioType.Music => mediaPlayer.setCycleCount(MediaPlayer.Indefinite)
+      case AudioType.Sound => mediaPlayer.onEndOfMedia = () => mediaPlayer.stop()
+    }
     mediaPlayer
   }
 }
