@@ -1,33 +1,35 @@
 package it.unibo.pps.caw.game.model
 
+import it.unibo.pps.caw.game.Deserializer
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 import scala.io.Source
+import scala.util.Failure
 
 class DeserializerTest extends AnyFunSpec with Matchers {
   describe("A JSON") {
     describe("when empty") {
       it("should produce IllegalArgumentException") {
         Deserializer.deserializeLevel("") match {
-          case Left(x: IllegalArgumentException) => succeed
-          case _                                 => fail("Shoud Left should be IllegalArgumentException")
+          case Failure(x: IllegalArgumentException) => succeed
+          case _                                    => fail("Shoud Left should be IllegalArgumentException")
         }
       }
     }
     describe("when with wrong json format") {
       it("should produce IllegalArgumentException") {
         Deserializer.deserializeLevel("{invalid level}") match {
-          case Left(x: IllegalArgumentException) => succeed
-          case _                                 => fail("Shoud Left should be IllegalArgumentException")
+          case Failure(x: IllegalArgumentException) => succeed
+          case _                                    => fail("Shoud Left should be IllegalArgumentException")
         }
       }
     }
     describe("when with nearly correct  json format") {
       it("should produce IllegalArgumentException") {
         Deserializer.deserializeLevel(Source.fromResource("invalid_test_level.json").getLines.mkString) match {
-          case Left(x: IllegalArgumentException) => succeed
-          case _                                 => fail("Shoud Left should be IllegalArgumentException")
+          case Failure(x: IllegalArgumentException) => succeed
+          case _                                    => fail("Shoud Left should be IllegalArgumentException")
         }
       }
     }

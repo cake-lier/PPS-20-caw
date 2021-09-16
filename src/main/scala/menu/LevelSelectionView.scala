@@ -10,7 +10,6 @@ import javafx.scene.layout.{GridPane, Pane, RowConstraints}
 import scalafx.scene.Scene
 
 import java.nio.file.{Files, Paths}
-import scala.jdk.StreamConverters.given
 
 /** The "level selection" page on the main menu.
   *
@@ -58,15 +57,8 @@ object LevelSelectionView {
 
     backButton.setOnMouseClicked(_ => scene.root.value = parentView)
 
-    // Read levels
-    val numFiles = Files
-      .list(Paths.get(ClassLoader.getSystemResource("levels/").toURI))
-      .toScala(Seq)
-      .filter(_.getFileName.toString.endsWith(".json"))
-      .length
-
     val constraints: RowConstraints = RowConstraints()
-    val rows: Int = (numFiles / 10.0).ceil.toInt
+    val rows: Int = (controller.levelFilesCount / 10.0).ceil.toInt
     val minTableRows: Int = 4
     val tableRows: Int = Math.max(rows, minTableRows)
     val maxVisibleTableRows: Int = 5
@@ -74,10 +66,8 @@ object LevelSelectionView {
       arrowsIcon.setVisible(true)
     }
     constraints.setPercentHeight(100.0 / tableRows)
-    for (r <- 0 until tableRows) {
-      buttonsPane.getRowConstraints.add(constraints)
-    }
-    for (i <- 0 until numFiles) {
+    (0 until tableRows).foreach(_ => buttonsPane.getRowConstraints.add(constraints))
+    (0 until controller.levelFilesCount).foreach { i =>
       buttonsPane.add(LevelButton(i + 1, controller).innerComponent, i % 10, (i / 10.0).toInt)
     }
   }

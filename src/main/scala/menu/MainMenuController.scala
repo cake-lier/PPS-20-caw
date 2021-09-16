@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.menu
 
 import java.io.File
+import java.nio.file.Path
 
 /** The parent controller to the [[MainMenuController]].
   *
@@ -10,12 +11,25 @@ import java.io.File
   */
 trait ParentMainMenuController {
 
-  /** Asks the parent controller to start a new game. It needs the file containing the level from which starting to play the game.
-    *
-    * @param levelFile
-    *   the file containing the level from which starting to play the game
+  /** Return the sequence of file [[Path]] s which contains the game [[it.unibo.pps.caw.game.model.Level]] s, ordered by their
+    * level index.
     */
-  def startGame(levelFile: File): Unit
+  val levelFiles: Seq[Path]
+
+  /** Asks the parent controller to start a new game. It needs the [[Path]] of the file containing the level from which starting
+    * the game.
+    *
+    * @param levelPath
+    *   the [[Path]] of the file containing the level from which starting to play the game
+    */
+  def startGame(levelPath: Path): Unit
+
+  /** Asks the parent controller to start a new game. It needs the index of the default level from which starting the game.
+    *
+    * @param levelIndex
+    *   the index of the level from which starting to play the game
+    */
+  def startGame(levelIndex: Int): Unit
 
   /** Asks the parent controller to exit the application. */
   def exit(): Unit
@@ -27,6 +41,7 @@ trait ParentMainMenuController {
   * offers. It must be constructed through its companion object.
   */
 trait MainMenuController {
+  val levelFilesCount: Int
 
   /** Starts a new game beginning from one of the default levels, which index is given. Then, the game will continue using the
     * level next to this one, and then the next one and so on until the last one is reached or the player exits the game.
@@ -42,7 +57,7 @@ trait MainMenuController {
     * @param levelFile
     *   the file containing the level to play in the new game
     */
-  def startGame(levelFile: File): Unit
+  def startGame(levelPath: Path): Unit
 
   /** Exits the application. */
   def exit(): Unit
@@ -54,10 +69,11 @@ object MainMenuController {
   /* Default implementation of the MainMenuController trait. */
   private class MainMenuControllerImpl(parentController: ParentMainMenuController, view: MainMenuView)
     extends MainMenuController {
+    override val levelFilesCount: Int = parentController.levelFiles.length
 
-    override def startGame(levelIndex: Int): Unit = parentController.startGame(new File(s"level$levelIndex.json"))
+    override def startGame(levelIndex: Int): Unit = parentController.startGame(levelIndex)
 
-    override def startGame(levelFile: File): Unit = parentController.startGame(levelFile)
+    override def startGame(levelPath: Path): Unit = parentController.startGame(levelPath)
 
     override def exit(): Unit = parentController.exit()
   }
