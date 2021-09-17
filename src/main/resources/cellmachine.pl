@@ -92,10 +92,11 @@ rotate_right([cell(T, X1, Y1) | CS], X, Y, [cell(T, X1, Y1) | NCS]) :- rotate_ri
 % cells in the board and the empty cells must not be present.
 rotate_right_next_state(B, X, Y, NB) :- member(cell(rotate_right, X, Y), B), !, rotate_right(B, X, Y, NB).
 
-generator_right_next_state(B, X, Y, NB) :- member(cell(generator_right, X, Y), B),
+generator_right_next_state(B, X, Y, [cell(T, X2, Y) | NB]) :- member(cell(generator_right, X, Y), B),
                                            X1 is X - 1,
                                            member(cell(T, X1, Y), B),
                                            last_index_right(B, generator_right, X, Y, EX),
-                                           move_right([cell(T, X, Y) | B], B, X, EX, Y, NB),
+                                           X2 is X + 1,
+                                           move_right(B, B, X, EX, Y, NB),
                                            !.
 generator_right_next_state(M, _, _, M).
