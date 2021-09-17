@@ -38,6 +38,19 @@ arrow_right_next_state(M, cell(arrow_right, X, Y), NM) :- member(cell(arrow_righ
                                                           !.
 arrow_right_next_state(M, M).
 
+generate_right([cell(empty, X, Y) | CS], X, Y, T1, [cell(T1, X, Y) | CS]):- !.
+generate_right([cell(enemy, X, Y) | CS], X, Y, T1, CS):- !.
+generate_right([cell(T, X, Y) | CS], X, Y, T1, [cell(T, X, Y)|CS]) :- (T = wall; T = block_ver; T = arrow_left), !.
+generate_right([cell(T, X, Y) | CS], X1, Y1, T1, [cell(T, X, Y) | NCS]) :- (X \= X1; Y \= Y1), generate_right(CS, X1, Y1, T1, NCS), !.
+generate_right([cell(T1, X, Y) | CS], X, Y, T1, [cell(T1, X, Y) | NCS]) :- X1 is X + 1, generate_right(CS, X1, Y, T1, NCS).
+
+generator_right_next_state(M, cell(generator_right, X, Y), NM) :- X1 is X - 1, X2 is X + 1,
+                                                                  member(cell(T, X1, Y), M),
+                                                                  generate_right(M, X2, Y, T, NM),
+                                                                  !.
+
+generator_right_next_state(M, cell(generator_right, X, Y), M).
+
 rotate_right([], _, _, []).
 rotate_right([cell(T, X1, Y1) | CS], X, Y, [cell(T1, X1, Y1) | NCS]) :- ((X1 is X + 1, Y1 is Y);
                                                                          (X1 is X, Y1 is Y + 1);
