@@ -3,61 +3,62 @@ package it.unibo.pps.caw
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import engine.GameEngine
-import model.{AllowedMovement, BlockCell, Board, GeneratorCell, MoverCell, Orientation, RotationDirection, RotatorCell}
+import model.{AllowedMovement, BlockCell, Board, Cell, GeneratorCell, MoverCell, Orientation, RotationDirection, RotatorCell}
+
 import scala.language.implicitConversions
 
 /** Tests for [[GameEngine]] */
 class GameEngineTest extends AnyFunSpec with Matchers {
-  private val moverRightBoard: Board = Board(
+  private val moverRightBoard: Board[Cell] = Board(
     MoverCell((0, 0), Orientation.Right),
     BlockCell((1, 0), AllowedMovement.Horizontal),
     BlockCell((10, 0), AllowedMovement.Both)
   )
-  private val moverLeftBoard: Board = Board(
+  private val moverLeftBoard: Board[Cell] = Board(
     MoverCell((10, 0), Orientation.Left),
     BlockCell((9, 0), AllowedMovement.Horizontal),
     BlockCell((0, 0), AllowedMovement.Both)
   )
-  private val moverTopBoard: Board = Board(
+  private val moverTopBoard: Board[Cell] = Board(
     MoverCell((0, 0), Orientation.Top),
     BlockCell((0, 1), AllowedMovement.Vertical),
     BlockCell((0, 10), AllowedMovement.Both)
   )
-  private val moverDownBoard: Board = Board(
+  private val moverDownBoard: Board[Cell] = Board(
     MoverCell((0, 10), Orientation.Down),
     BlockCell((0, 9), AllowedMovement.Vertical),
     BlockCell((0, 0), AllowedMovement.Both)
   )
-  private val rotatorLeftBoard: Board = Board(
+  private val rotatorLeftBoard: Board[Cell] = Board(
     RotatorCell((1, 1), RotationDirection.Left),
     BlockCell((1, 0), AllowedMovement.Horizontal),
     BlockCell((1, 2), AllowedMovement.Horizontal),
     BlockCell((2, 1), AllowedMovement.Horizontal),
     BlockCell((0, 1), AllowedMovement.Horizontal)
   )
-  private val rotatorRightBoard: Board = Board(
+  private val rotatorRightBoard: Board[Cell] = Board(
     RotatorCell((1, 1), RotationDirection.Right),
     BlockCell((1, 0), AllowedMovement.Horizontal),
     BlockCell((1, 2), AllowedMovement.Horizontal),
     BlockCell((2, 1), AllowedMovement.Horizontal),
     BlockCell((0, 1), AllowedMovement.Horizontal)
   )
-  private val generatorRightBoard: Board = Board(
+  private val generatorRightBoard: Board[Cell] = Board(
     BlockCell((0, 0), AllowedMovement.Horizontal),
     GeneratorCell((1, 0), Orientation.Right),
     BlockCell((10, 0), AllowedMovement.Both)
   )
-  private val generatorLeftBoard: Board = Board(
+  private val generatorLeftBoard: Board[Cell] = Board(
     BlockCell((10, 0), AllowedMovement.Horizontal),
     GeneratorCell((9, 0), Orientation.Left),
     BlockCell((0, 0), AllowedMovement.Both)
   )
-  private val generatorTopBoard: Board = Board(
+  private val generatorTopBoard: Board[Cell] = Board(
     BlockCell((0, 0), AllowedMovement.Vertical),
     GeneratorCell((0, 1), Orientation.Top),
     BlockCell((0, 10), AllowedMovement.Both)
   )
-  private val generatorDownBoard: Board = Board(
+  private val generatorDownBoard: Board[Cell] = Board(
     BlockCell((0, 10), AllowedMovement.Vertical),
     GeneratorCell((0, 9), Orientation.Down),
     BlockCell((0, 0), AllowedMovement.Both)

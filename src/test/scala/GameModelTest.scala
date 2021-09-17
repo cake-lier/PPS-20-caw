@@ -8,7 +8,7 @@ import scala.language.implicitConversions
 /** Tests for class [[GameModel]] */
 class GameModelTest extends AnyFunSpec with Matchers {
   private def gameModel = GameModel(setupBoard)
-  private val setupBoard = SetupBoard(
+  private val setupBoard = Board(
     SetupMoverCell((1, 1), Orientation.Right, true),
     SetupBlockCell((3, 3), AllowedMovement.Both, false),
     SetupEnemyCell((5, 5), false)

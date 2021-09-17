@@ -21,7 +21,7 @@ import scala.util.matching.Regex
 sealed trait GameEngine {
 
   /** Calculate the next [[Board]] starting from the current [[Board]] and the [[Cell]] to be updated */
-  def nextState(board: Board, cell: Cell): Board
+  def nextState(board: Board[Cell], cell: Cell): Board[Cell]
 }
 
 /** Companion object for trait [[GameEngine]] */
@@ -31,7 +31,7 @@ object GameEngine {
     private val engine: Term => Term =
       Using(Source.fromResource("cellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
 
-    def nextState(board: Board, cell: Cell): Board =
+    def nextState(board: Board[Cell], cell: Cell): Board[Cell] =
       PrologParser.deserializeBoard(
         extractTerm(engine(PrologParser.createSerializedPredicate(board, cell)), 3).toString
       )
@@ -59,7 +59,7 @@ private object PrologParser {
     Term.createTerm("cell" + Seq(cellType, cell.position.x, cell.position.y).mkString("(", ",", ")"))
   }
 
-  def createSerializedPredicate(board: Board, cell: Cell): Term = {
+  def createSerializedPredicate(board: Board[Cell], cell: Cell): Term = {
     val action: String = cell match {
       case m: MoverCell =>
         "arrow_" + (m.orientation match {
@@ -88,7 +88,7 @@ private object PrologParser {
     )
   }
 
-  def deserializeBoard(stringBoard: String): Board = {
+  def deserializeBoard(stringBoard: String): Board[Cell] = {
     val regex: Regex =
       "cell\\((?:arrow_right|arrow_left|arrow_top|arrow_down|generator_right|generator_left|generator_top|generator_down|rotate_right|rotate_left|block|block_hor|block_ver|enemy|wall),\\d+,\\d+\\)".r
     Board(

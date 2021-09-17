@@ -35,7 +35,7 @@ object PlayableArea {
 trait Level extends Area {
 
   /** [[SetupBoard]] in the level */
-  val setupBoard: SetupBoard
+  val setupBoard: Board[SetupCell]
 
   /** the [[PlayableArea]] of the game */
   val playableArea: PlayableArea
@@ -43,7 +43,7 @@ trait Level extends Area {
 
 /** Companion object of [[Level]] */
 object Level {
-  private case class LevelImpl(width: Int, height: Int, setupBoard: SetupBoard, playableArea: PlayableArea) extends Level
-  def apply(width: Int, height: Int, setupBoard: SetupBoard, playableArea: PlayableArea): Level =
+  private case class LevelImpl(width: Int, height: Int, setupBoard: Board[SetupCell], playableArea: PlayableArea) extends Level
+  def apply(width: Int, height: Int, setupBoard: Board[SetupCell], playableArea: PlayableArea): Level =
     LevelImpl(width, height, setupBoard, playableArea)
 }

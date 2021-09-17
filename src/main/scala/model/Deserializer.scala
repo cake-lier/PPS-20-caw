@@ -5,7 +5,7 @@ import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
 import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
-import model.SetupBoard
+import model.Board
 import scala.io.Source
 
 /** Object for deserialization of [[Level]] components written in JSON format. */
@@ -33,7 +33,7 @@ object Deserializer {
       Level(
         (jsonLevel \ "width").as[Int],
         (jsonLevel \ "height").as[Int],
-        SetupBoard(
+        Board(
           deserializeCells((jsonLevel \ "cells").as[JsObject], playableAreaPosition, playableAreaWidth, playableAreaHeight)
         ),
         PlayableArea(playableAreaPosition, playableAreaWidth, playableAreaHeight)

@@ -32,19 +32,19 @@ sealed trait GameModel {
     * @return
     *   the current [[Board]]
     */
-  val currentBoard: Board
+  val currentBoard: Board[Cell]
 
   /** Get the initial [[SetupBoard]]
     * @return
     *   the initial [[SetupBoard]]
     */
-  val initialBoard: SetupBoard
+  val initialBoard: Board[SetupCell]
 }
 
 /** Companion object for trai [[GameModel]] */
 object GameModel {
-  private case class GameModelImpl(initialBoard: SetupBoard, optionCurrentBoard: Option[Board]) extends GameModel {
-    override val currentBoard: Board = optionCurrentBoard.getOrElse(
+  private case class GameModelImpl(initialBoard: Board[SetupCell], optionCurrentBoard: Option[Board[Cell]]) extends GameModel {
+    override val currentBoard: Board[Cell] = optionCurrentBoard.getOrElse(
       Board(
         initialBoard.cells
           .map(CellConverter.fromSetup)
@@ -61,7 +61,7 @@ object GameModel {
 
       println(updatableCell)
 
-      def update(cells: Seq[Cell], board: Board): Board = cells match {
+      def update(cells: Seq[Cell], board: Board[Cell]): Board[Cell] = cells match {
         case h :: t => update(t, GameEngine().nextState(board, h))
         case _      => board
       }
@@ -84,9 +84,9 @@ object GameModel {
       GameModelImpl(initialBoard, Some(Board(currentBoard.cells.filter(_.position != oldCellCordinates).toSet + updatedCell)))
     }
   }
-  def apply(initialBoard: SetupBoard, optionCurrentBoard: Board): GameModel =
-    GameModelImpl(initialBoard: SetupBoard, Some(optionCurrentBoard))
+  def apply(initialBoard: Board[SetupCell], optionCurrentBoard: Board[Cell]): GameModel =
+    GameModelImpl(initialBoard: Board[SetupCell], Some(optionCurrentBoard))
 
-  def apply(initialBoard: SetupBoard): GameModel =
-    GameModelImpl(initialBoard: SetupBoard, None)
+  def apply(initialBoard: Board[SetupCell]): GameModel =
+    GameModelImpl(initialBoard: Board[SetupCell], None)
 }

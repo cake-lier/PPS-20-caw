@@ -1,22 +1,14 @@
 package it.unibo.pps.caw
 package model
 
-trait Board {
-  val cells: Set[Cell]
+import model.Board.BoardImpl
+
+trait Board[A]{
+  val cells: Set[A]
 }
 
-object Board {
-  private case class BoardImpl(cells: Set[Cell]) extends Board
-  def apply(cells: Cell*): Board = BoardImpl(cells.toSet)
-  def apply(cells: Set[Cell]): Board = BoardImpl(cells)
-}
-
-trait SetupBoard {
-  val cells: Set[SetupCell]
-}
-
-object SetupBoard {
-  private case class BoardImpl(cells: Set[SetupCell]) extends SetupBoard
-  def apply(cells: SetupCell*): SetupBoard = BoardImpl(cells.toSet)
-  def apply(cells: Set[SetupCell]): SetupBoard = BoardImpl(cells)
+object Board{
+  case class BoardImpl[A](val cells: Set[A]) extends Board[A]
+  def apply[A](cells: A*): Board[A] = BoardImpl(cells.toSet)
+  def apply[A](cells: Set[A]): Board[A] = BoardImpl(cells)
 }
