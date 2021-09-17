@@ -1,14 +1,13 @@
 package it.unibo.pps.caw.game
 
 import it.unibo.pps.caw.game.model.*
-
 import io.vertx.core.json.JsonObject
 import io.vertx.core.Vertx
 import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
 import play.api.libs.json.{JsArray, JsObject, Json, JsValue}
 
 import scala.io.Source
-import scala.util.{Failure, Success, Try}
+import scala.util.{Failure, Success, Try, Using}
 
 /** Object for deserialization of [[Level]] components written in JSON format. */
 object Deserializer {
@@ -22,22 +21,22 @@ object Deserializer {
     *   [[Level]] instance filled by the data read from inside the file
     */
   def deserializeLevel(jsonStringLevel: String): Try[Level] = {
-    if (jsonStringLevel.isEmpty || !isValidJson(jsonStringLevel)) {
-      return Failure(IllegalArgumentException())
-    }
-    val jsonLevel = Json.parse(jsonStringLevel)
-    val jsonPlayableArea = (jsonLevel \ "playableArea").as[JsObject]
-    val playableAreaWidth = (jsonPlayableArea \ "width").as[Int]
-    val playableAreaHeight = (jsonPlayableArea \ "height").as[Int]
-    val playableAreaPosition = extractPosition(jsonPlayableArea)
-    Success(
+    for {
+      _ <- Try(if (jsonStringLevel.isEmpty) throw IllegalArgumentException())
+      _ <- isValidJson(jsonStringLevel)
+    } yield {
+      val jsonLevel = Json.parse(jsonStringLevel)
+      val jsonPlayableArea = (jsonLevel \ "playableArea").as[JsObject]
+      val playableAreaWidth = (jsonPlayableArea \ "width").as[Int]
+      val playableAreaHeight = (jsonPlayableArea \ "height").as[Int]
+      val playableAreaPosition = extractPosition(jsonPlayableArea)
       Level(
         (jsonLevel \ "width").as[Int],
         (jsonLevel \ "height").as[Int],
         deserializeCells((jsonLevel \ "cells").as[JsObject], playableAreaPosition, playableAreaWidth, playableAreaHeight),
         PlayableArea(playableAreaPosition, playableAreaWidth, playableAreaHeight)
       )
-    )
+    }
   }
 
   /* deserialize all cells in their specific types, grouping them into a Set */
@@ -75,17 +74,19 @@ object Deserializer {
   }
 
   /* Validate the provided JSON in string format with the schema. If success true is returned, otherwise false*/
-  private def isValidJson(jsonString: String): Boolean = {
-    val schemaRouter: SchemaRouter = SchemaRouter.create(Vertx.vertx(), new SchemaRouterOptions());
-    val schemaParser: SchemaParser = SchemaParser.createDraft201909SchemaParser(schemaRouter);
-    try {
-      schemaParser
-        .parseFromString(Source.fromResource("board_schema.json").getLines.mkString)
-        .validateSync(JsonObject(jsonString))
-      true
-    } catch {
-      case e: Exception => print(e); false
-    }
+  private def isValidJson(jsonString: String): Try[Unit] = {
+    val vertx: Vertx = Vertx.vertx()
+    val validationTry: Try[Unit] = for {
+      s <- Using(Source.fromResource("board_schema.json"))(_.getLines.mkString)
+      _ <- Try {
+        SchemaParser
+          .createDraft201909SchemaParser(SchemaRouter.create(vertx, SchemaRouterOptions()))
+          .parseFromString(s)
+          .validateSync(JsonObject(jsonString))
+      }
+    } yield ()
+    vertx.close()
+    validationTry
   }
 
   /* Extract and return the position of specific item from JSON  */

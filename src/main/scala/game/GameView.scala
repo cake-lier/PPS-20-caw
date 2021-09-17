@@ -5,9 +5,11 @@ import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.game.model.Level
 import it.unibo.pps.caw.game.view.BoardView
 import javafx.application.Platform
+import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.geometry.{HPos, Insets, VPos}
 import javafx.scene.control.Button
+import javafx.scene.input.MouseEvent
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
 
@@ -85,10 +87,17 @@ object GameView {
 
     resetButton.setOnMouseClicked(_ => controller.resetLevel())
     stepSimulationButton.setOnMouseClicked(_ => controller.step())
-    playSimulationButton.setOnMouseClicked(_ => {
+    var startSimulationHandler: EventHandler[MouseEvent] = _ => {
       controller.startUpdates()
       playSimulationButton.setText("Pause")
-    })
+      playSimulationButton.setOnMouseClicked(endSimulationHandler)
+    }
+    var endSimulationHandler: EventHandler[MouseEvent] = _ => {
+      controller.pauseUpdates()
+      playSimulationButton.setText("Start")
+      playSimulationButton.setOnMouseClicked(startSimulationHandler)
+    }
+    playSimulationButton.setOnMouseClicked(startSimulationHandler)
     backToLevelsButton.setOnMouseClicked(_ => controller.goBack())
     nextButton.setVisible(true)
     nextButton.setOnMouseClicked(_ => controller.nextLevel())
