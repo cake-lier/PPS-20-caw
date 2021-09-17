@@ -53,19 +53,27 @@ object GameModel {
     )
 
     override def update(): GameModel = {
-      val updatableCell = Seq(
-        currentBoard.cells.filter(_.isInstanceOf[GeneratorCell]).toSeq.sorted,
-        currentBoard.cells.filter(_.isInstanceOf[RotatorCell]).toSeq.sorted,
-        currentBoard.cells.filter(_.isInstanceOf[MoverCell]).toSeq.sorted
+      // parse Board[Cell] to Board[IdCell]
+      val it = Iterator.range(0, currentBoard.cells.size - 1)
+      val idCells: Set[IdCell] = currentBoard.cells.map(cell => CellConverter.toId(cell, it.next()))
+      val idBoard = Board(idCells)
+
+      val updatableCells: Seq[IdCell] = Seq(
+        idBoard.cells.filter(_.isInstanceOf[GeneratorCell]).toSeq.sorted,
+        idBoard.cells.filter(_.isInstanceOf[RotatorCell]).toSeq.sorted,
+        idBoard.cells.filter(_.isInstanceOf[MoverCell]).toSeq.sorted
       ).flatten
 
-      println(updatableCell)
-
-      def update(cells: Seq[Cell], board: Board[Cell]): Board[Cell] = cells match {
-        case h :: t => update(t, GameEngine().nextState(board, h))
+      def update(cells: Seq[IdCell], board: Board[IdCell]): Board[IdCell] = cells match {
+        case h :: t if (! h.updated) => update(t, GameEngine().nextState(board, h))
+        case h :: t => update(t, board) // ignore already updated cells
         case _      => board
       }
-      GameModel(initialBoard, update(updatableCell, currentBoard))
+
+      // parse Board[IdCell] to Board[Cell]
+      val updatedIdBoard = update(updatableCells, idBoard)
+      val updatedBoard = Board(updatedIdBoard.cells.map(cell => CellConverter.fromId(cell)))
+      GameModel(initialBoard, updatedBoard)
     }
 
     override def reset: GameModel = GameModel(initialBoard)
