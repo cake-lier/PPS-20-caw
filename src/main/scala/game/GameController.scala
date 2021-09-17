@@ -1,9 +1,14 @@
 package it.unibo.pps.caw.game
 
-import it.unibo.pps.caw.game.model.{Level, Model}
+import it.unibo.pps.caw.game.model.{Level, Model, PlayableArea, Position}
+import javafx.application.Platform
+import javafx.scene.control.Alert
+import javafx.scene.control.Alert.AlertType
 
 import java.nio.file.{Path, Paths}
 import java.util.concurrent.{Executors, ScheduledExecutorService, ScheduledFuture, TimeUnit}
+import scala.io.Source
+import scala.util.{Try, Using}
 
 /** The parent controller to the [[GameController]].
   *
@@ -12,18 +17,6 @@ import java.util.concurrent.{Executors, ScheduledExecutorService, ScheduledFutur
   * contexts with multiple parent controllers.
   */
 trait ParentGameController {
-
-  /** Returns the file [[Path]]s used for storing the default levels of the game, ordered by level index. */
-  val levelFiles: Seq[Path]
-
-  /** Loads a [[Level]] from a file given its [[Path]].
-    *
-    * @param path
-    *   the [[Path]] of the file containing the level to load.
-    * @return
-    *   the loaded level
-    */
-  def loadLevel(path: Path): Level
 
   /** Asks the parent controller to go back to the previous state of the application. */
   def goBack(): Unit
@@ -69,14 +62,13 @@ trait GameController {
 object GameController {
 
   /* Abstract implementation of the GameController trait for factorizing common behaviors. */
-  private abstract class AbstractGameController(parentController: ParentGameController, view: GameView) extends GameController {
+  private abstract class AbstractGameController(parentController: ParentGameController, view: GameView, initialLevel: Level)
+    extends GameController {
     protected val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     protected var updatesHandler: Option[ScheduledFuture[?]] = None
-    protected var model = createModel()
-    
-    view.drawLevel(model.level)
+    protected var model = Model(initialLevel)
 
-    protected def createModel(): Model
+    view.drawLevel(model.level, model.isLevelCompleted)
 
     def startUpdates(): Unit = updatesHandler match {
       case Some(_) => Console.err.println(GameControllerError.RunningUpdates.message)
@@ -93,13 +85,13 @@ object GameController {
 
     def step(): Unit = {
       model = model.update()
-      view.drawUpdate(model.level)
+      view.drawLevelUpdate(model.level, model.isLevelCompleted)
     }
 
     def resetLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
       model = model.reset()
-      view.drawUpdate(model.level)
+      view.drawLevelUpdate(model.level, model.isLevelCompleted)
     }
 
     def goBack(): Unit = {
@@ -109,27 +101,27 @@ object GameController {
   }
 
   /* Extension of the AbstractGameController class for playing a generic level. */
-  private class ExternalGameController(parentController: ParentGameController, view: GameView, levelPath: Path)
-    extends AbstractGameController(parentController, view) {
-
-    override protected def createModel(): Model = Model(parentController.loadLevel(levelPath))
+  private class ExternalGameController(parentController: ParentGameController, view: GameView, level: Level)
+    extends AbstractGameController(parentController, view, level) {
 
     def nextLevel(): Unit = goBack()
   }
 
   /* Extension of the AbstractGameController class for playing the default levels. */
-  private class DefaultGameController(parentController: ParentGameController, view: GameView, private var levelIndex: Int)
-    extends AbstractGameController(parentController, view) {
-
-    override protected def createModel(): Model = Model(parentController.loadLevel(parentController.levelFiles(levelIndex - 1)))
+  private class DefaultGameController(
+    parentController: ParentGameController,
+    view: GameView,
+    private val levels: Seq[Level],
+    private var levelIndex: Int
+  ) extends AbstractGameController(parentController, view, levels(levelIndex - 1)) {
 
     def nextLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
       model.nextLevelIndex(levelIndex) match {
         case Some(v) => {
           levelIndex = v
-          model = Model(parentController.loadLevel(Paths.get(s"level$levelIndex.json")))
-          view.drawLevel(model.level)
+          model = Model(levels(levelIndex - 1))
+          view.drawLevel(model.level, model.isLevelCompleted)
         }
         case None => goBack()
       }
@@ -138,35 +130,38 @@ object GameController {
 
   /** Returns a new instance of the [[GameController]] trait. It must receive the [[ParentGameController]], which it represents
     * its parent controller which provides all functionalities which must be delegated to this type of controllers, the
-    * [[GameView]] which will be called by and will call the returned [[GameController]] instance and the [[Path]] of the file
-    * containing the level from which starting the game.
+    * [[GameView]] which will be called by and will call the returned [[GameController]] instance and the [[Level]] from which
+    * starting the game.
     *
     * @param parentController
     *   the parent controller of the returned [[GameController]]
     * @param view
     *   the [[GameView]] which will be called by and which will call the returned [[GameController]] instance
-    * @param levelPath
-    *   the [[Path]] of the file containing the level from which starting the game
+    * @param level
+    *   the [[Level]] from which starting the game
     * @return
     *   a new [[GameController]] instance
     */
-  def apply(parentController: ParentGameController, view: GameView, levelPath: Path): GameController =
-    ExternalGameController(parentController, view, levelPath)
+  def apply(parentController: ParentGameController, view: GameView, level: Level): GameController =
+    ExternalGameController(parentController, view, level)
 
   /** Returns a new instance of the [[GameController]] trait. It must receive the [[ParentGameController]], which it represents
     * its parent controller which provides all functionalities which must be delegated to this type of controllers, the
-    * [[GameView]] which will be called by and will call the returned [[GameController]] instance and the index of the default
-    * level from which starting the game.
+    * [[GameView]] which will be called by and will call the returned [[GameController]] instance, the sequence of default
+    * [[Level]] which will be used during this game and the index of the default [[Level]] in the given sequence from which
+    * starting the game.
     *
     * @param parentController
     *   the parent controller of the returned [[GameController]]
     * @param view
     *   the [[GameView]] which will be called by and which will call the returned [[GameController]] instance
+    * @param levels
+    *   the sequence of default [[Level]] to be used during this game
     * @param levelIndex
-    *   the index of the default level from which starting the game
+    *   the index of the default [[Level]] in the given sequence from which starting the game
     * @return
     *   a new [[GameController]] instance
     */
-  def apply(parentController: ParentGameController, view: GameView, levelIndex: Int): GameController =
-    DefaultGameController(parentController, view, levelIndex)
+  def apply(parentController: ParentGameController, view: GameView, levels: Seq[Level], levelIndex: Int): GameController =
+    DefaultGameController(parentController, view, levels, levelIndex)
 }

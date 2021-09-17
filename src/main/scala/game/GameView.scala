@@ -8,29 +8,14 @@ import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.geometry.{HPos, Insets, VPos}
-import javafx.scene.control.Button
+import javafx.scene.control.{Alert, Button}
+import javafx.scene.control.Alert.AlertType
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
 
 import java.io.File
 import java.nio.file.Path
-
-/** The parent view to the [[GameView]].
-  *
-  * This trait is used for abstracting the functionalities which the [[GameView]] needs from its parent view so as to offer its
-  * own functionalities. In this way, the [[GameView]] is more modular because it can be reused in multiple contexts with multiple
-  * parent views.
-  */
-trait ParentGameView {
-
-  /** Asks to the parent view component to display the given error message to the player.
-    *
-    * @param message
-    *   the error message to display to the player
-    */
-  def showError(message: String): Unit
-}
 
 /** The view which displays the game part of an application.
   *
@@ -44,14 +29,26 @@ trait GameView extends ViewComponent[GridPane] {
   /** Makes the application view go back to the main menu, displaying it. */
   def backToMenu(): Unit
 
-  /** Displays the given [[Level]].
+  /** Displays the given [[Level]], resetting the component displaying the [[Level]] if necessary. This means that thi method is
+    * to be called when there is a change between [[Level]] in the game and not when an update of the same [[Level]] is to be
+    * displayed.
     *
     * @param level
     *   the [[Level]] to display
+    * @param isCompleted
+    *   whether or not this [[Level]] has been completed
     */
-  def drawLevel(level: Level): Unit
+  def drawLevel(level: Level, isCompleted: Boolean): Unit
 
-  def drawUpdate(level: Level): Unit
+  /** Displays the update to the currently displayed [[Level]], without resetting the component displaying it. This means that
+    * this method is not to be called when there is a change between [[Level]], but only during steps over the same [[Level]].
+    *
+    * @param level
+    *   the [[Level]] containing the update
+    * @param isCompleted
+    *   whether or not this [[Level]] has been completed
+    */
+  def drawLevelUpdate(level: Level, isCompleted: Boolean): Unit
 
   /** Displays the given error message to the player.
     *
@@ -65,11 +62,8 @@ trait GameView extends ViewComponent[GridPane] {
 object GameView {
 
   /* Abstract implementation of the GameView trait for factorizing common behaviors. */
-  private abstract class AbstractGameView(
-    parentController: ParentGameController,
-    parentView: ParentGameView,
-    scene: Scene
-  ) extends AbstractViewComponent[GridPane]("game.fxml")
+  private abstract class AbstractGameView(parentController: ParentGameController, scene: Scene)
+    extends AbstractViewComponent[GridPane]("game.fxml")
     with GameView {
     @FXML
     var resetButton: Button = _
@@ -99,21 +93,21 @@ object GameView {
     }
     playSimulationButton.setOnMouseClicked(startSimulationHandler)
     backToLevelsButton.setOnMouseClicked(_ => controller.goBack())
-    nextButton.setVisible(true)
     nextButton.setOnMouseClicked(_ => controller.nextLevel())
 
     protected def createController(): GameController
 
-    override def showError(message: String): Unit = parentView.showError(message)
+    override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.ERROR, message))
 
-    override def drawUpdate(level: Level): Unit = Platform.runLater(() => {
+    override def drawLevelUpdate(level: Level, isCompleted: Boolean): Unit = Platform.runLater(() => {
       boardView match {
         case Some(b) => b.updateBoard(level)
         case None    => Console.err.print("The board was not initialized")
       }
+      nextButton.setVisible(isCompleted)
     })
 
-    override def drawLevel(level: Level): Unit = Platform.runLater(() => {
+    override def drawLevel(level: Level, isCompleted: Boolean): Unit = Platform.runLater(() => {
       val newBoardView: BoardView = BoardView(level)
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
       GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
@@ -121,6 +115,7 @@ object GameView {
       GridPane.setMargin(newBoardView.innerComponent, new Insets(25, 0, 25, 0))
       innerComponent.add(newBoardView.innerComponent, 2, 3, 3, 1)
       boardView = Some(newBoardView)
+      nextButton.setVisible(false)
     })
 
     override def backToMenu(): Unit = controller.goBack()
@@ -129,67 +124,51 @@ object GameView {
   /* Extension of AbstractGameView for displaying default levels. */
   private class DefaultGameView(
     parentController: ParentGameController,
-    parentView: ParentGameView,
+    levels: Seq[Level],
     levelIndex: Int,
     scene: Scene
-  ) extends AbstractGameView(parentController, parentView, scene) {
-    override protected def createController(): GameController = GameController(parentController, this, levelIndex)
+  ) extends AbstractGameView(parentController, scene) {
+    override protected def createController(): GameController = GameController(parentController, this, levels, levelIndex)
   }
 
   /* Extension of AbstractGameView for displaying a generic level. */
-  private class ExternalGameView(
-    parentController: ParentGameController,
-    parentView: ParentGameView,
-    levelPath: Path,
-    scene: Scene
-  ) extends AbstractGameView(parentController, parentView, scene) {
-    override protected def createController(): GameController = GameController(parentController, this, levelPath)
+  private class ExternalGameView(parentController: ParentGameController, level: Level, scene: Scene)
+    extends AbstractGameView(parentController, scene) {
+    override protected def createController(): GameController = GameController(parentController, this, level)
   }
 
   /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentGameController]] so as to be able to complete the
-    * construction of a [[GameController]] correctly in order to use it, the [[ParentGameView]] which is the parent view of the
-    * created [[GameView]], the index of the default level from which starting the game and the ScalaFX's [[Scene]] on which
-    * displaying the instance after being constructed.
+    * construction of a [[GameController]] correctly in order to use it, the sequence of default [[Level]] to be used during this
+    * game, the index of the default [[Level]] from which starting the game and the ScalaFX's [[Scene]] on which displaying the
+    * instance after being constructed.
     *
     * @param parentController
     *   the controller needed so as to be able to complete the construction of a [[GameController]] correctly
     * @param scene
     *   the ScalaFX's [[Scene]] on which displaying the instance after being constructed
-    * @param parentView
-    *   the parent view component to the created [[GameView]]
+    * @param levels
+    *   the sequence of default [[Level]] to be used during this game
     * @param levelIndex
     *   the index of the default level from which starting the game
     * @return
     *   a new [[GameView]] instance
     */
-  def apply(
-    parentController: ParentGameController,
-    parentView: ParentGameView,
-    levelIndex: Int,
-    scene: Scene
-  ): GameView =
-    DefaultGameView(parentController, parentView, levelIndex, scene)
+  def apply(parentController: ParentGameController, levels: Seq[Level], levelIndex: Int, scene: Scene): GameView =
+    DefaultGameView(parentController, levels, levelIndex, scene)
 
   /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentGameController]] so as to be able to complete the
-    * construction of a [[GameController]] correctly in order to use it, the [[ParentGameView]] which is the parent view of the
-    * created [[GameView]], the [[Path]] of the file which contains the level from which starting the game and the ScalaFX's
-    * [[Scene]] on which displaying the instance after being constructed.
+    * construction of a [[GameController]] correctly in order to use it, the [[Level]] from which starting the game and the
+    * ScalaFX's [[Scene]] on which displaying the instance after being constructed.
     *
     * @param parentController
     *   the controller needed so as to be able to complete the construction of a [[GameController]] correctly
     * @param scene
     *   the ScalaFX's [[Scene]] on which displaying the instance after being constructed
-    * @param parentView
-    *   the parent view component to the created [[GameView]]
     * @param levelPath
     *   the [[Path]] of the file which contains the level from which starting the game
     * @return
     *   a new [[GameView]] instance
     */
-  def apply(
-    parentController: ParentGameController,
-    parentView: ParentGameView,
-    levelPath: Path,
-    scene: Scene
-  ): GameView = ExternalGameView(parentController, parentView, levelPath, scene)
+  def apply(parentController: ParentGameController, level: Level, scene: Scene): GameView =
+    ExternalGameView(parentController, level, scene)
 }

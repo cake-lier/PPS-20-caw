@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.game.{Deserializer, ParentGameController}
+import it.unibo.pps.caw.game.{Deserializer, LevelLoader, ParentGameController}
 import it.unibo.pps.caw.game.model.{Level, PlayableArea, Position}
 import it.unibo.pps.caw.menu.ParentMainMenuController
 
@@ -8,7 +8,8 @@ import java.io.File
 import java.nio.file.{Files, Path, Paths}
 import scala.io.Source
 import scala.jdk.StreamConverters.given
-import scala.util.{Failure, Using}
+import scala.util.{Failure, Try, Using}
+import cats.implicits.given
 
 /** The controller of the main application.
   *
@@ -16,29 +17,36 @@ import scala.util.{Failure, Using}
   * application and provides them the functionalities that are common between all controllers or that are "higher-level" ones,
   * such that no other controller should be responsible for them. It must be created through its companion object.
   */
-trait ApplicationController extends ParentGameController with ParentMainMenuController
+trait ApplicationController extends ParentGameController with ParentMainMenuController {
+
+  /** Returns the number of levels loaded from the folder containing the default levels. */
+  val levelsCount: Int
+}
 
 /** Companion object to the [[ApplicationController]] trait, containing its factory method. */
 object ApplicationController {
 
   /* Default implementation of the ApplicationController trait. */
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
-    override val levelFiles: Seq[Path] = Files
-      .list(Paths.get(ClassLoader.getSystemResource("levels/").toURI))
-      .toScala(Seq)
-      .filter(_.getFileName.toString.endsWith(".json"))
 
-    override def startGame(levelPath: Path): Unit = view.showGame(levelPath)
+    override def startGame(levelPath: Path): Unit =
+      LevelLoader.load(levelPath).fold(_ => view.showError("An error has occured, could not load level"), view.showGame(_))
 
-    override def startGame(levelIndex: Int): Unit = view.showGame(levelIndex)
-
-    override def loadLevel(path: Path): Level =
-      Using(Source.fromFile(path.toFile))(_.getLines.mkString)
-        .flatMap(Deserializer.deserializeLevel(_))
+    private val levelFiles: Seq[Level] =
+      Files
+        .list(Paths.get(ClassLoader.getSystemResource("levels/").toURI))
+        .toScala(Seq)
+        .filter(_.getFileName.toString.endsWith(".json"))
+        .map(LevelLoader.load(_))
+        .sequence
         .getOrElse {
-          view.showError("There was an error loading the level")
-          Level(10, 10, Set(), PlayableArea(Position(0, 0), 10, 10))
+          view.showError("An error has occured, could not load level")
+          Seq()
         }
+
+    override val levelsCount: Int = levelFiles.length
+
+    override def startGame(levelIndex: Int): Unit = view.showGame(levelFiles, levelIndex)
 
     override def exit(): Unit = sys.exit()
 

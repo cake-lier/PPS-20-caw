@@ -28,16 +28,26 @@ object MainMenuView {
     *
     * @param parentController
     *   the [[ParentMainMenuController]] used so as to be able to correctly create and then use a [[MainMenuController]]
+    * @param levelsCount
+    *   the number of default [[it.unibo.pps.caw.game.model.Level]] currently available to be played
     * @param scene
     *   the ScalaFX's [[Scene]] on which draw and display the created [[MainMenuView]] instance
+    * @param disableLevels
+    *   whether or not to disable the button for accessing the page of the main menu which displays the levels, in case of error
+    *   with the [[it.unibo.pps.caw.game.model.Level]] files loading
     * @return
     *   a new [[MainMenuView]] instance
     */
-  def apply(parentController: ParentMainMenuController, scene: Scene): MainMenuView = MainMenuViewImpl(parentController, scene)
+  def apply(parentController: ParentMainMenuController, levelsCount: Int, scene: Scene, disableLevels: Boolean): MainMenuView =
+    MainMenuViewImpl(parentController, levelsCount, scene, disableLevels)
 
   /* Default implementation of the MainMenuView trait. */
-  private final class MainMenuViewImpl(parentController: ParentMainMenuController, scene: Scene)
-    extends AbstractViewComponent[Pane]("main_menu_page.fxml")
+  private final class MainMenuViewImpl(
+    parentController: ParentMainMenuController,
+    levelsCount: Int,
+    scene: Scene,
+    disableLevels: Boolean
+  ) extends AbstractViewComponent[Pane]("main_menu_page.fxml")
     with MainMenuView {
     @FXML
     var playButton: Button = _
@@ -52,9 +62,12 @@ object MainMenuView {
 
     override val innerComponent: Pane = loader.load[GridPane]
 
-    private val controller: MainMenuController = MainMenuController(parentController, this)
+    private val controller: MainMenuController = MainMenuController(parentController, this, levelsCount)
 
-    playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, this, controller))
+    playButton.setDisable(disableLevels)
+    if (!disableLevels) {
+      playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, this, controller))
+    }
     loadButton.setOnMouseClicked(_ => {
       val chooser: FileChooser = FileChooser()
       chooser.title = "Choose a level file"

@@ -1,8 +1,9 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.game.{GameView, ParentGameView}
-import it.unibo.pps.caw.menu.MainMenuView
+import it.unibo.pps.caw.game.{GameView, ParentGameController}
+import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController}
 import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.game.model.Level
 import javafx.application.Platform
 import scalafx.scene.control.Alert
 import javafx.scene.layout.Pane
@@ -20,7 +21,7 @@ import java.nio.file.Path
   * so as to allow the view components to call and be called by their corresponding controller counterparts. It must be created
   * through its companion object.
   */
-trait ApplicationView extends ParentGameView {
+trait ApplicationView {
 
   /** Shows the given error message to the user.
     *
@@ -32,20 +33,23 @@ trait ApplicationView extends ParentGameView {
   /** Shows the [[MainMenuView]] to the user, hiding the currently displayed view. */
   def showMainMenu(): Unit
 
-  /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing the level which is contained into the
-    * file which [[Path]] is given.
+  /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing the given [[Level]].
     *
-    * @param levelPath
-    *   the [[Path]] of the file containing the level which will be first displayed
+    * @param level
+    *   the [[Level]] which will be first displayed
     */
-  def showGame(levelPath: Path): Unit
+  def showGame(level: Level): Unit
 
-  /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing the default level given its index.
+  /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing a default [[Level]]. The [[Level]]
+    * which will be played will be the one with the given index between the given sequence of default [[Level]]. After playing
+    * that [[Level]], the player will be able to play all subsequent [[Level]] in the sequence, until its end.
     *
+    * @param levels
+    *   the sequence of default [[Level]] that will be used while playing the game
     * @param levelIndex
-    *   the index of the level which will be first displayed
+    *   the index of the [[Level]] which will be first displayed in the given sequence of [[Level]]
     */
-  def showGame(levelIndex: Int): Unit
+  def showGame(levels: Seq[Level], levelIndex: Int): Unit
 }
 
 /** Companion object for the [[ApplicationView]] trait, containing its factory method. */
@@ -55,7 +59,8 @@ object ApplicationView {
   private class ApplicationViewImpl(stage: PrimaryStage) extends ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
     private val scene: Scene = Scene(1080, 720)
-    private var visibleView: ViewComponent[? <: Pane] = MainMenuView(controller, scene)
+    private var visibleView: ViewComponent[? <: Pane] =
+      MainMenuView(controller, controller.levelsCount, scene, controller.levelsCount == 0)
 
     stage.resizable = false
     stage.maximized = false
@@ -66,18 +71,18 @@ object ApplicationView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(levelPath: Path): Unit = Platform.runLater(() => {
-      visibleView = GameView(controller, this, levelPath, scene)
+    override def showGame(level: Level): Unit = Platform.runLater(() => {
+      visibleView = GameView(controller, level, scene)
       scene.root.value = visibleView.innerComponent
     })
 
-    override def showGame(levelIndex: Int): Unit = Platform.runLater(() => {
-      visibleView = GameView(controller, this, levelIndex, scene)
+    override def showGame(levels: Seq[Level], levelIndex: Int): Unit = Platform.runLater(() => {
+      visibleView = GameView(controller, levels, levelIndex, scene)
       scene.root.value = visibleView.innerComponent
     })
 
     override def showMainMenu(): Unit = Platform.runLater(() => {
-      visibleView = MainMenuView(controller, scene)
+      visibleView = MainMenuView(controller, controller.levelsCount, scene, controller.levelsCount == 0)
       scene.root.value = visibleView.innerComponent
     })
   }

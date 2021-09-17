@@ -11,11 +11,6 @@ import java.nio.file.Path
   */
 trait ParentMainMenuController {
 
-  /** Return the sequence of file [[Path]] s which contains the game [[it.unibo.pps.caw.game.model.Level]] s, ordered by their
-    * level index.
-    */
-  val levelFiles: Seq[Path]
-
   /** Asks the parent controller to start a new game. It needs the [[Path]] of the file containing the level from which starting
     * the game.
     *
@@ -41,7 +36,9 @@ trait ParentMainMenuController {
   * offers. It must be constructed through its companion object.
   */
 trait MainMenuController {
-  val levelFilesCount: Int
+
+  /** Returns the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
+  val levelsCount: Int
 
   /** Starts a new game beginning from one of the default levels, which index is given. Then, the game will continue using the
     * level next to this one, and then the next one and so on until the last one is reached or the player exits the game.
@@ -51,11 +48,11 @@ trait MainMenuController {
     */
   def startGame(levelIndex: Int): Unit
 
-  /** Starts a new game for playing the level contained in the given file. No other level will be played after this one, the only
-    * option for the player will be to exit the game.
+  /** Starts a new game for playing the level contained in the file with the given [[Path]]. No other level will be played after
+    * this one, the only option for the player will be to exit the game.
     *
-    * @param levelFile
-    *   the file containing the level to play in the new game
+    * @param levelPath
+    *   the [[Path]] to the file containing the [[it.unibo.pps.caw.game.model.Level]] to play in the new game
     */
   def startGame(levelPath: Path): Unit
 
@@ -67,9 +64,8 @@ trait MainMenuController {
 object MainMenuController {
 
   /* Default implementation of the MainMenuController trait. */
-  private class MainMenuControllerImpl(parentController: ParentMainMenuController, view: MainMenuView)
+  private class MainMenuControllerImpl(parentController: ParentMainMenuController, view: MainMenuView, val levelsCount: Int)
     extends MainMenuController {
-    override val levelFilesCount: Int = parentController.levelFiles.length
 
     override def startGame(levelIndex: Int): Unit = parentController.startGame(levelIndex)
 
@@ -86,9 +82,11 @@ object MainMenuController {
     *   the parent controller of the returned [[MainMenuController]]
     * @param view
     *   the [[GameView]] which will be called by and which will call the returned [[MainMenuController]] instance
+    * @param levelsCount
+    *   the number of default [[it.unibo.pps.caw.game.model.Level]] which are available to play
     * @return
     *   a new [[MainMenuController]] instance
     */
-  def apply(parentController: ParentMainMenuController, view: MainMenuView): MainMenuController =
-    MainMenuControllerImpl(parentController, view)
+  def apply(parentController: ParentMainMenuController, view: MainMenuView, levelsCount: Int): MainMenuController =
+    MainMenuControllerImpl(parentController, view, levelsCount)
 }

@@ -5,5 +5,5 @@ import scalafx.application.JFXApp3.PrimaryStage
 
 /** Main class of the application. */
 object Main extends JFXApp3 {
-  override def start(): Unit = ApplicationView(JFXApp3.PrimaryStage())
+  override def start(): Unit = ApplicationView(PrimaryStage())
 }

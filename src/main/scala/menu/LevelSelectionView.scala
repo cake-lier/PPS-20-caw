@@ -58,7 +58,7 @@ object LevelSelectionView {
     backButton.setOnMouseClicked(_ => scene.root.value = parentView)
 
     val constraints: RowConstraints = RowConstraints()
-    val rows: Int = (controller.levelFilesCount / 10.0).ceil.toInt
+    val rows: Int = (controller.levelsCount / 10.0).ceil.toInt
     val minTableRows: Int = 4
     val tableRows: Int = Math.max(rows, minTableRows)
     val maxVisibleTableRows: Int = 5
@@ -67,7 +67,7 @@ object LevelSelectionView {
     }
     constraints.setPercentHeight(100.0 / tableRows)
     (0 until tableRows).foreach(_ => buttonsPane.getRowConstraints.add(constraints))
-    (0 until controller.levelFilesCount).foreach { i =>
+    (0 until controller.levelsCount).foreach { i =>
       buttonsPane.add(LevelButton(i + 1, controller).innerComponent, i % 10, (i / 10.0).toInt)
     }
   }
