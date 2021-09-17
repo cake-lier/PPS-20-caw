@@ -35,5 +35,5 @@ In questo caso, occorre trasformare il visualizzatore di livelli in un level edi
 La cellula "trash" non fa altro che eliminare tutte le cellule che vi si muovono contro. Questo implica specificare delle nuove regole in PROLOG che gestiscano questa cellula (o semplicemente modificare le preesistenti in maniera tale che la considerino) e di aggiungerla in tutte le interfacce grafiche che sono state realizzate fino ad ora (il visualizzatore o l'editor di livelli e il gioco vero e proprio).
 
 <a name="7">7</a>:
-#### Aggiungere modulo per l'audio alla view
-Deve essere possibile riprodurre musica e suoni durante il gioco e mentre il menu è aperto.
+#### Aggiungere modulo audio alla view
+Deve essere possibile riprodurre sia musica che suoni durante l'avvio di qualsiasi applicazione. La musica dovrà essere riprodotta in loop e dovranno essere presenti più musiche, una per ogni componente dell'applicazione (menu, gioco ed eventualmente level editor). Queste non dovranno sovrapporsi, ma ognuna deve terminare nel momento nel quale comincia la successiva. Per quanto riguarda i suoni, questi invece dovranno essere di breve durata ed emessi nel momento nel quale si verifica un evento di sufficiente rilevanza all'interno della view (è stato premuto un bottone, il gioco è avanzato di uno step, un nemico è stato ucciso, ecc). Questo significa che possono sovrapporsi tra di loro e anche sovrapporsi alla musica, che non dovrà fermarsi nel momento nel quale un suono viene riprodotto.
