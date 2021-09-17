@@ -83,7 +83,7 @@ object Deserializer {
           .createDraft201909SchemaParser(SchemaRouter.create(vertx, SchemaRouterOptions()))
           .parseFromString(s)
           .validateSync(JsonObject(jsonString))
-      }
+      }.recover(_ => throw IllegalArgumentException())
     } yield ()
     vertx.close()
     validationTry
