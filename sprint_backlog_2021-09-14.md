@@ -31,11 +31,11 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
         </tr>
         <tr>
             <td>Completare la logica del metodo update del model</td>
-            <td></td>
+            <td>Elena Rughi</td>
             <td>6</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>6</td>
+            <td>6</td>
+            <td>5</td>
             <td></td>
             <td></td>
             <td></td>
