@@ -28,9 +28,9 @@ move_right([], _, _, _, _, []).
 move_right([cell(enemy, EX, Y) | CS], B, SX, EX, Y, NB) :- move_right(CS, B, SX, EX, Y, NB), !.
 move_right([cell(T, X, Y) | CS], B, SX, EX, Y1, [cell(T, X, Y) | NCS]) :- ((T = generator_right, X =:= SX, Y =:= Y1);
                                                                            X < SX;
-                                                                           X > EX + 1;
+                                                                           X > EX;
                                                                            Y =\= Y1),
-                                                                          move_right(CS, B, SX, EX, Y1, NCS), 
+                                                                          move_right(CS, B, SX, EX, Y1, NCS),
                                                                           !.
 move_right([cell(_, X, Y) | CS], B, SX, EX, Y, NB) :- X >= SX, 
                                                       X < EX,
@@ -92,11 +92,13 @@ rotate_right([cell(T, X1, Y1) | CS], X, Y, [cell(T, X1, Y1) | NCS]) :- rotate_ri
 % cells in the board and the empty cells must not be present.
 rotate_right_next_state(B, X, Y, NB) :- member(cell(rotate_right, X, Y), B), !, rotate_right(B, X, Y, NB).
 
-generator_right_next_state(B, X, Y, [cell(T, X2, Y) | NB]) :- member(cell(generator_right, X, Y), B),
+generate_right(B, _, X, EX, Y, NB) :- X1 is X + 1, member(cell(enemy, X1, Y), B), move_right(B, B, X, EX, Y, NB), !.
+generate_right(B, T, X, EX, Y, [cell(T, X1, Y) | NB]) :- X1 is X + 1, move_right(B, B, X, EX, Y, NB).
+
+generator_right_next_state(B, X, Y, NB) :- member(cell(generator_right, X, Y), B),
                                            X1 is X - 1,
                                            member(cell(T, X1, Y), B),
                                            last_index_right(B, generator_right, X, Y, EX),
-                                           X2 is X + 1,
-                                           move_right(B, B, X, EX, Y, NB),
+                                           generate_right(B, T, X, EX, Y, NB),
                                            !.
-generator_right_next_state(M, _, _, M).
+generator_right_next_state(B, _, _, B).
