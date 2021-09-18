@@ -21,7 +21,7 @@ import scala.util.matching.Regex
 sealed trait RulesEngine {
 
   /** Calculate the next [[Board]] starting from the current [[Board]] and the [[Cell]] to be updated */
-  def nextState(board: Board[IdCell], maxId: Long, cell: IdCell): Board[IdCell]
+  def nextState(board: Board[IdCell], cell: IdCell): Board[IdCell]
 }
 
 /** Companion object for trait [[RulesEngine]] */
@@ -30,9 +30,9 @@ object RulesEngine {
     private val engine: Term => Term =
       Using(Source.fromResource("cellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
 
-    def nextState(board: Board[IdCell], maxId: Long, cell: IdCell): Board[IdCell] =
+    def nextState(board: Board[IdCell], cell: IdCell): Board[IdCell] =
       PrologParser.deserializeBoard(
-        extractTerm(engine(PrologParser.createSerializedPredicate(board, maxId, cell)), 4).toString
+        extractTerm(engine(PrologParser.createSerializedPredicate(board, board.cells.size, cell)), 4).toString
       )
   }
   def apply(): RulesEngine = RulesEngineImpl()

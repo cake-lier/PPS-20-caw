@@ -54,7 +54,7 @@ object GameModel {
 
     override def update(): GameModel = {
       // parse Board[Cell] to Board[IdCell]
-      val it = Iterator.range(0, currentBoard.cells.size - 1)
+      val it = Iterator.range(1, currentBoard.cells.size)
       val idCells: Set[IdCell] = currentBoard.cells.map(cell => CellConverter.toId(cell, it.next()))
       val idBoard = Board(idCells)
 
