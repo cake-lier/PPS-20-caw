@@ -2,13 +2,13 @@ package it.unibo.pps.caw
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import engine.GameEngine
+import engine.RulesEngine
 import model._
 
 import scala.language.implicitConversions
 
-/** Tests for [[GameEngine]] */
-class GameEngineTest extends AnyFunSpec with Matchers {
+/** Tests for [[RulesEngine]] */
+class RulesEngineTest extends AnyFunSpec with Matchers {
 
   private val maxId: Long = 4
   private val moverRightBoard: Board[IdCell] = Board(
@@ -170,5 +170,5 @@ class GameEngineTest extends AnyFunSpec with Matchers {
     }
   }
 
-  private def createEngine: GameEngine = GameEngine()
+  private def createEngine: RulesEngine = RulesEngine()
 }

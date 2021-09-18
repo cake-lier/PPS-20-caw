@@ -18,15 +18,15 @@ import scala.util.Using
 import scala.util.matching.Regex
 
 /** Engine of game rules */
-sealed trait GameEngine {
+sealed trait RulesEngine {
 
   /** Calculate the next [[Board]] starting from the current [[Board]] and the [[Cell]] to be updated */
   def nextState(board: Board[IdCell], maxId: Long, cell: IdCell): Board[IdCell]
 }
 
-/** Companion object for trait [[GameEngine]] */
-object GameEngine {
-  private case class GameEngineImpl() extends GameEngine {
+/** Companion object for trait [[RulesEngine]] */
+object RulesEngine {
+  private case class RulesEngineImpl() extends RulesEngine {
     private val engine: Term => Term =
       Using(Source.fromResource("cellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
 
@@ -35,7 +35,7 @@ object GameEngine {
         extractTerm(engine(PrologParser.createSerializedPredicate(board, maxId, cell)), 4).toString
       )
   }
-  def apply(): GameEngine = GameEngineImpl()
+  def apply(): RulesEngine = RulesEngineImpl()
 }
 
 /* An utility object for prolog serialization and deserialization */

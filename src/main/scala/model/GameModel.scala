@@ -1,6 +1,6 @@
 package model
 
-import engine.GameEngine
+import engine.RulesEngine
 import it.unibo.pps.caw.model._
 
 /** Trait representing the model of the game. Changing the state creates another [[GameModel]] instance */
@@ -65,7 +65,7 @@ object GameModel {
       ).flatten
 
       def update(cells: Seq[IdCell], board: Board[IdCell]): Board[IdCell] = cells match {
-        case h :: t if (! h.updated) => update(t, GameEngine().nextState(board, h))
+        case h :: t if (! h.updated) => update(t, RulesEngine().nextState(board, h))
         case h :: t => update(t, board) // ignore already updated cells
         case _      => board
       }
