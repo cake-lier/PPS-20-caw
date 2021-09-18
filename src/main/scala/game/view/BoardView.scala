@@ -28,8 +28,15 @@ object BoardView {
     with DragAndDrop {
 
     override val innerComponent: GridPane = loader.load[GridPane]
-    private val boardHeight: Double = 500
-    private val boardWidth: Double = (boardHeight / initialLevel.height) * initialLevel.width
+    private var boardWidth:Double = innerComponent.getPrefWidth
+    private var boardHeight:Double = innerComponent.getPrefHeight
+
+    if (initialLevel.width / initialLevel.height >= 2) {
+      boardHeight = (boardWidth/initialLevel.width) * initialLevel.height
+    } else {
+      boardWidth = (boardWidth/initialLevel.height) * initialLevel.width
+    }
+
     innerComponent.setPrefSize(boardWidth, boardHeight)
     (0 until initialLevel.width).foreach { _ =>
       val columnConstraints: ColumnConstraints = ColumnConstraints()
@@ -41,6 +48,7 @@ object BoardView {
       rowConstraints.setPercentHeight(boardHeight / initialLevel.height)
       innerComponent.getRowConstraints.add(rowConstraints)
     }
+
     placePavement()
     drawLevel(initialLevel)
 
