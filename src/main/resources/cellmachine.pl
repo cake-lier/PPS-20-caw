@@ -1,7 +1,7 @@
-% is_movable_right(Board, Type, XCoordinate, YCoordinate)
+% last_index_right(Board, Type, XCoordinate, YCoordinate, EndXCoordinate)
 % 
 % This predicate checks whether or not a board contains a row of cells that can be moved to the right by one position starting
-% from the cell which coordinates and type are given. The check starts from the initial cell and then recursively moves along the
+% from the cell whose coordinates and type are given. The check starts from the initial cell and then recursively moves along the
 % board from left to right on the same row of the previous cell. This means that getting the next cell is equivalent to getting
 % the one adjacent to the right of the previous one. Any given cell can move to the right if it is one that can always move to the
 % right, like an "enemy" cell, or if it is a cell that can move to the right if it is adjacent to a cell that can move to the
@@ -16,7 +16,7 @@ last_index_right(B, T, X, Y, EX) :- T \= wall,
                                     X1 is X + 1,
                                     (member(cell(T1, X1, Y), B) -> last_index_right(B, T1, X1, Y, EX); EX = X).
 
-% move_right(Board, XCoordinate, YCoordinate, NextBoard)
+% move_right(Board, Board, StartXCoordinate, EndXCoordinate, YCoordinate, NextBoard)
 % 
 % This predicate applies the rule for the "arrow right" cell behavior. This predicate considers only the cells which are adjacent
 % to the right of the "arrow right" cell which coordinates are given. If, while moving left to right from the "arrow right" cell,
@@ -46,11 +46,11 @@ move_right([cell(T, X, Y) | CS], B, SX, EX, Y, [cell(T, X1, Y)| NCS]) :- X >= SX
 % arrow_right_next_state(Board, XCoordinate, YCoordinate, NextBoard)
 % 
 % This predicate allows to update the state of a board and obtain its next state applying the rule for the "arrow right" cell
-% behavior. This predicate considers only the cells which are adjacent to the right of the "arrow right" cell which coordinates
+% behavior. This predicate considers only the cells which are adjacent to the right of the "arrow right" cell whose coordinates
 % are given. If, while moving left to right from the "arrow right" cell, an "enemy" cell is found, then the remaining cells are
 % ignored by this predicate. If the row of cells built as previously described is deemed to be movable to the right by one
 % position, the row is then moved. If the last cell of the row is an enemy cell, the cell is destroyed as is destroyed the one
-% previous to the enemy cell. Those two cells will not be present in the next board state. If the coordinates does not point to an
+% previous to the enemy cell. Those two cells will not be present in the next board state. If the coordinates do not point to an
 % "arrow right" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the board and the empty
 % cells must not be present.
 arrow_right_next_state(B, X, Y, NB) :- member(cell(arrow_right, X, Y), B),
@@ -58,6 +58,45 @@ arrow_right_next_state(B, X, Y, NB) :- member(cell(arrow_right, X, Y), B),
                                        move_right(B, B, X, EX, Y, NB),
                                        !.
 arrow_right_next_state(B, _, _, B).
+
+%-----------------------------------------------------------------------------------------------------------------------------------
+
+% last_index_left(Board, Type, XCoordinate, YCoordinate, EndXCoordinate)
+last_index_left(_, enemy, X, _, X) :- !.
+last_index_left(B, T, X, Y, EX) :- T \= wall,
+                                    T \= block_ver,
+                                    T \= arrow_right,
+                                    X1 is X - 1,
+                                    (member(cell(T1, X1, Y), B) -> last_index_left(B, T1, X1, Y, EX); EX = X).
+
+% move_left([cell | tail], Board, StartXCoordinate, EndXCoordinate, YCoordinate, NextBoard)
+move_left([], _, _, _, _, []).
+move_left([cell(enemy, EX, Y) | CS], B, SX, EX, Y, NB) :- move_left(CS, B, SX, EX, Y, NB), !.
+move_left([cell(T, X, Y) | CS], B, SX, EX, Y1, [cell(T, X, Y) | NCS]) :- ((T = generator_left, X =:= EX, Y =:= Y1);
+                                                                           X > SX;
+                                                                           X < EX;
+                                                                           Y =\= Y1),
+                                                                          move_left(CS, B, SX, EX, Y1, NCS),
+                                                                          !.
+move_left([cell(_, X, Y) | CS], B, SX, EX, Y, NB) :- X =< SX, 
+                                                     X > EX,
+                                                     X1 is X - 1,
+                                                     member(cell(enemy, X1, Y), B),
+                                                     move_left(CS, B, SX, EX, Y, NB),
+                                                     !.
+move_left([cell(T, X, Y) | CS], B, SX, EX, Y, [cell(T, X1, Y)| NCS]) :- X =< SX, 
+                                                                        X >= EX,
+                                                                        X1 is X - 1,
+                                                                        move_left(CS, B, SX, EX, Y, NCS).
+
+% arrow_left_next_state(Board, XCoordinate, YCoordinate, NextBoard)
+arrow_left_next_state(B, X, Y, NB) :- member(cell(arrow_left, X, Y), B),
+                                      last_index_left(B, arrow_left, X, Y, EX),
+                                      move_left(B, B, X, EX, Y, NB),
+                                      !.
+arrow_left_next_state(B, _, _, B).
+
+%-----------------------------------------------------------------------------------------------------------------------------------
 
 % rotate_right(Board, XCoordinate, YCoordinate, NextBoard)
 % 
@@ -91,6 +130,8 @@ rotate_right([cell(T, X1, Y1) | CS], X, Y, [cell(T, X1, Y1) | NCS]) :- rotate_ri
 % coordinates does not point to a "rotate right" cell, the predicate simply evaluates to "no". No ordering is required for the
 % cells in the board and the empty cells must not be present.
 rotate_right_next_state(B, X, Y, NB) :- member(cell(rotate_right, X, Y), B), !, rotate_right(B, X, Y, NB).
+
+%-----------------------------------------------------------------------------------------------------------------------------------
 
 generate_right(B, _, X, EX, Y, NB) :- X1 is X + 1, member(cell(enemy, X1, Y), B), move_right(B, B, X, EX, Y, NB), !.
 generate_right(B, T, X, EX, Y, [cell(T, X1, Y) | NB]) :- X1 is X + 1, move_right(B, B, X, EX, Y, NB).
