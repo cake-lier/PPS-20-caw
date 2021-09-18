@@ -5,7 +5,7 @@ package it.unibo.pps.caw
   * This trait creates modular view components that can be re-instantied multiple times without specifying how to initialize them
   * since it incapsulates all the logic needed to create and style view components. The instantiation is made through its
   * companion object.
- *
+  *
   * @tparam A
   *   the type of component wrapped
   */

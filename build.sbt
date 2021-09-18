@@ -8,6 +8,15 @@ scalacOptions ++= Seq("-language:implicitConversions")
 
 idePackagePrefix := Some("it.unibo.pps.caw")
 
+Compile / resourceGenerators += Def.task {
+  val theory: Seq[String] = IO.readLines((Compile / resourceDirectory).value / "cellmachine.pl")
+  val outputFile: File = (Compile / resourceManaged).value / "cellmachine.pl"
+  IO.write(outputFile, theory.filterNot(_.startsWith("%")).mkString("\n"))
+  Seq(outputFile)
+}.taskValue
+
+Compile / excludeFilter := "*.pl"
+
 lazy val osName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux")   => "linux"
   case n if n.startsWith("Mac")     => "mac"
