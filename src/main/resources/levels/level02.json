@@ -1,0 +1,45 @@
+{
+  "width": 10,
+  "height": 7,
+  "playableArea": {
+    "width": 5,
+    "height": 7,
+    "x": 0,
+    "y": 0
+  },
+  "cells": {
+    "mover": [
+      {
+        "orientation": "right",
+        "x": 1,
+        "y": 3
+      }
+    ],
+    "block": [
+      {
+        "push": "both",
+        "x": 1,
+        "y": 5
+      },
+      {
+        "push": "both",
+        "x": 0,
+        "y": 6
+      }
+    ],
+    "enemy": [
+      {
+        "x": 6,
+        "y": 1
+      },
+      {
+        "x": 7,
+        "y": 1
+      },
+      {
+        "x": 8,
+        "y": 1
+      }
+    ]
+  }
+}

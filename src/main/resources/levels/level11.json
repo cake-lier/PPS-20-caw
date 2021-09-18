@@ -1,0 +1,81 @@
+{
+  "width": 13,
+  "height": 12,
+  "playableArea": {
+    "width": 5,
+    "height": 12,
+    "x": 0,
+    "y": 0
+  },
+  "cells": {
+    "mover": [
+      {
+        "orientation": "top",
+        "x": 3,
+        "y": 0
+      },
+      {
+        "orientation": "top",
+        "x": 1,
+        "y": 4
+      },
+      {
+        "orientation": "top",
+        "x": 4,
+        "y": 8
+      },
+      {
+        "orientation": "top",
+        "x": 1,
+        "y": 9
+      },
+      {
+        "orientation": "top",
+        "x": 3,
+        "y": 9
+      }
+    ],
+    "rotator": [
+      {
+        "rotation": "clockwise",
+        "x": 1,
+        "y": 11
+      }
+    ],
+    "block": [
+      {
+        "push": "vertical",
+        "x": 4,
+        "y": 9
+      }
+    ],
+    "enemy": [
+      {
+        "x": 10,
+        "y": 2
+      },
+      {
+        "x": 10,
+        "y": 3
+      },
+      {
+        "x": 10,
+        "y": 4
+      },
+      {
+        "x": 10,
+        "y": 5
+      }
+    ],
+    "wall": [
+      {
+        "x": 1,
+        "y": 2
+      },
+      {
+        "x": 3,
+        "y": 6
+      }
+    ]
+  }
+}
