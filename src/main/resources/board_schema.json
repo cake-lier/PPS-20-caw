@@ -115,9 +115,9 @@
                     "items": {
                         "type": "object",
                         "properties": {
-                            "direction": {
+                            "rotation": {
                                 "description": "The direction of the rotate cell",
-                                "enum": [ "right", "left" ]
+                                "enum": [ "clockwise", "counterclockwise" ]
                             },
                             "x": {
                                 "description": "The x coordinate of the rotate cell",
@@ -133,7 +133,7 @@
                             }
                         },
                         "additionalProperties": false,
-                        "required": [ "direction", "x", "y" ]
+                        "required": [ "rotation", "x", "y" ]
                     },
                     "uniqueItems": true
                 },
@@ -143,7 +143,7 @@
                     "items": {
                         "type": "object",
                         "properties": {
-                            "allowedMovement": {
+                            "push": {
                                 "description": "The direction in which the block cell allows to be pushed",
                                 "enum": [ "horizontal", "vertical", "both" ]
                             },
@@ -161,7 +161,7 @@
                             }
                         },
                         "additionalProperties": false,
-                        "required": [ "allowedMovement", "x", "y" ]
+                        "required": [ "push", "x", "y" ]
                     },
                     "uniqueItems": true
                 },

@@ -27,8 +27,8 @@ object CellView {
     cell match {
       case RotatorCell(_, _, rotationDirection) =>
         rotationDirection match {
-          case RotationDirection.Right => innerComponent.setImage(CellImage.RotatorRight.image)
-          case RotationDirection.Left  => innerComponent.setImage(CellImage.RotatorLeft.image)
+          case RotationDirection.Clockwise => innerComponent.setImage(CellImage.RotatorRight.image)
+          case RotationDirection.Counterclockwise  => innerComponent.setImage(CellImage.RotatorLeft.image)
         }
       case GeneratorCell(_, _, orientation) =>
         orientation match {
@@ -48,8 +48,8 @@ object CellView {
       case BlockCell(_, _, allowedMovement) =>
         allowedMovement match {
           case AllowedMovement.Both       => innerComponent.setImage(CellImage.Block.image)
-          case AllowedMovement.Vertical   => innerComponent.setImage(CellImage.BlockHorizontal.image)
-          case AllowedMovement.Horizontal => innerComponent.setImage(CellImage.BlockVertical.image)
+          case AllowedMovement.Vertical   => innerComponent.setImage(CellImage.BlockVertical.image)
+          case AllowedMovement.Horizontal => innerComponent.setImage(CellImage.BlockHorizontal.image)
         }
       case WallCell(_, _) => innerComponent.setImage(CellImage.Wall.image)
     }

@@ -29,8 +29,8 @@ enum CellTypes(cellType: String) {
 
 /** Enum that represent the direction of rotation some cells */
 enum RotationDirection(direction: String) {
-  case Right extends RotationDirection("right")
-  case Left extends RotationDirection("left")
+  case Clockwise extends RotationDirection("clockwise")
+  case Counterclockwise extends RotationDirection("counterclockwise")
 
   /** Getter of [[RotationDirection]] value
     * @return

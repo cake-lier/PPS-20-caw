@@ -58,10 +58,10 @@ object Deserializer {
               case CellTypes.Mover =>
                 MoverCell(position, isInside, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get)
               case CellTypes.Block =>
-                BlockCell(position, isInside, EnumHelper.toMovement((jsCell \ "allowedMovement").as[String]).get)
+                BlockCell(position, isInside, EnumHelper.toMovement((jsCell \ "push").as[String]).get)
               case CellTypes.Enemy => EnemyCell(position, isInside)
               case CellTypes.Rotator =>
-                RotatorCell(position, isInside, EnumHelper.toRotation((jsCell \ "direction").as[String]).get)
+                RotatorCell(position, isInside, EnumHelper.toRotation((jsCell \ "rotation").as[String]).get)
               case CellTypes.Wall => WallCell(position, isInside)
               case CellTypes.Generator =>
                 GeneratorCell(position, isInside, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get)
