@@ -58,10 +58,10 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>Implementare predicati "mover"</td>
             <td>Matteo Castellucci & Lorenzo Gardini & Elena Rughi & Yuqi Sun</td>
             <td>6</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>6</td>
+            <td>6</td>
+            <td>6</td>
+            <td>4</td>
             <td></td>
             <td></td>
             <td></td>
@@ -70,10 +70,10 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>Implementare predicati "rotator"</td>
             <td>Matteo Castellucci & Lorenzo Gardini & Elena Rughi & Yuqi Sun</td>
             <td>6</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>6</td>
+            <td>6</td>
+            <td>6</td>
+            <td>4</td>
             <td></td>
             <td></td>
             <td></td>
@@ -82,10 +82,10 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>Implementare predicati "generator"</td>
             <td>Matteo Castellucci & Lorenzo Gardini & Elena Rughi & Yuqi Sun</td>
             <td>8</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>8</td>
+            <td>8</td>
+            <td>8</td>
+            <td>6</td>
             <td></td>
             <td></td>
             <td></td>
