@@ -21,7 +21,7 @@ sealed trait SetupCell extends Cell {
 sealed trait IdCell extends Cell {
 
   /** cell identifier for one update cycle */
-  val id: Long
+  val id: Int
   /** whether the cell has been updated or not */
   val updated: Boolean
 }
@@ -132,13 +132,22 @@ object CellConverter {
     case IdBlockCell(position, allowedMovement, _, _)     => BlockCell(position, allowedMovement)
   }
 
-  def toId(cell: Cell, id: Long): IdCell = cell match {
+  def toId(cell: Cell, id: Int) = cell match {
     case EnemyCell(position)                              => IdEnemyCell(position, id, false)
     case WallCell(position)                               => IdWallCell(position, id, false)
     case RotatorCell(position, rotationDirection)         => IdRotatorCell(position, rotationDirection, id, false)
     case MoverCell(position, orientation)                 => IdMoverCell(position, orientation, id, false)
     case GeneratorCell(position, orientation)             => IdGeneratorCell(position, orientation, id, false)
     case BlockCell(position, allowedMovement)             => IdBlockCell(position, allowedMovement, id, false)
+  }
+  
+  def toUpdated(idCell: IdCell, updated: Boolean) = idCell match {
+    case IdEnemyCell(position, id, _)                      => IdEnemyCell(position, id, updated)
+    case IdWallCell(position, id, _)                       => IdWallCell(position, id, updated)
+    case IdRotatorCell(position, rotationDirection, id, _) => IdRotatorCell(position, rotationDirection, id, updated)
+    case IdMoverCell(position, orientation, id, _)         => IdMoverCell(position, orientation, id, updated)
+    case IdGeneratorCell(position, orientation, id, _)     => IdGeneratorCell(position, orientation, id, updated)
+    case IdBlockCell(position, allowedMovement, id, _)     => IdBlockCell(position, allowedMovement, id, updated)
   }
 
 }
@@ -153,7 +162,7 @@ object CellConverter {
   */
 case class RotatorCell(position: Position, rotationDirection: RotationDirection) extends Cell
 case class SetupRotatorCell(position: Position, rotationDirection: RotationDirection, playable: Boolean) extends SetupCell
-case class IdRotatorCell(position: Position, rotationDirection: RotationDirection, id: Long, updated: Boolean) extends IdCell
+case class IdRotatorCell(position: Position, rotationDirection: RotationDirection, id: Int, updated: Boolean) extends IdCell
 
 /** Represent the generator [[Cell]]
   * @param position:
@@ -165,7 +174,7 @@ case class IdRotatorCell(position: Position, rotationDirection: RotationDirectio
   */
 case class GeneratorCell(position: Position, orientation: Orientation) extends Cell
 case class SetupGeneratorCell(position: Position, orientation: Orientation, playable: Boolean) extends SetupCell
-case class IdGeneratorCell(position: Position, orientation: Orientation, id: Long, updated: Boolean) extends IdCell
+case class IdGeneratorCell(position: Position, orientation: Orientation, id: Int, updated: Boolean) extends IdCell
 
 /** Represent the enemy [[Cell]]
   * @param position:
@@ -175,7 +184,7 @@ case class IdGeneratorCell(position: Position, orientation: Orientation, id: Lon
   */
 case class EnemyCell(position: Position) extends Cell
 case class SetupEnemyCell(position: Position, playable: Boolean) extends SetupCell
-case class IdEnemyCell(position: Position, id: Long, updated: Boolean) extends IdCell
+case class IdEnemyCell(position: Position, id: Int, updated: Boolean) extends IdCell
 
 /** Represent the mover [[Cell]]
   * @param position:
@@ -187,7 +196,7 @@ case class IdEnemyCell(position: Position, id: Long, updated: Boolean) extends I
   */
 case class MoverCell(position: Position, orientation: Orientation) extends Cell
 case class SetupMoverCell(position: Position, orientation: Orientation, playable: Boolean) extends SetupCell
-case class IdMoverCell(position: Position, orientation: Orientation, id: Long, updated: Boolean) extends IdCell
+case class IdMoverCell(position: Position, orientation: Orientation, id: Int, updated: Boolean) extends IdCell
 
 /** Represent the block [[Cell]]
   * @param position:
@@ -199,7 +208,7 @@ case class IdMoverCell(position: Position, orientation: Orientation, id: Long, u
   */
 case class BlockCell(position: Position, allowedMovement: AllowedMovement) extends Cell
 case class SetupBlockCell(position: Position, allowedMovement: AllowedMovement, playable: Boolean) extends SetupCell
-case class IdBlockCell(position: Position, allowedMovement: AllowedMovement, id: Long, updated: Boolean) extends IdCell
+case class IdBlockCell(position: Position, allowedMovement: AllowedMovement, id: Int, updated: Boolean) extends IdCell
 
 /** Represent the wall [[Cell]]
   * @param position:
@@ -209,4 +218,4 @@ case class IdBlockCell(position: Position, allowedMovement: AllowedMovement, id:
   */
 case class WallCell(position: Position) extends Cell
 case class SetupWallCell(position: Position, playable: Boolean) extends SetupCell
-case class IdWallCell(position: Position, id: Long, updated: Boolean) extends IdCell
+case class IdWallCell(position: Position, id: Int, updated: Boolean) extends IdCell

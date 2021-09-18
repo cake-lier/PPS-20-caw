@@ -26,15 +26,29 @@ sealed trait RulesEngine {
 
 /** Companion object for trait [[RulesEngine]] */
 object RulesEngine {
+
   private case class RulesEngineImpl() extends RulesEngine {
     private val engine: Term => Term =
       Using(Source.fromResource("cellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
 
-    def nextState(board: Board[IdCell], cell: IdCell): Board[IdCell] =
-      PrologParser.deserializeBoard(
+    def nextState(board: Board[IdCell], cell: IdCell): Board[IdCell] = {
+      val cellState: IndexedSeq[Boolean] = board.cells.toList.sortBy(_.id).map(_.updated).toIndexedSeq
+                                            .updated(cell.id, true) // cell being currently updated to true
+
+      /* Update cell returned by deserializer with correct field IdCell.updated */
+      def updateCell(cell: IdCell): IdCell = cell match {
+        case c if (c.id >= cellState.length) => c // new cell created by a generator doesn't get updated
+        case c => CellConverter.toUpdated(c, cellState(c.id))
+      }
+
+      val resBoard = PrologParser.deserializeBoard(
         extractTerm(engine(PrologParser.createSerializedPredicate(board, board.cells.size, cell)), 4).toString
       )
+
+      Board(resBoard.cells.map(updateCell))
+    }
   }
+
   def apply(): RulesEngine = RulesEngineImpl()
 }
 
@@ -56,7 +70,7 @@ private object PrologParser {
       case g: IdGeneratorCell => "generator_" + g.orientation.getOrientation
       case r: IdRotatorCell   => "rotate_" + r.rotationDirection.getDirection
     }
-    Term.createTerm("cell" + Seq(cellType, cell.position.x, cell.position.y, cell.id, cell.updated).mkString("(", ",", ")"))
+    Term.createTerm("cell" + Seq(cellType, cell.position.x, cell.position.y, cell.id).mkString("(", ",", ")"))
   }
 
   /* Returns a Prolog term given its cell.
@@ -111,10 +125,10 @@ private object PrologParser {
 
   /* Returns a Scala fake cell given its Prolog cell*/
   def deserializeCell(stringCell: String): IdCell = {
-    val s"cell($cellType,$stringX,$stringY,$id,$update)" = stringCell
-    val cellId = id.toLong
+    val s"cell($cellType,$stringX,$stringY,$id)" = stringCell
+    val cellId = id.toInt
     val position = Position(stringX.toInt, stringY.toInt)
-    val updated = update.toBoolean
+    val updated = false // default value, properly set in nextState()
 
     cellType match {
       case s"arrow_$orientation" => IdMoverCell(position, EnumHelper.toOrientation(orientation).get, cellId, updated)
