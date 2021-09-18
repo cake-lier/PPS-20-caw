@@ -3,65 +3,67 @@ package it.unibo.pps.caw
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import engine.GameEngine
-import model.{AllowedMovement, BlockCell, Board, Cell, GeneratorCell, MoverCell, Orientation, RotationDirection, RotatorCell}
+import model._
 
 import scala.language.implicitConversions
 
 /** Tests for [[GameEngine]] */
 class GameEngineTest extends AnyFunSpec with Matchers {
-  private val moverRightBoard: Board[Cell] = Board(
-    MoverCell((0, 0), Orientation.Right),
-    BlockCell((1, 0), AllowedMovement.Horizontal),
-    BlockCell((10, 0), AllowedMovement.Both)
+
+  private val maxId: Long = 4
+  private val moverRightBoard: Board[IdCell] = Board(
+    IdMoverCell((0, 0), Orientation.Right, 1, false),
+    IdBlockCell((1, 0), AllowedMovement.Horizontal, 2, false),
+    IdBlockCell((10, 0), AllowedMovement.Both, 3, false)
   )
-  private val moverLeftBoard: Board[Cell] = Board(
-    MoverCell((10, 0), Orientation.Left),
-    BlockCell((9, 0), AllowedMovement.Horizontal),
-    BlockCell((0, 0), AllowedMovement.Both)
+  private val moverLeftBoard: Board[IdCell] = Board(
+    IdMoverCell((10, 0), Orientation.Left, 1, false),
+    IdBlockCell((9, 0), AllowedMovement.Horizontal, 2, false),
+    IdBlockCell((0, 0), AllowedMovement.Both, 3, false)
   )
-  private val moverTopBoard: Board[Cell] = Board(
-    MoverCell((0, 0), Orientation.Top),
-    BlockCell((0, 1), AllowedMovement.Vertical),
-    BlockCell((0, 10), AllowedMovement.Both)
+  private val moverTopBoard: Board[IdCell] = Board(
+    IdMoverCell((0, 0), Orientation.Top, 1, false),
+    IdBlockCell((0, 1), AllowedMovement.Vertical, 2, false),
+    IdBlockCell((0, 10), AllowedMovement.Both, 3, false)
   )
-  private val moverDownBoard: Board[Cell] = Board(
-    MoverCell((0, 10), Orientation.Down),
-    BlockCell((0, 9), AllowedMovement.Vertical),
-    BlockCell((0, 0), AllowedMovement.Both)
+  private val moverDownBoard: Board[IdCell] = Board(
+    IdMoverCell((0, 10), Orientation.Down, 1, false),
+    IdBlockCell((0, 9), AllowedMovement.Vertical, 2, false),
+    IdBlockCell((0, 0), AllowedMovement.Both, 3, false)
   )
-  private val rotatorLeftBoard: Board[Cell] = Board(
-    RotatorCell((1, 1), RotationDirection.Left),
-    BlockCell((1, 0), AllowedMovement.Horizontal),
-    BlockCell((1, 2), AllowedMovement.Horizontal),
-    BlockCell((2, 1), AllowedMovement.Horizontal),
-    BlockCell((0, 1), AllowedMovement.Horizontal)
+  private val rotatorLeftBoard: Board[IdCell] = Board(
+    IdRotatorCell((1, 1), RotationDirection.Left, 1, false),
+    IdBlockCell((1, 0), AllowedMovement.Horizontal, 2, false),
+    IdBlockCell((1, 2), AllowedMovement.Horizontal, 3, false),
+    IdBlockCell((2, 1), AllowedMovement.Horizontal, 4, false),
+    IdBlockCell((0, 1), AllowedMovement.Horizontal, 5, false)
   )
-  private val rotatorRightBoard: Board[Cell] = Board(
-    RotatorCell((1, 1), RotationDirection.Right),
-    BlockCell((1, 0), AllowedMovement.Horizontal),
-    BlockCell((1, 2), AllowedMovement.Horizontal),
-    BlockCell((2, 1), AllowedMovement.Horizontal),
-    BlockCell((0, 1), AllowedMovement.Horizontal)
+  private val rotatorRightBoard: Board[IdCell] = Board(
+    IdRotatorCell((1, 1), RotationDirection.Right, 1, false),
+    IdBlockCell((1, 0), AllowedMovement.Horizontal, 2, false),
+    IdBlockCell((1, 2), AllowedMovement.Horizontal, 3, false),
+    IdBlockCell((2, 1), AllowedMovement.Horizontal, 4, false),
+    IdBlockCell((0, 1), AllowedMovement.Horizontal, 5, false)
   )
-  private val generatorRightBoard: Board[Cell] = Board(
-    BlockCell((0, 0), AllowedMovement.Horizontal),
-    GeneratorCell((1, 0), Orientation.Right),
-    BlockCell((10, 0), AllowedMovement.Both)
+  private val generatorRightBoard: Board[IdCell] = Board(
+    IdBlockCell((0, 0), AllowedMovement.Horizontal, 1, false),
+    IdGeneratorCell((1, 0), Orientation.Right, 2, false),
+    IdBlockCell((10, 0), AllowedMovement.Both, 3, false)
   )
-  private val generatorLeftBoard: Board[Cell] = Board(
-    BlockCell((10, 0), AllowedMovement.Horizontal),
-    GeneratorCell((9, 0), Orientation.Left),
-    BlockCell((0, 0), AllowedMovement.Both)
+  private val generatorLeftBoard: Board[IdCell] = Board(
+    IdBlockCell((10, 0), AllowedMovement.Horizontal, 1, false),
+    IdGeneratorCell((9, 0), Orientation.Left, 2, false),
+    IdBlockCell((0, 0), AllowedMovement.Both, 3, false)
   )
-  private val generatorTopBoard: Board[Cell] = Board(
-    BlockCell((0, 0), AllowedMovement.Vertical),
-    GeneratorCell((0, 1), Orientation.Top),
-    BlockCell((0, 10), AllowedMovement.Both)
+  private val generatorTopBoard: Board[IdCell] = Board(
+    IdBlockCell((0, 0), AllowedMovement.Vertical, 1, false),
+    IdGeneratorCell((0, 1), Orientation.Top, 2, false),
+    IdBlockCell((0, 10), AllowedMovement.Both, 3, false)
   )
-  private val generatorDownBoard: Board[Cell] = Board(
-    BlockCell((0, 10), AllowedMovement.Vertical),
-    GeneratorCell((0, 9), Orientation.Down),
-    BlockCell((0, 0), AllowedMovement.Both)
+  private val generatorDownBoard: Board[IdCell] = Board(
+    IdBlockCell((0, 10), AllowedMovement.Vertical, 1, false),
+    IdGeneratorCell((0, 9), Orientation.Down, 2, false),
+    IdBlockCell((0, 0), AllowedMovement.Both, 3, false)
   )
 
   describe("Game Engine") {
@@ -70,99 +72,99 @@ class GameEngineTest extends AnyFunSpec with Matchers {
     }
     describe("when mover right cell is used") {
       it("should update the game") {
-        createEngine.nextState(moverRightBoard, MoverCell((0, 0), Orientation.Right)) shouldBe Board(
-          MoverCell((1, 0), Orientation.Right),
-          BlockCell((2, 0), AllowedMovement.Horizontal),
-          BlockCell((10, 0), AllowedMovement.Both)
+        createEngine.nextState(moverRightBoard, maxId, IdMoverCell((0, 0), Orientation.Right, 1, false)) shouldBe Board(
+          IdMoverCell((1, 0), Orientation.Right, 1, true),
+          IdBlockCell((2, 0), AllowedMovement.Horizontal, 2, false),
+          IdBlockCell((10, 0), AllowedMovement.Both, 3, false)
         )
       }
     }
     describe("when mover left cell is used") {
       it("should update the game") {
-        createEngine.nextState(moverLeftBoard, MoverCell((10, 0), Orientation.Left)) shouldBe Board(
-          MoverCell((9, 0), Orientation.Left),
-          BlockCell((8, 0), AllowedMovement.Horizontal),
-          BlockCell((0, 0), AllowedMovement.Both)
+        createEngine.nextState(moverLeftBoard, maxId, IdMoverCell((10, 0), Orientation.Left, 1, false)) shouldBe Board(
+          IdMoverCell((9, 0), Orientation.Left, 1, true),
+          IdBlockCell((8, 0), AllowedMovement.Horizontal, 2, false),
+          IdBlockCell((0, 0), AllowedMovement.Both, 3, false)
         )
       }
     }
     describe("when mover top cell is used") {
       it("should update the game") {
-        createEngine.nextState(moverTopBoard, MoverCell((0, 0), Orientation.Top)) shouldBe Board(
-          MoverCell((0, 1), Orientation.Top),
-          BlockCell((0, 2), AllowedMovement.Vertical),
-          BlockCell((0, 10), AllowedMovement.Both)
+        createEngine.nextState(moverTopBoard, maxId, IdMoverCell((0, 0), Orientation.Top, 1, false)) shouldBe Board(
+          IdMoverCell((0, 1), Orientation.Top, 1, true),
+          IdBlockCell((0, 2), AllowedMovement.Vertical, 2, false),
+          IdBlockCell((0, 10), AllowedMovement.Both, 3, false)
         )
       }
     }
     describe("when mover down cell is used") {
       it("should update the game") {
-        createEngine.nextState(moverDownBoard, MoverCell((0, 10), Orientation.Down)) shouldBe Board(
-          MoverCell((0, 9), Orientation.Down),
-          BlockCell((0, 8), AllowedMovement.Vertical),
-          BlockCell((0, 0), AllowedMovement.Both)
+        createEngine.nextState(moverDownBoard, maxId, IdMoverCell((0, 10), Orientation.Down, 1, false)) shouldBe Board(
+          IdMoverCell((0, 9), Orientation.Down, 1, true),
+          IdBlockCell((0, 8), AllowedMovement.Vertical, 2, false),
+          IdBlockCell((0, 0), AllowedMovement.Both, 3, false)
         )
       }
     }
     describe("when generator right cell is used") {
       it("should update the game") {
-        createEngine.nextState(generatorRightBoard, GeneratorCell((1, 0), Orientation.Right)) shouldBe Board(
-          BlockCell((0, 0), AllowedMovement.Horizontal),
-          GeneratorCell((1, 0), Orientation.Right),
-          BlockCell((2, 0), AllowedMovement.Horizontal),
-          BlockCell((10, 0), AllowedMovement.Both)
+        createEngine.nextState(generatorRightBoard, maxId, IdGeneratorCell((1, 0), Orientation.Right, 2, false)) shouldBe Board(
+          IdBlockCell((0, 0), AllowedMovement.Horizontal, 1, false),
+          IdGeneratorCell((1, 0), Orientation.Right, 2, true),
+          IdBlockCell((2, 0), AllowedMovement.Horizontal, 4, false),
+          IdBlockCell((10, 0), AllowedMovement.Both, 3, false)
         )
       }
     }
     describe("when generator left cell is used") {
       it("should update the game") {
-        createEngine.nextState(generatorLeftBoard, GeneratorCell((9, 0), Orientation.Left)) shouldBe Board(
-          BlockCell((10, 0), AllowedMovement.Horizontal),
-          GeneratorCell((9, 0), Orientation.Left),
-          BlockCell((8, 0), AllowedMovement.Horizontal),
-          BlockCell((0, 0), AllowedMovement.Both)
+        createEngine.nextState(generatorLeftBoard, maxId, IdGeneratorCell((9, 0), Orientation.Left, 2, false)) shouldBe Board(
+          IdBlockCell((8, 0), AllowedMovement.Horizontal, 4, false),
+          IdBlockCell((10, 0), AllowedMovement.Horizontal, 1, false),
+          IdGeneratorCell((9, 0), Orientation.Left, 2, true),
+          IdBlockCell((0, 0), AllowedMovement.Both, 3, false)
         )
       }
     }
     describe("when generator top cell is used") {
       it("should update the game") {
-        createEngine.nextState(generatorTopBoard, GeneratorCell((0, 1), Orientation.Top)) shouldBe Board(
-          BlockCell((0, 0), AllowedMovement.Vertical),
-          GeneratorCell((0, 1), Orientation.Top),
-          BlockCell((0, 2), AllowedMovement.Vertical),
-          BlockCell((0, 10), AllowedMovement.Both)
+        createEngine.nextState(generatorTopBoard, maxId, IdGeneratorCell((0, 1), Orientation.Top, 2, false)) shouldBe Board(
+          IdBlockCell((0, 0), AllowedMovement.Vertical, 1, false),
+          IdGeneratorCell((0, 1), Orientation.Top, 2, true),
+          IdBlockCell((0, 2), AllowedMovement.Vertical, 4, false),
+          IdBlockCell((0, 10), AllowedMovement.Both, 3, false)
         )
       }
     }
     describe("when generator down cell is used") {
       it("should update the game") {
-        createEngine.nextState(generatorDownBoard, GeneratorCell((0, 9), Orientation.Down)) shouldBe Board(
-          BlockCell((0, 10), AllowedMovement.Vertical),
-          GeneratorCell((0, 9), Orientation.Down),
-          BlockCell((0, 8), AllowedMovement.Vertical),
-          BlockCell((0, 0), AllowedMovement.Both)
+        createEngine.nextState(generatorDownBoard, maxId, IdGeneratorCell((0, 9), Orientation.Down, 2, false)) shouldBe Board(
+          IdBlockCell((0, 10), AllowedMovement.Vertical, 1, false),
+          IdGeneratorCell((0, 9), Orientation.Down, 2, true),
+          IdBlockCell((0, 8), AllowedMovement.Vertical, 4, false),
+          IdBlockCell((0, 0), AllowedMovement.Both, 3, false)
         )
       }
     }
     describe("when rotator left cell is used") {
       it("should update the game") {
-        createEngine.nextState(rotatorLeftBoard, RotatorCell((1, 1), RotationDirection.Left)) shouldBe Board(
-          RotatorCell((1, 1), RotationDirection.Left),
-          BlockCell((1, 0), AllowedMovement.Vertical),
-          BlockCell((1, 2), AllowedMovement.Vertical),
-          BlockCell((2, 1), AllowedMovement.Vertical),
-          BlockCell((0, 1), AllowedMovement.Vertical)
+        createEngine.nextState(rotatorLeftBoard, maxId, IdRotatorCell((1, 1), RotationDirection.Left, 1, false)) shouldBe Board(
+          IdBlockCell((1, 0), AllowedMovement.Vertical, 4, false),
+          IdRotatorCell((1, 1), RotationDirection.Left, 1, true),
+          IdBlockCell((1, 2), AllowedMovement.Vertical, 3, false),
+          IdBlockCell((2, 1), AllowedMovement.Vertical, 5, false),
+          IdBlockCell((0, 1), AllowedMovement.Vertical, 2, false)
         )
       }
     }
     describe("when rotator right cell is used") {
       it("should update the game") {
-        createEngine.nextState(rotatorRightBoard, RotatorCell((1, 1), RotationDirection.Right)) shouldBe Board(
-          RotatorCell((1, 1), RotationDirection.Right),
-          BlockCell((1, 0), AllowedMovement.Vertical),
-          BlockCell((1, 2), AllowedMovement.Vertical),
-          BlockCell((2, 1), AllowedMovement.Vertical),
-          BlockCell((0, 1), AllowedMovement.Vertical)
+        createEngine.nextState(rotatorRightBoard, maxId, IdRotatorCell((1, 1), RotationDirection.Right, 1, false)) shouldBe Board(
+          IdBlockCell((1, 0), AllowedMovement.Vertical, 4, false),
+          IdRotatorCell((1, 1), RotationDirection.Right, 1, true),
+          IdBlockCell((1, 2), AllowedMovement.Vertical, 3, false),
+          IdBlockCell((2, 1), AllowedMovement.Vertical, 5, false),
+          IdBlockCell((0, 1), AllowedMovement.Vertical, 2, false)
         )
       }
     }
