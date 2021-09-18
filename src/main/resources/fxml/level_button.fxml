@@ -2,11 +2,11 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.GridPane?>
+<?import it.unibo.pps.caw.SoundButton?>
 
-<?import it.unibo.pps.caw.app.controller.ClickButton?>
-<ClickButton xmlns="http://javafx.com/javafx" stylesheets="@../css/level_selection_page.css" styleClass="levelButton"
+<SoundButton xmlns="http://javafx.com/javafx" stylesheets="@../css/level_selection_page.css" styleClass="levelButton"
              alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity">
     <GridPane.margin>
         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
     </GridPane.margin>
-</ClickButton>
+</SoundButton>

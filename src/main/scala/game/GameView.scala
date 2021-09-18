@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.game
 
-import it.unibo.pps.caw.{AudioManager, ViewComponent, Track}
+import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
 import javafx.scene.layout.Pane
 import scalafx.scene.Scene
 
@@ -21,8 +21,8 @@ trait GameView extends ViewComponent[Pane] {
 object GameView {
 
   /* Default implementation of the GameView trait. */
-  private class GameViewImpl(parentController: ParentGameController, scene: Scene) extends GameView {
-    AudioManager.play(Track.Game)
+  private class GameViewImpl(parentController: ParentGameController, audioPlayer: AudioPlayer, scene: Scene) extends GameView {
+    audioPlayer.play(Track.GameMusic)
 
     private val controller: GameController = GameController(parentController, this)
 
@@ -32,8 +32,8 @@ object GameView {
   }
 
   /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentGameController]] so as to be able to complete the
-    * construction of a [[GameController]] correctly in order to use it. It also receives the ScalaFX's [[Scene]] on which
-    * displaying the instance after being constructed.
+    * construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
+    * music and the ScalaFX's [[Scene]] on which displaying the instance after being constructed.
     *
     * @param parentController
     *   the controller needed so as to be able to complete the construction of a [[GameController]] correctly
@@ -42,5 +42,6 @@ object GameView {
     * @return
     *   a new [[GameView]] instance
     */
-  def apply(parentController: ParentGameController, scene: Scene): GameView = GameViewImpl(parentController, scene)
+  def apply(parentController: ParentGameController, audioPlayer: AudioPlayer, scene: Scene): GameView =
+    GameViewImpl(parentController, audioPlayer, scene)
 }

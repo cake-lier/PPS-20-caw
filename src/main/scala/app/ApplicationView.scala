@@ -2,7 +2,7 @@ package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.game.GameView
 import it.unibo.pps.caw.menu.MainMenuView
-import it.unibo.pps.caw.{AudioManager, Track, ViewComponent}
+import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
 import javafx.scene.layout.Pane
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
@@ -32,26 +32,24 @@ object ApplicationView {
   /* Default implementation of the ApplicationView trait. */
   private class ApplicationViewImpl(stage: PrimaryStage) extends ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
+    private val audioPlayer: AudioPlayer = AudioPlayer()
     private val scene: Scene = Scene(1080, 720)
-    private var visibleView: ViewComponent[Pane] = MainMenuView(controller, scene)
+    private var visibleView: ViewComponent[Pane] = MainMenuView(controller, audioPlayer, scene)
 
     stage.resizable = false
     stage.maximized = false
     stage.title = "Cells at Work"
     scene.root.value = visibleView.innerComponent
     stage.scene = scene
-    AudioManager.play(Track.Menu)
     stage.show()
 
     override def showGame(): Unit = {
-      AudioManager.play(Track.Game)
-      visibleView = GameView(controller, scene)
+      visibleView = GameView(controller, audioPlayer, scene)
       scene.root.value = visibleView.innerComponent
     }
 
     override def showMainMenu(): Unit = {
-      AudioManager.play(Track.Menu)
-      visibleView = MainMenuView(controller, scene)
+      visibleView = MainMenuView(controller, audioPlayer, scene)
       scene.root.value = visibleView.innerComponent
     }
   }

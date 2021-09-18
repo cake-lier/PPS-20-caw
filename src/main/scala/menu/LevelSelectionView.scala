@@ -1,8 +1,7 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.{SoundButton, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.app.controller.ClickButton
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, ScrollPane}
 import javafx.scene.image.ImageView
@@ -46,7 +45,7 @@ object LevelSelectionView {
       extends AbstractViewComponent[Pane]("level_selection_page.fxml")
       with LevelSelectionView {
     @FXML
-    var backButton: ClickButton = _
+    var backButton: SoundButton = _
     @FXML
     var buttonsPane: GridPane = _
     @FXML

@@ -5,8 +5,8 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
+<?import it.unibo.pps.caw.SoundButton?>
 
-<?import it.unibo.pps.caw.app.controller.ClickButton?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0"
           prefWidth="1080.0" styleClass="background" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/16"
           xmlns:fx="http://javafx.com/fxml/1">
@@ -28,7 +28,7 @@
         <RowConstraints percentHeight="7.5" />
         <RowConstraints percentHeight="2.5" />
     </rowConstraints>
-    <ClickButton fx:id="resetButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Reset"
+    <SoundButton fx:id="resetButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Reset"
                  GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
         <font>
             <Font size="14.0" />
@@ -36,38 +36,38 @@
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
-    </ClickButton>
-    <ClickButton fx:id="stepSimulationButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Step"
-            GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+    </SoundButton>
+    <SoundButton fx:id="stepSimulationButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Step"
+                 GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
         <font>
             <Font size="14.0" />
         </font>
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
-    </ClickButton>
-    <ClickButton fx:id="playSimulationButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Play"
-            GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+    </SoundButton>
+    <SoundButton fx:id="playSimulationButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Play"
+                 GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
         <font>
             <Font size="14.0" />
         </font>
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
-    </ClickButton>
-    <ClickButton fx:id="backToLevelsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Back"
-            GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+    </SoundButton>
+    <SoundButton fx:id="backToLevelsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Back"
+                 GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
         <font>
             <Font size="14.0" />
         </font>
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
-    </ClickButton>
-   <ClickButton alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Next" visible="false" GridPane.columnIndex="5"
-           GridPane.rowIndex="5">
+    </SoundButton>
+   <SoundButton alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Next" visible="false" GridPane.columnIndex="5"
+                GridPane.rowIndex="5">
       <font>
          <Font size="14.0" />
       </font>
-   </ClickButton>
+   </SoundButton>
 </GridPane>
