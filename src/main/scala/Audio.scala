@@ -14,6 +14,7 @@ enum Track(val filePath: String, val audioType: AudioType) {
   case Menu extends Track("sounds/menu_music.mp3", AudioType.Music)
   case Game extends Track("sounds/game_music.mp3", AudioType.Music)
   case Button extends Track("sounds/button_click.mp3", AudioType.Sound)
+  case Explosion extends Track("sounds/explosion.mp3", AudioType.Sound)
 }
 
 /** Singleton for audio management */
