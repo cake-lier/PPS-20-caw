@@ -101,8 +101,8 @@ object GameController {
   }
 
   /* Extension of the AbstractGameController class for playing a generic level. */
-  private class ExternalGameController(parentController: ParentGameController, view: GameView, level: Level)
-    extends AbstractGameController(parentController, view, level) {
+  private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level)
+    extends AbstractGameController(parentController, view, initialLevel) {
 
     def nextLevel(): Unit = goBack()
   }
@@ -111,16 +111,17 @@ object GameController {
   private class DefaultGameController(
     parentController: ParentGameController,
     view: GameView,
-    private val levels: Seq[Level],
-    private var levelIndex: Int
-  ) extends AbstractGameController(parentController, view, levels(levelIndex - 1)) {
+    levels: Seq[Level],
+    initialLevelIndex: Int
+  ) extends AbstractGameController(parentController, view, levels(initialLevelIndex - 1)) {
+    private var currentIndex: Int = initialLevelIndex
 
     def nextLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
-      model.nextLevelIndex(levelIndex) match {
+      model.nextLevelIndex(currentIndex) match {
         case Some(v) => {
-          levelIndex = v
-          model = Model(levels(levelIndex - 1))
+          currentIndex = v
+          model = Model(levels(currentIndex - 1))
           view.drawLevel(model.level, model.isLevelCompleted)
         }
         case None => goBack()
