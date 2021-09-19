@@ -31,7 +31,7 @@ object PrologEngine {
     */
   def extractTerm(t: Term): Term = {
     val term = t.asInstanceOf[Struct]
-    term.getArg(term.getArity-1).getTerm
+    term.getArg(term.getArity - 1).getTerm
   }
 
   /** implicit conversion from [[String]] to [[Term]]

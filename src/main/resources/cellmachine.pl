@@ -247,73 +247,73 @@ mover_top_next_state(B, X, Y, NB) :- member(cell(_, mover_top, X, Y), B),
                                       !.
 mover_top_next_state(B, _, _, B).
 
-% rotate_right(@Board, @XCoordinate, @YCoordinate, -NextBoard)
+% rotate_clockwise(@Board, @XCoordinate, @YCoordinate, -NextBoard)
 %
 % Generates the next board applying the rules for rotating in a clockwise direction the cells which are orthogonally adjacent to
 % the cell which coordinates are given (more formally, the cells which have a L1 distance of 1 from the cell which coordinates are
 % given). If they can not be rotated or are not orthogonally adjacent, no operation is performed and the cells are copied in the
 % new board as is. No ordering is required for the cells in the board.
-rotate_right([], _, _, []).
-rotate_right([cell(I, T, X1, Y1) | Cs], X, Y, [cell(I, T1, X1, Y1) | NCs]) :- ((X1 is X + 1, Y1 =:= Y);
-                                                                               (X1 =:= X, Y1 is Y + 1);
-                                                                               (X1 is X - 1, Y1 =:= Y);
-                                                                               (X1 =:= X, Y1 is Y - 1)),
-                                                                              ((T = mover_right, T1 = mover_down);
-                                                                               (T = mover_down, T1 = mover_left);
-                                                                               (T = mover_left, T1 = mover_top);
-                                                                               (T = mover_top, T1 = mover_right);
-                                                                               (T = generator_right, T1 = generator_down);
-                                                                               (T = generator_down, T1 = generator_left);
-                                                                               (T = generator_left, T1 = generator_top);
-                                                                               (T = generator_top, T1 = generator_right);
-                                                                               (T = block_hor, T1 = block_ver);
-                                                                               (T = block_ver, T1 = block_hor)),
-                                                                              rotate_right(Cs, X, Y, NCs),
-                                                                              !.
-rotate_right([cell(I, T, X1, Y1) | Cs], X, Y, [cell(I, T, X1, Y1) | NCs]) :- rotate_right(Cs, X, Y, NCs).
+rotate_clockwise([], _, _, []).
+rotate_clockwise([cell(I, T, X1, Y1) | Cs], X, Y, [cell(I, T1, X1, Y1) | NCs]) :- ((X1 is X + 1, Y1 =:= Y);
+                                                                                   (X1 =:= X, Y1 is Y + 1);
+                                                                                   (X1 is X - 1, Y1 =:= Y);
+                                                                                   (X1 =:= X, Y1 is Y - 1)),
+                                                                                  ((T = mover_right, T1 = mover_down);
+                                                                                   (T = mover_down, T1 = mover_left);
+                                                                                   (T = mover_left, T1 = mover_top);
+                                                                                   (T = mover_top, T1 = mover_right);
+                                                                                   (T = generator_right, T1 = generator_down);
+                                                                                   (T = generator_down, T1 = generator_left);
+                                                                                   (T = generator_left, T1 = generator_top);
+                                                                                   (T = generator_top, T1 = generator_right);
+                                                                                   (T = block_hor, T1 = block_ver);
+                                                                                   (T = block_ver, T1 = block_hor)),
+                                                                                  rotate_clockwise(Cs, X, Y, NCs),
+                                                                                  !.
+rotate_clockwise([cell(I, T, X1, Y1) | Cs], X, Y, [cell(I, T, X1, Y1) | NCs]) :- rotate_clockwise(Cs, X, Y, NCs).
 
-% rotator_right_next_state(@Board, @XCoordinate, @YCoordinate, -NextBoard)
+% rotator_clockwise_next_state(@Board, @XCoordinate, @YCoordinate, -NextBoard)
 %
 % Allows to update the state of a board and obtain its next state applying the rule for the "rotator right" cell behavior. The
 % rule rotate in a clockwise direction the cells which are orthogonally adjacent to the "rotator" cell which coordinates are
 % given. If they can not be rotated or are not orthogonally adjacent, the cells are left as they were. If the coordinates does not
 % point to a "rotator right" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the board and
 % the empty cells must not be present.
-rotator_right_next_state(B, X, Y, NB) :- member(cell(_, rotator_right, X, Y), B), !, rotate_right(B, X, Y, NB).
+rotator_clockwise_next_state(B, X, Y, NB) :- member(cell(_, rotator_clockwise, X, Y), B), !, rotate_clockwise(B, X, Y, NB).
 
-% rotate_left(@Board, @XCoordinate, @YCoordinate, -NextBoard)
+% rotate_counterclockwise(@Board, @XCoordinate, @YCoordinate, -NextBoard)
 %
 % Generates the next board applying the rules for rotating in a counterclockwise direction the cells which are orthogonally
 % adjacent to the cell which coordinates are given (more formally, the cells which have a L1 distance of 1 from the cell which
 % coordinates are given). If they can not be rotated or are not orthogonally adjacent, no operation is performed and the cells are
 % copied in the new board as is. No ordering is required for the cells in the board.
-rotate_left([], _, _, []).
-rotate_left([cell(I, T, X1, Y1) | Cs], X, Y, [cell(I, T1, X1, Y1) | NCs]) :- ((X1 is X + 1, Y1 =:= Y);
-                                                                              (X1 =:= X, Y1 is Y + 1);
-                                                                              (X1 is X - 1, Y1 =:= Y);
-                                                                              (X1 =:= X, Y1 is Y - 1)),
-                                                                             ((T = mover_right, T1 = mover_top);
-                                                                              (T = mover_down, T1 = mover_right);
-                                                                              (T = mover_left, T1 = mover_down);
-                                                                              (T = mover_top, T1 = mover_left);
-                                                                              (T = generator_right, T1 = generator_top);
-                                                                              (T = generator_down, T1 = generator_right);
-                                                                              (T = generator_left, T1 = generator_down);
-                                                                              (T = generator_top, T1 = generator_left);
-                                                                              (T = block_hor, T1 = block_ver);
-                                                                              (T = block_ver, T1 = block_hor)),
-                                                                             rotate_left(Cs, X, Y, NCs),
-                                                                             !.
-rotate_left([cell(I, T, X1, Y1) | Cs], X, Y, [cell(I, T, X1, Y1) | NCs]) :- rotate_left(Cs, X, Y, NCs).
+rotate_counterclockwise([], _, _, []).
+rotate_counterclockwise([cell(I, T, X1, Y1) | Cs], X, Y, [cell(I, T1, X1, Y1) | NCs]) :- ((X1 is X + 1, Y1 =:= Y);
+                                                                                          (X1 =:= X, Y1 is Y + 1);
+                                                                                          (X1 is X - 1, Y1 =:= Y);
+                                                                                          (X1 =:= X, Y1 is Y - 1)),
+                                                                                         ((T = mover_right, T1 = mover_top);
+                                                                                          (T = mover_down, T1 = mover_right);
+                                                                                          (T = mover_left, T1 = mover_down);
+                                                                                          (T = mover_top, T1 = mover_left);
+                                                                                          (T = generator_right, T1 = generator_top);
+                                                                                          (T = generator_down, T1 = generator_right);
+                                                                                          (T = generator_left, T1 = generator_down);
+                                                                                          (T = generator_top, T1 = generator_left);
+                                                                                          (T = block_hor, T1 = block_ver);
+                                                                                          (T = block_ver, T1 = block_hor)),
+                                                                                         rotate_counterclockwise(Cs, X, Y, NCs),
+                                                                                         !.
+rotate_counterclockwise([cell(I, T, X1, Y1) | Cs], X, Y, [cell(I, T, X1, Y1) | NCs]) :- rotate_counterclockwise(Cs, X, Y, NCs).
 
-% rotator_left_next_state(@Board, @XCoordinate, @YCoordinate, -NextBoard)
+% rotator_counterclockwise_next_state(@Board, @XCoordinate, @YCoordinate, -NextBoard)
 %
 % Allows to update the state of a board and obtain its next state applying the rule for the "rotator left" cell behavior. The
 % rule rotate in a clockwise direction the cells which are orthogonally adjacent to the "rotator" cell which coordinates are
 % given. If they can not be rotated or are not orthogonally adjacent, the cells are left as they were. If the coordinates does not
 % point to a "rotator left" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the board and
 % the empty cells must not be present
-rotator_left_next_state(B, X, Y, NB) :- member(cell(_, rotator_left, X, Y), B), !, rotate_left(B, X, Y, NB).
+rotator_counterclockwise_next_state(B, X, Y, NB) :- member(cell(_, rotator_counterclockwise, X, Y), B), !, rotate_counterclockwise(B, X, Y, NB).
 
 % generate_right(@Board, @Type, @StartingXCoordinate, @EndingXCoordinate, @YCoordinate, @MaxId, -NextBoard)
 %

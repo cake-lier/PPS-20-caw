@@ -1,7 +1,7 @@
 package it.unibo.pps.caw.game.model
 
 /** Represent a cell of the game */
-trait Cell extends Ordered[Cell]{
+trait Cell extends Ordered[Cell] {
 
   /** the position of the [[Cell]] in coorinates */
   def position: Position
@@ -16,15 +16,15 @@ sealed trait SetupCell extends Cell {
   val playable: Boolean
 }
 
-/**  Represent a [[Cell]] during the update phase */
+/** Represent a [[Cell]] during the update phase */
 sealed trait IdCell extends Cell {
 
   /** cell identifier for one update cycle */
   val id: Int
+
   /** whether the cell has been updated or not */
   val updated: Boolean
 }
-
 
 /** Enum that represent all [[Cell]] types */
 enum CellTypes(cellType: String) {
@@ -49,7 +49,7 @@ enum Rotation(rotation: String) {
   case Counterclockwise extends Rotation("counterclockwise")
 
   /** Getter of [[Rotation]] value
- *
+    *
     * @return
     *   the value as string
     */
@@ -77,7 +77,7 @@ enum Push(push: String) {
   case Both extends Push("both")
 
   /** Getter of [[Push]] value
- *
+    *
     * @return
     *   the value as string
     */
@@ -102,17 +102,17 @@ object EnumHelper {
     Orientation.values.find(_.getOrientation == stringOrientation)
 
   /** get the [[Option]] of given push to [[Push]]
- *
+    *
     * @param stringPush
-    * the value of [[Push]] as string
+    *   the value of [[Push]] as string
     */
   def toPush(stringPush: String): Option[Push] =
     Push.values.find(_.getPush == stringPush)
 
   /** get the [[Option]] of given rotation to [[Rotation]]
- *
+    *
     * @param stringRotation
-    * the value of [[Rotation]] as string
+    *   the value of [[Rotation]] as string
     */
   def toRotation(stringRotation: String): Option[Rotation] =
     Rotation.values.find(_.getRotation == stringRotation)
@@ -138,12 +138,12 @@ object CellConverter {
   }
 
   def toId(cell: Cell, id: Int) = cell match {
-    case EnemyCell(position)                              => IdEnemyCell(position, id, false)
-    case WallCell(position)                               => IdWallCell(position, id, false)
-    case RotatorCell(position, rotationDirection)         => IdRotatorCell(position, rotationDirection, id, false)
-    case MoverCell(position, orientation)                 => IdMoverCell(position, orientation, id, false)
-    case GeneratorCell(position, orientation)             => IdGeneratorCell(position, orientation, id, false)
-    case BlockCell(position, allowedMovement)             => IdBlockCell(position, allowedMovement, id, false)
+    case EnemyCell(position)                      => IdEnemyCell(position, id, false)
+    case WallCell(position)                       => IdWallCell(position, id, false)
+    case RotatorCell(position, rotationDirection) => IdRotatorCell(position, rotationDirection, id, false)
+    case MoverCell(position, orientation)         => IdMoverCell(position, orientation, id, false)
+    case GeneratorCell(position, orientation)     => IdGeneratorCell(position, orientation, id, false)
+    case BlockCell(position, allowedMovement)     => IdBlockCell(position, allowedMovement, id, false)
   }
 
   def toUpdated(idCell: IdCell, updated: Boolean) = idCell match {
@@ -158,13 +158,13 @@ object CellConverter {
 }
 
 /** Represent the rotator [[Cell]]
- *
+  *
   * @param position
-  * the coordinates of the cell
+  *   the coordinates of the cell
   * @param playable
-  * if the cell is playable (is in the [[PlayableArea]])
+  *   if the cell is playable (is in the [[PlayableArea]])
   * @param rotation
-  * the [[Rotation]]
+  *   the [[Rotation]]
   */
 case class RotatorCell(position: Position, rotation: Rotation) extends Cell
 case class SetupRotatorCell(position: Position, rotation: Rotation, playable: Boolean) extends SetupCell
@@ -205,13 +205,13 @@ case class SetupMoverCell(position: Position, orientation: Orientation, playable
 case class IdMoverCell(position: Position, orientation: Orientation, id: Int, updated: Boolean) extends IdCell
 
 /** Represent the block [[Cell]]
- *
+  *
   * @param position
-  * the coordinates of the cell
+  *   the coordinates of the cell
   * @param playable
-  * if the cell is playable (is in the [[PlayableArea]])
+  *   if the cell is playable (is in the [[PlayableArea]])
   * @param push
-  * the [[Push]]
+  *   the [[Push]]
   */
 case class BlockCell(position: Position, push: Push) extends Cell
 case class SetupBlockCell(position: Position, push: Push, playable: Boolean) extends SetupCell

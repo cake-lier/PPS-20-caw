@@ -56,7 +56,7 @@ object Model {
 
     override def nextLevelIndex(currentIndex: Int): Option[Int] = Some(currentIndex + 1).filter(_ < 30)
 
-    override val isLevelCompleted: Boolean = false
+    override val isLevelCompleted: Boolean = currentBoard.cells.filter(_.isInstanceOf[EnemyCell]).size == 0
 
     override def update(): Model = {
       // parse Board[Cell] to Board[IdCell]
@@ -83,7 +83,7 @@ object Model {
     override def reset: Model = Model(initialLevel)
 
     override def updateCell(oldCellCordinates: Position, newCellCoordinates: Position): Model = {
-      val updatedCell: Cell = initialLevel.setupBoard.cells
+      val updatedCell: Cell = currentBoard.cells
         .find(_.position == oldCellCordinates)
         .map(_ match {
           case _: WallCell                       => WallCell(newCellCoordinates)
@@ -95,13 +95,12 @@ object Model {
         .get
       GameModelImpl(
         initialLevel,
-        Some(Board(initialLevel.setupBoard.cells.filter(_.position != oldCellCordinates).toSet + updatedCell))
+        Some(Board(currentBoard.cells.filter(_.position != oldCellCordinates).toSet + updatedCell))
       )
     }
   }
-  def apply(level: Level, optionCurrentBoard: Board[Cell]): Model =
-    GameModelImpl(level, Some(optionCurrentBoard))
 
-  def apply(level: Level): Model =
-    GameModelImpl(level, None)
+  def apply(level: Level, optionCurrentBoard: Board[Cell]): Model = GameModelImpl(level, Some(optionCurrentBoard))
+
+  def apply(level: Level): Model = GameModelImpl(level, None)
 }

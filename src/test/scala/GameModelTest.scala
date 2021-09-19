@@ -16,7 +16,7 @@ class GameModelTest extends AnyFunSpec with Matchers {
   describe("GameModel") {
     describe("At the beginning, before starting the game") {
       it("Should have current board equals to initial board") {
-        resetGameModel
+        gameModel.reset
         gameModel.currentBoard shouldBe Board(
           gameModel.initialLevel.setupBoard.cells
             .map(CellConverter.fromSetup)
@@ -26,17 +26,17 @@ class GameModelTest extends AnyFunSpec with Matchers {
     }
     describe("When calling reset") {
       it("Should create another instace of itself") {
-        resetGameModel
+        gameModel.reset
         gameModel should not equals gameModel.reset
       }
     }
     describe("When update cell position") {
       it("Should create another updated instace of itself") {
-        resetGameModel
+        gameModel.reset
         gameModel should not equals gameModel.updateCell((1, 1), (2, 2))
       }
       it("Should update the board") {
-        resetGameModel
+        gameModel.reset
         gameModel.updateCell((1, 1), (2, 2)).currentBoard shouldBe Board(
           MoverCell((2, 2), Orientation.Right),
           BlockCell((3, 3), Push.Both),
@@ -46,10 +46,9 @@ class GameModelTest extends AnyFunSpec with Matchers {
     }
     describe("When update game") {
       it("Should create another updated instace of itself") {
-        resetGameModel
+        gameModel.reset
         gameModel should not equals gameModel.update()
       }
     }
   }
-  private def resetGameModel = gameModel.reset
 }

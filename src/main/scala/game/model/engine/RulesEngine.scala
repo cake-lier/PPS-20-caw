@@ -82,26 +82,11 @@ private object PrologParser {
   def createSerializedPredicate(board: Board[IdCell], maxId: Long, cell: IdCell): Term = {
     var seq = Seq("[" + board.cells.map(serializeCell).mkString(",") + "]", cell.position.x, cell.position.y)
     val action: String = cell match {
-      case m: IdMoverCell =>
-        "mover_" + (m.orientation match {
-          case Right => "right"
-          case Left  => "left"
-          case Top   => "top"
-          case Down  => "down"
-        })
+      case m: IdMoverCell => "mover_" + m.orientation.getOrientation
       case g: IdGeneratorCell =>
         seq = seq :+ maxId.toString
-        "generator_" + (g.orientation match {
-          case Right => "right"
-          case Left  => "left"
-          case Top   => "top"
-          case Down  => "down"
-        })
-      case r: IdRotatorCell =>
-        "rotator_" + (r.rotation match {
-          case Rotation.Counterclockwise => "left"
-          case Rotation.Clockwise        => "right"
-        })
+        "generator_" + g.orientation.getOrientation
+      case r: IdRotatorCell => "rotator_" + r.rotation.getRotation
     }
 
     seq = seq :+ "NB"
