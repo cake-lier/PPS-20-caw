@@ -2,7 +2,7 @@ package it.unibo.pps.caw.game
 
 import it.unibo.pps.caw.ViewComponent
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.game.model.Level
+import it.unibo.pps.caw.game.model.{Level, Board, Cell}
 import it.unibo.pps.caw.game.view.BoardView
 import javafx.application.Platform
 import javafx.event.EventHandler
@@ -48,7 +48,9 @@ trait GameView extends ViewComponent[GridPane] {
     * @param isCompleted
     *   whether or not this [[Level]] has been completed
     */
-  def drawLevelUpdate(level: Level, isCompleted: Boolean): Unit
+  def drawLevelUpdate(level: Level, currentBoard:Board[Cell], isCompleted: Boolean): Unit
+
+  def drawLevelReset(level: Level):Unit
 
   /** Displays the given error message to the player.
     *
@@ -99,12 +101,19 @@ object GameView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.ERROR, message))
 
-    override def drawLevelUpdate(level: Level, isCompleted: Boolean): Unit = Platform.runLater(() => {
+    override def drawLevelUpdate(level: Level, currentBoard:Board[Cell], isCompleted: Boolean): Unit = Platform.runLater(() => {
       boardView match {
-        case Some(b) => b.updateBoard(level)
+        case Some(b) => b.updateBoard(level, currentBoard:Board[Cell])
         case None    => Console.err.print("The board was not initialized")
       }
       nextButton.setVisible(isCompleted)
+    })
+
+    override def drawLevelReset(level: Level): Unit = Platform.runLater(() => {
+      boardView match {
+        case Some(b) => b.resetBoard(level)
+        case None    => Console.err.print("The board was not initialized")
+      }
     })
 
     override def drawLevel(level: Level, isCompleted: Boolean): Unit = Platform.runLater(() => {

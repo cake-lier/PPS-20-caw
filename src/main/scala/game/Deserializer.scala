@@ -45,7 +45,8 @@ object Deserializer {
     playableAreaPoint: Position,
     playableAreaWidth: Int,
     playableAreaHeight: Int
-  ): Set[Cell] = {
+  ): Board[SetupCell] = {
+    Board[SetupCell](
     jsonLevels.value
       .flatMap((cellType, jsCell) =>
         jsCell
@@ -56,21 +57,21 @@ object Deserializer {
             val isInside = insideArea(position, playableAreaPoint, playableAreaWidth, playableAreaHeight)
             EnumHelper.toCellTypes(cellType).get match {
               case CellTypes.Mover =>
-                MoverCell(position, isInside, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get)
+                SetupMoverCell(position, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get,  isInside)
               case CellTypes.Block =>
-                BlockCell(position, isInside, EnumHelper.toPush((jsCell \ "push").as[String]).get)
-              case CellTypes.Enemy => EnemyCell(position, isInside)
+                SetupBlockCell(position, EnumHelper.toPush((jsCell \ "push").as[String]).get, isInside)
+              case CellTypes.Enemy => SetupEnemyCell(position, isInside)
               case CellTypes.Rotator =>
-                RotatorCell(position, isInside, EnumHelper.toRotation((jsCell \ "rotation").as[String]).get)
-              case CellTypes.Wall => WallCell(position, isInside)
+                SetupRotatorCell(position, EnumHelper.toRotation((jsCell \ "rotation").as[String]).get, isInside)
+              case CellTypes.Wall => SetupWallCell(position, isInside)
               case CellTypes.Generator =>
-                GeneratorCell(position, isInside, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get)
+                SetupGeneratorCell(position, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get,isInside)
               case _ => throw IllegalStateException()
             }
           )
           .toSet
       )
-      .toSet
+      .toSet)
   }
 
   /* Validate the provided JSON in string format with the schema. If success true is returned, otherwise false*/

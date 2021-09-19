@@ -25,33 +25,33 @@ object CellView {
     innerComponent.setPreserveRatio(true)
 
     cell match {
-      case RotatorCell(_, _, rotationDirection) =>
-        rotationDirection match {
+      case RotatorCell(_, rotation) =>
+        rotation match {
           case Rotation.Clockwise => innerComponent.setImage(CellImage.RotatorRight.image)
           case Rotation.Counterclockwise  => innerComponent.setImage(CellImage.RotatorLeft.image)
         }
-      case GeneratorCell(_, _, orientation) =>
+      case GeneratorCell(_, orientation) =>
         orientation match {
           case Orientation.Right => innerComponent.setImage(CellImage.GeneratorRight.image)
           case Orientation.Down  => innerComponent.setImage(CellImage.GeneratorDown.image)
           case Orientation.Left  => innerComponent.setImage(CellImage.GeneratorLeft.image)
           case Orientation.Top   => innerComponent.setImage(CellImage.GeneratorTop.image)
         }
-      case EnemyCell(_, _) => innerComponent.setImage(CellImage.Enemy.image)
-      case MoverCell(_, _, orientation) =>
+      case EnemyCell(_) => innerComponent.setImage(CellImage.Enemy.image)
+      case MoverCell(_, orientation) =>
         orientation match {
           case Orientation.Right => innerComponent.setImage(CellImage.MoverRight.image)
           case Orientation.Down  => innerComponent.setImage(CellImage.MoverDown.image)
           case Orientation.Left  => innerComponent.setImage(CellImage.MoverLeft.image)
           case Orientation.Top   => innerComponent.setImage(CellImage.MoverTop.image)
         }
-      case BlockCell(_, _, allowedMovement) =>
-        allowedMovement match {
+      case BlockCell(_, push) =>
+        push match {
           case Push.Both       => innerComponent.setImage(CellImage.Block.image)
           case Push.Vertical   => innerComponent.setImage(CellImage.BlockVertical.image)
           case Push.Horizontal => innerComponent.setImage(CellImage.BlockHorizontal.image)
         }
-      case WallCell(_, _) => innerComponent.setImage(CellImage.Wall.image)
+      case WallCell(_) => innerComponent.setImage(CellImage.Wall.image)
     }
   }
 }
