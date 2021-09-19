@@ -6,7 +6,7 @@
 | 4 | Creazione di una GUI per visualizzare i livelli creati con il DSL | [4](#4) | 10 | 10
 | 5 | Trasformare la GUI per visualizzare i livelli in un level editor | [5](#5) | 20 | 20
 | 6 | Aggiungere la cellula "trash" | [6](#6) | 10 | 10
-| 7 | Aggiungere modulo per l'audio alla view | [7](#7) | 5 | 5
+| 7 | Aggiungere modulo per l'audio alla view | [7](#7) | 8 | 8
 
 **Definition of done**: il codice deve essere passato attraverso tutte le fasi del TDD, perciò deve funzionare, deve passare test pensati per quel codice che coprano adeguatamente i suoi casi d'uso (senza introdurre regressioni) e deve essere stato rifattorizzato in maniera tale che segua gli standard del linguaggio scala e sia compatibile con i principi SOLID che guidano l'implementazione. Deve inoltre essere stata prodotta una scaladoc adeguata per quel codice.
 
@@ -36,4 +36,4 @@ La cellula "trash" non fa altro che eliminare tutte le cellule che vi si muovono
 
 <a name="7">7</a>:
 #### Aggiungere modulo audio alla view
-Deve essere possibile riprodurre sia musica che suoni durante l'avvio di qualsiasi applicazione. La musica dovrà essere riprodotta in loop e dovranno essere presenti più musiche, una per ogni componente dell'applicazione (menu, gioco ed eventualmente level editor). Queste non dovranno sovrapporsi, ma ognuna deve terminare nel momento nel quale comincia la successiva. Per quanto riguarda i suoni, questi invece dovranno essere di breve durata ed emessi nel momento nel quale si verifica un evento di sufficiente rilevanza all'interno della view (è stato premuto un bottone, il gioco è avanzato di uno step, un nemico è stato ucciso, ecc). Questo significa che possono sovrapporsi tra di loro e anche sovrapporsi alla musica, che non dovrà fermarsi nel momento nel quale un suono viene riprodotto.
+Deve essere possibile riprodurre sia musica che suoni durante l'avvio di qualsiasi applicazione. La musica dovrà essere riprodotta in loop e dovranno essere presenti più musiche, una per ogni componente dell'applicazione (menu, gioco ed eventualmente level editor). Queste non dovranno sovrapporsi, ma ognuna deve terminare nel momento nel quale comincia la successiva. Per quanto riguarda i suoni, questi invece dovranno essere di breve durata ed emessi nel momento nel quale si verifica un evento di sufficiente rilevanza all'interno della view (è stato premuto un bottone, il gioco è avanzato di uno step, un nemico è stato ucciso, ecc). Questo significa che possono sovrapporsi tra di loro e anche sovrapporsi alla musica, che non dovrà fermarsi nel momento nel quale un suono viene riprodotto. Inoltre, deve essere disponibile nel gioco una pagina di "impostazioni" dove, tra le altre, sono presenti quelle per regolare il volume dei suoni e della musica.
