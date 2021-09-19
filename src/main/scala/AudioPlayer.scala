@@ -33,8 +33,10 @@ trait AudioPlayer {
   /** set volume of all media to the specified value
     * @param volume
     *   volume to be set
+    * @param audioType:
+    *   the type to which the specified volume is set
     */
-  def setVolume(volume: Double): Unit
+  def setVolume(volume: Double, audioType: AudioType): Unit
 }
 
 object AudioPlayer {
@@ -47,7 +49,8 @@ object AudioPlayer {
       players(track).play()
     }
 
-    override def setVolume(volume: Double): Unit = players.foreach(_._2.setVolume(volume))
+    override def setVolume(volume: Double, audioType: AudioType): Unit =
+      players.filter(_._1.audioType == audioType).foreach(_._2.setVolume(volume))
 
     private def createPlayer(track: Track): MediaPlayer = {
       val mediaPlayer = MediaPlayer(Media(ClassLoader.getSystemResource(track.filePath).toExternalForm))
