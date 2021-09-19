@@ -143,3 +143,139 @@ generator_right_next_state(B, X, Y, NB) :- member(cell(generator_right, X, Y), B
                                            generate_right(B, T, X, EX, Y, NB),
                                            !.
 generator_right_next_state(B, _, _, B).
+
+%-----------------------------------------------------------------------------------------------------------------------------------
+% rotate_left(Board, XCoordinate, YCoordinate, NextBoard)
+% 
+% This predicate applies the rule for the "rotate left" cell behavior. The rule rotate in a counterclockwise direction the cells which
+% are orthogonally adjacent to the "rotate cell" which coordinates are given. If they can not be rotated or are not orthogonally
+% adjacent, the cells are left as they were.
+rotate_left([], _, _, []).
+rotate_left([cell(T, X1, Y1) | CS], X, Y, [cell(T1, X1, Y1) | NCS]) :- ((X1 is X + 1, Y1 =:= Y);
+                                                                         (X1 =:= X, Y1 is Y + 1);
+                                                                         (X1 is X - 1, Y1 =:= Y);
+                                                                         (X1 =:= X, Y1 is Y - 1)),
+                                                                        ((T = arrow_right, T1 = arrow_top);
+                                                                         (T = arrow_down, T1 = arrow_right);
+                                                                         (T = arrow_left, T1 = arrow_down);
+                                                                         (T = arrow_top, T1 = arrow_left);
+                                                                         (T = generator_right, T1 = generator_top);
+                                                                         (T = generator_down, T1 = generator_right);
+                                                                         (T = generator_left, T1 = generator_down);
+                                                                         (T = generator_top, T1 = generator_left);
+                                                                         (T = block_hor, T1 = block_ver);
+                                                                         (T = block_ver, T1 = block_hor)),
+                                                                        rotate_left(CS, X, Y, NCS),
+                                                                        !.
+rotate_left([cell(T, X1, Y1) | CS], X, Y, [cell(T, X1, Y1) | NCS]) :- rotate_left(CS, X, Y, NCS).
+
+% rotate_left_next_state(Board, XCoordinate, YCoordinate, NextBoard)
+% 
+% This predicate allows to update the state of a board and obtain its next state applying the rule for the "rotate left" cell
+% behavior. The rule rotate in a counterclockwise direction the cells which are orthogonally adjacent to the "rotate cell" which
+% coordinates are given. If they can not be rotated or are not orthogonally adjacent, the cells are left as they were. If the
+% coordinates does not point to a "rotate left" cell, the predicate simply evaluates to "no". No ordering is required for the
+% cells in the board and the empty cells must not be present.
+rotate_left_next_state(B, X, Y, NB) :- member(cell(rotate_left, X, Y), B), !, rotate_left(B, X, Y, NB).
+%-----------------------------------------------------------------------------------------------------------------------------------
+% last_index_right(Board, Type, XCoordinate, YCoordinate, EndYCoordinate)
+
+last_index_top(_, enemy, _, Y, Y) :- !.
+last_index_top(B, T, X, Y, EY) :-   T \= wall,
+                                    T \= block_ver,
+                                    T \= arrow_down,
+                                    Y1 is Y + 1,
+                                    (member(cell(T1, X, Y1), B) -> last_index_top(B, T1, X, Y1, EY); EY = Y).
+
+last_index_down(_, enemy, _, Y, Y) :- !.
+last_index_down(B, T, X, Y, EY) :-  T \= wall,
+                                    T \= block_ver,
+                                    T \= arrow_top,
+                                    Y1 is Y - 1,
+                                    (member(cell(T1, X, Y1), B) -> last_index_down(B, T1, X, Y1, EY); EY = Y).
+%-----------------------------------------------------------------------------------------------------------------------------------
+generate_left(B, _, X, EX, Y, NB) :- X1 is X - 1, member(cell(enemy, X1, Y), B), move_left(B, B, X, EX, Y, NB), !.
+generate_left(B, T, X, EX, Y, [cell(T, X1, Y) | NB]) :- X1 is X - 1, move_left(B, B, X, EX, Y, NB).
+
+generator_left_next_state(B, X, Y, NB) :- member(cell(generator_left, X, Y), B),
+                                           X1 is X + 1,
+                                           member(cell(T, X1, Y), B),
+                                           last_index_left(B, generator_left, X, Y, EX),
+                                           generate_left(B, T, X, EX, Y, NB),
+                                           !.
+generator_left_next_state(B, _, _, B).
+
+%-----------------------------------------------------------------------------------------------------------------------------------
+generate_top(B, _, Y, EY, X, NB) :- Y1 is Y + 1, member(cell(enemy, X, Y1), B), move_top(B, B, Y, EY, X, NB), !.
+generate_top(B, T, Y, EY, X, [cell(T, X, Y1) | NB]) :-  Y1 is Y + 1, move_top(B, B, Y, EY, X, NB).
+
+generator_top_next_state(B, X, Y, NB) :- member(cell(generator_top, X, Y), B),
+                                           Y1 is Y - 1,
+                                           member(cell(T, X, Y1), B),
+                                           last_index_top(B, generator_top, X, Y, EY),
+                                           generate_top(B, T, Y, EY, X, NB),
+                                           !.
+generator_top_next_state(B, _, _, B).
+%-----------------------------------------------------------------------------------------------------------------------------------
+generate_down(B, _, Y, EY, X, NB) :- Y1 is Y - 1, member(cell(enemy, X, Y1), B), move_down(B, B, Y, EY, X, NB), !.
+generate_down(B, T, Y, EY, X, [cell(T, X, Y1) | NB]) :-  Y1 is Y - 1, move_down(B, B, Y, EY, X, NB).
+
+generator_down_next_state(B, X, Y, NB) :- member(cell(generator_down, X, Y), B),
+                                           Y1 is Y + 1,
+                                           member(cell(T, X, Y1), B),
+                                           last_index_down(B, generator_down, X, Y, EY),
+                                           generate_down(B, T, Y, EY, X, NB),
+                                           !.
+generator_down_next_state(B, _, _, B).
+%-----------------------------------------------------------------------------------------------------------------------------------
+% move_top([cell | tail], Board, StartYCoordinate, EndYCoordinate, XCoordinate, NextBoard)
+move_top([], _, _, _, _, []).
+
+move_top([cell(enemy, EY, X) | CS], B, SY, EY, X, NB) :- move_top(CS, B, SY, EY, X, NB), !.
+move_top([cell(T, X, Y) | CS], B, SY, EY, X1, [cell(T, X, Y) | NCS]) :- ((T = generator_top, Y =:= EY, X =:= X1);
+                                                                           Y < SY;
+                                                                           Y > EY;
+                                                                           X =\= X1),
+                                                                          move_top(CS, B, SY, EY, X1, NCS),
+                                                                          !.
+move_top([cell(_, X, Y) | CS], B, SY, EY, X, NB) :-  Y >= SY, 
+                                                     Y < EY,
+                                                     Y1 is Y + 1,
+                                                     member(cell(enemy, X, Y1), B),
+                                                     move_top(CS, B, SY, EY, X, NB),
+                                                     !.
+move_top([cell(T, X, Y) | CS], B, SY, EY, X, [cell(T, X1, Y)| NCS]) :-  Y >= SY, 
+                                                                         Y < EY,
+                                                                         Y1 is Y + 1,
+                                                                         move_top(CS, B, SY, EY, X, NCS).
+
+arrow_top_next_state(B, X, Y, NB) :- member(cell(arrow_top, X, Y), B),
+                                     last_index_top(B, arrow_top, X, Y, EY),
+                                     move_top(B, B, Y, EY, X, NB),
+                                     !.
+arrow_right_next_state(B, _, _, B).
+%-----------------------------------------------------------------------------------------------------------------------------------
+% move_down([cell | tail], Board, StartYCoordinate, EndYCoordinate, XCoordinate, NextBoard)
+move_down([], _, _, _, _, []).
+move_down([cell(enemy, EY, X) | CS], B, SY, EY, X, NB) :- move_down(CS, B, SY, EY, X, NB), !.
+move_down([cell(T, X, Y) | CS], B, SY, EY, X1, [cell(T, X, Y) | NCS]) :- ((T = generator_down, Y =:= EY, X =:= X1);
+                                                                           Y > SY;
+                                                                           Y < EY;
+                                                                           X =\= X1),
+                                                                          move_down(CS, B, SY, EY, X1, NCS),
+                                                                          !.
+move_down([cell(_, X, Y) | CS], B, SY, EY, X, NB) :- Y =< SY, 
+                                                     Y > EY,
+                                                     Y1 is Y - 1,
+                                                     member(cell(enemy, X, Y1), B),
+                                                     move_down(CS, B, SY, EY, X, NB),
+                                                     !.
+move_down([cell(T, X, Y) | CS], B, SY, EY, X, [cell(T, X1, Y)| NCS]) :-  Y =< SY, 
+                                                                         Y > EY,
+                                                                         Y1 is Y - 1,
+                                                                         move_down(CS, B, SY, EY, X, NCS).
+arrow_down_next_state(B, X, Y, NB) :- member(cell(arrow_down, X, Y), B),
+                                       last_index_down(B, arrow_down, X, Y, EY),
+                                       move_down(B, B, Y, EY, X, NB),
+                                       !.
+arrow_down_next_state(B, _, _, B).
