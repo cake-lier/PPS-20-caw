@@ -34,7 +34,7 @@ object BoardView {
     if (initialLevel.width / initialLevel.height >= 2) {
       boardHeight = (boardWidth/initialLevel.width) * initialLevel.height
     } else {
-      boardWidth = (boardWidth/initialLevel.height) * initialLevel.width
+      boardWidth = (boardHeight/initialLevel.height) * initialLevel.width
     }
 
     innerComponent.setPrefSize(boardWidth, boardHeight)
