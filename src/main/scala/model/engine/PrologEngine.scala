@@ -29,7 +29,10 @@ object PrologEngine {
     * @return
     *   the i-th [[Term]] of the given [[Term]]
     */
-  def extractTerm(t: Term, i: Int): Term = t.asInstanceOf[Struct].getArg(i).getTerm
+  def extractTerm(t: Term): Term = {
+    val term = t.asInstanceOf[Struct]
+    term.getArg(term.getArity-1).getTerm
+  }
 
   /** implicit conversion from [[String]] to [[Term]]
     * @return
