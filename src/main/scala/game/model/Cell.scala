@@ -28,15 +28,16 @@ enum CellTypes(cellType: String) {
 }
 
 /** Enum that represent the direction of rotation some cells */
-enum RotationDirection(direction: String) {
-  case Clockwise extends RotationDirection("clockwise")
-  case Counterclockwise extends RotationDirection("counterclockwise")
+enum Rotation(rotation: String) {
+  case Clockwise extends Rotation("clockwise")
+  case Counterclockwise extends Rotation("counterclockwise")
 
-  /** Getter of [[RotationDirection]] value
+  /** Getter of [[Rotation]] value
+ *
     * @return
     *   the value as string
     */
-  def getDirection = direction
+  def getRotation = rotation
 }
 
 /** Enum that represent the orientation of some cells */
@@ -53,17 +54,18 @@ enum Orientation(orientation: String) {
   def getOrientation = orientation
 }
 
-/** Enum that represent allowed movement of some cells */
-enum AllowedMovement(movement: String) {
-  case Horizontal extends AllowedMovement("horizontal")
-  case Vertical extends AllowedMovement("vertical")
-  case Both extends AllowedMovement("both")
+/** Enum that represent the direction to which some cells can be pushed */
+enum Push(push: String) {
+  case Horizontal extends Push("horizontal")
+  case Vertical extends Push("vertical")
+  case Both extends Push("both")
 
-  /** Getter of [[AllowedMovement]] value
+  /** Getter of [[Push]] value
+ *
     * @return
     *   the value as string
     */
-  def getMovement = movement
+  def getPush = push
 }
 
 /** Object for enum helper funcions */
@@ -83,30 +85,33 @@ object EnumHelper {
   def toOrientation(stringOrientation: String): Option[Orientation] =
     Orientation.values.find(_.getOrientation == stringOrientation)
 
-  /** get the [[Option]] of given allowed movement to [[AllowedMovement]]
-    * @param stringMovement
-    *   the value of [[AllowedMovement]] as string
+  /** get the [[Option]] of given push to [[Push]]
+ *
+    * @param stringPush
+    * the value of [[Push]] as string
     */
-  def toMovement(stringMovement: String): Option[AllowedMovement] =
-    AllowedMovement.values.find(_.getMovement == stringMovement)
+  def toPush(stringPush: String): Option[Push] =
+    Push.values.find(_.getPush == stringPush)
 
-  /** get the [[Option]] of given rotation direction to [[RotationDirection]]
-    * @param stringRotationDirection
-    *   the value of [[RotationDirection]] as string
+  /** get the [[Option]] of given rotation to [[Rotation]]
+ *
+    * @param stringRotation
+    * the value of [[Rotation]] as string
     */
-  def toRotation(stringRotationDirection: String): Option[RotationDirection] =
-    RotationDirection.values.find(_.getDirection == stringRotationDirection)
+  def toRotation(stringRotation: String): Option[Rotation] =
+    Rotation.values.find(_.getRotation == stringRotation)
 }
 
 /** Represent the rotator [[Cell]]
+ *
   * @param position
-  *   the coordinates of the cell
+  * the coordinates of the cell
   * @param playable
-  *   if the cell is playable (is in the [[PlayableArea]])
-  * @param rotationDirection
-  *   the [[RotationDirection]]
+  * if the cell is playable (is in the [[PlayableArea]])
+  * @param rotation
+  * the [[Rotation]]
   */
-case class RotatorCell(position: Position, playable: Boolean, rotationDirection: RotationDirection) extends Cell
+case class RotatorCell(position: Position, playable: Boolean, rotation: Rotation) extends Cell
 
 /** Represent the generator [[Cell]]
   * @param position
@@ -137,14 +142,15 @@ case class EnemyCell(position: Position, playable: Boolean) extends Cell
 case class MoverCell(position: Position, playable: Boolean, orientation: Orientation) extends Cell
 
 /** Represent the block [[Cell]]
+ *
   * @param position
-  *   the coordinates of the cell
+  * the coordinates of the cell
   * @param playable
-  *   if the cell is playable (is in the [[PlayableArea]])
-  * @param allowedMovement
-  *   the [[AllowedMovement]]
+  * if the cell is playable (is in the [[PlayableArea]])
+  * @param push
+  * the [[Push]]
   */
-case class BlockCell(position: Position, playable: Boolean, allowedMovement: AllowedMovement) extends Cell
+case class BlockCell(position: Position, playable: Boolean, push: Push) extends Cell
 
 /** Represent the wall [[Cell]]
   * @param position
