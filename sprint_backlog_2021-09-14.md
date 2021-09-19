@@ -43,7 +43,7 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
         </tr>
         <tr>
             <td>Modificare il RulesEngine alle nuove specifiche derivanti dal codice PROLOG</td>
-            <td></td>
+            <td>Yuqi Sun</td>
             <td>4</td>
             <td></td>
             <td></td>
@@ -60,11 +60,11 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>6</td>
             <td>6</td>
             <td>6</td>
-            <td>6</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Implementare predicati "rotator"</td>
@@ -72,11 +72,11 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>6</td>
             <td>6</td>
             <td>6</td>
-            <td>6</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>4</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Implementare predicati "generator"</td>
@@ -84,11 +84,11 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>8</td>
             <td>8</td>
             <td>8</td>
-            <td>8</td>
-            <td>6</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>4</td>
+            <td>4</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Aggiungere la possibilità al gioco standalone di giocare ai livelli dei giocatori</td>
