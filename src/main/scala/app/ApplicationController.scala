@@ -2,6 +2,7 @@ package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.game.ParentGameController
 import it.unibo.pps.caw.menu.ParentMainMenuController
+import it.unibo.pps.caw.settings.ParentSettingsController
 
 import java.io.File
 
@@ -11,7 +12,7 @@ import java.io.File
   * application and provides them the functionalities that are common between all controllers or that are "higher-level" ones,
   * such that no other controller should be responsible for them. It must be created through its companion object.
   */
-trait ApplicationController extends ParentGameController with ParentMainMenuController
+trait ApplicationController extends ParentGameController with ParentMainMenuController with ParentSettingsController
 
 /** Companion object to the [[ApplicationController]] trait, containing its factory method. */
 object ApplicationController {
@@ -24,6 +25,11 @@ object ApplicationController {
     override def exit(): Unit = sys.exit()
 
     override def backToMainMenu(): Unit = view.showMainMenu()
+
+    override def back(): Unit = view.showMainMenu()
+
+    override def openSettings(): Unit = view.showSettings()
+
   }
 
   /** Returns a new instance of the [[ApplicationController]] trait. It must receive the [[ApplicationView]] which will be called

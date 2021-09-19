@@ -2,7 +2,9 @@ package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.game.GameView
 import it.unibo.pps.caw.menu.MainMenuView
+import it.unibo.pps.caw.settings.SettingsView
 import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
+import javafx.application.Platform
 import javafx.scene.layout.Pane
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
@@ -24,6 +26,8 @@ trait ApplicationView {
 
   /** Shows the [[GameView]] to the player, hiding the currently displayed view. */
   def showGame(): Unit
+
+  def showSettings(): Unit
 }
 
 /** Companion object for the [[ApplicationView]] trait, containing its factory method. */
@@ -51,6 +55,13 @@ object ApplicationView {
     override def showMainMenu(): Unit = {
       visibleView = MainMenuView(controller, audioPlayer, scene)
       scene.root.value = visibleView.innerComponent
+    }
+
+    override def showSettings(): Unit = {
+      Platform.runLater(() => {
+        visibleView = SettingsView(controller, audioPlayer, scene)
+        scene.root.value = visibleView.innerComponent
+      })
     }
   }
 

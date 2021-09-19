@@ -19,6 +19,8 @@ trait ParentMainMenuController {
 
   /** Asks the parent controller to exit the application. */
   def exit(): Unit
+  
+  def openSettings(): Unit
 }
 
 /** The controller which manages the main menu part of the application.
@@ -46,20 +48,23 @@ trait MainMenuController {
 
   /** Exits the application. */
   def exit(): Unit
+
+  def openSettings(): Unit
 }
 
 /** Companion object to the [[MainMenuController]] trait, containing its factory method. */
 object MainMenuController {
 
   /* Default implementation of the MainMenuController trait. */
-  private class MainMenuControllerImpl(parentController: ParentMainMenuController, view: MainMenuView)
-    extends MainMenuController {
+  private class MainMenuControllerImpl(parentController: ParentMainMenuController) extends MainMenuController {
 
     override def startGame(levelIndex: Int): Unit = parentController.startGame(new File(s"level$levelIndex.json"))
 
     override def startGame(levelFile: File): Unit = parentController.startGame(levelFile)
 
     override def exit(): Unit = parentController.exit()
+
+    override def openSettings(): Unit = parentController.openSettings()
   }
 
   /** Returns a new instance of the [[MainMenuController]] trait. It must receive the [[ParentMainMenuController]], which it
@@ -73,6 +78,6 @@ object MainMenuController {
     * @return
     *   a new [[MainMenuController]] instance
     */
-  def apply(parentController: ParentMainMenuController, view: MainMenuView): MainMenuController =
-    MainMenuControllerImpl(parentController, view)
+  def apply(parentController: ParentMainMenuController): MainMenuController =
+    MainMenuControllerImpl(parentController)
 }

@@ -37,8 +37,8 @@ object MainMenuView {
 
   /* Default implementation of the MainMenuView trait. */
   private final class MainMenuViewImpl(parentController: ParentMainMenuController, audioPlayer: AudioPlayer, scene: Scene)
-    extends AbstractViewComponent[Pane]("main_menu_page.fxml")
-    with MainMenuView {
+      extends AbstractViewComponent[Pane]("main_menu_page.fxml")
+      with MainMenuView {
     @FXML
     var playButton: SoundButton = _
     @FXML
@@ -52,7 +52,7 @@ object MainMenuView {
 
     override val innerComponent: Pane = loader.load[GridPane]
 
-    private val controller: MainMenuController = MainMenuController(parentController, this)
+    private val controller: MainMenuController = MainMenuController(parentController)
 
     audioPlayer.play(Track.MenuMusic)
     playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, this, controller))
@@ -62,6 +62,7 @@ object MainMenuView {
       chooser.extensionFilters.add(FileChooser.ExtensionFilter("Level file", "*.json"))
       Option(chooser.showOpenDialog(scene.getWindow)).foreach(controller.startGame(_))
     })
+    settingsButton.setOnMouseClicked(_ => controller.openSettings())
     exitButton.setOnMouseClicked(_ => controller.exit())
   }
 }
