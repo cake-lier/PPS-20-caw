@@ -1,12 +1,20 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.game.{GameView, ParentGameController}
 import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController}
 import it.unibo.pps.caw.ViewComponent
-import it.unibo.pps.caw.game.model.Level
 import javafx.application.Platform
 import scalafx.scene.control.Alert
+import it.unibo.pps.caw.game.model.Level as GameLevel
+import it.unibo.pps.caw.editor.model.Level as EditorLevel
+import it.unibo.pps.caw.menu.MainMenuView
+import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.editor.LevelEditorView
+import it.unibo.pps.caw.editor.menu.LevelEditorMenuView
+import it.unibo.pps.caw.editor.model.Level
+import it.unibo.pps.caw.game.GameView
+import javafx.geometry.Rectangle2D
 import javafx.scene.layout.Pane
+import javafx.stage.Screen
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
 
@@ -38,7 +46,7 @@ trait ApplicationView {
     * @param level
     *   the [[Level]] which will be first displayed
     */
-  def showGame(level: Level): Unit
+  def showGame(level: GameLevel): Unit
 
   /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing a default [[Level]]. The [[Level]]
     * which will be played will be the one with the given index between the given sequence of default [[Level]]. After playing
@@ -49,7 +57,27 @@ trait ApplicationView {
     * @param levelIndex
     *   the index of the [[Level]] which will be first displayed in the given sequence of [[Level]]
     */
-  def showGame(levels: Seq[Level], levelIndex: Int): Unit
+  def showGame(levels: Seq[GameLevel], levelIndex: Int): Unit
+
+  /** Shows the [[LevelEditorView]] to the player with an empty level, hiding the currently displayed view.
+    * @param width:
+    *   the width of the empty [[Level]]
+    * @param height:
+    *   the height of the empty [[Level]]
+    */
+  def showLevelEditor(width: Int, height: Int): Unit
+
+  /** Shows the [[LevelEditorView]] to the player with an empty level, hiding the currently displayed view.
+    * @param level:
+    *   the loaded level
+    */
+  def showLevelEditor(level: EditorLevel): Unit
+
+  /** Shows the [[LevelEditorMenuView]] to the player.
+    * @param buttonText:
+    *   the text to be written in the back or close button of [[LevelEditorView]] and [[LevelEditorMenuView]]
+    */
+  def showEditorMenuView(): Unit
 }
 
 /** Companion object for the [[ApplicationView]] trait, containing its factory method. */
@@ -61,6 +89,9 @@ object ApplicationView {
     private val scene: Scene = Scene(1080, 720)
     private var visibleView: ViewComponent[? <: Pane] =
       MainMenuView(controller, controller.levelsCount, scene, controller.levelsCount == 0)
+    /* TODO
+    private val screenSize: Rectangle2D = Screen.getPrimary.getBounds
+    private val scene: Scene = Scene(screenSize.getWidth * 0.80, screenSize.getHeight * 0.80)*/
 
     stage.resizable = false
     stage.maximized = false
@@ -71,20 +102,31 @@ object ApplicationView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: Level): Unit = Platform.runLater(() => {
-      visibleView = GameView(controller, level, scene)
-      scene.root.value = visibleView.innerComponent
-    })
+    override def showGame(level: GameLevel): Unit = setVisibleView(GameView(controller, level, scene))
 
-    override def showGame(levels: Seq[Level], levelIndex: Int): Unit = Platform.runLater(() => {
-      visibleView = GameView(controller, levels, levelIndex, scene)
-      scene.root.value = visibleView.innerComponent
-    })
+    override def showGame(levels: Seq[GameLevel], levelIndex: Int): Unit = setVisibleView(
+      GameView(controller, levels, levelIndex, scene)
+    )
 
-    override def showMainMenu(): Unit = Platform.runLater(() => {
-      visibleView = MainMenuView(controller, controller.levelsCount, scene, controller.levelsCount == 0)
-      scene.root.value = visibleView.innerComponent
-    })
+    override def showMainMenu(): Unit = setVisibleView(
+      MainMenuView(controller, controller.levelsCount, scene, controller.levelsCount == 0)
+    )
+
+    override def showLevelEditor(width: Int, height: Int): Unit = setVisibleView(
+      LevelEditorView(controller, scene, "Menu", width, height)
+    )
+
+    override def showLevelEditor(level: EditorLevel): Unit = setVisibleView(
+      LevelEditorView(controller, scene, "Menu", level)
+    )
+
+    override def showEditorMenuView(): Unit = setVisibleView(LevelEditorMenuView(controller, scene, "Menu"))
+
+    private def setVisibleView(newVisibleView: ViewComponent[? <: Pane]) =
+      Platform.runLater(() => {
+        visibleView = newVisibleView; scene.root.value = visibleView.innerComponent
+      })
+
   }
 
   /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX's [[PrimaryStage]] for creating a view for the

@@ -1,7 +1,6 @@
-package it.unibo.pps.caw
-package game
+package it.unibo.pps.caw.game
 
-import game.model.Level
+import it.unibo.pps.caw.game.model.Level
 
 import java.nio.file.Path
 import scala.io.Source

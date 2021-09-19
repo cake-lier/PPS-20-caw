@@ -2,7 +2,6 @@ package it.unibo.pps.caw.menu
 
 import it.unibo.pps.caw.ViewComponent
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
-
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.{GridPane, Pane}
@@ -43,12 +42,12 @@ object MainMenuView {
 
   /* Default implementation of the MainMenuView trait. */
   private final class MainMenuViewImpl(
-    parentController: ParentMainMenuController,
-    levelsCount: Int,
-    scene: Scene,
-    disableLevels: Boolean
+      parentController: ParentMainMenuController,
+      levelsCount: Int,
+      scene: Scene,
+      disableLevels: Boolean
   ) extends AbstractViewComponent[Pane]("main_menu_page.fxml")
-    with MainMenuView {
+      with MainMenuView {
     @FXML
     var playButton: Button = _
     @FXML
@@ -75,5 +74,6 @@ object MainMenuView {
       Option(chooser.showOpenDialog(scene.getWindow)).foreach(f => controller.startGame(f.toPath))
     })
     exitButton.setOnMouseClicked(_ => controller.exit())
+    editorButton.setOnMouseClicked(_ => parentController.openLevelMenuView())
   }
 }

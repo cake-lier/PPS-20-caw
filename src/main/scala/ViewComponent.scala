@@ -1,5 +1,10 @@
 package it.unibo.pps.caw
 
+import javafx.scene.Scene
+import scalafx.stage.FileChooser
+
+import java.io.File
+
 /** Wraps another view component.
   *
   * This trait creates modular view components that can be re-instantied multiple times without specifying how to initialize them
@@ -45,5 +50,14 @@ object ViewComponent {
       */
     given Conversion[ViewComponent[A], A] with
       def apply(component: ViewComponent[A]) = component.innerComponent
+  }
+}
+
+object FilePicker{
+  def pickFile(scene: Scene): File = {
+    val chooser: FileChooser = FileChooser()
+    chooser.title = "Choose a level file"
+    chooser.extensionFilters.add(FileChooser.ExtensionFilter("Level file", "*.json"))
+    chooser.showOpenDialog(scene.getWindow)
   }
 }
