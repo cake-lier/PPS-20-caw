@@ -68,7 +68,7 @@ object GameController {
     protected var updatesHandler: Option[ScheduledFuture[?]] = None
     protected var model = Model(initialLevel)
 
-    view.drawLevel(model.level, model.isLevelCompleted)
+    view.drawLevel(model.initialLevel, model.isLevelCompleted)
 
     def startUpdates(): Unit = updatesHandler match {
       case Some(_) => Console.err.println(GameControllerError.RunningUpdates.message)
@@ -85,13 +85,13 @@ object GameController {
 
     def step(): Unit = {
       model = model.update()
-      view.drawLevelUpdate(model.level, model.isLevelCompleted)
+      view.drawLevelUpdate(model.initialLevel, model.currentBoard, model.isLevelCompleted)
     }
 
     def resetLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
-      model = model.reset()
-      view.drawLevelUpdate(model.level, model.isLevelCompleted)
+      model = model.reset
+      view.drawLevelReset(model.initialLevel)
     }
 
     def goBack(): Unit = {
@@ -122,7 +122,7 @@ object GameController {
         case Some(v) => {
           currentIndex = v
           model = Model(levels(currentIndex - 1))
-          view.drawLevel(model.level, model.isLevelCompleted)
+          view.drawLevel(model.initialLevel, model.isLevelCompleted)
         }
         case None => goBack()
       }

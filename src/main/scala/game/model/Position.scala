@@ -15,6 +15,7 @@ trait Position {
 
 /** the companion object of trait [[Position]] */
 object Position {
+  given Conversion[Tuple2[Int, Int], Position] = t => Position(t._1, t._2)
   private case class ItemPosition(x: Int, y: Int) extends Position
   def apply(x: Int, y: Int): Position = ItemPosition(x, y)
 }

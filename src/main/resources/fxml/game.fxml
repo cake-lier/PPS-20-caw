@@ -24,27 +24,33 @@
         <RowConstraints percentHeight="7.5" />
         <RowConstraints percentHeight="2.5" />
     </rowConstraints>
-    <Button fx:id="resetButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" prefHeight="13.0" prefWidth="72.0" text="Reset" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+    <Button fx:id="resetButton" visible="false" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity"
+            prefHeight="13.0" prefWidth="72.0" text="Reset" GridPane.columnIndex="3" GridPane.halignment="CENTER"
+            GridPane.rowIndex="5" GridPane.valignment="CENTER">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
     </Button>
-    <Button fx:id="stepSimulationButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Step" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+    <Button fx:id="stepSimulationButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Step"
+            GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
     </Button>
-    <Button fx:id="playSimulationButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Play" GridPane.columnIndex="3" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+    <Button fx:id="playSimulationButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Play"
+            GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
     </Button>
-    <Button fx:id="backToLevelsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Back" GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+    <Button fx:id="backToLevelsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Back"
+            GridPane.columnIndex="5" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
     </Button>
-    <Button fx:id="nextButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Next" visible="false" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+    <Button fx:id="nextButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Next" visible="false"
+            GridPane.columnIndex="5" GridPane.rowIndex="5" />
     <stylesheets>
         <URL value="@../css/main.css" />
         <URL value="@../css/game.css" />

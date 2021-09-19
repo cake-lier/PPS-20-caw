@@ -1,15 +1,18 @@
 package it.unibo.pps.caw.game.view
 
-import it.unibo.pps.caw.game.model.{Cell, Level}
+import it.unibo.pps.caw.game.model.{Cell, CellConverter, Level, Board}
 import it.unibo.pps.caw.ViewComponent
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.scene.layout.{ColumnConstraints, GridPane, RowConstraints}
-import scala.jdk.StreamConverters.given
+
+import scala.jdk.StreamConverters
 
 trait BoardView extends ViewComponent[GridPane] {
-  def updateBoard(updatedLevel: Level): Unit
+  def resetBoard(initialLevel: Level): Unit
+
+  def updateBoard(level: Level, currentBoard: Board[Cell]):Unit
 }
 
 /** Factory for new [[Board]] instance. */
@@ -50,13 +53,18 @@ object BoardView {
     }
 
     placePavement()
-    drawLevel(initialLevel)
+    drawFromLevel(initialLevel)
 
-    //TODO change to new type of cell
-    def updateBoard(updatedlevel: Level): Unit = {
+    def resetBoard(initialLevel: Level): Unit = {
       innerComponent.getChildren().clear()
       placePavement()
-      drawLevel(updatedlevel)
+      drawFromLevel(initialLevel)
+    }
+
+    override def updateBoard(level: Level, currentBoard: Board[Cell]): Unit = {
+      innerComponent.getChildren().clear()
+      placePavement()
+      drawFromUpdate(level, currentBoard.cells)
     }
 
     /* Places the default tiles in the grid. */
@@ -68,7 +76,7 @@ object BoardView {
     }
 
     /* Adds the playable area and cells. */
-    private def drawLevel(level: Level): Unit = {
+    private def drawFromLevel(level: Level): Unit = {
       val playableArea = level.playableArea
       for {
         x <- 0 until playableArea.width
@@ -78,11 +86,27 @@ object BoardView {
         addDropFeature(node, innerComponent)
         innerComponent.add(node, playableArea.position.x + x, playableArea.position.y + y)
       }
-      level.cells.foreach(c => {
-        val node = CellView(c, innerComponent).innerComponent
+      level.setupBoard.cells.foreach(c => {
+        val node = CellView(CellConverter.fromSetup(c), innerComponent).innerComponent
         if (c.playable) {
           addDragFeature(node)
         }
+        innerComponent.add(node, c.position.x, c.position.y)
+      })
+    }
+
+    private def drawFromUpdate(level: Level, cells: Set[Cell]): Unit = {
+      val playableArea = level.playableArea
+      for {
+        x <- 0 until playableArea.width
+        y <- 0 until playableArea.height
+      } do {
+        val node = TileView(CellImage.PlayAreaTile.image, innerComponent).innerComponent
+        addDropFeature(node, innerComponent)
+        innerComponent.add(node, playableArea.position.x + x, playableArea.position.y + y)
+      }
+      cells.foreach(c => {
+        val node = CellView(c, innerComponent).innerComponent
         innerComponent.add(node, c.position.x, c.position.y)
       })
     }

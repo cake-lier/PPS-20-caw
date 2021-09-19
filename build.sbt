@@ -30,5 +30,6 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-kernel" % "2.6.1",
   "com.typesafe.play" %% "play-json" % "2.10.0-RC5",
   "org.scalafx" %% "scalafx" % "16.0.0-R24",
-  "io.vertx" % "vertx-json-schema" % "4.1.3"
+  "io.vertx" % "vertx-json-schema" % "4.1.3",
+  "it.unibo.alice.tuprolog" % "tuprolog" % "3.3.0"
 ) ++ Seq("base", "controls", "fxml", "graphics", "media").map(m => "org.openjfx" % s"javafx-$m" % "16" classifier osName)
