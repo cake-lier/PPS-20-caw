@@ -45,7 +45,7 @@ object RulesEngine {
       }
 
       val resBoard = PrologParser.deserializeBoard(
-        extractTerm(engine(PrologParser.createSerializedPredicate(board, board.cells.size, cell))).toString
+        extractTerm(engine(PrologParser.createSerializedPredicate(board, board.cells.size + 1, cell))).toString
       )
 
       Board(resBoard.cells.map(updateCell))
@@ -71,7 +71,7 @@ private object PrologParser {
           case _          => ""
         })
       case g: IdGeneratorCell => "generator_" + g.orientation.getOrientation
-      case r: IdRotatorCell   => "rotate_" + r.rotationDirection.getDirection
+      case r: IdRotatorCell   => "rotator_" + r.rotationDirection.getDirection
     }
     Term.createTerm("cell" + Seq(cell.id, cellType, cell.position.x, cell.position.y).mkString("(", ",", ")"))
   }
@@ -99,11 +99,12 @@ private object PrologParser {
           case Down  => "down"
         })
       case r: IdRotatorCell =>
-        "rotate_" + (r.rotationDirection match {
+        "rotator_" + (r.rotationDirection match {
           case RotationDirection.Left  => "left"
           case RotationDirection.Right => "right"
         })
     }
+
     seq = seq :+ "NB"
 
     Term.createTerm(
@@ -116,7 +117,7 @@ private object PrologParser {
   /* Returns a Scala Board of fake cells given the Prolog Board */
   def deserializeBoard(stringBoard: String): Board[IdCell] = {
     val regex: Regex =
-      "cell\\(\\d+,(?:mover_right|mover_left|mover_top|mover_down|generator_right|generator_left|generator_top|generator_down|rotate_right|rotate_left|block|block_hor|block_ver|enemy|wall),\\d+,\\d+\\)".r
+      "cell\\(\\d+,(?:mover_right|mover_left|mover_top|mover_down|generator_right|generator_left|generator_top|generator_down|rotator_right|rotator_left|block|block_hor|block_ver|enemy|wall),\\d+,\\d+\\)".r
     Board(
       regex
         .findAllMatchIn(stringBoard)
@@ -128,7 +129,7 @@ private object PrologParser {
 
   /* Returns a Scala fake cell given its Prolog cell*/
   def deserializeCell(stringCell: String): IdCell = {
-    val s"cell($id, $cellType,$stringX,$stringY)" = stringCell
+    val s"cell($id,$cellType,$stringX,$stringY)" = stringCell
     val cellId = id.toInt
     val position = Position(stringX.toInt, stringY.toInt)
     val updated = false // default value, properly set in nextState()
@@ -149,7 +150,7 @@ private object PrologParser {
           updated
         )
       case s"generator_$orientation" => IdGeneratorCell(position, EnumHelper.toOrientation(orientation).get, cellId, updated)
-      case s"rotate_$rotation"       => IdRotatorCell(position, EnumHelper.toRotation(rotation).get, cellId, updated)
+      case s"rotator_$rotation"      => IdRotatorCell(position, EnumHelper.toRotation(rotation).get, cellId, updated)
     }
   }
 }
