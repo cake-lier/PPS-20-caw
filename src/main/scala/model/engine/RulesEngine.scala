@@ -32,13 +32,16 @@ object RulesEngine {
       Using(Source.fromResource("cellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
 
     def nextState(board: Board[IdCell], cell: IdCell): Board[IdCell] = {
-      val cellState: IndexedSeq[Boolean] = board.cells.toList.sortBy(_.id).map(_.updated).toIndexedSeq
-                                            .updated(cell.id, true) // cell being currently updated to true
+      val cellState: IndexedSeq[Boolean] = board.cells.toList
+        .sortBy(_.id)
+        .map(_.updated)
+        .toIndexedSeq
+        .updated(cell.id, true) // cell being currently updated to true
 
       /* Update cell returned by deserializer with correct field IdCell.updated */
       def updateCell(cell: IdCell): IdCell = cell match {
         case c if (c.id >= cellState.length) => c // new cell created by a generator doesn't get updated
-        case c => CellConverter.toUpdated(c, cellState(c.id))
+        case c                               => CellConverter.toUpdated(c, cellState(c.id))
       }
 
       val resBoard = PrologParser.deserializeBoard(
@@ -60,7 +63,7 @@ private object PrologParser {
     val cellType: String = cell match {
       case _: IdWallCell  => "wall"
       case _: IdEnemyCell => "enemy"
-      case m: IdMoverCell => "arrow_" + m.orientation.getOrientation
+      case m: IdMoverCell => "mover_" + m.orientation.getOrientation
       case b: IdBlockCell =>
         "block" + (b.allowedMovement match {
           case Horizontal => "_hor"
@@ -75,12 +78,12 @@ private object PrologParser {
 
   /* Returns a Prolog term given its cell.
 
-     If the cell is an arrow or a rotator, it returns arrow/ratator_next_state[board, x, y, NB].
+     If the cell is a mover or a rotator, it returns mover/ratator_next_state[board, x, y, NB].
      If the cell is a generator, it returns generator_next_state[board, maxId, x, y, NB] */
   def createSerializedPredicate(board: Board[IdCell], maxId: Long, cell: IdCell): Term = {
     val action: String = cell match {
       case m: IdMoverCell =>
-        "arrow_" + (m.orientation match {
+        "mover_" + (m.orientation match {
           case Right => "right"
           case Left  => "left"
           case Top   => "top"
@@ -113,7 +116,7 @@ private object PrologParser {
   /* Returns a Scala Board of fake cells given the Prolog Board */
   def deserializeBoard(stringBoard: String): Board[IdCell] = {
     val regex: Regex =
-      "cell\\((?:arrow_right|arrow_left|arrow_top|arrow_down|generator_right|generator_left|generator_top|generator_down|rotate_right|rotate_left|block|block_hor|block_ver|enemy|wall),\\d+,\\d+\\,\\d+,(?:true|false)\\)".r
+      "cell\\((?:mover_right|mover_left|mover_top|mover_down|generator_right|generator_left|generator_top|generator_down|rotate_right|rotate_left|block|block_hor|block_ver|enemy|wall),\\d+,\\d+\\,\\d+,(?:true|false)\\)".r
     Board(
       regex
         .findAllMatchIn(stringBoard)
@@ -131,7 +134,7 @@ private object PrologParser {
     val updated = false // default value, properly set in nextState()
 
     cellType match {
-      case s"arrow_$orientation" => IdMoverCell(position, EnumHelper.toOrientation(orientation).get, cellId, updated)
+      case s"mover_$orientation" => IdMoverCell(position, EnumHelper.toOrientation(orientation).get, cellId, updated)
       case "enemy"               => IdEnemyCell(position, cellId, updated)
       case "wall"                => IdWallCell(position, cellId, updated)
       case s"block$movement" =>
