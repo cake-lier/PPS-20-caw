@@ -182,14 +182,14 @@ rotate_left_next_state(B, X, Y, NB) :- member(cell(rotate_left, X, Y), B), !, ro
 
 last_index_top(_, enemy, _, Y, Y) :- !.
 last_index_top(B, T, X, Y, EY) :-   T \= wall,
-                                    T \= block_ver,
+                                    T \= block_hor,
                                     T \= arrow_down,
                                     Y1 is Y + 1,
                                     (member(cell(T1, X, Y1), B) -> last_index_top(B, T1, X, Y1, EY); EY = Y).
 
 last_index_down(_, enemy, _, Y, Y) :- !.
 last_index_down(B, T, X, Y, EY) :-  T \= wall,
-                                    T \= block_ver,
+                                    T \= block_hor,
                                     T \= arrow_top,
                                     Y1 is Y - 1,
                                     (member(cell(T1, X, Y1), B) -> last_index_down(B, T1, X, Y1, EY); EY = Y).
@@ -244,8 +244,8 @@ move_top([cell(_, X, Y) | CS], B, SY, EY, X, NB) :-  Y >= SY,
                                                      member(cell(enemy, X, Y1), B),
                                                      move_top(CS, B, SY, EY, X, NB),
                                                      !.
-move_top([cell(T, X, Y) | CS], B, SY, EY, X, [cell(T, X1, Y)| NCS]) :-  Y >= SY, 
-                                                                         Y < EY,
+move_top([cell(T, X, Y) | CS], B, SY, EY, X, [cell(T, X, Y1)| NCS]) :-  Y >= SY, 
+                                                                         Y =< EY,
                                                                          Y1 is Y + 1,
                                                                          move_top(CS, B, SY, EY, X, NCS).
 
@@ -253,7 +253,7 @@ arrow_top_next_state(B, X, Y, NB) :- member(cell(arrow_top, X, Y), B),
                                      last_index_top(B, arrow_top, X, Y, EY),
                                      move_top(B, B, Y, EY, X, NB),
                                      !.
-arrow_right_next_state(B, _, _, B).
+arrow_top_next_state(B, _, _, B).
 %-----------------------------------------------------------------------------------------------------------------------------------
 % move_down([cell | tail], Board, StartYCoordinate, EndYCoordinate, XCoordinate, NextBoard)
 move_down([], _, _, _, _, []).
@@ -270,11 +270,11 @@ move_down([cell(_, X, Y) | CS], B, SY, EY, X, NB) :- Y =< SY,
                                                      member(cell(enemy, X, Y1), B),
                                                      move_down(CS, B, SY, EY, X, NB),
                                                      !.
-move_down([cell(T, X, Y) | CS], B, SY, EY, X, [cell(T, X1, Y)| NCS]) :-  Y =< SY, 
-                                                                         Y > EY,
+move_down([cell(T, X, Y) | CS], B, SY, EY, X, [cell(T, X, Y1)| NCS]) :-  Y =< SY, 
+                                                                         Y >= EY,
                                                                          Y1 is Y - 1,
                                                                          move_down(CS, B, SY, EY, X, NCS).
-arrow_down_next_state(B, X, Y, NB) :- member(cell(arrow_down, X, Y), B),
+arrow_down_next_state(B, X, Y, NB) :-  member(cell(arrow_down, X, Y), B),
                                        last_index_down(B, arrow_down, X, Y, EY),
                                        move_down(B, B, Y, EY, X, NB),
                                        !.
