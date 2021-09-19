@@ -28,7 +28,7 @@ object RulesEngine {
 
   private case class RulesEngineImpl() extends RulesEngine {
     private val engine: Term => Term =
-      Using(Source.fromResource("NCcellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
+      Using(Source.fromResource("cellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
 
     def nextState(board: Board[IdCell], cell: IdCell): Board[IdCell] = {
       val cellState: IndexedSeq[Boolean] = board.cells.toList
@@ -99,8 +99,8 @@ private object PrologParser {
         })
       case r: IdRotatorCell =>
         "rotator_" + (r.rotation match {
-          case Rotation.Counterclockwise  => "left"
-          case Rotation.Clockwise => "right"
+          case Rotation.Counterclockwise => "left"
+          case Rotation.Clockwise        => "right"
         })
     }
 

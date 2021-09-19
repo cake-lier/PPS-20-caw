@@ -48,9 +48,9 @@ trait GameView extends ViewComponent[GridPane] {
     * @param isCompleted
     *   whether or not this [[Level]] has been completed
     */
-  def drawLevelUpdate(level: Level, currentBoard:Board[Cell], isCompleted: Boolean): Unit
+  def drawLevelUpdate(level: Level, currentBoard: Board[Cell], isCompleted: Boolean): Unit
 
-  def drawLevelReset(level: Level):Unit
+  def drawLevelReset(level: Level): Unit
 
   /** Displays the given error message to the player.
     *
@@ -81,29 +81,44 @@ object GameView {
     private val controller: GameController = createController()
     private var boardView: Option[BoardView] = None
 
-    resetButton.setOnMouseClicked(_ => controller.resetLevel())
-    stepSimulationButton.setOnMouseClicked(_ => controller.step())
+    resetButton.setOnMouseClicked(_ => {
+      controller.resetLevel()
+      resetButton.setVisible(false)
+    })
+    stepSimulationButton.setOnMouseClicked(_ => {
+      controller.step()
+      resetButton.setVisible(true)
+    })
     var startSimulationHandler: EventHandler[MouseEvent] = _ => {
       controller.startUpdates()
       playSimulationButton.setText("Pause")
       playSimulationButton.setOnMouseClicked(endSimulationHandler)
+      stepSimulationButton.setDisable(true)
+      resetButton.setVisible(true)
     }
     var endSimulationHandler: EventHandler[MouseEvent] = _ => {
       controller.pauseUpdates()
       playSimulationButton.setText("Start")
       playSimulationButton.setOnMouseClicked(startSimulationHandler)
+      stepSimulationButton.setDisable(false)
     }
     playSimulationButton.setOnMouseClicked(startSimulationHandler)
     backToLevelsButton.setOnMouseClicked(_ => controller.goBack())
-    nextButton.setOnMouseClicked(_ => controller.nextLevel())
+    nextButton.setOnMouseClicked(_ => {
+      controller.nextLevel()
+      resetButton.setVisible(false)
+      playSimulationButton.setText("Start")
+      playSimulationButton.setOnMouseClicked(startSimulationHandler)
+      stepSimulationButton.setDisable(false)
+    })
 
     protected def createController(): GameController
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.ERROR, message))
 
-    override def drawLevelUpdate(level: Level, currentBoard:Board[Cell], isCompleted: Boolean): Unit = Platform.runLater(() => {
+    override def drawLevelUpdate(level: Level, currentBoard: Board[Cell], isCompleted: Boolean): Unit = Platform.runLater(() => {
       boardView match {
-        case Some(b) => b.updateBoard(level, currentBoard:Board[Cell])
+        case Some(b) => b.updateBoard(level, currentBoard)
         case None    => Console.err.print("The board was not initialized")
       }
       nextButton.setVisible(isCompleted)

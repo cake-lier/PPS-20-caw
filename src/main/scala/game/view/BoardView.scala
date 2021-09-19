@@ -12,7 +12,7 @@ import scala.jdk.StreamConverters
 trait BoardView extends ViewComponent[GridPane] {
   def resetBoard(initialLevel: Level): Unit
 
-  def updateBoard(level: Level, currentBoard:Board[Cell]):Unit
+  def updateBoard(level: Level, currentBoard: Board[Cell]):Unit
 }
 
 /** Factory for new [[Board]] instance. */
@@ -95,7 +95,7 @@ object BoardView {
       })
     }
 
-    private def drawFromUpdate(level:Level, cells:Set[Cell]): Unit = {
+    private def drawFromUpdate(level: Level, cells: Set[Cell]): Unit = {
       val playableArea = level.playableArea
       for {
         x <- 0 until playableArea.width

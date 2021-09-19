@@ -12,19 +12,19 @@ sealed trait Model {
     * @param newCellCoordinates:
     *   new [[Position]] for [[Cell]]
     * @return
-    * updated instance of [[Model]]
+    *   updated instance of [[Model]]
     */
   def updateCell(oldCellCordinates: Position, newCellCoordinates: Position): Model
 
   /** Calculate the next state of the current [[Board]]
     * @return
-    * updated instance of [[Model]]
+    *   updated instance of [[Model]]
     */
   def update(): Model
 
   /** Set the current board as the initial [[Board]]
     * @return
-    * resetted instance of [[Model]]
+    *   resetted instance of [[Model]]
     */
   def reset: Model
 
@@ -41,9 +41,9 @@ sealed trait Model {
   def nextLevelIndex(currentIndex: Int): Option[Int]
 }
 
-/** Companion object for trai [[Model]] */
+/** Companion object for trait [[Model]]. */
 object Model {
-  private case class GameModelImpl(level:Level, optionCurrentBoard: Option[Board[Cell]]) extends Model {
+  private case class GameModelImpl(level: Level, optionCurrentBoard: Option[Board[Cell]]) extends Model {
     override val initialLevel: Level = level
 
     override val currentBoard: Board[Cell] = optionCurrentBoard.getOrElse(
@@ -60,21 +60,18 @@ object Model {
 
     override def update(): Model = {
       // parse Board[Cell] to Board[IdCell]
-      val it = Iterator.range(0, initialLevel.setupBoard.cells.size)
-      val idCells: Set[IdCell] = initialLevel.setupBoard.cells.map(
-        cell => CellConverter.toId(CellConverter.fromSetup(cell), it.next()))
-      val idBoard = Board(idCells)
+      val idBoard = Board(currentBoard.cells.zipWithIndex.map((c, i) => CellConverter.toId(c, i)))
 
       val updatableCells: Seq[IdCell] = Seq(
-        idBoard.cells.filter(_.isInstanceOf[GeneratorCell]).toSeq.sorted,
-        idBoard.cells.filter(_.isInstanceOf[RotatorCell]).toSeq.sorted,
-        idBoard.cells.filter(_.isInstanceOf[MoverCell]).toSeq.sorted
+        idBoard.cells.filter(_.isInstanceOf[IdGeneratorCell]).toSeq.sorted,
+        idBoard.cells.filter(_.isInstanceOf[IdRotatorCell]).toSeq.sorted,
+        idBoard.cells.filter(_.isInstanceOf[IdMoverCell]).toSeq.sorted
       ).flatten
 
       def update(cells: Seq[IdCell], board: Board[IdCell]): Board[IdCell] = cells match {
-        case h :: t if (! h.updated) => update(t, RulesEngine().nextState(board, h))
-        case h :: t => update(t, board) // ignore already updated cells
-        case _      => board
+        case h :: t if (!h.updated) => update(t, RulesEngine().nextState(board, h))
+        case h :: t                 => update(t, board) // ignore already updated cells
+        case _                      => board
       }
 
       // parse Board[IdCell] to Board[Cell]
@@ -96,12 +93,15 @@ object Model {
           case MoverCell(_, orientation)         => MoverCell(newCellCoordinates, orientation)
         })
         .get
-      GameModelImpl(initialLevel, Some(Board(initialLevel.setupBoard.cells.filter(_.position != oldCellCordinates).toSet + updatedCell)))
+      GameModelImpl(
+        initialLevel,
+        Some(Board(initialLevel.setupBoard.cells.filter(_.position != oldCellCordinates).toSet + updatedCell))
+      )
     }
   }
-  def apply(level:Level, optionCurrentBoard: Board[Cell]): Model =
+  def apply(level: Level, optionCurrentBoard: Board[Cell]): Model =
     GameModelImpl(level, Some(optionCurrentBoard))
 
-  def apply(level:Level): Model =
+  def apply(level: Level): Model =
     GameModelImpl(level, None)
 }
