@@ -104,7 +104,7 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>0</td>
         </tr>
         <tr>
-            <td rowspan="2">Aggiungere il modulo audio alla view</td>
+            <td rowspan="3">Aggiungere il modulo audio alla view</td>
             <td>Aggiungere musica di sottofondo</td>
             <td>Lorenzo Gardini</td>
             <td>2</td>
@@ -118,6 +118,18 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
         </tr>
         <tr>
             <td>Aggiungere suoni in corrispondenza degli eventi</td>
+            <td>Lorenzo Gardini</td>
+            <td>3</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Aggiungere pagina delle impostazioni con quelle per l'audio</td>
             <td>Lorenzo Gardini</td>
             <td>3</td>
             <td></td>
