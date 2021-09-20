@@ -90,7 +90,7 @@ last_index_left(B, T, X, Y, EX) :- T \= wall,
 % Those two cells then will not be present in the next board. No ordering is required for the cells in the board.
 move_left([], _, _, _, _, []).
 move_left([cell(_, enemy, EX, Y) | Cs], B, SX, EX, Y, NB) :- move_left(Cs, B, SX, EX, Y, NB), !.
-move_left([cell(I, T, X, Y) | Cs], B, SX, EX, Y1, [cell(I, T, X, Y) | NCs]) :- ((T = generator_left, X =:= EX, Y =:= Y1);
+move_left([cell(I, T, X, Y) | Cs], B, SX, EX, Y1, [cell(I, T, X, Y) | NCs]) :- ((T = generator_left, X =:= SX, Y =:= Y1);
                                                                                 X > SX;
                                                                                 X < EX;
                                                                                 Y =\= Y1),
@@ -152,8 +152,8 @@ last_index_down(B, T, X, Y, EY) :- T \= wall,
 % Those two cells then will not be present in the next board. No ordering is required for the cells in the board.
 move_down([], _, _, _, _, []).
 
-move_down([cell(_, enemy, EY, X) | Cs], B, SY, EY, X, NB) :- move_down(Cs, B, SY, EY, X, NB), !.
-move_down([cell(I, T, X, Y) | Cs], B, SY, EY, X1, [cell(I, T, X, Y) | NCs]) :- ((T = generator_down, Y =:= EY, X =:= X1);
+move_down([cell(_, enemy, X, EY) | Cs], B, SY, EY, X, NB) :- move_down(Cs, B, SY, EY, X, NB), !.
+move_down([cell(I, T, X, Y) | Cs], B, SY, EY, X1, [cell(I, T, X, Y) | NCs]) :- ((T = generator_down, Y =:= SY, X =:= X1);
                                                                                Y < SY;
                                                                                Y > EY;
                                                                                X =\= X1),
@@ -214,8 +214,8 @@ last_index_top(B, T, X, Y, EY) :-  T \= wall,
 % last cell met while moving them is an "enemy" cell, the cell is destroyed as is destroyed the one previous to the "enemy" cell.
 % Those two cells then will not be present in the next board. No ordering is required for the cells in the board.
 move_top([], _, _, _, _, []).
-move_top([cell(_, enemy, EY, X) | Cs], B, SY, EY, X, NB) :- move_top(Cs, B, SY, EY, X, NB), !.
-move_top([cell(I, T, X, Y) | Cs], B, SY, EY, X1, [cell(I, T, X, Y) | NCs]) :- ((T = generator_top, Y =:= EY, X =:= X1);
+move_top([cell(_, enemy, X, EY) | Cs], B, SY, EY, X, NB) :- move_top(Cs, B, SY, EY, X, NB), !.
+move_top([cell(I, T, X, Y) | Cs], B, SY, EY, X1, [cell(I, T, X, Y) | NCs]) :- ((T = generator_top, Y =:= SY, X =:= X1);
                                                                                 Y > SY;
                                                                                 Y < EY;
                                                                                 X =\= X1),
@@ -224,7 +224,7 @@ move_top([cell(I, T, X, Y) | Cs], B, SY, EY, X1, [cell(I, T, X, Y) | NCs]) :- ((
 move_top([cell(_, _, X, Y) | Cs], B, SY, EY, X, NB) :- Y =< SY,
                                                         Y > EY,
                                                         Y1 is Y - 1,
-                                                        member(cell(enemy, X, Y1), B),
+                                                        member(cell(_, enemy, X, Y1), B),
                                                         move_top(Cs, B, SY, EY, X, NB),
                                                         !.
 move_top([cell(I, T, X, Y) | Cs], B, SY, EY, X, [cell(I, T, X, Y1)| NCs]) :- Y =< SY,
@@ -369,7 +369,7 @@ generate_left(B, T, X, EX, Y, M, [cell(M, T, X1, Y) | NB]) :- X1 is X - 1, move_
 % ordering is required for the cells in the board and the empty cells must not be represented.
 generator_left_next_state(B, X, Y, M, NB) :- member(cell(_, generator_left, X, Y), B),
                                              X1 is X + 1,
-                                             member(cell(_, T, X1, Y), B),
+                                             member(cell(_, T, X1, Y), B), write("M"),
                                              last_index_left(B, generator_left, X, Y, EX),
                                              generate_left(B, T, X, EX, Y, M, NB),
                                              !.
