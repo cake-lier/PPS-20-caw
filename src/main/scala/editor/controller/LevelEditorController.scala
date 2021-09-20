@@ -11,6 +11,7 @@ import scala.io.Source
 trait ParentLevelEditorController {
   def closeEditor(): Unit
   def backToLevelEditorMenu(): Unit
+  def saveLevel(file: File, level: Level): Unit
 }
 
 sealed trait LevelEditorController {
@@ -21,7 +22,7 @@ sealed trait LevelEditorController {
   def removeCell(position: Position): Unit
   def setPlayableArea(position: Position, playableAreaWidth: Int, playableAreaHeight: Int): Unit
   def removePlayableArea(): Unit
-  def saveLevel(): Unit
+  def saveLevel(file: File): Unit
 }
 
 object LevelEditorController {
@@ -45,8 +46,7 @@ object LevelEditorController {
     override def setPlayableArea(position: Position, playableAreaWidth: Int, playableAreaHeight: Int): Unit =
       updateShowLevel(levelEditorModel.setPlayableArea(position, playableAreaWidth, playableAreaHeight))
 
-    override def saveLevel(): Unit =
-      ExecutionContext.global.execute(() => Serializer.serializeLevel(levelEditorModel.currentLevel))
+    override def saveLevel(file: File): Unit = parentLevelEditorController.saveLevel(file, levelEditorModel.currentLevel)
 
     override def closeEditor(): Unit = parentLevelEditorController.closeEditor()
 

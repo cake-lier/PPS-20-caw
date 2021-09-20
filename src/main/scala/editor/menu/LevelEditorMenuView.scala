@@ -40,7 +40,7 @@ object LevelEditorMenuView {
     width.textProperty().addListener((_, _, newValue) => continue.setDisable(newValue.isEmpty || height.getText.isEmpty))
     height.textProperty().addListener((_, _, newValue) => continue.setDisable(newValue.isEmpty || width.getText.isEmpty))
     backButton.setOnMouseClicked(_ => parentLevelEditorController.closeLevelEditorMenu())
-    loadFile.setOnMouseClicked(_ => Option(FilePicker.pickFile(scene)).foreach(parentLevelEditorController.openLevelEditor))
+    loadFile.setOnMouseClicked(_ => FilePicker.pickFile(scene).foreach(parentLevelEditorController.openLevelEditor))
     continue.setOnMouseClicked(_ => parentLevelEditorController.openLevelEditor(width.getText.toInt, height.getText.toInt))
   }
 

@@ -34,17 +34,17 @@ object PlayableArea {
 trait Level extends Area {
 
   /** the set of [[Cell]] in the level */
-  def cells: Set[Cell]
+  def board: Board[Cell]
 
   /** the [[PlayableArea]] of the game */
   def playableArea: Option[PlayableArea]
 }
 
-/** Companion object of [[Level]] */
 object Level {
-  private case class LevelImpl(width: Int, height: Int, cells: Set[Cell], playableArea: Option[PlayableArea]) extends Level
-  def apply(width: Int, height: Int, cells: Set[Cell], playableArea: PlayableArea): Level =
-    LevelImpl(width, height, cells, Some(playableArea))
-  def apply(width: Int, height: Int, cells: Set[Cell]): Level =
-    LevelImpl(width, height, cells, None)
+  private case class LevelImpl(width: Int, height: Int, board: Board[Cell], playableArea: Option[PlayableArea]) extends Level
+  def apply(width: Int, height: Int, board: Board[Cell], playableArea: PlayableArea): Level =
+    LevelImpl(width, height, board, Some(playableArea))
+
+  def apply(width: Int, height: Int, board: Board[Cell]): Level =
+    LevelImpl(width, height, board, None)
 }

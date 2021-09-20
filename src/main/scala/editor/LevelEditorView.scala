@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.editor
 
-import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.{FilePicker, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.editor.controller.{LevelEditorController, ParentLevelEditorController}
 import it.unibo.pps.caw.editor.model.Level
@@ -39,8 +39,12 @@ object LevelEditorView {
     var levelEditorMenuButton: Button = _
 
     override val innerComponent: Pane = loader.load[GridPane]
-
     override def printLevel(level: Level): Unit = Platform.runLater(() => println(level))
+
+    private val controller: LevelEditorController =
+      if (level.isDefined)
+        LevelEditorController(parentLevelEditorController, this, level.get)
+      else LevelEditorController(parentLevelEditorController, this, width, height)
 
     private val levelEditorController: LevelEditorController =
       if (level.isDefined)
@@ -50,7 +54,7 @@ object LevelEditorView {
     levelEditorMenuButton.setOnMouseClicked(_ => levelEditorController.backToLevelEditorMenu())
     backButton.setText(closeEditorButtonText)
     backButton.setOnMouseClicked(_ => levelEditorController.closeEditor())
-    saveButton.setOnMouseClicked(_ => levelEditorController.saveLevel())
+    saveButton.setOnMouseClicked(_ => FilePicker.saveFile(scene).foreach(controller.saveLevel))
     resetAll.setOnMouseClicked(_ => levelEditorController.resetLevel())
   }
 

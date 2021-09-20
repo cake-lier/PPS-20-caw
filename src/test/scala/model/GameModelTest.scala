@@ -1,4 +1,8 @@
-import it.unibo.pps.caw.game.model.*
+package it.unibo.pps.caw
+package model
+
+import game.model.*
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -11,7 +15,7 @@ class GameModelTest extends AnyFunSpec with Matchers {
     SetupBlockCell((3, 3), Push.Both, false),
     SetupEnemyCell((5, 5), false)
   )
-  private val level = Level(10, 10, setupBoard, playableArea = PlayableArea((0,0), 10, 10))
+  private val level = Level(10, 10, setupBoard, playableArea = PlayableArea((0, 0), 10, 10))
   private def gameModel = Model(level)
   describe("GameModel") {
     describe("At the beginning, before starting the game") {

@@ -5,13 +5,19 @@ import it.unibo.pps.caw.editor.menu.ParentLevelEditorMenuController
 import it.unibo.pps.caw.game.{LevelLoader, ParentGameController}
 import it.unibo.pps.caw.game.model.Level as ModelLevel
 import it.unibo.pps.caw.menu.ParentMainMenuController
-import it.unibo.pps.caw.editor.model.Deserializer
-import java.io.File
+
+import java.io.{File, PrintWriter}
 import java.nio.file.{Files, Path, Paths}
 import scala.io.Source
-import scala.jdk.StreamConverters.given
+import scala.jdk.StreamConverters
 import scala.util.{Failure, Try, Using}
+import cats.implicits
+import it.unibo.pps.caw.editor.model.{Deserializer, Level, Serializer}
+
+import scala.jdk.StreamConverters.given
 import cats.implicits.given
+
+import scala.concurrent.ExecutionContext
 
 /** The controller of the main application.
   *
@@ -66,6 +72,8 @@ object ApplicationController {
 
     override def openLevelMenuView(): Unit = view.showEditorMenuView()
 
+    override def saveLevel(file: File, level: Level): Unit =
+      Serializer.serializeLevel(level).fold(() => ())(s => Using(PrintWriter(file)) { _.write(s) })
     override def openLevelEditor(width: Int, height: Int): Unit =
       view.showLevelEditor(width, height)
 

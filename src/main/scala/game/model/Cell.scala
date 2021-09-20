@@ -27,7 +27,7 @@ sealed trait IdCell extends Cell {
 }
 
 /** Enum that represent all [[Cell]] types */
-enum CellTypes(cellType: String) {
+enum CellTypes(val cellType: String) {
   case Enemy extends CellTypes("enemy")
   case Rotator extends CellTypes("rotator")
   case Mover extends CellTypes("mover")
@@ -35,53 +35,27 @@ enum CellTypes(cellType: String) {
   case Empty extends CellTypes("empty")
   case Wall extends CellTypes("wall")
   case Generator extends CellTypes("generator")
-
-  /** Getter of [[CellTypes]] value
-    * @return
-    *   the value as string
-    */
-  def getType = cellType
 }
 
 /** Enum that represent the direction of rotation some cells */
-enum Rotation(rotation: String) {
+enum Rotation(val rotation: String) {
   case Clockwise extends Rotation("clockwise")
   case Counterclockwise extends Rotation("counterclockwise")
-
-  /** Getter of [[Rotation]] value
-    *
-    * @return
-    *   the value as string
-    */
-  def getRotation = rotation
 }
 
 /** Enum that represent the orientation of some cells */
-enum Orientation(orientation: String) {
+enum Orientation(val orientation: String) {
   case Right extends Orientation("right")
   case Left extends Orientation("left")
   case Down extends Orientation("down")
   case Top extends Orientation("top")
-
-  /** Getter of [[Orientation]] value
-    * @return
-    *   the value as string
-    */
-  def getOrientation = orientation
 }
 
 /** Enum that represent the direction to which some cells can be pushed */
-enum Push(push: String) {
+enum Push(val push: String) {
   case Horizontal extends Push("horizontal")
   case Vertical extends Push("vertical")
   case Both extends Push("both")
-
-  /** Getter of [[Push]] value
-    *
-    * @return
-    *   the value as string
-    */
-  def getPush = push
 }
 
 /** Object for enum helper funcions */
@@ -92,14 +66,14 @@ object EnumHelper {
     *   the value of [[CellTypes]] as string
     */
   def toCellTypes(stringCellTypes: String): Option[CellTypes] =
-    CellTypes.values.find(_.getType == stringCellTypes)
+    CellTypes.values.find(_.cellType == stringCellTypes)
 
   /** get the [[Option]] of given orientation to [[Orientation]]
     * @param stringOrientation
     *   the value of [[Orientation]] as string
     */
   def toOrientation(stringOrientation: String): Option[Orientation] =
-    Orientation.values.find(_.getOrientation == stringOrientation)
+    Orientation.values.find(_.orientation == stringOrientation)
 
   /** get the [[Option]] of given push to [[Push]]
     *
@@ -107,7 +81,7 @@ object EnumHelper {
     *   the value of [[Push]] as string
     */
   def toPush(stringPush: String): Option[Push] =
-    Push.values.find(_.getPush == stringPush)
+    Push.values.find(_.push == stringPush)
 
   /** get the [[Option]] of given rotation to [[Rotation]]
     *
@@ -115,7 +89,7 @@ object EnumHelper {
     *   the value of [[Rotation]] as string
     */
   def toRotation(stringRotation: String): Option[Rotation] =
-    Rotation.values.find(_.getRotation == stringRotation)
+    Rotation.values.find(_.rotation == stringRotation)
 }
 
 object CellConverter {

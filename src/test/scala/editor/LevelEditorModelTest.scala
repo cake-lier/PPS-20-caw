@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.editor
 
-import it.unibo.pps.caw.editor.model.{EnemyCell, Level, LevelEditorModel, PlayableArea, Position}
+import it.unibo.pps.caw.editor.model.{EnemyCell, Level, LevelEditorModel, PlayableArea, Position, Board}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -10,10 +10,10 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private val playableAreaWidth = 5
   private val playableAreaHeight = 5
   private val playableAreaPosition = Position(0, 0)
-  private val emptyLevel = Level(width, height, Set.empty)
-  private val enemy1 = EnemyCell(Position(1, 1), false)
-  private val enemy2 = EnemyCell(Position(2, 2), false)
-  private val enemy3 = EnemyCell(Position(3, 3), false)
+  private val emptyLevel = Level(width, height, Board.empty)
+  private val enemy1 = EnemyCell((1, 1))
+  private val enemy2 = EnemyCell((2, 2))
+  private val enemy3 = EnemyCell((3, 3))
 
   describe("LevelEditorModel") {
     describe("when new") {
@@ -34,7 +34,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
         createLevelEditorModel.setCell(enemy1) should not equals createLevelEditorModel
       }
       it("should update the Level") {
-        createLevelEditorModel.setCell(enemy1).currentLevel shouldBe Level(width, height, Set(enemy1))
+        createLevelEditorModel.setCell(enemy1).currentLevel shouldBe Level(width, height, Board(enemy1))
       }
     }
     describe("when a cell is removed") {
@@ -49,7 +49,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
           .setCell(enemy2)
           .setCell(enemy3)
           .removeCell(enemy1.position)
-          .currentLevel shouldBe Level(width, height, Set(enemy2, enemy3))
+          .currentLevel shouldBe Level(width, height, Board(enemy2, enemy3))
       }
     }
     describe("when a PlayableArea is set") {
@@ -63,7 +63,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
           .currentLevel shouldBe Level(
           width,
           height,
-          Set.empty,
+          Board.empty,
           PlayableArea(playableAreaPosition, playableAreaWidth, playableAreaHeight)
         )
       }
@@ -73,7 +73,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
         createLevelEditorModel.removePlayableArea should not equals createLevelEditorModel
       }
       it("should update the Level") {
-        createLevelEditorModel.removePlayableArea.currentLevel shouldBe Level(width, height, Set.empty)
+        createLevelEditorModel.removePlayableArea.currentLevel shouldBe Level(width, height, Board.empty)
       }
     }
   }

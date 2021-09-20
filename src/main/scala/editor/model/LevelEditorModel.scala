@@ -16,13 +16,13 @@ object LevelEditorModel {
     override def resetLevel: LevelEditorModel = LevelEditorModel(width, height)
 
     override def setCell(cell: Cell): LevelEditorModel =
-      createLevelEditorModel(width, height, currentLevel.cells + cell, currentLevel.playableArea)
+      createLevelEditorModel(width, height, Board(currentLevel.board.cells + cell), currentLevel.playableArea)
 
     override def removeCell(position: Position): LevelEditorModel =
       createLevelEditorModel(
         width,
         height,
-        currentLevel.cells.filter(_.position != position),
+        Board(currentLevel.board.cells.filter(_.position != position)),
         currentLevel.playableArea
       )
 
@@ -30,18 +30,18 @@ object LevelEditorModel {
       createLevelEditorModel(
         width,
         height,
-        currentLevel.cells,
+        currentLevel.board,
         Some(PlayableArea(position, playableAreaWidth, playableAreaHeight))
       )
 
-    override def removePlayableArea: LevelEditorModel = createLevelEditorModel(height, width, currentLevel.cells, None)
+    override def removePlayableArea: LevelEditorModel = createLevelEditorModel(height, width, currentLevel.board, None)
 
-    private def createEmptyLevel() = Level(width, height, Set.empty)
+    private def createEmptyLevel() = Level(width, height, Board.empty)
 
     private def createLevelEditorModel(
         width: Int,
         height: Int,
-        cells: Set[Cell],
+        cells: Board[Cell],
         playableArea: Option[PlayableArea]
     ): LevelEditorModel = playableArea
       .map(a => LevelEditorModel(width, height, Level(width, height, cells, a)))

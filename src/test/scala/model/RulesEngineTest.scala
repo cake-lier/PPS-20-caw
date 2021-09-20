@@ -1,11 +1,9 @@
-package it.unibo.pps.caw
+package it.unibo.pps.caw.model
 
+import it.unibo.pps.caw.game.model.*
+import it.unibo.pps.caw.game.model.engine.RulesEngine
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import engine.RulesEngine
-
-import it.unibo.pps.caw.game.model.Board
-import it.unibo.pps.caw.game.model._
 
 import scala.language.implicitConversions
 
