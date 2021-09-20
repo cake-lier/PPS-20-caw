@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import it.unibo.pps.caw.SoundButton?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0"
+          prefWidth="1080.0" styleClass="background" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/11.0.2"
+          xmlns:fx="http://javafx.com/fxml/1">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="2.5" />
+        <ColumnConstraints percentWidth="7.5" />
+        <ColumnConstraints percentWidth="7.5" />
+        <ColumnConstraints percentWidth="7.5" />
+        <ColumnConstraints percentWidth="7.5" />
+        <ColumnConstraints percentWidth="7.5" />
+        <ColumnConstraints percentWidth="7.5" />
+        <ColumnConstraints percentWidth="7.5" />
+        <ColumnConstraints percentWidth="35.0" />
+        <ColumnConstraints percentWidth="7.5" />
+        <ColumnConstraints percentWidth="2.5" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="7.5" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="75.0" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="7.5" />
+        <RowConstraints percentHeight="2.5" />
+    </rowConstraints>
+    <SoundButton id="push-button" fx:id="pushButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true"
+            maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+    <SoundButton id="generate-button" fx:id="generateButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true"
+            maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="2" GridPane.rowIndex="5" />
+    <SoundButton id="rotate-button" fx:id="rotateButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true"
+            maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+    <SoundButton id="block-button" fx:id="blockButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true"
+            maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="4" GridPane.rowIndex="5" />
+    <SoundButton id="enemy-button" fx:id="enemyButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true"
+            maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="5" GridPane.rowIndex="5" />
+    <SoundButton id="wall-button" fx:id="wallButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true"
+            maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="6" GridPane.rowIndex="5" />
+    <SoundButton id="play-area-button" fx:id="playableAreaButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true"
+            maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="7" GridPane.rowIndex="5" />
+    <SoundButton fx:id="backToMenuButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Back"
+            GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <SoundButton fx:id="saveButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Save"
+            GridPane.columnIndex="9" GridPane.rowIndex="1" />
+</GridPane>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import it.unibo.pps.caw.SoundButton?>
+<?import java.net.URL?>
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0"
+          prefWidth="1080.0" styleClass="background" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="15.0" />
+        <ColumnConstraints percentWidth="17.5" />
+        <ColumnConstraints percentWidth="2.5" />
+        <ColumnConstraints percentWidth="50.0" />
+        <ColumnConstraints percentWidth="15.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="25.0" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="10.0" />
+        <RowConstraints percentHeight="5.0" />
+        <RowConstraints percentHeight="7.5" />
+        <RowConstraints percentHeight="27.5" />
+    </rowConstraints>
+    <Slider fx:id="musicVolumeSlider" showTickLabels="true" value="100" majorTickUnit="10" minorTickCount="0" showTickMarks="true"
+            snapToTicks="true" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="3" GridPane.rowIndex="3">
+    </Slider>
+    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Settings" GridPane.columnIndex="1"
+           GridPane.columnSpan="3" GridPane.rowIndex="1">
+        <font>
+            <Font size="18.0" />
+        </font>
+    </Label>
+    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Music Volume" GridPane.columnIndex="1"
+           GridPane.rowIndex="3">
+        <font>
+            <Font size="18.0" />
+        </font>
+    </Label>
+    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="SFX Volume" GridPane.columnIndex="1"
+           GridPane.rowIndex="5">
+        <font>
+            <Font size="18.0" />
+        </font>
+    </Label>
+    <SoundButton fx:id="backFromSettingsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Back"
+                 GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7">
+        <GridPane.margin>
+            <Insets left="100.0" right="100.0" />
+        </GridPane.margin>
+    </SoundButton>
+    <Slider fx:id="effectsVolumeSlider" showTickLabels="true" value="100" majorTickUnit="10" minorTickCount="0"
+            showTickMarks="true" snapToTicks="true" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="3"
+            GridPane.rowIndex="5" />
+    <stylesheets>
+        <URL value="@../css/main.css" />
+        <URL value="@../css/settings_page.css" />
+    </stylesheets>
+</GridPane>

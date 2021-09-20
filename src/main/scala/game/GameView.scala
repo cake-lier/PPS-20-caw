@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.game
 
-import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.game.model.{Level, Board, Cell}
 import it.unibo.pps.caw.game.view.BoardView
@@ -64,7 +64,7 @@ trait GameView extends ViewComponent[GridPane] {
 object GameView {
 
   /* Abstract implementation of the GameView trait for factorizing common behaviors. */
-  private abstract class AbstractGameView(parentController: ParentGameController, scene: Scene)
+  private abstract class AbstractGameView(parentController: ParentGameController, audioPlayer: AudioPlayer, scene: Scene)
     extends AbstractViewComponent[GridPane]("game.fxml")
     with GameView {
     @FXML
@@ -80,6 +80,7 @@ object GameView {
     override val innerComponent: GridPane = loader.load[GridPane]
     private val controller: GameController = createController()
     private var boardView: Option[BoardView] = None
+    audioPlayer.play(Track.GameMusic)
 
     private def resetButtons(): Unit = {
       playSimulationButton.setText("Start")
@@ -151,51 +152,63 @@ object GameView {
   /* Extension of AbstractGameView for displaying default levels. */
   private class DefaultGameView(
     parentController: ParentGameController,
+    audioPlayer: AudioPlayer,
     levels: Seq[Level],
     levelIndex: Int,
     scene: Scene
-  ) extends AbstractGameView(parentController, scene) {
+  ) extends AbstractGameView(parentController, audioPlayer, scene) {
     override protected def createController(): GameController = GameController(parentController, this, levels, levelIndex)
   }
 
   /* Extension of AbstractGameView for displaying a generic level. */
-  private class ExternalGameView(parentController: ParentGameController, level: Level, scene: Scene)
-    extends AbstractGameView(parentController, scene) {
+  private class ExternalGameView(parentController: ParentGameController, audioPlayer: AudioPlayer, level: Level, scene: Scene)
+    extends AbstractGameView(parentController, audioPlayer, scene) {
     override protected def createController(): GameController = GameController(parentController, this, level)
   }
 
   /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentGameController]] so as to be able to complete the
-    * construction of a [[GameController]] correctly in order to use it, the sequence of default [[Level]] to be used during this
-    * game, the index of the default [[Level]] from which starting the game and the ScalaFX's [[Scene]] on which displaying the
-    * instance after being constructed.
+    * construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
+    * music, the sequence of default [[Level]] to be used during this game, the index of the default [[Level]] from which starting
+    * the game and the ScalaFX's [[Scene]] on which displaying the instance after being constructed.
     *
     * @param parentController
     *   the controller needed so as to be able to complete the construction of a [[GameController]] correctly
-    * @param scene
-    *   the ScalaFX's [[Scene]] on which displaying the instance after being constructed
+    * @param audioPlayer
+    *   the [[AudioPlayer]] to be used for playing sounds and music
     * @param levels
     *   the sequence of default [[Level]] to be used during this game
     * @param levelIndex
     *   the index of the default level from which starting the game
+    * @param scene
+    *   the ScalaFX's [[Scene]] on which displaying the instance after being constructed
     * @return
     *   a new [[GameView]] instance
     */
-  def apply(parentController: ParentGameController, levels: Seq[Level], levelIndex: Int, scene: Scene): GameView =
-    DefaultGameView(parentController, levels, levelIndex, scene)
+  def apply(
+    parentController: ParentGameController,
+    audioPlayer: AudioPlayer,
+    levels: Seq[Level],
+    levelIndex: Int,
+    scene: Scene
+  ): GameView =
+    DefaultGameView(parentController, audioPlayer, levels, levelIndex, scene)
 
   /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentGameController]] so as to be able to complete the
-    * construction of a [[GameController]] correctly in order to use it, the [[Level]] from which starting the game and the
-    * ScalaFX's [[Scene]] on which displaying the instance after being constructed.
+    * construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
+    * music, the [[Level]] from which starting the game and the ScalaFX's [[Scene]] on which displaying the instance after being
+    * constructed.
     *
     * @param parentController
     *   the controller needed so as to be able to complete the construction of a [[GameController]] correctly
+    * @param audioPlayer
+    *   the [[AudioPlayer]] to be used for playing sounds and music
+    * @param level
+    *   the [[Level]] from which starting the game
     * @param scene
     *   the ScalaFX's [[Scene]] on which displaying the instance after being constructed
-    * @param levelPath
-    *   the [[Path]] of the file which contains the level from which starting the game
     * @return
     *   a new [[GameView]] instance
     */
-  def apply(parentController: ParentGameController, level: Level, scene: Scene): GameView =
-    ExternalGameView(parentController, level, scene)
+  def apply(parentController: ParentGameController, audioPlayer: AudioPlayer, level: Level, scene: Scene): GameView =
+    ExternalGameView(parentController, audioPlayer, level, scene)
 }

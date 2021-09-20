@@ -28,6 +28,8 @@ trait ParentMainMenuController {
 
   /** Asks the parent controller to exit the application. */
   def exit(): Unit
+
+  def openSettings(): Unit
 }
 
 /** The controller which manages the main menu part of the application.
@@ -58,6 +60,8 @@ trait MainMenuController {
 
   /** Exits the application. */
   def exit(): Unit
+
+  def openSettings(): Unit
 }
 
 /** Companion object to the [[MainMenuController]] trait, containing its factory method. */
@@ -72,6 +76,8 @@ object MainMenuController {
     override def startGame(levelPath: Path): Unit = parentController.startGame(levelPath)
 
     override def exit(): Unit = parentController.exit()
+
+    override def openSettings(): Unit = parentController.openSettings()
   }
 
   /** Returns a new instance of the [[MainMenuController]] trait. It must receive the [[ParentMainMenuController]], which it
