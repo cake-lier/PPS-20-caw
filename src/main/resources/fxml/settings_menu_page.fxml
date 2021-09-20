@@ -25,7 +25,7 @@
       <RowConstraints percentHeight="7.5" />
       <RowConstraints percentHeight="27.5" />
    </rowConstraints>
-   <Slider fx:id="musicVolumeSlider"  value="1.0" max="1.0" blockIncrement="0.1" majorTickUnit="0.1" minorTickCount="0" showTickMarks="true" snapToTicks="true" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="3" GridPane.rowIndex="3">
+   <Slider fx:id="musicVolumeSlider" showTickLabels="true" value="100" majorTickUnit="10" minorTickCount="0" showTickMarks="true" snapToTicks="true" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="3" GridPane.rowIndex="3">
    </Slider>
    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Settings" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
       <font>
@@ -50,5 +50,5 @@
          <Font size="14.0" />
       </font>
    </SoundButton>
-   <Slider fx:id="effectsVolumeSlider" value="1.0" max="1.0" blockIncrement="0.1" majorTickUnit="0.1" minorTickCount="0" showTickMarks="true" snapToTicks="true" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+   <Slider fx:id="effectsVolumeSlider" showTickLabels="true" value="100" majorTickUnit="10" minorTickCount="0" showTickMarks="true" snapToTicks="true" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="3" GridPane.rowIndex="5" />
 </GridPane>

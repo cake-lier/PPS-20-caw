@@ -40,8 +40,6 @@ object SettingsView {
     private def attachChangeVolume(slider: Slider, audioType: AudioType) =
       slider
         .valueProperty()
-        .addListener((_, _, newValue) => {
-          println(newValue.doubleValue()); audioPlayer.setVolume(newValue.doubleValue(), audioType)
-        })
+        .addListener((_, _, newValue) => audioPlayer.setVolume(newValue.doubleValue() / 100, audioType))
   }
 }
