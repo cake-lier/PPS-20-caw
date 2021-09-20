@@ -62,20 +62,25 @@ object Model {
       // parse Board[Cell] to Board[IdCell]
       val idBoard = Board(currentBoard.cells.zipWithIndex.map((c, i) => CellConverter.toId(c, i)))
 
-      val updatableCells: Seq[IdCell] = Seq(
-        idBoard.cells.filter(_.isInstanceOf[IdGeneratorCell]).toSeq.sorted,
-        idBoard.cells.filter(_.isInstanceOf[IdRotatorCell]).toSeq.sorted,
-        idBoard.cells.filter(_.isInstanceOf[IdMoverCell]).toSeq.sorted
-      ).flatten
+      def getUpdatableCells(cells:Seq[IdCell]):Seq[IdCell] = {
+        Seq(
+          cells.filter(_.isInstanceOf[IdGeneratorCell]).toSeq.sorted,
+          cells.filter(_.isInstanceOf[IdRotatorCell]).toSeq.sorted,
+          cells.filter(_.isInstanceOf[IdMoverCell]).toSeq.sorted
+        ).flatten
+      }
 
       def update(cells: Seq[IdCell], board: Board[IdCell]): Board[IdCell] = cells match {
-        case h :: t if (!h.updated) => update(t, RulesEngine().nextState(board, h))
+        case h :: t if (!h.updated) => {
+          val newBoard = RulesEngine().nextState(board, h)
+          update(getUpdatableCells(newBoard.cells.toSeq), newBoard)
+        }
         case h :: t                 => update(t, board) // ignore already updated cells
         case _                      => board
       }
 
       // parse Board[IdCell] to Board[Cell]
-      val updatedIdBoard = update(updatableCells, idBoard)
+      val updatedIdBoard = update(getUpdatableCells(idBoard.cells.toSeq), idBoard)
       val updatedBoard = Board(updatedIdBoard.cells.map(cell => CellConverter.fromId(cell)))
       Model(initialLevel, updatedBoard)
     }
