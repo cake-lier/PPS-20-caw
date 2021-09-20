@@ -91,6 +91,7 @@ object Model {
           case RotatorCell(_, rotationDirection) => RotatorCell(newCellCoordinates, rotationDirection)
           case GeneratorCell(_, orientation)     => GeneratorCell(newCellCoordinates, orientation)
           case MoverCell(_, orientation)         => MoverCell(newCellCoordinates, orientation)
+          case BlockCell(_, push) => BlockCell(newCellCoordinates, push)
         })
         .get
       GameModelImpl(
