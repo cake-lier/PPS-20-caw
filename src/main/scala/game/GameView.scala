@@ -81,14 +81,12 @@ object GameView {
     private val controller: GameController = createController()
     private var boardView: Option[BoardView] = None
 
-    resetButton.setOnMouseClicked(_ => {
-      controller.resetLevel()
-      resetButton.setVisible(false)
-    })
-    stepSimulationButton.setOnMouseClicked(_ => {
-      controller.step()
-      resetButton.setVisible(true)
-    })
+    private def resetButtons(): Unit = {
+      playSimulationButton.setText("Start")
+      playSimulationButton.setOnMouseClicked(startSimulationHandler)
+      stepSimulationButton.setDisable(false)
+    }
+
     var startSimulationHandler: EventHandler[MouseEvent] = _ => {
       controller.startUpdates()
       playSimulationButton.setText("Pause")
@@ -98,18 +96,23 @@ object GameView {
     }
     var endSimulationHandler: EventHandler[MouseEvent] = _ => {
       controller.pauseUpdates()
-      playSimulationButton.setText("Start")
-      playSimulationButton.setOnMouseClicked(startSimulationHandler)
-      stepSimulationButton.setDisable(false)
+      resetButtons()
     }
+    resetButton.setOnMouseClicked(_ => {
+      controller.resetLevel()
+      resetButton.setVisible(false)
+      resetButtons()
+    })
+    stepSimulationButton.setOnMouseClicked(_ => {
+      controller.step()
+      resetButton.setVisible(true)
+    })
     playSimulationButton.setOnMouseClicked(startSimulationHandler)
     backToLevelsButton.setOnMouseClicked(_ => controller.goBack())
     nextButton.setOnMouseClicked(_ => {
       controller.nextLevel()
       resetButton.setVisible(false)
-      playSimulationButton.setText("Start")
-      playSimulationButton.setOnMouseClicked(startSimulationHandler)
-      stepSimulationButton.setDisable(false)
+      resetButtons()
     })
 
     protected def createController(): GameController
