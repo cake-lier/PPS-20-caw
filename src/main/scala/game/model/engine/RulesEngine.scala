@@ -31,20 +31,18 @@ object RulesEngine {
       Using(Source.fromResource("cellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
 
     def nextState(board: Board[IdCell], cell: IdCell): Board[IdCell] = {
-      val cellState: IndexedSeq[Boolean] = board.cells.toList
-        .sortBy(_.id)
-        .map(_.updated)
-        .toIndexedSeq
-        .updated(cell.id, true) // cell being currently updated to true
+      val cellState: Map[Int, Boolean] = board.cells
+        .map(c => if (c.id == cell.id) (c.id, true) else (c.id, c.updated))
+        .toMap
 
       /* Update cell returned by deserializer with correct field IdCell.updated */
       def updateCell(cell: IdCell): IdCell = cell match {
-        case c if (c.id >= cellState.length) => c // new cell created by a generator doesn't get updated
+        case c if (c.id >= cellState.size) => c // new cell created by a generator doesn't get updated
         case c                               => CellConverter.toUpdated(c, cellState(c.id))
       }
 
       val resBoard = PrologParser.deserializeBoard(
-        extractTerm(engine(PrologParser.createSerializedPredicate(board, board.cells.size + 1, cell))).toString
+        extractTerm(engine(PrologParser.createSerializedPredicate(board, board.cells.size, cell))).toString
       )
 
       Board(resBoard.cells.map(updateCell))
