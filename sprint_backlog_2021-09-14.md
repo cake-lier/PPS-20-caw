@@ -108,7 +108,7 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>Aggiungere musica di sottofondo</td>
             <td>Lorenzo Gardini</td>
             <td>2</td>
-            <td></td>
+            <td>0</td>
             <td></td>
             <td></td>
             <td></td>
@@ -120,9 +120,9 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>Aggiungere suoni in corrispondenza degli eventi</td>
             <td>Lorenzo Gardini</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
             <td></td>
             <td></td>
             <td></td>
@@ -132,9 +132,9 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>Aggiungere pagina delle impostazioni con quelle per l'audio</td>
             <td>Lorenzo Gardini</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>3</td>
+            <td>0</td>
             <td></td>
             <td></td>
             <td></td>
