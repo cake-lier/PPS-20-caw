@@ -2,8 +2,8 @@ package it.unibo.pps.caw.game
 
 import it.unibo.pps.caw.ViewComponent
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.game.model.{Level, Board, Cell}
-import it.unibo.pps.caw.game.view.BoardView
+import it.unibo.pps.caw.game.model.{Board, Cell, Level, Position}
+import it.unibo.pps.caw.game.view.{BoardView, ModelUpdater}
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -12,10 +12,12 @@ import javafx.scene.control.{Alert, Button}
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.{GridPane, Pane}
+import scalafx.collections.ObservableBuffer.Update
 import scalafx.scene.Scene
 
 import java.io.File
 import java.nio.file.Path
+
 
 /** The view which displays the game part of an application.
   *
@@ -24,7 +26,7 @@ import java.nio.file.Path
   * processed the input, the [[GameView]] should be used to display the current state of the game. It must be constructed through
   * its companion object.
   */
-trait GameView extends ViewComponent[GridPane] {
+trait GameView extends ViewComponent[GridPane] with ModelUpdater {
 
   /** Makes the application view go back to the main menu, displaying it. */
   def backToMenu(): Unit
@@ -58,6 +60,7 @@ trait GameView extends ViewComponent[GridPane] {
     *   the error message to display
     */
   def showError(message: String): Unit
+
 }
 
 /** Companion object of the [[GameView]] trait, containing its factory method. */
@@ -135,7 +138,7 @@ object GameView {
     })
 
     override def drawLevel(level: Level, isCompleted: Boolean): Unit = Platform.runLater(() => {
-      val newBoardView: BoardView = BoardView(level)
+      val newBoardView: BoardView = BoardView(level, this)
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
       GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
       GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
@@ -146,6 +149,10 @@ object GameView {
     })
 
     override def backToMenu(): Unit = controller.goBack()
+
+    override def updateCell(oldPosition: Position, newPosition: Position): Unit = {
+      controller.updateModel(oldPosition, newPosition)
+    }
   }
 
   /* Extension of AbstractGameView for displaying default levels. */

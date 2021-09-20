@@ -22,10 +22,10 @@ object BoardView {
     * @param levelInfo
     *   the [[Level]] containing all the board's information to be drawn
     */
-  def apply(level: Level): BoardView = BoardViewImpl(level)
+  def apply(level: Level, model:ModelUpdater): BoardView = BoardViewImpl(level, model)
 
   /** Implementation of the Board. */
-  private class BoardViewImpl(initialLevel: Level)
+  private class BoardViewImpl(initialLevel: Level, model:ModelUpdater)
     extends AbstractViewComponent[GridPane](fxmlFileName = "board.fxml")
     with BoardView
     with DragAndDrop {
@@ -83,7 +83,7 @@ object BoardView {
         y <- 0 until playableArea.height
       } do {
         val node = TileView(CellImage.PlayAreaTile.image, innerComponent).innerComponent
-        addDropFeature(node, innerComponent)
+        addDropFeature(node, innerComponent, model)
         innerComponent.add(node, playableArea.position.x + x, playableArea.position.y + y)
       }
       level.setupBoard.cells.foreach(c => {
@@ -102,7 +102,7 @@ object BoardView {
         y <- 0 until playableArea.height
       } do {
         val node = TileView(CellImage.PlayAreaTile.image, innerComponent).innerComponent
-        addDropFeature(node, innerComponent)
+        addDropFeature(node, innerComponent, model)
         innerComponent.add(node, playableArea.position.x + x, playableArea.position.y + y)
       }
       cells.foreach(c => {

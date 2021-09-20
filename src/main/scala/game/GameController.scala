@@ -56,6 +56,8 @@ trait GameController {
     * the application.
     */
   def nextLevel(): Unit
+
+  def updateModel(oldPosition: Position, newPosition: Position):Unit
 }
 
 /** Companion object of the [[GameController]] trait, containing its factory method. */
@@ -97,6 +99,10 @@ object GameController {
     def goBack(): Unit = {
       scheduler.shutdown()
       parentController.goBack()
+    }
+
+    override def updateModel(oldPosition: Position, newPosition: Position): Unit = {
+      model = model.updateCell(oldPosition, newPosition)
     }
   }
 
