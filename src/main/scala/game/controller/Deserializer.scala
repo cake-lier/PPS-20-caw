@@ -1,13 +1,14 @@
-package it.unibo.pps.caw.game
+package it.unibo.pps.caw.game.controller
 
 import it.unibo.pps.caw.game.model.*
+
 import io.vertx.core.json.JsonObject
 import io.vertx.core.Vertx
 import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
 import play.api.libs.json.{JsArray, JsObject, Json, JsValue}
 
 import scala.io.Source
-import scala.util.{Failure, Success, Try, Using}
+import scala.util.{Try, Using}
 
 /** Object for deserialization of [[Level]] components written in JSON format. */
 object Deserializer {
@@ -47,31 +48,33 @@ object Deserializer {
     playableAreaHeight: Int
   ): Board[SetupCell] = {
     Board[SetupCell](
-    jsonLevels.value
-      .flatMap((cellType, jsCell) =>
-        jsCell
-          .as[JsArray]
-          .value
-          .map(jsCell =>
-            val position = extractPosition(jsCell)
-            val isInside = insideArea(position, playableAreaPoint, playableAreaWidth, playableAreaHeight)
-            EnumHelper.toCellTypes(cellType).get match {
-              case CellTypes.Mover =>
-                SetupMoverCell(position, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get,  isInside)
-              case CellTypes.Block =>
-                SetupBlockCell(position, EnumHelper.toPush((jsCell \ "push").as[String]).get, isInside)
-              case CellTypes.Enemy => SetupEnemyCell(position, isInside)
-              case CellTypes.Rotator =>
-                SetupRotatorCell(position, EnumHelper.toRotation((jsCell \ "rotation").as[String]).get, isInside)
-              case CellTypes.Wall => SetupWallCell(position, isInside)
-              case CellTypes.Generator =>
-                SetupGeneratorCell(position, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get,isInside)
-              case _ => throw IllegalStateException()
-            }
-          )
-          .toSet
-      )
-      .toSet)
+      jsonLevels
+        .value
+        .flatMap((cellType, jsCell) =>
+          jsCell
+            .as[JsArray]
+            .value
+            .map(jsCell =>
+              val position = extractPosition(jsCell)
+              val isInside = insideArea(position, playableAreaPoint, playableAreaWidth, playableAreaHeight)
+              EnumHelper.toCellTypes(cellType).get match {
+                case CellTypes.Mover =>
+                  SetupMoverCell(position, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get, isInside)
+                case CellTypes.Block =>
+                  SetupBlockCell(position, EnumHelper.toPush((jsCell \ "push").as[String]).get, isInside)
+                case CellTypes.Enemy => SetupEnemyCell(position, isInside)
+                case CellTypes.Rotator =>
+                  SetupRotatorCell(position, EnumHelper.toRotation((jsCell \ "rotation").as[String]).get, isInside)
+                case CellTypes.Wall => SetupWallCell(position, isInside)
+                case CellTypes.Generator =>
+                  SetupGeneratorCell(position, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get, isInside)
+                case _ => throw IllegalStateException()
+              }
+            )
+            .toSet
+        )
+        .toSet
+    )
   }
 
   /* Validate the provided JSON in string format with the schema. If success true is returned, otherwise false*/

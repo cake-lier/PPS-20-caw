@@ -36,13 +36,13 @@ object LevelSelectionView {
     * @return
     *   a new [[LevelSelectionView]] instance
     */
-  def apply(scene: Scene, parentView: MainMenuView, controller: MainMenuController): LevelSelectionView =
-    LevelSelectionViewImpl(scene, parentView, controller)
+  def apply(scene: Scene, controller: LevelSelectionController): LevelSelectionView =
+    LevelSelectionViewImpl(scene, controller)
 
   /* Default implementation of the LevelSelectionView trait. */
-  private final class LevelSelectionViewImpl(scene: Scene, parentView: MainMenuView, controller: MainMenuController)
-      extends AbstractViewComponent[Pane]("level_selection_page.fxml")
-      with LevelSelectionView {
+  private final class LevelSelectionViewImpl(scene: Scene, controller: LevelSelectionController)
+    extends AbstractViewComponent[Pane]("level_selection_page.fxml")
+    with LevelSelectionView {
     @FXML
     var backButton: SoundButton = _
     @FXML
@@ -54,7 +54,7 @@ object LevelSelectionView {
 
     override val innerComponent: Pane = loader.load[GridPane]
 
-    backButton.setOnMouseClicked(_ => scene.root.value = parentView)
+    backButton.setOnMouseClicked(_ => controller.goBack())
 
     val constraints: RowConstraints = RowConstraints()
     val rows: Int = (controller.levelsCount / 10.0).ceil.toInt

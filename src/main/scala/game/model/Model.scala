@@ -47,11 +47,7 @@ object Model {
     override val initialLevel: Level = level
 
     override val currentBoard: Board[Cell] = optionCurrentBoard.getOrElse(
-      Board(
-        level.setupBoard.cells
-          .map(CellConverter.fromSetup)
-          .toSet
-      )
+      Board(level.setupBoard.cells.map(CellConverter.fromSetup).toSet)
     )
 
     override def nextLevelIndex(currentIndex: Int): Option[Int] = Some(currentIndex + 1).filter(_ < 30)
@@ -83,17 +79,19 @@ object Model {
     override def reset: Model = Model(initialLevel)
 
     override def updateCell(oldCellCordinates: Position, newCellCoordinates: Position): Model = {
-      val updatedCell: Cell = currentBoard.cells
-        .find(_.position == oldCellCordinates)
-        .map(_ match {
-          case _: WallCell                       => WallCell(newCellCoordinates)
-          case _: EnemyCell                      => EnemyCell(newCellCoordinates)
-          case RotatorCell(_, rotationDirection) => RotatorCell(newCellCoordinates, rotationDirection)
-          case GeneratorCell(_, orientation)     => GeneratorCell(newCellCoordinates, orientation)
-          case MoverCell(_, orientation)         => MoverCell(newCellCoordinates, orientation)
-          case BlockCell(_, push) => BlockCell(newCellCoordinates, push)
-        })
-        .get
+      val updatedCell: Cell =
+        currentBoard
+          .cells
+          .find(_.position == oldCellCordinates)
+          .map(_ match {
+            case _: WallCell                       => WallCell(newCellCoordinates)
+            case _: EnemyCell                      => EnemyCell(newCellCoordinates)
+            case RotatorCell(_, rotationDirection) => RotatorCell(newCellCoordinates, rotationDirection)
+            case GeneratorCell(_, orientation)     => GeneratorCell(newCellCoordinates, orientation)
+            case MoverCell(_, orientation)         => MoverCell(newCellCoordinates, orientation)
+            case BlockCell(_, push)                => BlockCell(newCellCoordinates, push)
+          })
+          .get
       GameModelImpl(
         initialLevel,
         Some(Board(currentBoard.cells.filter(_.position != oldCellCordinates).toSet + updatedCell))

@@ -68,12 +68,12 @@ object MainMenuView {
 
     override val innerComponent: Pane = loader.load[GridPane]
 
-    private val controller: MainMenuController = MainMenuController(parentController, this, levelsCount)
+    private val controller: MainMenuController = MainMenuController(parentController, this)
 
     audioPlayer.play(Track.MenuMusic)
     playButton.setDisable(disableLevels)
     if (!disableLevels) {
-      playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, this, controller))
+      playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, controller))
     }
     loadButton.setOnMouseClicked(_ => {
       val chooser: FileChooser = FileChooser()
@@ -81,7 +81,7 @@ object MainMenuView {
       chooser.extensionFilters.add(FileChooser.ExtensionFilter("Level file", "*.json"))
       Option(chooser.showOpenDialog(scene.getWindow)).foreach(f => controller.startGame(f.toPath))
     })
-    settingsButton.setOnMouseClicked(_ => controller.openSettings())
+    settingsButton.setOnMouseClicked(_ => scene.root.value = SettingsView(controller, audioPlayer, scene))
     exitButton.setOnMouseClicked(_ => controller.exit())
   }
 }

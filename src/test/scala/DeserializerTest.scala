@@ -1,5 +1,5 @@
 package it.unibo.pps.caw
-import it.unibo.pps.caw.game.Deserializer
+import it.unibo.pps.caw.game.controller.Deserializer
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import it.unibo.pps.caw.game.model.*

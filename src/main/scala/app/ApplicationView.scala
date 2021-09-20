@@ -1,13 +1,13 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.game.{GameView, ParentGameController}
-import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController}
+import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController, SettingsView}
 import it.unibo.pps.caw.ViewComponent
 import it.unibo.pps.caw.game.model.Level
 import javafx.application.Platform
 import scalafx.scene.control.Alert
-import it.unibo.pps.caw.settings.SettingsView
 import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
+import it.unibo.pps.caw.game.controller.ParentGameController
+import it.unibo.pps.caw.game.view.GameView
 import javafx.scene.layout.Pane
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
@@ -52,8 +52,6 @@ trait ApplicationView {
     *   the index of the [[Level]] which will be first displayed in the given sequence of [[Level]]
     */
   def showGame(levels: Seq[Level], levelIndex: Int): Unit
-
-  def showSettings(): Unit
 }
 
 /** Companion object for the [[ApplicationView]] trait, containing its factory method. */
@@ -73,6 +71,7 @@ object ApplicationView {
     scene.root.value = visibleView.innerComponent
     stage.scene = scene
     stage.show()
+    stage.setOnCloseRequest(_ => controller.exit())
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
@@ -90,13 +89,6 @@ object ApplicationView {
       visibleView = MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
       scene.root.value = visibleView.innerComponent
     })
-
-    override def showSettings(): Unit = {
-      Platform.runLater(() => {
-        visibleView = SettingsView(controller, audioPlayer, scene)
-        scene.root.value = visibleView.innerComponent
-      })
-    }
   }
 
   /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX's [[PrimaryStage]] for creating a view for the

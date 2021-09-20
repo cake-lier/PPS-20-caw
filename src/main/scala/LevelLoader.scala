@@ -1,6 +1,6 @@
 package it.unibo.pps.caw
-package game
 
+import game.controller.Deserializer
 import game.model.Level
 
 import java.nio.file.Path

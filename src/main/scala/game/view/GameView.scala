@@ -1,9 +1,11 @@
-package it.unibo.pps.caw.game
+package it.unibo.pps.caw
+package game.view
 
 import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.game.model.{Board, Cell, Level, Position}
 import it.unibo.pps.caw.game.view.{BoardView, ModelUpdater}
+import it.unibo.pps.caw.game.controller.{GameController, ParentGameController}
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -17,7 +19,6 @@ import scalafx.scene.Scene
 
 import java.io.File
 import java.nio.file.Path
-
 
 /** The view which displays the game part of an application.
   *
@@ -52,6 +53,11 @@ trait GameView extends ViewComponent[GridPane] with ModelUpdater {
     */
   def drawLevelUpdate(level: Level, currentBoard: Board[Cell], isCompleted: Boolean): Unit
 
+  /** Displays again the initial configuration of the [[Level]], resetting the [[GameView]].
+    *
+    * @param level
+    *   the initial configuration of the [[Level]]
+    */
   def drawLevelReset(level: Level): Unit
 
   /** Displays the given error message to the player.
@@ -60,7 +66,6 @@ trait GameView extends ViewComponent[GridPane] with ModelUpdater {
     *   the error message to display
     */
   def showError(message: String): Unit
-
 }
 
 /** Companion object of the [[GameView]] trait, containing its factory method. */
@@ -83,6 +88,7 @@ object GameView {
     override val innerComponent: GridPane = loader.load[GridPane]
     private val controller: GameController = createController()
     private var boardView: Option[BoardView] = None
+    private var isCurrentLevelCompleted: Boolean = false
     audioPlayer.play(Track.GameMusic)
 
     private def resetButtons(): Unit = {
@@ -123,13 +129,19 @@ object GameView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.ERROR, message))
 
-    override def drawLevelUpdate(level: Level, currentBoard: Board[Cell], isCompleted: Boolean): Unit = Platform.runLater(() => {
+    override def drawLevelUpdate(level: Level, currentBoard: Board[Cell], isCompleted: Boolean): Unit = Platform.runLater(() =>
       boardView match {
-        case Some(b) => b.updateBoard(level, currentBoard)
-        case None    => Console.err.print("The board was not initialized")
+        case Some(b) => {
+          b.updateBoard(level, currentBoard)
+          if (!isCurrentLevelCompleted && isCompleted) {
+            audioPlayer.play(Track.Victory)
+          }
+          isCurrentLevelCompleted = isCompleted
+          nextButton.setVisible(isCompleted)
+        }
+        case None => Console.err.print("The board was not initialized")
       }
-      nextButton.setVisible(isCompleted)
-    })
+    )
 
     override def drawLevelReset(level: Level): Unit = Platform.runLater(() => {
       boardView match {
@@ -146,6 +158,7 @@ object GameView {
       GridPane.setMargin(newBoardView.innerComponent, new Insets(25, 0, 25, 0))
       innerComponent.add(newBoardView.innerComponent, 2, 3, 3, 1)
       boardView = Some(newBoardView)
+      isCurrentLevelCompleted = false
       nextButton.setVisible(false)
     })
 
