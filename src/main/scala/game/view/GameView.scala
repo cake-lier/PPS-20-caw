@@ -1,5 +1,4 @@
-package it.unibo.pps.caw
-package game.view
+package it.unibo.pps.caw.game.view
 
 import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
@@ -27,7 +26,7 @@ import java.nio.file.Path
   * processed the input, the [[GameView]] should be used to display the current state of the game. It must be constructed through
   * its companion object.
   */
-trait GameView extends ViewComponent[GridPane] with ModelUpdater {
+trait GameView extends ViewComponent[GridPane] {
 
   /** Makes the application view go back to the main menu, displaying it. */
   def backToMenu(): Unit
@@ -74,7 +73,8 @@ object GameView {
   /* Abstract implementation of the GameView trait for factorizing common behaviors. */
   private abstract class AbstractGameView(parentController: ParentGameController, audioPlayer: AudioPlayer, scene: Scene)
     extends AbstractViewComponent[GridPane]("game.fxml")
-    with GameView {
+    with GameView
+    with ModelUpdater {
     @FXML
     var resetButton: Button = _
     @FXML
@@ -94,6 +94,7 @@ object GameView {
     private def resetButtons(): Unit = {
       playSimulationButton.setText("Start")
       playSimulationButton.setOnMouseClicked(startSimulationHandler)
+      playSimulationButton.setDisable(false)
       stepSimulationButton.setDisable(false)
     }
 
@@ -133,8 +134,12 @@ object GameView {
       boardView match {
         case Some(b) => {
           b.updateBoard(level, currentBoard)
+          audioPlayer.play(Track.Step)
           if (!isCurrentLevelCompleted && isCompleted) {
             audioPlayer.play(Track.Victory)
+            controller.pauseUpdates()
+            stepSimulationButton.setDisable(true)
+            playSimulationButton.setDisable(true)
           }
           isCurrentLevelCompleted = isCompleted
           nextButton.setVisible(isCompleted)

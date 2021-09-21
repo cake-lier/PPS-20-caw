@@ -36,13 +36,12 @@ trait GameController {
   /** Goes back to the previous state of the application. */
   def goBack(): Unit
 
-  /** Starts the periodic execution of game steps. It should be called when updates are paused or when they are not yet started
-    * and not while they are happening.
+  /** Starts the periodic execution of game steps. It should be called when updates are paused or when they are not yet started,
+    * if not, nothing happens.
     */
   def startUpdates(): Unit
 
-  /** Pauses the periodic execution of game steps. It should be called while the updates are happening and not when they are
-    * paused or not yet started.
+  /** Pauses the periodic execution of game steps. It should be called while the updates are happening, if not, nothing happens.
     */
   def pauseUpdates(): Unit
 
@@ -83,7 +82,7 @@ object GameController {
     view.drawLevel(model.initialLevel, model.isLevelCompleted)
 
     def startUpdates(): Unit = updatesHandler match {
-      case Some(_) => Console.err.println(GameControllerError.RunningUpdates.message)
+      case Some(_) => ()
       case _       => updatesHandler = Some(scheduler.scheduleAtFixedRate(() => step(), 0, 1, TimeUnit.SECONDS))
     }
 
@@ -92,7 +91,7 @@ object GameController {
         handler.cancel(false)
         updatesHandler = None
       }
-      case _ => Console.err.println(GameControllerError.NothingToPause.message)
+      case _ => ()
     }
 
     def step(): Unit = {

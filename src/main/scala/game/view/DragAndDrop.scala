@@ -1,15 +1,10 @@
-package it.unibo.pps.caw
-package game.view
+package it.unibo.pps.caw.game.view
 
 import it.unibo.pps.caw.game.model.Position
 import javafx.scene.Node
 import javafx.scene.image.ImageView
 import javafx.scene.input.{ClipboardContent, TransferMode}
 import javafx.scene.layout.GridPane
-
-trait ModelUpdater {
-  def updateCell(oldPosition:Position, newPosition:Position):Unit
-}
 
 /** Provides the necessary functions to drag and drop an ImageView. */
 trait DragAndDrop {

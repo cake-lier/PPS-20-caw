@@ -1,5 +1,6 @@
 package it.unibo.pps.caw
 
+import scalafx.scene.media.AudioClip
 import scalafx.scene.media.{Media, MediaPlayer}
 
 /** The possible audio types for a given [[Track]]. */
@@ -73,21 +74,22 @@ object AudioPlayer {
 
   /* Default implementation of the AudioPlayer trait. */
   private class AudioPlayerImpl extends AudioPlayer {
-    private val players: Map[Track, MediaPlayer] = Track.values.map(t => t -> createPlayer(t)).toMap
+    private val musicPlayers: Map[Track, MediaPlayer] =
+      Track.values.filter(_.audioType == AudioType.Music).map(t => t -> createPlayer(t)).toMap
+    private var soundPlayers: Map[Track, Set[MediaPlayer]] = Map()
     private var volumes: Map[AudioType, Double] = Map()
 
     setVolume(0.3, AudioType.Music)
     setVolume(0.7, AudioType.Sound)
 
-    override def play(track: Track): Unit = {
-      val currentPlayer: MediaPlayer = players(track)
-      track.audioType match {
-        case AudioType.Music if (!MediaPlayer.Status.Playing.equals(currentPlayer.status.value)) => {
-          players.filter(_._1.audioType == AudioType.Music).foreach(_._2.stop())
-          currentPlayer.play()
-        }
-        case AudioType.Sound => currentPlayer.play()
-        case _               => ()
+    override def play(track: Track): Unit = track.audioType match {
+      case AudioType.Music => {
+        (musicPlayers - track).foreach(_._2.stop())
+        musicPlayers(track).play()
+      }
+      case AudioType.Sound => {
+        val soundPlayer: MediaPlayer = createPlayer(track)
+        soundPlayers += (track -> (soundPlayers.getOrElse(track, Set()) + soundPlayer))
       }
     }
 
@@ -95,7 +97,10 @@ object AudioPlayer {
 
     override def setVolume(volume: Double, audioType: AudioType): Unit = {
       volumes += (audioType -> volume)
-      players.filter(_._1.audioType == audioType).foreach(_._2.setVolume(volume))
+      audioType match {
+        case AudioType.Music => musicPlayers.foreach(_._2.setVolume(volume))
+        case AudioType.Sound => soundPlayers.values.flatten.foreach(_.setVolume(volume))
+      }
     }
 
     private def createPlayer(track: Track): MediaPlayer = {
@@ -103,8 +108,11 @@ object AudioPlayer {
       track.audioType match {
         case AudioType.Music => mediaPlayer.setCycleCount(MediaPlayer.Indefinite)
         case AudioType.Sound => {
-          mediaPlayer.onReady = mediaPlayer.stop()
-          mediaPlayer.onEndOfMedia = mediaPlayer.stop()
+          mediaPlayer.onReady = {
+            mediaPlayer.stop()
+            mediaPlayer.play()
+          }
+          mediaPlayer.onEndOfMedia = soundPlayers += (track -> (soundPlayers(track) - mediaPlayer))
         }
       }
       mediaPlayer

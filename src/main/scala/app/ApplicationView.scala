@@ -11,6 +11,7 @@ import it.unibo.pps.caw.game.view.GameView
 import javafx.scene.layout.Pane
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
+import it.unibo.pps.caw.ViewComponent.given
 
 import java.io.File
 import java.nio.file.Path
@@ -62,33 +63,24 @@ object ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
     private val audioPlayer: AudioPlayer = AudioPlayer()
     private val scene: Scene = Scene(1080, 720)
-    private var visibleView: ViewComponent[? <: Pane] =
-      MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
 
     stage.resizable = false
     stage.maximized = false
     stage.title = "Cells at Work"
-    scene.root.value = visibleView.innerComponent
+    scene.root.value = MainMenuView(controller, audioPlayer, scene)
     stage.scene = scene
     stage.show()
     stage.setOnCloseRequest(_ => controller.exit())
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: Level): Unit = Platform.runLater(() => {
-      visibleView = GameView(controller, audioPlayer, level, scene)
-      scene.root.value = visibleView.innerComponent
-    })
+    override def showGame(level: Level): Unit =
+      Platform.runLater(() => scene.root.value = GameView(controller, audioPlayer, level, scene))
 
-    override def showGame(levels: Seq[Level], levelIndex: Int): Unit = Platform.runLater(() => {
-      visibleView = GameView(controller, audioPlayer, levels, levelIndex, scene)
-      scene.root.value = visibleView.innerComponent
-    })
+    override def showGame(levels: Seq[Level], levelIndex: Int): Unit =
+      Platform.runLater(() => scene.root.value = GameView(controller, audioPlayer, levels, levelIndex, scene))
 
-    override def showMainMenu(): Unit = Platform.runLater(() => {
-      visibleView = MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
-      scene.root.value = visibleView.innerComponent
-    })
+    override def showMainMenu(): Unit = Platform.runLater(() => scene.root.value = MainMenuView(controller, audioPlayer, scene))
   }
 
   /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX's [[PrimaryStage]] for creating a view for the

@@ -29,7 +29,7 @@
         <RowConstraints percentHeight="10.0" />
         <RowConstraints percentHeight="10.0" />
     </rowConstraints>
-    <SoundButton fx:id="playButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Play"
+    <SoundButton fx:id="playButton" disable="true" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Play"
                  GridPane.columnIndex="1" GridPane.rowIndex="3"/>
     <SoundButton fx:id="editorButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Level Editor"
                  GridPane.columnIndex="1" GridPane.rowIndex="5"/>

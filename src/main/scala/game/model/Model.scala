@@ -58,7 +58,7 @@ object Model {
       // parse Board[Cell] to Board[IdCell]
       val idBoard = Board(currentBoard.cells.zipWithIndex.map((c, i) => CellConverter.toId(c, i)))
 
-      def getUpdatableCells(cells:Seq[IdCell]):Seq[IdCell] = {
+      def getUpdatableCells(cells: Seq[IdCell]): Seq[IdCell] = {
         Seq(
           cells.filter(_.isInstanceOf[IdGeneratorCell]).toSeq.sorted,
           cells.filter(_.isInstanceOf[IdRotatorCell]).toSeq.sorted,
@@ -71,8 +71,8 @@ object Model {
           val newBoard = RulesEngine().nextState(board, h)
           update(getUpdatableCells(newBoard.cells.toSeq), newBoard)
         }
-        case h :: t                 => update(t, board) // ignore already updated cells
-        case _                      => board
+        case h :: t => update(t, board) // ignore already updated cells
+        case _      => board
       }
 
       // parse Board[IdCell] to Board[Cell]

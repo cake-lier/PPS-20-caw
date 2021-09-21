@@ -34,16 +34,16 @@ object ViewComponent {
     protected val loader = FXMLLoader()
     loader.setController(this)
     loader.setLocation(ClassLoader.getSystemResource("fxml/" + fxmlFileName))
-
-    /** Converts a component into its wrapped object through [[ViewComponent.innerComponent]] property
-      * @param component
-      *   the [[ViewComponent]] to convert
-      * @tparam A
-      *   the type of the wrapped component
-      * @return
-      *   the wrapped component
-      */
-    given Conversion[ViewComponent[A], A] with
-      def apply(component: ViewComponent[A]) = component.innerComponent
   }
+
+  /** Converts a component into its wrapped object through [[ViewComponent.innerComponent]] property
+    * @param component
+    *   the [[ViewComponent]] to convert
+    * @tparam A
+    *   the type of the wrapped component
+    * @return
+    *   the wrapped component
+    */
+  given fromComponentToInner[A]: Conversion[ViewComponent[A], A] with
+    def apply(component: ViewComponent[A]) = component.innerComponent
 }

@@ -27,32 +27,25 @@ object MainMenuView {
     *
     * @param parentController
     *   the [[ParentMainMenuController]] used so as to be able to correctly create and then use a [[MainMenuController]]
-    * @param levelsCount
-    *   the number of default [[it.unibo.pps.caw.game.model.Level]] currently available to be played
+    * @param audioPlayer
+    *   the [[AudioPlayer]] to be used for playing sounds and music
     * @param scene
     *   the ScalaFX's [[Scene]] on which draw and display the created [[MainMenuView]] instance
-    * @param disableLevels
-    *   whether or not to disable the button for accessing the page of the main menu which displays the levels, in case of error
-    *   with the [[it.unibo.pps.caw.game.model.Level]] files loading
     * @return
     *   a new [[MainMenuView]] instance
     */
   def apply(
     parentController: ParentMainMenuController,
     audioPlayer: AudioPlayer,
-    levelsCount: Int,
-    scene: Scene,
-    disableLevels: Boolean
+    scene: Scene
   ): MainMenuView =
-    MainMenuViewImpl(parentController, audioPlayer, levelsCount, scene, disableLevels)
+    MainMenuViewImpl(parentController, audioPlayer, scene)
 
   /* Default implementation of the MainMenuView trait. */
   private final class MainMenuViewImpl(
     parentController: ParentMainMenuController,
     audioPlayer: AudioPlayer,
-    levelsCount: Int,
-    scene: Scene,
-    disableLevels: Boolean
+    scene: Scene
   ) extends AbstractViewComponent[Pane]("main_menu_page.fxml")
     with MainMenuView {
     @FXML
@@ -71,8 +64,8 @@ object MainMenuView {
     private val controller: MainMenuController = MainMenuController(parentController, this)
 
     audioPlayer.play(Track.MenuMusic)
-    playButton.setDisable(disableLevels)
-    if (!disableLevels) {
+    if (controller.levelsCount != 0) {
+      playButton.setDisable(false)
       playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, controller))
     }
     loadButton.setOnMouseClicked(_ => {
