@@ -331,12 +331,17 @@ generate_right(B, T, X, EX, Y, M, [cell(M, T, X1, Y) | NB]) :- X1 is X + 1, move
 
 % generator_right_next_state(@Board, @XCoordinate, @YCoordinate, @MaxId, -NextBoard)
 %
-% Allows to update the state of a board and obtain its next state applying the rule for the "generator right" cell behavior. If a
-% cell is adjacent to the left of the "generator right" which coordinates are given and the cells which could be pushed by the
-% generation are deemed to be really movable to the right by one position, the generation is then attempted. If no action can be
-% performed, the input board is given as output. Any cell in the board that is not affected by this rule is ignored and copied in
-% the result as is. If the coordinates does not point to a "generator right" cell, the predicate simply evaluates to "no". No
-% ordering is required for the cells in the board and the empty cells must not be represented.
+% Allows to update the state of a board and obtain its next state applying the rule for the "generator right" cell behavior.
+% If a cell is adjacent to the left of the "generator right" which coordinates are given and the cells which could be pushed by the
+% generation are deemed to be really movable to the right by one position, the generation is then attempted. However, if the
+% adjacent cell is an enemy cell, the board is unchanged. If no action can be performed, the input board is given as output.
+% Any cell in the board that is not affected by this rule is ignored and copied in the result as is.
+% If the coordinates does not point to a "generator right" cell, the predicate simply evaluates to "no".
+% No ordering is required for the cells in the board and the empty cells must not be represented.
+generator_right_next_state(B, X, Y, M, B) :- member(cell(_, generator_right, X, Y), B),
+                                             X1 is X - 1,
+                                             member(cell(_, enemy, X1, Y), B),
+                                             !.
 generator_right_next_state(B, X, Y, M, NB) :- member(cell(_, generator_right, X, Y), B),
                                               X1 is X - 1,
                                               member(cell(_, T, X1, Y), B),
@@ -356,20 +361,25 @@ generator_right_next_state(B, _, _, _, B).
 % given, and all cells adjacent to the left to the "generator left" cell, the ones which have an x coordinate which lies between
 % the given starting x coordinate and the ending x coordinate (endpoints included) and the given y coordinate, are moved one
 % position to the left using "move_left". No ordering is required for the cells in the board.
-generate_left(B, _, X, EX, Y, _, NB) :- X1 is X - 1, member(cell(enemy, X1, Y), B), move_left(B, B, X, EX, Y, NB), !.
+generate_left(B, _, X, EX, Y, _, NB) :- X1 is X - 1, member(cell(_, enemy, X1, Y), B), move_left(B, B, X, EX, Y, NB), !.
 generate_left(B, T, X, EX, Y, M, [cell(M, T, X1, Y) | NB]) :- X1 is X - 1, move_left(B, B, X, EX, Y, NB).
 
 % generator_left_next_state(@Board, @XCoordinate, @YCoordinate, @MaxId, -NextBoard)
 %
-% Allows to update the state of a board and obtain its next state applying the rule for the "generator left" cell behavior. If a
-% cell is adjacent to the right of the "generator left" which coordinates are given and the cells which could be pushed by the
-% generation are deemed to be really movable to the left by one position, the generation is then attempted. If no action can be
-% performed, the input board is given as output. Any cell in the board that is not affected by this rule is ignored and copied in
-% the result as is. If the coordinates does not point to a "generator left" cell, the predicate simply evaluates to "no". No
-% ordering is required for the cells in the board and the empty cells must not be represented.
+% Allows to update the state of a board and obtain its next state applying the rule for the "generator left" cell behavior.
+% If a cell is adjacent to the right of the "generator left" which coordinates are given and the cells which could be pushed by the
+% generation are deemed to be really movable to the left by one position, the generation is then attempted. However, if the
+% adjacent cell is an enemy cell, the board is unchanged. If no action can be performed, the input board is given as output.
+% Any cell in the board that is not affected by this rule is ignored and copied in the result as is.
+% If the coordinates does not point to a "generator left" cell, the predicate simply evaluates to "no".
+% No ordering is required for the cells in the board and the empty cells must not be represented.
+generator_left_next_state(B, X, Y, M, B) :- member(cell(_, generator_left, X, Y), B),
+                                            X1 is X + 1,
+                                            member(cell(_, enemy, X1, Y), B),
+                                            !.
 generator_left_next_state(B, X, Y, M, NB) :- member(cell(_, generator_left, X, Y), B),
                                              X1 is X + 1,
-                                             member(cell(_, T, X1, Y), B), write("M"),
+                                             member(cell(_, T, X1, Y), B),
                                              last_index_left(B, generator_left, X, Y, EX),
                                              generate_left(B, T, X, EX, Y, M, NB),
                                              !.
@@ -386,17 +396,22 @@ generator_left_next_state(B, _, _, _, B).
 % given, and all cells adjacent below the "generator down" cell, the ones which have a y coordinate which lies between
 % the given starting y coordinate and the ending y coordinate (endpoints included) and the given x coordinate, are moved one
 % position below using "move_down". No ordering is required for the cells in the board.
-generate_down(B, _, Y, EY, X, _, NB) :- Y1 is Y + 1, member(cell(enemy, X, Y1), B), move_down(B, B, Y, EY, X, NB), !.
+generate_down(B, _, Y, EY, X, _, NB) :- Y1 is Y + 1, member(cell(_, enemy, X, Y1), B), move_down(B, B, Y, EY, X, NB), !.
 generate_down(B, T, Y, EY, X, M, [cell(M, T, X, Y1) | NB]) :-  Y1 is Y + 1, move_down(B, B, Y, EY, X, NB).
 
 % generator_down_next_state(@Board, @XCoordinate, @YCoordinate, @MaxId, -NextBoard)
 %
-% Allows to update the state of a board and obtain its next state applying the rule for the "generator down" cell behavior. If a
-% cell is adjacent above the "generator down" which coordinates are given and the cells which could be pushed by the
-% generation are deemed to be really movable below by one position, the generation is then attempted. If no action can be
-% performed, the input board is given as output. Any cell in the board that is not affected by this rule is ignored and copied in
-% the result as is. If the coordinates does not point to a "generator down" cell, the predicate simply evaluates to "no". No
-% ordering is required for the cells in the board and the empty cells must not be represented.
+% Allows to update the state of a board and obtain its next state applying the rule for the "generator down" cell behavior.
+% If a cell is adjacent above the "generator down" which coordinates are given and the cells which could be pushed by the
+% generation are deemed to be really movable below by one position, the generation is then attempted. However, if the
+% adjacent cell is an enemy cell, the board is unchanged. If no action can be performed, the input board is given as output.
+% Any cell in the board that is not affected by this rule is ignored and copied in the result as is.
+% If the coordinates does not point to a "generator down" cell, the predicate simply evaluates to "no".
+% No ordering is required for the cells in the board and the empty cells must not be represented.
+generator_down_next_state(B, X, Y, M, B) :- member(cell(_, generator_down, X, Y), B),
+                                            Y1 is Y - 1,
+                                            member(cell(_, enemy, X, Y1), B),
+                                            !.
 generator_down_next_state(B, X, Y, M, NB) :- member(cell(_, generator_down, X, Y), B),
                                             Y1 is Y - 1,
                                             member(cell(_, T, X, Y1), B),
@@ -416,17 +431,22 @@ generator_down_next_state(B, _, _, _, B).
 % cells adjacent above the "generator top" cell, the ones which have a y coordinate which lies between the given starting
 % y coordinate and the ending y coordinate (endpoints included) and the given x coordinate, are moved one position above
 % using "move_top". No ordering is required for the cells in the board.
-generate_top(B, _, Y, EY, X, _, NB) :- Y1 is Y - 1, member(cell(enemy, X, Y1), B), move_top(B, B, Y, EY, X, NB), !.
+generate_top(B, _, Y, EY, X, _, NB) :- Y1 is Y - 1, member(cell(_, enemy, X, Y1), B), move_top(B, B, Y, EY, X, NB), !.
 generate_top(B, T, Y, EY, X, M, [cell(M, T, X, Y1) | NB]) :-  Y1 is Y - 1, move_top(B, B, Y, EY, X, NB).
 
 % generator_top_next_state(@Board, @XCoordinate, @YCoordinate, @MaxId, -NextBoard)
 %
-% Allows to update the state of a board and obtain its next state applying the rule for the "generator top" cell behavior. If a
-% cell is adjacent below the "generator top" which coordinates are given and the cells which could be pushed by the
-% generation are deemed to be really movable above by one position, the generation is then attempted. If no action can be
-% performed, the input board is given as output. Any cell in the board that is not affected by this rule is ignored and copied in
-% the result as is. If the coordinates does not point to a "generator top" cell, the predicate simply evaluates to "no". No
-% ordering is required for the cells in the board and the empty cells must not be represented.
+% Allows to update the state of a board and obtain its next state applying the rule for the "generator top" cell behavior.
+% If a cell is adjacent below the "generator top" which coordinates are given and the cells which could be pushed by the
+% generation are deemed to be really movable above by one position, the generation is then attempted. However, if the
+% adjacent cell is an enemy cell, the board is unchanged. If no action can be performed, the input board is given as output.
+% Any cell in the board that is not affected by this rule is ignored and copied in the result as is.
+% If the coordinates does not point to a "generator top" cell, the predicate simply evaluates to "no".
+% No ordering is required for the cells in the board and the empty cells must not be represented.
+generator_top_next_state(B, X, Y, M, B) :- member(cell(_, generator_top, X, Y), B),
+                                           Y1 is Y + 1,
+                                           member(cell(_, enemy, X, Y1), B),
+                                           !.
 generator_top_next_state(B, X, Y, M, NB) :- member(cell(_, generator_top, X, Y), B),
                                              Y1 is Y + 1,
                                              member(cell(_, T, X, Y1), B),
