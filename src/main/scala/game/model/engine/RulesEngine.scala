@@ -37,8 +37,8 @@ object RulesEngine {
 
       /* Update cell returned by deserializer with correct field IdCell.updated */
       def updateCell(cell: IdCell): IdCell = cell match {
-        case c if (c.id >= cellState.size) => c // new cell created by a generator doesn't get updated
-        case c                               => CellConverter.toUpdated(c, cellState(c.id))
+        case c if (c.id >= cellState.size) => CellConverter.toUpdated(c, true) // new cell created by a generator
+        case c                             => CellConverter.toUpdated(c, cellState(c.id))
       }
 
       val resBoard = PrologParser.deserializeBoard(
