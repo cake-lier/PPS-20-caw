@@ -45,13 +45,13 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>Modificare il RulesEngine alle nuove specifiche derivanti dal codice PROLOG</td>
             <td>Yuqi Sun</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>4</td>
+            <td>4</td>
+            <td>3</td>
+            <td>2</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td rowspan="3">Implementazione delle regole del gioco in PROLOG</td>
