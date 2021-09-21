@@ -47,10 +47,14 @@ trait GameView extends ViewComponent[GridPane] {
     *
     * @param level
     *   the [[Level]] containing the update
+    * @param currentBoard
+    *   the current [[Board]] to display
+    * @param didEnemyExplode
+    *   whether or not an enemy exploded after this update
     * @param isCompleted
     *   whether or not this [[Level]] has been completed
     */
-  def drawLevelUpdate(level: Level, currentBoard: Board[Cell], isCompleted: Boolean): Unit
+  def drawLevelUpdate(level: Level, currentBoard: Board[Cell], didEnemyExplode: Boolean, isCompleted: Boolean): Unit
 
   /** Displays again the initial configuration of the [[Level]], resetting the [[GameView]].
     *
@@ -130,23 +134,27 @@ object GameView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.ERROR, message))
 
-    override def drawLevelUpdate(level: Level, currentBoard: Board[Cell], isCompleted: Boolean): Unit = Platform.runLater(() =>
-      boardView match {
-        case Some(b) => {
-          b.updateBoard(level, currentBoard)
-          audioPlayer.play(Track.Step)
-          if (!isCurrentLevelCompleted && isCompleted) {
-            audioPlayer.play(Track.Victory)
-            controller.pauseUpdates()
-            stepSimulationButton.setDisable(true)
-            playSimulationButton.setDisable(true)
+    override def drawLevelUpdate(level: Level, currentBoard: Board[Cell], didEnemyExplode: Boolean, isCompleted: Boolean): Unit =
+      Platform.runLater(() =>
+        boardView match {
+          case Some(b) => {
+            b.updateBoard(level, currentBoard)
+            audioPlayer.play(Track.Step)
+            if (didEnemyExplode) {
+              audioPlayer.play(Track.Explosion)
+            }
+            if (!isCurrentLevelCompleted && isCompleted) {
+              audioPlayer.play(Track.Victory)
+              controller.pauseUpdates()
+              stepSimulationButton.setDisable(true)
+              playSimulationButton.setDisable(true)
+            }
+            isCurrentLevelCompleted = isCompleted
+            nextButton.setVisible(isCompleted)
           }
-          isCurrentLevelCompleted = isCompleted
-          nextButton.setVisible(isCompleted)
+          case None => Console.err.print("The board was not initialized")
         }
-        case None => Console.err.print("The board was not initialized")
-      }
-    )
+      )
 
     override def drawLevelReset(level: Level): Unit = Platform.runLater(() => {
       boardView match {

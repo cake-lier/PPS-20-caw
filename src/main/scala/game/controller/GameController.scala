@@ -96,7 +96,7 @@ object GameController {
 
     def step(): Unit = {
       model = model.update()
-      view.drawLevelUpdate(model.initialLevel, model.currentBoard, model.isLevelCompleted)
+      view.drawLevelUpdate(model.initialLevel, model.currentBoard, model.didEnemyExplode, model.isLevelCompleted)
     }
 
     def resetLevel(): Unit = {

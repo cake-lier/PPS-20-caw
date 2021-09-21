@@ -39,11 +39,14 @@ sealed trait Model {
   val isLevelCompleted: Boolean
 
   def nextLevelIndex(currentIndex: Int): Option[Int]
+  
+  val didEnemyExplode: Boolean
 }
 
 /** Companion object for trait [[Model]]. */
 object Model {
-  private case class GameModelImpl(level: Level, optionCurrentBoard: Option[Board[Cell]]) extends Model {
+  private case class GameModelImpl(level: Level, val didEnemyExplode: Boolean, optionCurrentBoard: Option[Board[Cell]])
+    extends Model {
     override val initialLevel: Level = level
 
     override val currentBoard: Board[Cell] = optionCurrentBoard.getOrElse(
@@ -78,10 +81,14 @@ object Model {
       // parse Board[IdCell] to Board[Cell]
       val updatedIdBoard = update(getUpdatableCells(idBoard.cells.toSeq), idBoard)
       val updatedBoard = Board(updatedIdBoard.cells.map(cell => CellConverter.fromId(cell)))
-      Model(initialLevel, updatedBoard)
+      GameModelImpl(
+        initialLevel,
+        currentBoard.cells.filter(_.isInstanceOf[EnemyCell]).size > updatedBoard.cells.filter(_.isInstanceOf[EnemyCell]).size,
+        Some(updatedBoard)
+      )
     }
 
-    override def reset: Model = Model(initialLevel)
+    override def reset: Model = GameModelImpl(initialLevel, false, None)
 
     override def updateCell(oldCellCordinates: Position, newCellCoordinates: Position): Model = {
       val updatedCell: Cell =
@@ -99,12 +106,13 @@ object Model {
           .get
       GameModelImpl(
         initialLevel,
+        didEnemyExplode,
         Some(Board(currentBoard.cells.filter(_.position != oldCellCordinates).toSet + updatedCell))
       )
     }
   }
 
-  def apply(level: Level, optionCurrentBoard: Board[Cell]): Model = GameModelImpl(level, Some(optionCurrentBoard))
+  def apply(level: Level, optionCurrentBoard: Board[Cell]): Model = GameModelImpl(level, false, Some(optionCurrentBoard))
 
-  def apply(level: Level): Model = GameModelImpl(level, None)
+  def apply(level: Level): Model = GameModelImpl(level, false, None)
 }
