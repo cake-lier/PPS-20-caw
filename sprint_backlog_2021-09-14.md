@@ -36,10 +36,10 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>6</td>
             <td>6</td>
             <td>5</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Modificare il RulesEngine alle nuove specifiche derivanti dal codice PROLOG</td>
