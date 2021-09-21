@@ -2,29 +2,31 @@ package it.unibo.pps.caw.editor.model
 
 import com.fasterxml.jackson.annotation.JsonValue
 import com.sun.javafx.collections.NonIterableChange.GenericAddRemoveChange
-import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString, JsValue}
+import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString, JsValue, Json}
 
 import scala.util.Try
 
 object Serializer {
-  def serializeLevel(level: Level): Option[String] =
-    level.playableArea.map(_ =>
-      JsObject(
-        Seq(
-          "width" -> JsNumber(level.width),
-          "height" -> JsNumber(level.height),
-          "playableArea" -> JsObject(
-            Seq(
-              "width" -> JsNumber(level.playableArea.get.width),
-              "height" -> JsNumber(level.playableArea.get.height),
-              "x" -> JsNumber(level.playableArea.get.position.x),
-              "y" -> JsNumber(level.playableArea.get.position.y)
-            )
-          ),
-          "cells" -> parseCells(level.board.cells)
+  def serializeLevel(level: Level): Try[String] =
+    Try {
+      Json.prettyPrint(
+        JsObject(
+          Seq(
+            "width" -> JsNumber(level.width),
+            "height" -> JsNumber(level.height),
+            "playableArea" -> JsObject(
+              Seq(
+                "width" -> JsNumber(level.playableArea.get.width),
+                "height" -> JsNumber(level.playableArea.get.height),
+                "x" -> JsNumber(level.playableArea.get.position.x),
+                "y" -> JsNumber(level.playableArea.get.position.y)
+              )
+            ),
+            "cells" -> parseCells(level.board.cells)
+          )
         )
-      ).toString
-    )
+      )
+    }
 
   def parseCell(cell: Cell): JsObject = {
     val position: Position = cell.position

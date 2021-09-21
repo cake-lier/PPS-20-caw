@@ -2,7 +2,7 @@ package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
 import it.unibo.pps.caw.editor.menu.ParentLevelEditorMenuController
-import it.unibo.pps.caw.game.{LevelLoader, ParentGameController}
+import it.unibo.pps.caw.game.{LevelManager, ParentGameController}
 import it.unibo.pps.caw.game.model.Level as ModelLevel
 import it.unibo.pps.caw.menu.ParentMainMenuController
 
@@ -13,9 +13,9 @@ import scala.jdk.StreamConverters
 import scala.util.{Failure, Try, Using}
 import cats.implicits
 import it.unibo.pps.caw.editor.model.{Deserializer, Level, Serializer}
-
 import scala.jdk.StreamConverters.given
 import cats.implicits.given
+import javafx.scene.layout.AnchorPane
 
 import scala.concurrent.ExecutionContext
 
@@ -42,14 +42,14 @@ object ApplicationController {
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
 
     override def startGame(levelPath: Path): Unit =
-      LevelLoader.load(levelPath).fold(_ => view.showError("An error has occured, could not load level"), view.showGame(_))
+      LevelManager.load(levelPath).fold(_ => view.showError("An error has occured, could not load level"), view.showGame(_))
 
     private val levelFiles: Seq[ModelLevel] =
       Files
         .list(Paths.get(ClassLoader.getSystemResource("levels/").toURI))
         .toScala(Seq)
         .filter(_.getFileName.toString.endsWith(".json"))
-        .map(LevelLoader.load(_))
+        .map(LevelManager.load(_))
         .sequence
         .getOrElse {
           view.showError("An error has occured, could not load level")
@@ -73,12 +73,13 @@ object ApplicationController {
     override def openLevelMenuView(): Unit = view.showEditorMenuView()
 
     override def saveLevel(file: File, level: Level): Unit =
-      Serializer.serializeLevel(level).fold(() => ())(s => Using(PrintWriter(file)) { _.write(s) })
+      Serializer.serializeLevel(level).map(s => Using(PrintWriter(file)) { _.write(s) })
+
     override def openLevelEditor(width: Int, height: Int): Unit =
       view.showLevelEditor(width, height)
 
-    override def openLevelEditor(level: File): Unit = //TODO cambia con un altro deserializier
-      view.showLevelEditor(Deserializer.deserializeLevel(Source.fromFile(level).getLines().mkString).getOrElse(null))
+    override def openLevelEditor(level: File): Unit =
+      LevelManager.loadLevelLevelEditor(level).foreach(view.showLevelEditor)
   }
 
   /** Returns a new instance of the [[ApplicationController]] trait. It must receive the [[ApplicationView]] which will be called

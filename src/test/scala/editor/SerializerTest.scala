@@ -55,13 +55,8 @@ class SerializerTest extends AnyFunSpec with Matchers with ShoutDownVertx {
   }
 
   private def validate(level: Level): Unit =
-    Serializer
-      .serializeLevel(level)
-      .map(Deserializer.deserializeLevel)
-      .fold(fail())(
-        _ match {
-          case Success(_) => succeed
-          case _          => fail()
-        }
-      )
+    for {
+      s <- Serializer.serializeLevel(level)
+      r <- Deserializer.deserializeLevel(s)
+    } yield r
 }

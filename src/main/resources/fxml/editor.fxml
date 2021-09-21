@@ -8,7 +8,7 @@
         <ColumnConstraints percentWidth="2.5" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
-        <ColumnConstraints percentWidth="20.0" />
+        <ColumnConstraints percentWidth="2.0" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
@@ -17,7 +17,9 @@
       <ColumnConstraints minWidth="10.0" percentWidth="7.5" prefWidth="100.0" />
       <ColumnConstraints minWidth="10.0" percentWidth="7.5" prefWidth="100.0" />
         <ColumnConstraints percentWidth="7.5" />
-        <ColumnConstraints percentWidth="2.5" />
+        <ColumnConstraints percentWidth="12.5" />
+      <ColumnConstraints minWidth="10.0" percentWidth="7.5" prefWidth="100.0" />
+      <ColumnConstraints minWidth="10.0" percentWidth="2.5" prefWidth="100.0" />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints percentHeight="2.5" />
@@ -39,5 +41,5 @@
     <Button id="play-area-button" fx:id="playableAreaButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" disable="true" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="10" GridPane.rowIndex="5" />
     <Button id="drag-and-drop" fx:id="dragAndDrop" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="11" GridPane.rowIndex="5" />
     <Button fx:id="backButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    <Button fx:id="saveButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Save" GridPane.columnIndex="11" GridPane.rowIndex="1" />
+    <Button fx:id="saveButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Save" GridPane.columnIndex="13" GridPane.rowIndex="1" />
 </GridPane>
