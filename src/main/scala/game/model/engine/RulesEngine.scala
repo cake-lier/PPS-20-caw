@@ -37,12 +37,12 @@ object RulesEngine {
 
       /* Update cell returned by deserializer with correct field IdCell.updated */
       def updateCell(cell: IdCell): IdCell = cell match {
-        case c if (c.id >= cellState.size) => CellConverter.toUpdated(c, true) // new cell created by a generator
-        case c                             => CellConverter.toUpdated(c, cellState(c.id))
+        case c if (c.id > cellState.keySet.max) => CellConverter.toUpdated(c, true) // new cell created by a generator
+        case c                                  => CellConverter.toUpdated(c, cellState(c.id))
       }
 
       val resBoard = PrologParser.deserializeBoard(
-        extractTerm(engine(PrologParser.createSerializedPredicate(board, board.cells.size, cell))).toString
+        extractTerm(engine(PrologParser.createSerializedPredicate(board, cellState.keySet.max + 1, cell))).toString
       )
 
       Board(resBoard.cells.map(updateCell))

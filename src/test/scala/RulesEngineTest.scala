@@ -111,7 +111,7 @@ class RulesEngineTest extends AnyFunSpec with Matchers {
     describe("when generator right cell is used") {
       it("should update the game") {
         createEngine.nextState(generatorRightBoard, IdGeneratorCell((1, 0), Orientation.Right, 2, false)) shouldBe Board(
-          IdBlockCell((2, 0), Push.Horizontal, 4, false),
+          IdBlockCell((2, 0), Push.Horizontal, 4, true),
           IdBlockCell((0, 0), Push.Horizontal, 1, false),
           IdGeneratorCell((1, 0), Orientation.Right, 2, true),
           IdBlockCell((10, 0), Push.Both, 3, false)
@@ -121,7 +121,7 @@ class RulesEngineTest extends AnyFunSpec with Matchers {
     describe("when generator left cell is used") {
       it("should update the game") {
         createEngine.nextState(generatorLeftBoard, IdGeneratorCell((9, 0), Orientation.Left, 2, false)) shouldBe Board(
-          IdBlockCell((8, 0), Push.Horizontal, 4, false),
+          IdBlockCell((8, 0), Push.Horizontal, 4, true),
           IdBlockCell((10, 0), Push.Horizontal, 1, false),
           IdGeneratorCell((9, 0), Orientation.Left, 2, true),
           IdBlockCell((0, 0), Push.Both, 3, false)
@@ -131,7 +131,7 @@ class RulesEngineTest extends AnyFunSpec with Matchers {
     describe("when generator top cell is used") {
       it("should update the game") {
         createEngine.nextState(generatorTopBoard, IdGeneratorCell((0, 2), Orientation.Top, 2, false)) shouldBe Board(
-          IdBlockCell((0, 1), Push.Vertical, 4, false),
+          IdBlockCell((0, 1), Push.Vertical, 4, true),
           IdBlockCell((0, 3), Push.Vertical, 1, false),
           IdGeneratorCell((0, 2), Orientation.Top, 2, true),
           IdBlockCell((0, 10), Push.Both, 3, false)
@@ -141,7 +141,7 @@ class RulesEngineTest extends AnyFunSpec with Matchers {
     describe("when generator down cell is used") {
       it("should update the game") {
         createEngine.nextState(generatorDownBoard, IdGeneratorCell((0, 10), Orientation.Down, 2, false)) shouldBe Board(
-          IdBlockCell((0, 11), Push.Vertical, 4, false),
+          IdBlockCell((0, 11), Push.Vertical, 4, true),
           IdBlockCell((0, 9), Push.Vertical, 1, false),
           IdGeneratorCell((0, 10), Orientation.Down, 2, true),
           IdBlockCell((0, 0), Push.Both, 3, false)
