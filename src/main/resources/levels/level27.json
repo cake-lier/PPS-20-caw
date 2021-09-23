@@ -1,0 +1,188 @@
+{
+  "width" : 9,
+  "height" : 15,
+  "playableArea" : {
+    "width" : 9,
+    "height" : 6,
+    "x" : 0,
+    "y" : 0
+  },
+  "cells" : {
+    "mover" : [ {
+      "orientation" : "right",
+      "x" : 2,
+      "y" : 1
+    }, {
+      "orientation" : "top",
+      "x" : 1,
+      "y" : 12
+    }, {
+      "orientation" : "down",
+      "x" : 8,
+      "y" : 12
+    } ],
+    "generator" : [ {
+      "orientation" : "right",
+      "x" : 2,
+      "y" : 12
+    }, {
+      "orientation" : "left",
+      "x" : 6,
+      "y" : 12
+    } ],
+    "rotator" : [ {
+      "rotation" : "counterclockwise",
+      "x" : 0,
+      "y" : 10
+    }, {
+      "rotation" : "counterclockwise",
+      "x" : 1,
+      "y" : 14
+    }, {
+      "rotation" : "clockwise",
+      "x" : 6,
+      "y" : 1
+    }, {
+      "rotation" : "counterclockwise",
+      "x" : 1,
+      "y" : 10
+    }, {
+      "rotation" : "clockwise",
+      "x" : 7,
+      "y" : 10
+    }, {
+      "rotation" : "clockwise",
+      "x" : 8,
+      "y" : 10
+    }, {
+      "rotation" : "counterclockwise",
+      "x" : 0,
+      "y" : 14
+    }, {
+      "rotation" : "clockwise",
+      "x" : 8,
+      "y" : 14
+    }, {
+      "rotation" : "clockwise",
+      "x" : 7,
+      "y" : 14
+    } ],
+    "block" : [ ],
+    "enemy" : [ {
+      "x" : 4,
+      "y" : 11
+    }, {
+      "x" : 4,
+      "y" : 9
+    }, {
+      "x" : 4,
+      "y" : 7
+    }, {
+      "x" : 4,
+      "y" : 10
+    }, {
+      "x" : 4,
+      "y" : 8
+    } ],
+    "wall" : [ {
+      "x" : 2,
+      "y" : 8
+    }, {
+      "x" : 6,
+      "y" : 6
+    },{
+      "x" : 2,
+      "y" : 13
+    }, {
+      "x" : 4,
+      "y" : 13
+    }, {
+      "x" : 3,
+      "y" : 13
+    }, {
+      "x" : 2,
+      "y" : 9
+    }, {
+      "x" : 2,
+      "y" : 11
+    }, {
+      "x" : 2,
+      "y" : 6
+    }, {
+      "x" : 0,
+      "y" : 6
+    }, {
+      "x" : 6,
+      "y" : 14
+    },{
+      "x" : 6,
+      "y" : 13
+    },{
+      "x" : 2,
+      "y" : 10
+    }, {
+      "x" : 3,
+      "y" : 4
+    }, {
+      "x" : 2,
+      "y" : 14
+    },{
+      "x" : 6,
+      "y" : 10
+    }, {
+      "x" : 6,
+      "y" : 11
+    }, {
+      "x" : 2,
+      "y" : 3
+    }, {
+      "x" : 5,
+      "y" : 4
+    }, {
+      "x" : 4,
+      "y" : 4
+    }, {
+      "x" : 6,
+      "y" : 8
+    }, {
+      "x" : 8,
+      "y" : 9
+    }, {
+      "x" : 6,
+      "y" : 9
+    }, {
+      "x" : 2,
+      "y" : 7
+    }, {
+      "x" : 6,
+      "y" : 3
+    }, {
+      "x" : 7,
+      "y" : 9
+    }, {
+      "x" : 7,
+      "y" : 6
+    }, {
+      "x" : 0,
+      "y" : 9
+    },{
+      "x" : 6,
+      "y" : 7
+    }, {
+      "x" : 8,
+      "y" : 6
+    }, {
+      "x" : 1,
+      "y" : 6
+    }, {
+      "x" : 1,
+      "y" : 9
+    }, {
+      "x" : 4,
+      "y" : 12
+    }, {
+      "x" : 5,
+      "y" : 13
+    }]
+  }
+}

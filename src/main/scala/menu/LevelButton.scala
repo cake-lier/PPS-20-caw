@@ -19,10 +19,11 @@ object LevelButton {
     * @param controller
     *   the [[MainMenuController]] used for switching to the game
     */
-  def apply(levelIndex: Int, controller: MainMenuController): ViewComponent[Button] = new LevelButtonImpl(levelIndex, controller)
+  def apply(levelIndex: Int, controller: LevelSelectionController): ViewComponent[Button] =
+    LevelButtonImpl(levelIndex, controller)
 
   /* Default implementation of the LevelButton trait. */
-  private final class LevelButtonImpl(number: Int, controller: MainMenuController)
+  private final class LevelButtonImpl(number: Int, controller: LevelSelectionController)
     extends AbstractViewComponent[Button]("level_button.fxml") {
     override val innerComponent: Button = loader.load[Button]
 

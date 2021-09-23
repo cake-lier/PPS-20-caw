@@ -1,0 +1,36 @@
+{
+  "width": 8,
+  "height": 5,
+  "playableArea": {
+    "width": 4,
+    "height": 5,
+    "x": 0,
+    "y": 0
+  },
+  "cells": {
+    "mover": [
+      {
+        "orientation": "right",
+        "x": 1,
+        "y": 4
+      }
+    ],
+    "generator": [
+      {
+        "orientation": "down",
+        "x": 3,
+        "y": 2
+      }
+    ],
+    "enemy": [
+      {
+        "x": 6,
+        "y": 1
+      },
+      {
+        "x": 6,
+        "y": 3
+      }
+    ]
+  }
+}

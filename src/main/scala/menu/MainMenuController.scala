@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.menu
 
 import java.io.File
+import java.nio.file.Path
 
 /** The parent controller to the [[MainMenuController]].
   *
@@ -10,12 +11,26 @@ import java.io.File
   */
 trait ParentMainMenuController {
 
-  /** Asks the parent controller to start a new game. It needs the file containing the level from which starting to play the game.
+  /** Asks the parent controller to return the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
+  val levelsCount: Int
+
+  /** Asks the parent controller to start a new game. It needs the [[Path]] of the file containing the level from which starting
+    * the game.
     *
-    * @param levelFile
-    *   the file containing the level from which starting to play the game
+    * @param levelPath
+    *   the [[Path]] of the file containing the level from which starting to play the game
     */
-  def startGame(levelFile: File): Unit
+  def startGame(levelPath: Path): Unit
+
+  /** Asks the parent controller to start a new game. It needs the index of the default level from which starting the game.
+    *
+    * @param levelIndex
+    *   the index of the level from which starting to play the game
+    */
+  def startGame(levelIndex: Int): Unit
+
+  /** Asks the parent controller to go back to the previous state of the application. */
+  def goBack(): Unit
 
   /** Asks the parent controller to exit the application. */
   def exit(): Unit
@@ -26,23 +41,18 @@ trait ParentMainMenuController {
   * This controller is responsible for containing all functionalities which are proper to the main menu and that this last one
   * offers. It must be constructed through its companion object.
   */
-trait MainMenuController {
+trait MainMenuController extends LevelSelectionController with SettingsController {
 
-  /** Starts a new game beginning from one of the default levels, which index is given. Then, the game will continue using the
-    * level next to this one, and then the next one and so on until the last one is reached or the player exits the game.
-    *
-    * @param levelIndex
-    *   the index of the default level from which starting the new game
-    */
-  def startGame(levelIndex: Int): Unit
+  /** Returns the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
+  val levelsCount: Int
 
-  /** Starts a new game for playing the level contained in the given file. No other level will be played after this one, the only
-    * option for the player will be to exit the game.
+  /** Starts a new game for playing the level contained in the file with the given [[Path]]. No other level will be played after
+    * this one, the only option for the player will be to exit the game.
     *
-    * @param levelFile
-    *   the file containing the level to play in the new game
+    * @param levelPath
+    *   the [[Path]] to the file containing the [[it.unibo.pps.caw.game.model.Level]] to play in the new game
     */
-  def startGame(levelFile: File): Unit
+  def startGame(levelPath: Path): Unit
 
   /** Exits the application. */
   def exit(): Unit
@@ -55,11 +65,15 @@ object MainMenuController {
   private class MainMenuControllerImpl(parentController: ParentMainMenuController, view: MainMenuView)
     extends MainMenuController {
 
-    override def startGame(levelIndex: Int): Unit = parentController.startGame(new File(s"level$levelIndex.json"))
+    override val levelsCount: Int = parentController.levelsCount
 
-    override def startGame(levelFile: File): Unit = parentController.startGame(levelFile)
+    override def startGame(levelIndex: Int): Unit = parentController.startGame(levelIndex)
+
+    override def startGame(levelPath: Path): Unit = parentController.startGame(levelPath)
 
     override def exit(): Unit = parentController.exit()
+
+    override def backToMainMenu(): Unit = parentController.goBack()
   }
 
   /** Returns a new instance of the [[MainMenuController]] trait. It must receive the [[ParentMainMenuController]], which it

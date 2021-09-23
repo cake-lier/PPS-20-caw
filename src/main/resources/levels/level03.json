@@ -1,0 +1,32 @@
+{
+  "width": 8,
+  "height": 5,
+  "playableArea": {
+    "width": 4,
+    "height": 5,
+    "x": 0,
+    "y": 0
+  },
+  "cells": {
+    "mover": [
+      {
+        "orientation": "top",
+        "x": 3,
+        "y": 1
+      }
+    ],
+    "rotator": [
+      {
+        "rotation": "clockwise",
+        "x": 1,
+        "y": 3
+      }
+    ],
+    "enemy": [
+      {
+        "x": 6,
+        "y": 2
+      }
+    ]
+  }
+}

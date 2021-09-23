@@ -1,9 +1,16 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.game.ParentGameController
+import it.unibo.pps.caw.game.model.{Level, PlayableArea, Position}
 import it.unibo.pps.caw.menu.ParentMainMenuController
 
 import java.io.File
+import java.nio.file.{Files, Path, Paths}
+import scala.io.Source
+import scala.jdk.StreamConverters.given
+import scala.util.{Failure, Try, Using}
+import cats.implicits.given
+import it.unibo.pps.caw.game.controller.ParentGameController
+import it.unibo.pps.caw.LevelLoader
 
 /** The controller of the main application.
   *
@@ -19,11 +26,28 @@ object ApplicationController {
   /* Default implementation of the ApplicationController trait. */
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
 
-    override def startGame(levelFile: File): Unit = view.showGame()
+    override def startGame(levelPath: Path): Unit =
+      LevelLoader.load(levelPath).fold(_ => view.showError("An error has occured, could not load level"), view.showGame(_))
+
+    private val levelFiles: Seq[Level] =
+      Files
+        .list(Paths.get(ClassLoader.getSystemResource("levels/").toURI))
+        .toScala(Seq)
+        .filter(_.getFileName.toString.endsWith(".json"))
+        .map(LevelLoader.load(_))
+        .sequence
+        .getOrElse {
+          view.showError("An error has occured, could not load level")
+          Seq()
+        }
+
+    override val levelsCount: Int = levelFiles.length
+
+    override def startGame(levelIndex: Int): Unit = view.showGame(levelFiles, levelIndex)
 
     override def exit(): Unit = sys.exit()
 
-    override def backToMainMenu(): Unit = view.showMainMenu()
+    override def goBack(): Unit = view.showMainMenu()
   }
 
   /** Returns a new instance of the [[ApplicationController]] trait. It must receive the [[ApplicationView]] which will be called
