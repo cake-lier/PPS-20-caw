@@ -109,12 +109,12 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>Lorenzo Gardini</td>
             <td>2</td>
             <td>0</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Aggiungere suoni in corrispondenza degli eventi</td>
@@ -123,10 +123,10 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>1</td>
             <td>1</td>
             <td>1</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Aggiungere pagina delle impostazioni con quelle per l'audio</td>
@@ -135,12 +135,13 @@ Completare la realizzazione del gioco, sia integrando quello che è stato realiz
             <td>3</td>
             <td>3</td>
             <td>0</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
     </tbody>
 </table>
 
 #### Sprint result:
+L'obiettivo di questo sprint è stato raggiunto: il gioco è stato completato e può essere ora giocato, non si trova più in una fase prototipale. Sono necessarie delle rifiniture, che necessariamente saranno eseguite nel prossimo sprint. Il gioco è dotato di suoni e musiche e anche le componenti grafiche restanti sono complete e utilizzabili. Inoltre, le componenti del gioco sono state realizzate in modo tale da essere sufficientemente flessibili e riutilizzate in più contesti. Il gioco può infatti essere lanciato per giocare un livello di default o uno creato dall'utente e sarà possibile dal prossimo sprint lanciarlo direttamente dal DSL.
