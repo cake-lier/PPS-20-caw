@@ -29,17 +29,17 @@ sealed trait LevelEditorController {
 
 object LevelEditorController {
   case class LevelControllerImpl(
-      parentLevelEditorController: ParentLevelEditorController,
-      levelEditorView: LevelEditorView,
-      width: Int,
-      height: Int,
-      level: Option[Level]
+    parentLevelEditorController: ParentLevelEditorController,
+    levelEditorView: LevelEditorView,
+    width: Int,
+    height: Int,
+    level: Option[Level]
   ) extends LevelEditorController {
     private var levelEditorModel: LevelEditorModel =
       level.map(LevelEditorModel(width, height, _)).getOrElse(LevelEditorModel(width, height))
-      
+
     levelEditorView.printLevel(levelEditorModel.currentLevel)
-      
+
     override def resetLevel(): Unit = updateShowLevel(levelEditorModel.resetLevel)
 
     override def removeCell(position: Position): Unit = updateShowLevel(levelEditorModel.removeCell(position))
@@ -56,27 +56,28 @@ object LevelEditorController {
     override def closeEditor(): Unit = parentLevelEditorController.closeEditor()
 
     override def updateCellPosition(oldPosition: Position, newPosition: Position): Unit =
-      levelEditorModel.updateCellPosition(oldPosition, newPosition)
+      updateShowLevel(levelEditorModel.updateCellPosition(oldPosition, newPosition))
 
     override def backToLevelEditorMenu(): Unit = parentLevelEditorController.backToLevelEditorMenu()
 
     private def updateShowLevel(newLevelEditorModel: LevelEditorModel): Unit = {
-      levelEditorModel = newLevelEditorModel; levelEditorView.printLevel(levelEditorModel.currentLevel)
+      levelEditorModel = newLevelEditorModel
+      levelEditorView.printLevel(levelEditorModel.currentLevel)
     }
   }
 
   def apply(
-      parentLevelEditorController: ParentLevelEditorController,
-      levelEditorView: LevelEditorView,
-      width: Int,
-      height: Int
+    parentLevelEditorController: ParentLevelEditorController,
+    levelEditorView: LevelEditorView,
+    width: Int,
+    height: Int
   ): LevelEditorController =
     LevelControllerImpl(parentLevelEditorController, levelEditorView, width, height, None)
 
   def apply(
-      parentLevelEditorController: ParentLevelEditorController,
-      levelEditorView: LevelEditorView,
-      level: Level
+    parentLevelEditorController: ParentLevelEditorController,
+    levelEditorView: LevelEditorView,
+    level: Level
   ): LevelEditorController =
     LevelControllerImpl(parentLevelEditorController, levelEditorView, level.width, level.height, Some(level))
 }

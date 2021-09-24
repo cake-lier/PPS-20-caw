@@ -4,7 +4,7 @@ import it.unibo.pps.caw.{FilePicker, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.{Board, BoardView, CellImage, DragAndDrop, EditorBoardView, ModelUpdater, Position}
 import it.unibo.pps.caw.editor.controller.{LevelEditorController, ParentLevelEditorController}
-import it.unibo.pps.caw.editor.model.{Level, SetupEnemyCell}
+import it.unibo.pps.caw.editor.model._
 import javafx.application.Platform
 import javafx.fxml.FXML
 import javafx.geometry.{HPos, Insets, VPos}
@@ -21,15 +21,15 @@ trait LevelEditorView extends ViewComponent[Pane] {
 
 object LevelEditorView {
   private final class LevelEditorViewImpl(
-      parentLevelEditorController: ParentLevelEditorController,
-      scene: Scene,
-      closeEditorButtonText: String,
-      width: Int,
-      height: Int,
-      level: Option[Level]
+    parentLevelEditorController: ParentLevelEditorController,
+    scene: Scene,
+    closeEditorButtonText: String,
+    width: Int,
+    height: Int,
+    level: Option[Level]
   ) extends AbstractViewComponent[Pane]("editor.fxml")
-      with LevelEditorView
-      with ModelUpdater {
+    with LevelEditorView
+    with ModelUpdater {
 
     @FXML
     var backButton: Button = _
@@ -81,18 +81,44 @@ object LevelEditorView {
       boardView = Some(newBoardView)
     })
 
-    override def manageCell(oldPosition: Option[Position], newPosition: Position): Unit = {
-      oldPosition.fold(controller.setCell(SetupEnemyCell(newPosition, true)))(oldPosition =>
-        controller.updateCellPosition(oldPosition, newPosition)
-      )
-      setButtonImages()
+    override def manageCell(cellImage: ImageView, newPosition: Position, isInBoard: Boolean): Unit = {
+      val board = boardView.get.innerComponent
+      if (isInBoard)
+        controller.updateCellPosition(Position(GridPane.getColumnIndex(cellImage), GridPane.getRowIndex(cellImage)), newPosition)
+        board.getChildren.remove(cellImage)
+        board.add(cellImage, newPosition.x, newPosition.y)
+      else
+        cellImage.getImage match {
+          case CellImage.GeneratorRight.image => controller.setCell(SetupGeneratorCell(newPosition, Orientation.Right, true))
+          case CellImage.GeneratorLeft.image  => controller.setCell(SetupGeneratorCell(newPosition, Orientation.Left, true))
+          case CellImage.GeneratorTop.image   => controller.setCell(SetupGeneratorCell(newPosition, Orientation.Top, true))
+          case CellImage.GeneratorDown.image  => controller.setCell(SetupGeneratorCell(newPosition, Orientation.Down, true))
+          case CellImage.RotatorRight.image   => controller.setCell(SetupRotatorCell(newPosition, Rotation.Clockwise, true))
+          case CellImage.RotatorLeft.image => controller.setCell(SetupRotatorCell(newPosition, Rotation.Counterclockwise, true))
+          case CellImage.MoverRight.image  => controller.setCell(SetupMoverCell(newPosition, Orientation.Right, true))
+          case CellImage.MoverLeft.image   => controller.setCell(SetupMoverCell(newPosition, Orientation.Left, true))
+          case CellImage.MoverTop.image    => controller.setCell(SetupMoverCell(newPosition, Orientation.Top, true))
+          case CellImage.MoverDown.image   => controller.setCell(SetupMoverCell(newPosition, Orientation.Down, true))
+          case CellImage.Block.image       => controller.setCell(SetupBlockCell(newPosition, Push.Both, true))
+          case CellImage.BlockHorizontal.image => controller.setCell(SetupBlockCell(newPosition, Push.Horizontal, true))
+          case CellImage.BlockVertical.image   => controller.setCell(SetupBlockCell(newPosition, Push.Vertical, true))
+          case CellImage.Enemy.image           => controller.setCell(SetupEnemyCell(newPosition, true))
+          case CellImage.Wall.image            => controller.setCell(SetupWallCell(newPosition, true))
+        }
+        board.add(
+          new ImageView() {
+            setImage(cellImage.getImage)
+          },
+          newPosition.x,
+          newPosition.y
+        )
     }
 
     private def setButtonImages(): Map[ImageView, Image] = {
       Map(
         setGraphic(enemyCellView, CellImage.Enemy.image),
         setGraphic(wallCellView, CellImage.Wall.image),
-        setGraphic(generateCellView, CellImage.GeneratorLeft.image),
+        setGraphic(generateCellView, CellImage.GeneratorRight.image),
         setGraphic(moverCellView, CellImage.MoverRight.image),
         setGraphic(blockCellView, CellImage.Block.image),
         setGraphic(rotateCellView, CellImage.RotatorRight.image)
@@ -145,19 +171,19 @@ object LevelEditorView {
   }
 
   def apply(
-      parentLevelEditorController: ParentLevelEditorController,
-      scene: Scene,
-      closeEditorButtonText: String,
-      boardWidth: Int,
-      boardHeight: Int
+    parentLevelEditorController: ParentLevelEditorController,
+    scene: Scene,
+    closeEditorButtonText: String,
+    boardWidth: Int,
+    boardHeight: Int
   ): LevelEditorView =
     LevelEditorViewImpl(parentLevelEditorController, scene, closeEditorButtonText, boardWidth, boardHeight, None)
 
   def apply(
-      parentLevelEditorController: ParentLevelEditorController,
-      scene: Scene,
-      closeEditorButtonText: String,
-      level: Level
+    parentLevelEditorController: ParentLevelEditorController,
+    scene: Scene,
+    closeEditorButtonText: String,
+    level: Level
   ): LevelEditorView =
     LevelEditorViewImpl(parentLevelEditorController, scene, closeEditorButtonText, level.width, level.height, Some(level))
 

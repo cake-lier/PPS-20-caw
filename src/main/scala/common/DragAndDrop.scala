@@ -8,7 +8,7 @@ import javafx.scene.input.{ClipboardContent, TransferMode}
 import javafx.scene.layout.GridPane
 
 trait ModelUpdater {
-  def manageCell(oldPosition: Option[Position], newPosition: Position): Unit
+  def manageCell(cell:ImageView, newPosition: Position, isInBoard:Boolean): Unit
 }
 
 /** Provides the necessary functions to drag and drop an ImageView. */
@@ -51,7 +51,8 @@ object DragAndDrop {
     *   the [[CellView]] to be removed and re-inserted in the [[gridPane]] with a new position
     */
   private def updateGridPane(gridPane: GridPane, tile: Node, cell: ImageView, model: ModelUpdater): Unit = {
-    gridPane.getChildren
+    gridPane
+      .getChildren
       .stream()
       .filter(_.equals(cell))
       .findAny()
@@ -60,7 +61,7 @@ object DragAndDrop {
           val newX = GridPane.getColumnIndex(tile).toInt
           val newY = GridPane.getRowIndex(tile).toInt
 
-          model.manageCell(Some(GridPane.getColumnIndex(node).toInt, GridPane.getRowIndex(node).toInt), (newX, newY))
+          model.manageCell(cell, (newX, newY), true)
           gridPane.getChildren.remove(node)
 
           gridPane.add(
@@ -72,12 +73,7 @@ object DragAndDrop {
         () => {
           val newX = GridPane.getColumnIndex(tile).toInt
           val newY = GridPane.getRowIndex(tile).toInt
-          model.manageCell(None, (newX, newY))
-          gridPane.add(
-            cell,
-            newX.toInt,
-            newY.toInt
-          )
+          model.manageCell(cell, (newX, newY), false)
         }
       )
   }
