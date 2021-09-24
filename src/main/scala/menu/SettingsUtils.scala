@@ -1,14 +1,14 @@
 package it.unibo.pps.caw
-package settings
+package menu
 
 import play.api.libs.json.Json
 
-import java.io.{FileWriter, File}
+import java.io.{File, FileWriter}
 import java.nio.file.{Files, Path, Paths}
 import scala.io.Source
 import scala.util.{Failure, Success, Try, Using}
 
-case class Settings(volumeMusic: Int, volumeSFX: Int, solvedLevels: Set[Int])
+case class Settings(volumeMusic: Double, volumeSFX: Double, solvedLevels: Set[Int])
 
 object SettingsUtils {
 
@@ -17,8 +17,8 @@ object SettingsUtils {
       (_.getLines().mkString) match {
       case Success(jsonString: String) => {
         val json = Json.parse(jsonString)
-        val volumeMusic = (json \ "volumeMusic").as[Int]
-        val volumeSFX = (json \ "volumeSFX").as[Int]
+        val volumeMusic = (json \ "volumeMusic").as[Double]
+        val volumeSFX = (json \ "volumeSFX").as[Double]
         val solvedLevels = (json \ "solvedLevels").as[Set[Int]]
         Success(Settings(volumeMusic, volumeSFX, solvedLevels))
       }
@@ -41,7 +41,7 @@ object Test extends App{
     case Success(s) => println(s)
     case _ => println("fail")
   }
-  SettingsUtils.save(Settings(100, 200, Set(4, 0, 7)))
+  SettingsUtils.save(Settings(0.2, 0.6, Set()))
 
   SettingsUtils.load() match {
     case Success(s) => println(s)
