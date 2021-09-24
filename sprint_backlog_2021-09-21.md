@@ -33,10 +33,10 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>Fare refactoring di GameView e BoardView</td>
             <td>Yuqi Sun</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>4</td>
+            <td>4</td>
+            <td>3</td>
+            <td>3</td>
             <td></td>
             <td></td>
             <td></td>
@@ -45,10 +45,10 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>Cercare e sistemare bug vari ed eventuali</td>
             <td>Yuqi Sun & Elena Rughi</td>
             <td>7</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>7</td>
+            <td>6</td>
+            <td>6</td>
+            <td>5</td>
             <td></td>
             <td></td>
             <td></td>
