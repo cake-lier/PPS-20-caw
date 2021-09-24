@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.editor.menu
+package it.unibo.pps.caw.editor.view
 
 import it.unibo.pps.caw.game.model.Level
 

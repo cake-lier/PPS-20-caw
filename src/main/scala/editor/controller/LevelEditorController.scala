@@ -1,7 +1,8 @@
 package it.unibo.pps.caw.editor.controller
 
+import it.unibo.pps.caw.common.Position
 import it.unibo.pps.caw.editor.LevelEditorView
-import it.unibo.pps.caw.editor.model.{Cell, Serializer, Level, LevelEditorModel, Position}
+import it.unibo.pps.caw.editor.model.{Cell, Level, LevelEditorModel, SetupCell}
 
 import java.io.File
 import java.util.concurrent.{ExecutorService, Executors}
@@ -18,7 +19,8 @@ sealed trait LevelEditorController {
   def closeEditor(): Unit
   def backToLevelEditorMenu(): Unit
   def resetLevel(): Unit
-  def setCell(cell: Cell): Unit
+  def setCell(cell: SetupCell): Unit
+  def updateCellPosition(oldPosition: Position, newPosition: Position): Unit
   def removeCell(position: Position): Unit
   def setPlayableArea(position: Position, playableAreaWidth: Int, playableAreaHeight: Int): Unit
   def removePlayableArea(): Unit
@@ -34,12 +36,15 @@ object LevelEditorController {
       level: Option[Level]
   ) extends LevelEditorController {
     private var levelEditorModel: LevelEditorModel =
-      if (level.isDefined) LevelEditorModel(width, height, level.get) else LevelEditorModel(width, height)
+      level.map(LevelEditorModel(width, height, _)).getOrElse(LevelEditorModel(width, height))
+      
+    levelEditorView.printLevel(levelEditorModel.currentLevel)
+      
     override def resetLevel(): Unit = updateShowLevel(levelEditorModel.resetLevel)
 
     override def removeCell(position: Position): Unit = updateShowLevel(levelEditorModel.removeCell(position))
 
-    override def setCell(cell: Cell): Unit = updateShowLevel(levelEditorModel.setCell(cell))
+    override def setCell(cell: SetupCell): Unit = updateShowLevel(levelEditorModel.setCell(cell))
 
     override def removePlayableArea(): Unit = updateShowLevel(levelEditorModel.removePlayableArea)
 
@@ -49,6 +54,9 @@ object LevelEditorController {
     override def saveLevel(file: File): Unit = parentLevelEditorController.saveLevel(file, levelEditorModel.currentLevel)
 
     override def closeEditor(): Unit = parentLevelEditorController.closeEditor()
+
+    override def updateCellPosition(oldPosition: Position, newPosition: Position): Unit =
+      levelEditorModel.updateCellPosition(oldPosition, newPosition)
 
     override def backToLevelEditorMenu(): Unit = parentLevelEditorController.backToLevelEditorMenu()
 

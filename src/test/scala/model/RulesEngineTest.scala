@@ -1,5 +1,6 @@
 package it.unibo.pps.caw.model
 
+import it.unibo.pps.caw.common.Board
 import it.unibo.pps.caw.game.model.*
 import it.unibo.pps.caw.game.model.engine.RulesEngine
 import org.scalatest.funspec.AnyFunSpec

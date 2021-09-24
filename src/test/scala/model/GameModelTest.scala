@@ -3,6 +3,7 @@ package model
 
 import game.model.*
 
+import it.unibo.pps.caw.common.{Board, PlayableArea}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 

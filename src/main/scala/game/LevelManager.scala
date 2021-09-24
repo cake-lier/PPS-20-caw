@@ -1,7 +1,9 @@
 package it.unibo.pps.caw.game
 
-import it.unibo.pps.caw.game.Deserializer as GameDeserializer
-import it.unibo.pps.caw.editor.model.{Serializer, Deserializer as EditorDeserializer, Level as EditorLevel}
+import it.unibo.pps.caw.editor.controller.Serializer
+import it.unibo.pps.caw.editor.controller.Deserializer as EditorDeserializer
+import it.unibo.pps.caw.game.controller.Deserializer as GameDeserializer
+import it.unibo.pps.caw.editor.model.{Level as EditorLevel}
 import it.unibo.pps.caw.game.model.Level as GameLevel
 
 import java.io.File

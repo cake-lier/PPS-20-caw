@@ -2,8 +2,10 @@ package it.unibo.pps.caw.editor
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.json.schema.{Schema, SchemaParser, SchemaRouter, SchemaRouterOptions}
+import it.unibo.pps.caw.common.{Board, PlayableArea}
 import it.unibo.pps.caw.dsl.entities.PushableCell
-import it.unibo.pps.caw.editor.model._
+import it.unibo.pps.caw.editor.controller.{Deserializer, Serializer}
+import it.unibo.pps.caw.editor.model.*
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{BeforeAndAfterAll, Suite}
@@ -17,28 +19,28 @@ trait ShoutDownVertx extends BeforeAndAfterAll { this: Suite =>
   }
 }
 class SerializerTest extends AnyFunSpec with Matchers with ShoutDownVertx {
-  val oneCellLevel = Level(20, 20, Board(EnemyCell((5, 5))), PlayableArea(Position(0, 0), 3, 3))
+  val oneCellLevel = Level(20, 20, Board(SetupEnemyCell((5, 5), true)), PlayableArea((0, 0), 3, 3))
   val allCellsLevel = Level(
     20,
     20,
     Board(
-      WallCell((1, 1)),
-      EnemyCell((2, 2)),
-      RotatorCell((3, 3), Rotation.Counterclockwise),
-      RotatorCell((3, 3), Rotation.Clockwise),
-      GeneratorCell((4, 4), Orientation.Right),
-      GeneratorCell((4, 4), Orientation.Left),
-      GeneratorCell((4, 4), Orientation.Top),
-      GeneratorCell((4, 4), Orientation.Down),
-      MoverCell((5, 5), Orientation.Right),
-      MoverCell((5, 5), Orientation.Left),
-      MoverCell((5, 5), Orientation.Top),
-      MoverCell((5, 5), Orientation.Down),
-      BlockCell((6, 6), Push.Both),
-      BlockCell((6, 6), Push.Vertical),
-      BlockCell((6, 6), Push.Horizontal)
+      SetupWallCell((1, 1), true),
+      SetupEnemyCell((2, 2), true),
+      SetupRotatorCell((3, 3), Rotation.Counterclockwise, true),
+      SetupRotatorCell((3, 3), Rotation.Clockwise, true),
+      SetupGeneratorCell((4, 4), Orientation.Right, true),
+      SetupGeneratorCell((4, 4), Orientation.Left, true),
+      SetupGeneratorCell((4, 4), Orientation.Top, true),
+      SetupGeneratorCell((4, 4), Orientation.Down, true),
+      SetupMoverCell((5, 5), Orientation.Right, true),
+      SetupMoverCell((5, 5), Orientation.Left, true),
+      SetupMoverCell((5, 5), Orientation.Top, true),
+      SetupMoverCell((5, 5), Orientation.Down, true),
+      SetupBlockCell((6, 6), Push.Both, true),
+      SetupBlockCell((6, 6), Push.Vertical, true),
+      SetupBlockCell((6, 6), Push.Horizontal, true)
     ),
-    PlayableArea(Position(0, 0), 3, 3)
+    PlayableArea((0, 0), 3, 3)
   )
 
   describe("Serializer") {

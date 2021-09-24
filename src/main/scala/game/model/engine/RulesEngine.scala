@@ -3,15 +3,15 @@ import alice.tuprolog.{Prolog, Struct, Term, Theory}
 import com.google.gson.{Gson, JsonArray}
 import _root_.engine.{Clause, PrologEngine}
 import _root_.engine.PrologEngine.extractTerm
-import it.unibo.pps.caw.game.model._
-import it.unibo.pps.caw.game.model.CellTypes._
-import it.unibo.pps.caw.game.model.Push._
-import it.unibo.pps.caw.game.model.Orientation._
-import it.unibo.pps.caw.game.model.Rotation._
+import it.unibo.pps.caw.common.{Board, Position}
+import it.unibo.pps.caw.game.model.*
+import it.unibo.pps.caw.game.model.CellTypes.*
+import it.unibo.pps.caw.game.model.Push.*
+import it.unibo.pps.caw.game.model.Orientation.*
+import it.unibo.pps.caw.game.model.Rotation.*
 
 import scala.annotation.tailrec
 import scala.io.Source
-
 import scala.reflect.ClassTag
 import scala.util.Using
 import scala.util.matching.Regex
@@ -31,20 +31,18 @@ object RulesEngine {
       Using(Source.fromResource("cellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
 
     def nextState(board: Board[IdCell], cell: IdCell): Board[IdCell] = {
-      val cellState: IndexedSeq[Boolean] = board.cells.toList
-        .sortBy(_.id)
-        .map(_.updated)
-        .toIndexedSeq
-        .updated(cell.id, true) // cell being currently updated to true
+      val cellState: Map[Int, Boolean] = board.cells
+        .map(c => if (c.id == cell.id) (c.id, true) else (c.id, c.updated))
+        .toMap
 
       /* Update cell returned by deserializer with correct field IdCell.updated */
       def updateCell(cell: IdCell): IdCell = cell match {
-        case c if (c.id >= cellState.length) => c // new cell created by a generator doesn't get updated
-        case c                               => CellConverter.toUpdated(c, cellState(c.id))
+        case c if (c.id >= cellState.size) => CellConverter.toUpdated(c, true) // new cell created by a generator
+        case c                             => CellConverter.toUpdated(c, cellState(c.id))
       }
 
       val resBoard = PrologParser.deserializeBoard(
-        extractTerm(engine(PrologParser.createSerializedPredicate(board, board.cells.size + 1, cell))).toString
+        extractTerm(engine(PrologParser.createSerializedPredicate(board, board.cells.size, cell))).toString
       )
 
       Board(resBoard.cells.map(updateCell))

@@ -1,5 +1,5 @@
 package it.unibo.pps.caw
-package game.view
+package common
 
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.{GridPane, Pane}

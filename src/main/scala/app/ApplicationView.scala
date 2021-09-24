@@ -1,18 +1,22 @@
 package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController}
+import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController, SettingsView}
 import it.unibo.pps.caw.ViewComponent
 import javafx.application.Platform
 import scalafx.scene.control.Alert
 import it.unibo.pps.caw.game.model.Level as GameLevel
-import it.unibo.pps.caw.editor.model.Level as EditorLevel
+import it.unibo.pps.caw.editor.model.{SetupEnemyCell, Level as EditorLevel}
 import it.unibo.pps.caw.menu.MainMenuView
 import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.common.Board
 import it.unibo.pps.caw.editor.LevelEditorView
-import it.unibo.pps.caw.editor.menu.LevelEditorMenuView
-import it.unibo.pps.caw.editor.model.Level
-import it.unibo.pps.caw.game.GameView
+import it.unibo.pps.caw.editor.view.LevelEditorMenuView
+import it.unibo.pps.caw.game.view.GameView
 import javafx.geometry.Rectangle2D
+import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
+import it.unibo.pps.caw.game.controller.ParentGameController
+import it.unibo.pps.caw.game.view.GameView
 import javafx.scene.layout.Pane
 import javafx.stage.Screen
 import scalafx.application.JFXApp3.PrimaryStage
@@ -86,12 +90,13 @@ object ApplicationView {
   /* Default implementation of the ApplicationView trait. */
   private class ApplicationViewImpl(stage: PrimaryStage) extends ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
+    private val audioPlayer: AudioPlayer = AudioPlayer()
+    /*private val screenSize: Rectangle2D = Screen.getPrimary.getBounds
+    private val scene: Scene = Scene(screenSize.getWidth * 0.80, screenSize.getHeight * 0.80)*/
     private val scene: Scene = Scene(1080, 720)
     private var visibleView: ViewComponent[? <: Pane] =
-      MainMenuView(controller, controller.levelsCount, scene, controller.levelsCount == 0)
-    /* TODO
-    private val screenSize: Rectangle2D = Screen.getPrimary.getBounds
-    private val scene: Scene = Scene(screenSize.getWidth * 0.80, screenSize.getHeight * 0.80)*/
+      //MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
+      LevelEditorView(controller, scene, "chiudi", EditorLevel(5, 5, Board(SetupEnemyCell((2, 2), true))))
 
     stage.resizable = false
     stage.maximized = false
@@ -99,17 +104,18 @@ object ApplicationView {
     scene.root.value = visibleView.innerComponent
     stage.scene = scene
     stage.show()
+    stage.setOnCloseRequest(_ => controller.exit())
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: GameLevel): Unit = setVisibleView(GameView(controller, level, scene))
+    override def showGame(level: GameLevel): Unit = setVisibleView(GameView(controller, audioPlayer, level, scene))
 
     override def showGame(levels: Seq[GameLevel], levelIndex: Int): Unit = setVisibleView(
-      GameView(controller, levels, levelIndex, scene)
+      GameView(controller, audioPlayer, levels, levelIndex, scene)
     )
 
     override def showMainMenu(): Unit = setVisibleView(
-      MainMenuView(controller, controller.levelsCount, scene, controller.levelsCount == 0)
+      MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
     )
 
     override def showLevelEditor(width: Int, height: Int): Unit = setVisibleView(
@@ -126,7 +132,6 @@ object ApplicationView {
       Platform.runLater(() => {
         visibleView = newVisibleView; scene.root.value = visibleView.innerComponent
       })
-
   }
 
   /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX's [[PrimaryStage]] for creating a view for the

@@ -1,5 +1,4 @@
-package it.unibo.pps.caw
-package game.view
+package it.unibo.pps.caw.common
 
 import javafx.scene.image.Image
 

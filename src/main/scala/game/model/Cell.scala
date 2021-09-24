@@ -1,5 +1,7 @@
 package it.unibo.pps.caw.game.model
 
+import it.unibo.pps.caw.common.Position
+
 /** Represent a cell of the game */
 trait Cell extends Ordered[Cell] {
 

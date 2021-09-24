@@ -1,0 +1,28 @@
+.button {
+    -fx-font-size: 14.0;
+}
+
+.check-box > .box {
+	-fx-text-fill: white;
+	-fx-background-color: transparent;
+	-fx-border-color: white;
+	-fx-border-insets: 10px;
+}
+
+.check-box:selected > .box > .mark {
+	-fx-background-color: white;
+}
+
+.slider .thumb {
+	-fx-background-color: white;
+	-fx-background-radius: 0;
+}
+
+.slider .track {
+	-fx-background-color: white;
+	-fx-background-radius: 0;
+}
+
+.slider .axis {
+    -fx-tick-label-fill: white;
+}

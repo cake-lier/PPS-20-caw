@@ -1,8 +1,8 @@
-package it.unibo.pps.caw.editor.model
+package it.unibo.pps.caw.editor.controller
 
-import com.fasterxml.jackson.annotation.JsonValue
-import com.sun.javafx.collections.NonIterableChange.GenericAddRemoveChange
-import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString, JsValue, Json}
+import it.unibo.pps.caw.common.Position
+import it.unibo.pps.caw.editor.model.*
+import play.api.libs.json.*
 
 import scala.util.Try
 
@@ -28,28 +28,28 @@ object Serializer {
       )
     }
 
-  def parseCell(cell: Cell): JsObject = {
+  def parseCell(cell: SetupCell): JsObject = {
     val position: Position = cell.position
     val attributes: Seq[(String, JsValue)] =
       Seq("x" -> JsNumber(position.x), "y" -> JsNumber(position.y)) :++ (cell match {
-        case RotatorCell(_, r)   => Seq("rotation" -> JsString(r.rotation))
-        case GeneratorCell(_, o) => Seq("orientation" -> JsString(o.orientation))
-        case MoverCell(_, d)     => Seq("orientation" -> JsString(d.orientation))
-        case BlockCell(_, p)     => Seq("push" -> JsString(p.push))
-        case _                   => Seq.empty
+        case SetupRotatorCell(_, r, _)   => Seq("rotation" -> JsString(r.rotation))
+        case SetupGeneratorCell(_, o, _) => Seq("orientation" -> JsString(o.orientation))
+        case SetupMoverCell(_, d, _)     => Seq("orientation" -> JsString(d.orientation))
+        case SetupBlockCell(_, p, _)     => Seq("push" -> JsString(p.push))
+        case _                           => Seq.empty
       })
     JsObject(attributes)
   }
 
-  def parseCells(cell: Set[Cell]): JsObject = JsObject(
+  def parseCells(cell: Set[SetupCell]): JsObject = JsObject(
     cell
       .groupBy(_ match {
-        case _: WallCell      => CellTypes.Wall.cellType
-        case _: EnemyCell     => CellTypes.Enemy.cellType
-        case _: MoverCell     => CellTypes.Mover.cellType
-        case _: RotatorCell   => CellTypes.Rotator.cellType
-        case _: BlockCell     => CellTypes.Block.cellType
-        case _: GeneratorCell => CellTypes.Generator.cellType
+        case _: SetupWallCell      => CellTypes.Wall.cellType
+        case _: SetupEnemyCell     => CellTypes.Enemy.cellType
+        case _: SetupMoverCell     => CellTypes.Mover.cellType
+        case _: SetupRotatorCell   => CellTypes.Rotator.cellType
+        case _: SetupBlockCell     => CellTypes.Block.cellType
+        case _: SetupGeneratorCell => CellTypes.Generator.cellType
       })
       .map(t => t._1 -> JsArray(t._2.map(parseCell).toSeq))
       .toSeq

@@ -1,10 +1,10 @@
-package it.unibo.pps.caw.game.view
+package it.unibo.pps.caw.editor.view
 
+import it.unibo.pps.caw.editor.model._
+import it.unibo.pps.caw.common.CellImage
 import it.unibo.pps.caw.ViewComponent
-import it.unibo.pps.caw.game.model._
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
-import it.unibo.pps.caw.common.CellImage
 
 trait CellView extends ViewComponent[ImageView]
 
@@ -26,33 +26,33 @@ object CellView {
     innerComponent.setPreserveRatio(true)
 
     cell match {
-      case RotatorCell(_, rotation) =>
+      case SetupRotatorCell(_, rotation, _) =>
         rotation match {
           case Rotation.Clockwise        => innerComponent.setImage(CellImage.RotatorRight.image)
           case Rotation.Counterclockwise => innerComponent.setImage(CellImage.RotatorLeft.image)
         }
-      case GeneratorCell(_, orientation) =>
+      case SetupGeneratorCell(_, orientation, _) =>
         orientation match {
           case Orientation.Right => innerComponent.setImage(CellImage.GeneratorRight.image)
           case Orientation.Down  => innerComponent.setImage(CellImage.GeneratorDown.image)
           case Orientation.Left  => innerComponent.setImage(CellImage.GeneratorLeft.image)
           case Orientation.Top   => innerComponent.setImage(CellImage.GeneratorTop.image)
         }
-      case EnemyCell(_) => innerComponent.setImage(CellImage.Enemy.image)
-      case MoverCell(_, orientation) =>
+      case _: SetupEnemyCell => innerComponent.setImage(CellImage.Enemy.image)
+      case SetupMoverCell(_, orientation, _) =>
         orientation match {
           case Orientation.Right => innerComponent.setImage(CellImage.MoverRight.image)
           case Orientation.Down  => innerComponent.setImage(CellImage.MoverDown.image)
           case Orientation.Left  => innerComponent.setImage(CellImage.MoverLeft.image)
           case Orientation.Top   => innerComponent.setImage(CellImage.MoverTop.image)
         }
-      case BlockCell(_, push) =>
+      case SetupBlockCell(_, push, _) =>
         push match {
           case Push.Both       => innerComponent.setImage(CellImage.Block.image)
           case Push.Vertical   => innerComponent.setImage(CellImage.BlockVertical.image)
           case Push.Horizontal => innerComponent.setImage(CellImage.BlockHorizontal.image)
         }
-      case WallCell(_) => innerComponent.setImage(CellImage.Wall.image)
+      case _: SetupWallCell => innerComponent.setImage(CellImage.Wall.image)
     }
   }
 }

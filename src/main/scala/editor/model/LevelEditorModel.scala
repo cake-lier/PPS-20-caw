@@ -1,9 +1,12 @@
 package it.unibo.pps.caw.editor.model
 
+import it.unibo.pps.caw.common.{Board, PlayableArea, Position}
+
 sealed trait LevelEditorModel {
   val currentLevel: Level
   def resetLevel: LevelEditorModel
-  def setCell(cell: Cell): LevelEditorModel
+  def setCell(cell: SetupCell): LevelEditorModel
+  def updateCellPosition(oldPosition: Position, newPosition: Position): LevelEditorModel
   def removeCell(position: Position): LevelEditorModel
   def setPlayableArea(position: Position, playableAreaWidth: Int, playableAreaHeight: Int): LevelEditorModel
   def removePlayableArea: LevelEditorModel
@@ -15,7 +18,28 @@ object LevelEditorModel {
 
     override def resetLevel: LevelEditorModel = LevelEditorModel(width, height)
 
-    override def setCell(cell: Cell): LevelEditorModel =
+    override def updateCellPosition(oldPosition: Position, newPosition: Position): LevelEditorModel = {
+      val updatedCell: SetupCell = currentLevel.board.cells
+        .find(_.position == oldPosition)
+        .map(_ match {
+          case SetupWallCell(_, playable)                       => SetupWallCell(newPosition, playable)
+          case SetupEnemyCell(_, playable)                      => SetupEnemyCell(newPosition, playable)
+          case SetupRotatorCell(_, rotationDirection, playable) => SetupRotatorCell(newPosition, rotationDirection, playable)
+          case SetupGeneratorCell(_, orientation, playable)     => SetupGeneratorCell(newPosition, orientation, playable)
+          case SetupMoverCell(_, orientation, playable)         => SetupMoverCell(newPosition, orientation, playable)
+          case SetupBlockCell(_, push, playable)                => SetupBlockCell(newPosition, push, playable)
+        })
+        .get
+
+      createLevelEditorModel(
+        width,
+        height,
+        Board(currentLevel.board.cells.filter(_.position != oldPosition) + updatedCell),
+        currentLevel.playableArea
+      )
+    }
+
+    override def setCell(cell: SetupCell): LevelEditorModel =
       createLevelEditorModel(width, height, Board(currentLevel.board.cells + cell), currentLevel.playableArea)
 
     override def removeCell(position: Position): LevelEditorModel =
@@ -41,7 +65,7 @@ object LevelEditorModel {
     private def createLevelEditorModel(
         width: Int,
         height: Int,
-        cells: Board[Cell],
+        cells: Board[SetupCell],
         playableArea: Option[PlayableArea]
     ): LevelEditorModel = playableArea
       .map(a => LevelEditorModel(width, height, Level(width, height, cells, a)))

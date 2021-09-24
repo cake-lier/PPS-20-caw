@@ -1,6 +1,8 @@
-package it.unibo.pps.caw.game
+package it.unibo.pps.caw.game.controller
 
-import it.unibo.pps.caw.game.model.{Level, Model, PlayableArea, Position}
+import it.unibo.pps.caw.common.Position
+import it.unibo.pps.caw.game.model.{Level, Model}
+import it.unibo.pps.caw.game.view.GameView
 import javafx.application.Platform
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
@@ -56,6 +58,16 @@ trait GameController {
     * the application.
     */
   def nextLevel(): Unit
+
+  /** Updates the [[Model]] moving the [[it.unibo.pps.caw.game.model.Cell]] which has a [[Position]] equal to the given old
+    * [[Position]] parameter to the [[Position]] given by the new [[Position]] parameter.
+    *
+    * @param oldPosition
+    *   the [[Position]] in which a [[it.unibo.pps.caw.game.model.Cell]] is located
+    * @param newPosition
+    *   the [[Position]] to which the [[it.unibo.pps.caw.game.model.Cell]] located at the old [[Position]] parameter is moved
+    */
+  def updateModel(oldPosition: Position, newPosition: Position): Unit
 }
 
 /** Companion object of the [[GameController]] trait, containing its factory method. */
@@ -63,7 +75,7 @@ object GameController {
 
   /* Abstract implementation of the GameController trait for factorizing common behaviors. */
   private abstract class AbstractGameController(parentController: ParentGameController, view: GameView, initialLevel: Level)
-    extends GameController {
+      extends GameController {
     protected val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     protected var updatesHandler: Option[ScheduledFuture[?]] = None
     protected var model = Model(initialLevel)
@@ -98,21 +110,25 @@ object GameController {
       scheduler.shutdown()
       parentController.goBack()
     }
+
+    override def updateModel(oldPosition: Position, newPosition: Position): Unit = {
+      model = model.updateCell(oldPosition, newPosition)
+    }
   }
 
   /* Extension of the AbstractGameController class for playing a generic level. */
   private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level)
-    extends AbstractGameController(parentController, view, initialLevel) {
+      extends AbstractGameController(parentController, view, initialLevel) {
 
     def nextLevel(): Unit = goBack()
   }
 
   /* Extension of the AbstractGameController class for playing the default levels. */
   private class DefaultGameController(
-    parentController: ParentGameController,
-    view: GameView,
-    levels: Seq[Level],
-    initialLevelIndex: Int
+      parentController: ParentGameController,
+      view: GameView,
+      levels: Seq[Level],
+      initialLevelIndex: Int
   ) extends AbstractGameController(parentController, view, levels(initialLevelIndex - 1)) {
     private var currentIndex: Int = initialLevelIndex
 

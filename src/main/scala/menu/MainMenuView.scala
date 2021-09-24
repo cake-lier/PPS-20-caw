@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.{AudioPlayer, SoundButton, Track, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label}
@@ -22,8 +22,8 @@ trait MainMenuView extends ViewComponent[Pane]
 object MainMenuView {
 
   /** Returns a new instance of the [[MainMenuView]] trait. It receives a [[ParentMainMenuController]] so as to be able to
-    * correctly create and then use its [[MainMenuController]]. It also receives the ScalaFX's [[Scene]] in order to draw and
-    * display itself.
+    * correctly create and then use its [[MainMenuController]], the [[AudioPlayer]] to be used for playing sounds and music and
+    * the ScalaFX's [[Scene]] in order to draw and display itself.
     *
     * @param parentController
     *   the [[ParentMainMenuController]] used so as to be able to correctly create and then use a [[MainMenuController]]
@@ -37,35 +37,43 @@ object MainMenuView {
     * @return
     *   a new [[MainMenuView]] instance
     */
-  def apply(parentController: ParentMainMenuController, levelsCount: Int, scene: Scene, disableLevels: Boolean): MainMenuView =
-    MainMenuViewImpl(parentController, levelsCount, scene, disableLevels)
+  def apply(
+      parentController: ParentMainMenuController,
+      audioPlayer: AudioPlayer,
+      levelsCount: Int,
+      scene: Scene,
+      disableLevels: Boolean
+  ): MainMenuView =
+    MainMenuViewImpl(parentController, audioPlayer, levelsCount, scene, disableLevels)
 
   /* Default implementation of the MainMenuView trait. */
   private final class MainMenuViewImpl(
       parentController: ParentMainMenuController,
+      audioPlayer: AudioPlayer,
       levelsCount: Int,
       scene: Scene,
       disableLevels: Boolean
   ) extends AbstractViewComponent[Pane]("main_menu_page.fxml")
       with MainMenuView {
     @FXML
-    var playButton: Button = _
+    var playButton: SoundButton = _
     @FXML
-    var editorButton: Button = _
+    var editorButton: SoundButton = _
     @FXML
-    var loadButton: Button = _
+    var loadButton: SoundButton = _
     @FXML
-    var settingsButton: Button = _
+    var settingsButton: SoundButton = _
     @FXML
-    var exitButton: Button = _
+    var exitButton: SoundButton = _
 
     override val innerComponent: Pane = loader.load[GridPane]
 
-    private val controller: MainMenuController = MainMenuController(parentController, this, levelsCount)
+    private val controller: MainMenuController = MainMenuController(parentController, this)
 
+    audioPlayer.play(Track.MenuMusic)
     playButton.setDisable(disableLevels)
     if (!disableLevels) {
-      playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, this, controller))
+      playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, controller))
     }
     loadButton.setOnMouseClicked(_ => {
       val chooser: FileChooser = FileChooser()
@@ -73,6 +81,7 @@ object MainMenuView {
       chooser.extensionFilters.add(FileChooser.ExtensionFilter("Level file", "*.json"))
       Option(chooser.showOpenDialog(scene.getWindow)).foreach(f => controller.startGame(f.toPath))
     })
+    settingsButton.setOnMouseClicked(_ => scene.root.value = SettingsView(controller, audioPlayer, scene))
     exitButton.setOnMouseClicked(_ => controller.exit())
     editorButton.setOnMouseClicked(_ => parentController.openLevelMenuView())
   }

@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.editor
 
-import it.unibo.pps.caw.editor.model.{EnemyCell, Level, LevelEditorModel, PlayableArea, Position, Board}
+import it.unibo.pps.caw.common.{Board, PlayableArea, Position}
+import it.unibo.pps.caw.editor.model.{Level, LevelEditorModel, SetupEnemyCell}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -11,9 +12,9 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private val playableAreaHeight = 5
   private val playableAreaPosition = Position(0, 0)
   private val emptyLevel = Level(width, height, Board.empty)
-  private val enemy1 = EnemyCell((1, 1))
-  private val enemy2 = EnemyCell((2, 2))
-  private val enemy3 = EnemyCell((3, 3))
+  private val enemy1 = SetupEnemyCell((1, 1), true)
+  private val enemy2 = SetupEnemyCell((2, 2), true)
+  private val enemy3 = SetupEnemyCell((3, 3), true)
 
   describe("LevelEditorModel") {
     describe("when new") {

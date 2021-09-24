@@ -1,5 +1,7 @@
 package it.unibo.pps.caw.editor.model
 
+import it.unibo.pps.caw.common.Position
+
 /** Represent a cell of the game */
 trait Cell extends Ordered[Cell] {
 
@@ -7,6 +9,13 @@ trait Cell extends Ordered[Cell] {
   def position: Position
 
   override def compare(that: Cell): Int = (position.x - that.position.x) + (position.y - that.position.y)
+}
+
+/** Represent a [[Cell]] during the setup phase, a [[Cell]] could be playable */
+sealed trait SetupCell extends Cell {
+
+  /** if the [[Cell]] is movable by the player (is in the [[PlayableArea]] */
+  val playable: Boolean
 }
 
 /** Enum that represent all [[Cell]] types */
@@ -84,7 +93,7 @@ object EnumHelper {
   * @param rotation
   *   the [[Rotation]]
   */
-case class RotatorCell(position: Position, rotation: Rotation) extends Cell
+case class SetupRotatorCell(position: Position, rotation: Rotation, playable: Boolean) extends SetupCell
 
 /** Represent the generator [[Cell]]
   * @param position
@@ -94,7 +103,7 @@ case class RotatorCell(position: Position, rotation: Rotation) extends Cell
   * @param orientation
   *   the [[Orientation]] in the area
   */
-case class GeneratorCell(position: Position, orientation: Orientation) extends Cell
+case class SetupGeneratorCell(position: Position, orientation: Orientation, playable: Boolean) extends SetupCell
 
 /** Represent the enemy [[Cell]]
   * @param position
@@ -102,7 +111,7 @@ case class GeneratorCell(position: Position, orientation: Orientation) extends C
   * @param playable
   *   if the cell is playable (is in the [[PlayableArea]])
   */
-case class EnemyCell(position: Position) extends Cell
+case class SetupEnemyCell(position: Position, playable: Boolean) extends SetupCell
 
 /** Represent the mover [[Cell]]
   * @param position
@@ -112,7 +121,7 @@ case class EnemyCell(position: Position) extends Cell
   * @param orientation
   *   the [[Orientation]] in the area
   */
-case class MoverCell(position: Position, orientation: Orientation) extends Cell
+case class SetupMoverCell(position: Position, orientation: Orientation, playable: Boolean) extends SetupCell
 
 /** Represent the block [[Cell]]
   *
@@ -123,7 +132,7 @@ case class MoverCell(position: Position, orientation: Orientation) extends Cell
   * @param push
   *   the [[Push]]
   */
-case class BlockCell(position: Position, push: Push) extends Cell
+case class SetupBlockCell(position: Position, push: Push, playable: Boolean) extends SetupCell
 
 /** Represent the wall [[Cell]]
   * @param position
@@ -131,4 +140,4 @@ case class BlockCell(position: Position, push: Push) extends Cell
   * @param playable
   *   if the cell is playable (is in the [[PlayableArea]])
   */
-case class WallCell(position: Position) extends Cell
+case class SetupWallCell(position: Position, playable: Boolean) extends SetupCell

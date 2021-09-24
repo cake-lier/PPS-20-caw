@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.game
+package it.unibo.pps.caw.game.controller
 
 /** An error happening inside the [[GameController]].
   *
