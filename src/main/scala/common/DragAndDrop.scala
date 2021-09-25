@@ -14,7 +14,7 @@ trait ModelUpdater {
 /** Provides the necessary functions to drag and drop an ImageView. */
 object DragAndDrop {
 
-  def addDragFeature(node: ImageView, copy: Boolean = false) = {
+  def addDragFeature(node: ImageView) = {
     node.setOnDragDetected(e => {
       val content = new ClipboardContent()
       content.putImage(node.getImage)
@@ -26,8 +26,10 @@ object DragAndDrop {
   def addDropFeature(node: Node, model: ModelUpdater): Unit = {
     node.setOnDragDropped(e => {
       if (e.getDragboard.hasImage) {
-        model.manageCell(e.getGestureSource.asInstanceOf[ImageView], 
-          Position(GridPane.getColumnIndex(node), GridPane.getRowIndex(node)))
+        model.manageCell(
+          e.getGestureSource.asInstanceOf[ImageView],
+          Position(GridPane.getColumnIndex(node), GridPane.getRowIndex(node))
+        )
         e.setDropCompleted(true);
         e.consume()
       }

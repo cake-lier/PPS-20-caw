@@ -38,11 +38,15 @@ object LevelEditorController {
     private var levelEditorModel: LevelEditorModel =
       level.map(LevelEditorModel(width, height, _)).getOrElse(LevelEditorModel(width, height))
 
-    levelEditorView.printLevel(levelEditorModel.currentLevel)
+    levelEditorView.createBoard(levelEditorModel.currentLevel)
 
-    override def resetLevel(): Unit = updateShowLevel(levelEditorModel.resetLevel)
+    override def resetLevel(): Unit = {
+      updateShowLevel(levelEditorModel.resetLevel)
+      levelEditorView.updateLevel(levelEditorModel.currentLevel, false)
+    }
 
-    override def removeCell(position: Position): Unit = updateShowLevel(levelEditorModel.removeCell(position))
+    override def removeCell(position: Position): Unit =
+      updateShowLevel(levelEditorModel.removeCell(position))
 
     override def setCell(cell: SetupCell): Unit = updateShowLevel(levelEditorModel.setCell(cell))
 
@@ -60,10 +64,8 @@ object LevelEditorController {
 
     override def backToLevelEditorMenu(): Unit = parentLevelEditorController.backToLevelEditorMenu()
 
-    private def updateShowLevel(newLevelEditorModel: LevelEditorModel): Unit = {
+    private def updateShowLevel(newLevelEditorModel: LevelEditorModel): Unit =
       levelEditorModel = newLevelEditorModel
-      levelEditorView.printLevel(levelEditorModel.currentLevel)
-    }
   }
 
   def apply(

@@ -2,21 +2,31 @@ package it.unibo.pps.caw.editor
 
 import it.unibo.pps.caw.{FilePicker, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{Board, BoardView, CellImage, DragAndDrop, EditorBoardView, ModelUpdater, Position}
+import it.unibo.pps.caw.common.{Board, BoardView, CellImage, DragAndDrop, EditorBoardView, ModelUpdater, Position, TileView}
 import it.unibo.pps.caw.editor.controller.{LevelEditorController, ParentLevelEditorController}
-import it.unibo.pps.caw.editor.model._
+import it.unibo.pps.caw.editor.model.*
+import it.unibo.pps.caw.editor.view.CellView
 import javafx.application.Platform
+import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.geometry.{HPos, Insets, VPos}
 import javafx.scene.control.Button
 import javafx.scene.image.{Image, ImageView}
+import javafx.scene.input.{MouseButton, MouseEvent}
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
+import scala.jdk.StreamConverters
+import scala.jdk.StreamConverters.given
 
 import java.io.File
 
 trait LevelEditorView extends ViewComponent[Pane] {
-  def printLevel(level: Level): Unit
+  def createBoard(level: Level): Unit
+  def updateLevel(level: Level, isPlayableAreaSet: Boolean): Unit
+}
+
+trait PlayableAreaUpdater {
+  def createPlayableArea(topRight: Position, downLeft: Position): Unit
 }
 
 object LevelEditorView {
@@ -29,7 +39,8 @@ object LevelEditorView {
     level: Option[Level]
   ) extends AbstractViewComponent[Pane]("editor.fxml")
     with LevelEditorView
-    with ModelUpdater {
+    with ModelUpdater
+    with PlayableAreaUpdater {
 
     @FXML
     var backButton: Button = _
@@ -49,6 +60,8 @@ object LevelEditorView {
     var enemyCellView: ImageView = _
     @FXML
     var wallCellView: ImageView = _
+    @FXML
+    var playAreaCellView: ImageView = _
     @FXML
     var rotateCellsButton: Button = _
     @FXML
@@ -71,47 +84,64 @@ object LevelEditorView {
     resetAll.setOnMouseClicked(_ => controller.resetLevel())
     rotateCellsButton.setOnMouseClicked(_ => rotateButtons())
 
-    override def printLevel(level: Level): Unit = Platform.runLater(() => {
-      val newBoardView: EditorBoardView = EditorBoardView(level, this)
+    override def createBoard(level: Level): Unit = Platform.runLater(() => {
+      val newBoardView: EditorBoardView = EditorBoardView(level, this, this)
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
       GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
       GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
       GridPane.setMargin(newBoardView.innerComponent, new Insets(25, 0, 25, 0))
-      innerComponent.add(newBoardView.innerComponent, 2, 3, 10, 1)
+      innerComponent.add(newBoardView.innerComponent, 2, 3, 11, 1)
       boardView = Some(newBoardView)
+    })
+
+    override def updateLevel(level: Level, isPlayableAreaSet: Boolean): Unit = Platform.runLater(() => {
+      boardView.get.drawBoard(level.board, isPlayableAreaSet)
     })
 
     override def manageCell(cellImage: ImageView, newPosition: Position): Unit = {
       val board = boardView.get.innerComponent
-      if (board.getChildren.contains(cellImage))
-        controller.updateCellPosition(Position(GridPane.getColumnIndex(cellImage), GridPane.getRowIndex(cellImage)), newPosition)
-        board.getChildren.remove(cellImage)
-        board.add(cellImage, newPosition.x, newPosition.y)
-      else
-        cellImage.getImage match {
-          case CellImage.GeneratorRight.image => controller.setCell(SetupGeneratorCell(newPosition, Orientation.Right, true))
-          case CellImage.GeneratorLeft.image  => controller.setCell(SetupGeneratorCell(newPosition, Orientation.Left, true))
-          case CellImage.GeneratorTop.image   => controller.setCell(SetupGeneratorCell(newPosition, Orientation.Top, true))
-          case CellImage.GeneratorDown.image  => controller.setCell(SetupGeneratorCell(newPosition, Orientation.Down, true))
-          case CellImage.RotatorRight.image   => controller.setCell(SetupRotatorCell(newPosition, Rotation.Clockwise, true))
-          case CellImage.RotatorLeft.image => controller.setCell(SetupRotatorCell(newPosition, Rotation.Counterclockwise, true))
-          case CellImage.MoverRight.image  => controller.setCell(SetupMoverCell(newPosition, Orientation.Right, true))
-          case CellImage.MoverLeft.image   => controller.setCell(SetupMoverCell(newPosition, Orientation.Left, true))
-          case CellImage.MoverTop.image    => controller.setCell(SetupMoverCell(newPosition, Orientation.Top, true))
-          case CellImage.MoverDown.image   => controller.setCell(SetupMoverCell(newPosition, Orientation.Down, true))
-          case CellImage.Block.image       => controller.setCell(SetupBlockCell(newPosition, Push.Both, true))
-          case CellImage.BlockHorizontal.image => controller.setCell(SetupBlockCell(newPosition, Push.Horizontal, true))
-          case CellImage.BlockVertical.image   => controller.setCell(SetupBlockCell(newPosition, Push.Vertical, true))
-          case CellImage.Enemy.image           => controller.setCell(SetupEnemyCell(newPosition, true))
-          case CellImage.Wall.image            => controller.setCell(SetupWallCell(newPosition, true))
-        }
-        board.add(
-          new ImageView() {
-            setImage(cellImage.getImage)
-          },
-          newPosition.x,
-          newPosition.y
+      if (board.getChildren.contains(cellImage)) {
+        controller.updateCellPosition(
+          Position(GridPane.getColumnIndex(cellImage), GridPane.getRowIndex(cellImage)),
+          newPosition
         )
+        board.getChildren.remove(cellImage)
+        addRemoveCellHandler(cellImage, newPosition)
+        board.add(cellImage, newPosition.x, newPosition.y)
+      } else {
+        val setupCell = getSetupCell(cellImage.getImage, newPosition)
+        controller.setCell(setupCell)
+        val cellView = CellView.apply(setupCell, board).innerComponent
+        DragAndDrop.addDragFeature(cellView)
+        addRemoveCellHandler(cellView, newPosition)
+        board.add(cellView, newPosition.x, newPosition.y)
+      }
+    }
+
+    override def createPlayableArea(topRight: Position, downLeft: Position): Unit = {
+      val board = boardView.get.innerComponent
+      for (x <- topRight.x to downLeft.x; y <- topRight.y to downLeft.y) {
+        val tileView = TileView(CellImage.PlayAreaTile.image, board).innerComponent
+        addRemovePlayableAreaHandler(tileView)
+        DragAndDrop.addDropFeature(tileView, this)
+        board.add(tileView, x, y)
+      }
+      controller.setPlayableArea(topRight, downLeft.x - topRight.x + 1, downLeft.y - topRight.y + 1)
+    }
+
+    private def addRemovePlayableAreaHandler(cell: ImageView): Unit = {
+      val board = boardView.get.innerComponent
+      controller.removePlayableArea()
+    }
+
+    private def addRemoveCellHandler(cell: ImageView, newPosition: Position): Unit = {
+      cell.setOnMouseClicked(e => {
+        if (e.getButton.equals(MouseButton.SECONDARY)) {
+          boardView.get.innerComponent.getChildren.remove(cell)
+          controller.removeCell(newPosition)
+          e.consume()
+        }
+      })
     }
 
     private def setButtonImages(): Map[ImageView, Image] = {
@@ -125,9 +155,29 @@ object LevelEditorView {
       )
     }
 
+    private def getSetupCell(image: Image, newPosition: Position): SetupCell = image match {
+      case CellImage.GeneratorRight.image  => SetupGeneratorCell(newPosition, Orientation.Right, true)
+      case CellImage.GeneratorLeft.image   => SetupGeneratorCell(newPosition, Orientation.Left, true)
+      case CellImage.GeneratorTop.image    => SetupGeneratorCell(newPosition, Orientation.Top, true)
+      case CellImage.GeneratorDown.image   => SetupGeneratorCell(newPosition, Orientation.Down, true)
+      case CellImage.RotatorRight.image    => SetupRotatorCell(newPosition, Rotation.Clockwise, true)
+      case CellImage.RotatorLeft.image     => SetupRotatorCell(newPosition, Rotation.Counterclockwise, true)
+      case CellImage.MoverRight.image      => SetupMoverCell(newPosition, Orientation.Right, true)
+      case CellImage.MoverLeft.image       => SetupMoverCell(newPosition, Orientation.Left, true)
+      case CellImage.MoverTop.image        => SetupMoverCell(newPosition, Orientation.Top, true)
+      case CellImage.MoverDown.image       => SetupMoverCell(newPosition, Orientation.Down, true)
+      case CellImage.Block.image           => SetupBlockCell(newPosition, Push.Both, true)
+      case CellImage.BlockHorizontal.image => SetupBlockCell(newPosition, Push.Horizontal, true)
+      case CellImage.BlockVertical.image   => SetupBlockCell(newPosition, Push.Vertical, true)
+      case CellImage.Enemy.image           => SetupEnemyCell(newPosition, true)
+      case CellImage.Wall.image            => SetupWallCell(newPosition, true)
+    }
+
     private def setGraphic(buttonCellImageView: ImageView, image: Image): Tuple2[ImageView, Image] = {
-      DragAndDrop.addDragFeature(buttonCellImageView, true)
+      DragAndDrop.addDragFeature(buttonCellImageView)
       buttonCellImageView.setImage(image)
+      buttonCellImageView.setFitHeight(70)
+      buttonCellImageView.setPreserveRatio(true)
       buttonCellImageView -> image
     }
 

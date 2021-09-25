@@ -1,13 +1,17 @@
 package it.unibo.pps.caw.common
 
+import it.unibo.pps.caw.editor.model.Cell
+
 /** Represent the coordinates of an item in the game */
-trait Position {
+trait Position extends Ordered[Position] {
 
   /** coordinate x of the item */
   def x: Int
 
   /** coordinate y of the item */
   def y: Int
+
+  override def compare(that: Position): Int = (x - that.x) + (y - that.y)
 }
 
 /** the companion object of trait [[Position]] */

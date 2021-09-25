@@ -8,10 +8,12 @@ import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.{Board, DragAndDrop, ModelUpdater, PlayableArea, TileView}
 import it.unibo.pps.caw.game.{model, view}
 import it.unibo.pps.caw.common.CellImage
+import it.unibo.pps.caw.editor.{LevelEditorView, PlayableAreaUpdater}
 import it.unibo.pps.caw.game.view.CellView as GameCellView
 import it.unibo.pps.caw.editor.view.CellView as EditorCellView
 import javafx.application.Platform
 import javafx.scene.image.{Image, ImageView}
+import javafx.scene.input.MouseButton
 import javafx.scene.layout.{ColumnConstraints, GridPane, RowConstraints}
 
 import scala.jdk.StreamConverters
@@ -109,6 +111,7 @@ object GameBoardView {
       draggableCell: Boolean = false,
       droppablePlayableArea: Boolean = false
     ): Unit = {
+      clearComponents()
       drawPavement(false)
       val playableAreaPosition = initialLevel.playableArea.position
       drawPlayableArea(
@@ -137,18 +140,29 @@ object GameBoardView {
 }
 
 sealed trait EditorBoardView extends BoardView {
-  def drawBoard(board: Board[EditorSetupCell]): Unit
+  def drawBoard(board: Board[EditorSetupCell], playableAreaSet: Boolean): Unit
 }
+
 object EditorBoardView {
-  def apply(level: EditorLevel, model: ModelUpdater): EditorBoardView = GameBoardViewImpl(level, model)
-  private case class GameBoardViewImpl(initialLevel: EditorLevel, modelUpdater: ModelUpdater)
-    extends AbstractBoardImpl(initialLevel.width, initialLevel.height, modelUpdater)
+  def apply(level: EditorLevel, model: ModelUpdater, updater: PlayableAreaUpdater): EditorBoardView =
+    EditorBoardViewImpl(level, model, updater)
+  private case class EditorBoardViewImpl(
+    initialLevel: EditorLevel,
+    modelUpdater: ModelUpdater,
+    updater: PlayableAreaUpdater
+  ) extends AbstractBoardImpl(initialLevel.width, initialLevel.height, modelUpdater)
     with EditorBoardView {
 
-    drawBoard(initialLevel.board)
+    var topLeftPosition = Position(0, 0)
+    var downRightPosition = Position(0, 0)
+    var isPlayableAreaSet = false
+    drawBoard(initialLevel.board, false)
 
-    override def drawBoard(board: Board[EditorSetupCell]): Unit = {
+    override def drawBoard(board: Board[EditorSetupCell], playableAreaSet: Boolean): Unit = {
+      clearComponents()
       drawPavement(true)
+      isPlayableAreaSet = playableAreaSet
+      innerComponent.getChildren.forEach(n => createPlayableArea(n.asInstanceOf[ImageView]))
       initialLevel
         .playableArea
         .foreach(p => {
@@ -167,6 +181,23 @@ object EditorBoardView {
             draggable = c.playable
           )
         )
+    }
+
+    private def createPlayableArea(imageView: ImageView) = {
+      imageView.setOnDragDetected(e => {
+        if (!isPlayableAreaSet) {
+          topLeftPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
+          imageView.startFullDrag()
+          e.consume()
+        }
+      })
+
+      imageView.setOnMouseDragReleased(e => {
+        downRightPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
+        updater.createPlayableArea(topLeftPosition, downRightPosition)
+        isPlayableAreaSet = true
+        e.consume()
+      })
 
     }
   }
