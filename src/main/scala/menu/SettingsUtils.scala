@@ -3,18 +3,19 @@ package menu
 
 import play.api.libs.json.Json
 
-import java.io.{File, FileWriter}
-import java.nio.file.{Files, Path, Paths}
+import java.io.{File, FileNotFoundException, FileWriter}
+import java.nio.file.{Files, Path}
 import scala.io.Source
 import scala.util.{Failure, Success, Try, Using}
 
 case class Settings(volumeMusic: Double, volumeSFX: Double, solvedLevels: Set[Int])
 
 object SettingsUtils {
+  val defaultSettings = "{\"volumeMusic\":0.3,\"volumeSFX\":0.7,\"solvedLevels\":[]}"
+  val filePath = System.getProperty("user.home") + File.separator + ".settings.json"
 
   def load(): Try[Settings] = {
-    Using(Source.fromFile(ClassLoader.getSystemResource("settings.json").toURI))
-      (_.getLines().mkString) match {
+    Loader.loadAbsolute(filePath) match {
       case Success(jsonString: String) => {
         val json = Json.parse(jsonString)
         val volumeMusic = (json \ "volumeMusic").as[Double]
@@ -22,33 +23,33 @@ object SettingsUtils {
         val solvedLevels = (json \ "solvedLevels").as[Set[Int]]
         Success(Settings(volumeMusic, volumeSFX, solvedLevels))
       }
+      case Failure(e: FileNotFoundException) => writeSettings(defaultSettings) match {
+                                                  case Failure(e) => Failure(e)
+                                                  case _ => load()
+                                                }
       case Failure(e) => Failure(e)
     }
   }
 
-  def save(settings: Settings): Unit = {
+  def save(settings: Settings): Try[Unit] = {
     val jsonSettings = Json.toJson(settings)(Json.writes[Settings])
-    Using(new FileWriter(File(ClassLoader.getSystemResource("settings.json").toURI)))
-      (_.write(jsonSettings.toString)) match {
-      case Failure(e) => System.err.println("Error writing settings file.")
-      case _ => println("Settings file updated.")
-    }
+    writeSettings(jsonSettings.toString)
   }
+
+  /* Creates or overwrites file, managing exceptions */
+  private def writeSettings(body: String): Try[Unit] = Using(new FileWriter(File(filePath)))(_.write(body))
+
 }
 
 object Test extends App{
   SettingsUtils.load() match {
     case Success(s) => println(s)
-    case _ => println("fail")
+    case Failure(exception) => println("failed : " + exception.toString)
   }
-  SettingsUtils.save(Settings(0.2, 0.6, Set()))
+  SettingsUtils.save(Settings(0.2, 0.5, Set(1, 9, 8, 4)))
 
   SettingsUtils.load() match {
     case Success(s) => println(s)
     case _ => println("fail")
   }
-
-//  println(ClassLoader.getSystemResource("settings.json").toURI)
-//  PPS-20-caw/target/scala-3.0.2/classes/settings.json
-
 }
