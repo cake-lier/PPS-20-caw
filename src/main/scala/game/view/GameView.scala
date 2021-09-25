@@ -167,9 +167,9 @@ object GameView {
 
     override def manageCell(cell: ImageView, newPosition: Position): Unit = {
       val board = boardView.get.innerComponent
+      controller.updateModel(Position(GridPane.getColumnIndex(cell), GridPane.getRowIndex(cell)), newPosition)
       board.getChildren.remove(cell)
       board.add(cell, newPosition.x, newPosition.y)
-      controller.updateModel(Position(GridPane.getColumnIndex(cell), GridPane.getRowIndex(cell)), newPosition)
     }
   }
 

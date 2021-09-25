@@ -3,22 +3,22 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-
+<?import javafx.geometry.*?>
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" styleClass="background" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints percentWidth="2.5" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
-        <ColumnConstraints percentWidth="2.0" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
+        <ColumnConstraints percentWidth="2.5" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints minWidth="10.0" percentWidth="7.5" prefWidth="100.0" />
         <ColumnConstraints minWidth="10.0" percentWidth="7.5" prefWidth="100.0" />
         <ColumnConstraints percentWidth="7.5" />
-        <ColumnConstraints percentWidth="12.5" />
+        <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints minWidth="10.0" percentWidth="7.5" prefWidth="100.0" />
         <ColumnConstraints minWidth="10.0" percentWidth="2.5" prefWidth="100.0" />
     </columnConstraints>
@@ -29,18 +29,29 @@
         <RowConstraints percentHeight="75.0" />
         <RowConstraints percentHeight="2.5" />
         <RowConstraints percentHeight="7.5" />
-        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="3.0" />
     </rowConstraints>
-    <Button id="reset-all" fx:id="resetAll" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-    <Button fx:id="levelEditorMenuButton" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-    <ImageView id="mover-button" fx:id="moverCellView" styleClass="block-button" GridPane.columnIndex="4" GridPane.rowIndex="5" />
-    <ImageView id="generate-button" fx:id="generateCellView" styleClass="block-button" GridPane.columnIndex="5" GridPane.rowIndex="5" />
-    <ImageView id="rotate-button" fx:id="rotateCellView" styleClass="block-button" GridPane.columnIndex="6" GridPane.rowIndex="5" />
-    <ImageView id="block-button" fx:id="blockCellView" styleClass="block-button" GridPane.columnIndex="7" GridPane.rowIndex="5" />
-    <ImageView id="enemy-button" fx:id="enemyCellView" styleClass="block-button" GridPane.columnIndex="8" GridPane.rowIndex="5" />
-    <ImageView id="wall-button" fx:id="wallCellView" styleClass="block-button" GridPane.columnIndex="9" GridPane.rowIndex="5" />
-    <Button fx:id="rotateCellsButton" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="10" GridPane.rowIndex="5" />
-    <Button id="drag-and-drop" fx:id="dragAndDrop" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" GridPane.columnIndex="11" GridPane.rowIndex="5" />
+    <Button id="reset-all" fx:id="resetAll" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" text="Reset" GridPane.columnIndex="2" GridPane.rowIndex="5">
+        <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+        </GridPane.margin>
+    </Button>
+    <Button fx:id="levelEditorMenuButton" alignment="CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" text="Editor" GridPane.columnIndex="1" GridPane.rowIndex="5">
+        <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+        </GridPane.margin>
+    </Button>
+    <Button fx:id="rotateCellsButton" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" text="Rotate" GridPane.columnIndex="3" GridPane.rowIndex="5">
+        <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+        </GridPane.margin>
+    </Button>
+    <ImageView id="mover-button" fx:id="moverCellView" styleClass="block-button" GridPane.columnIndex="8" GridPane.rowIndex="5" />
+    <ImageView id="generate-button" fx:id="generateCellView" styleClass="block-button" GridPane.columnIndex="9" GridPane.rowIndex="5" />
+    <ImageView id="rotate-button" fx:id="rotateCellView" styleClass="block-button" GridPane.columnIndex="10" GridPane.rowIndex="5" />
+    <ImageView id="block-button" fx:id="blockCellView" styleClass="block-button" GridPane.columnIndex="11" GridPane.rowIndex="5" />
+    <ImageView id="enemy-button" fx:id="enemyCellView" styleClass="block-button" GridPane.columnIndex="12" GridPane.rowIndex="5" />
+    <ImageView id="wall-button" fx:id="wallCellView" styleClass="block-button" GridPane.columnIndex="13" GridPane.rowIndex="5" />
     <Button fx:id="backButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
     <Button fx:id="saveButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Save" GridPane.columnIndex="13" GridPane.rowIndex="1" />
 </GridPane>
