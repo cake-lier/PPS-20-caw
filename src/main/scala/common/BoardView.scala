@@ -20,8 +20,8 @@ import scala.reflect.ClassTag
 trait BoardView extends ViewComponent[GridPane]
 
 abstract class AbstractBoardImpl(levelWidth: Int, levelHeight: Int, model: ModelUpdater)
-    extends AbstractViewComponent[GridPane](fxmlFileName = "board.fxml")
-    with BoardView {
+  extends AbstractViewComponent[GridPane](fxmlFileName = "board.fxml")
+  with BoardView {
 
   override val innerComponent: GridPane = loader.load[GridPane]
   private var boardWidth: Double = innerComponent.getPrefWidth
@@ -56,11 +56,11 @@ abstract class AbstractBoardImpl(levelWidth: Int, levelHeight: Int, model: Model
   }
 
   protected def drawPlayableArea(
-      positionX: Int,
-      positionY: Int,
-      playableAreaWidth: Int,
-      playableAreaHeight: Int,
-      droppablePlayableArea: Boolean
+    positionX: Int,
+    positionY: Int,
+    playableAreaWidth: Int,
+    playableAreaHeight: Int,
+    droppablePlayableArea: Boolean
   ): Unit = {
     for {
       x <- 0 until playableAreaWidth
@@ -69,15 +69,15 @@ abstract class AbstractBoardImpl(levelWidth: Int, levelHeight: Int, model: Model
   }
 
   protected def drawImageView(
-      image: Image,
-      x: Int,
-      y: Int,
-      model: ModelUpdater,
-      droppable: Boolean = false,
-      draggable: Boolean = false
+    image: Image,
+    x: Int,
+    y: Int,
+    model: ModelUpdater,
+    droppable: Boolean = false,
+    draggable: Boolean = false
   ): Unit = {
     val node = TileView(image, innerComponent).innerComponent
-    if (droppable) { DragAndDrop.addDropFeature(node, innerComponent, model) }
+    if (droppable) { DragAndDrop.addDropFeature(node, model) }
     if (draggable) { DragAndDrop.addDragFeature(node) }
     innerComponent.add(node, x, y)
   }
@@ -95,8 +95,8 @@ sealed trait GameBoardView extends BoardView {
 object GameBoardView {
   def apply(initialLevel: GameLevel, model: ModelUpdater): GameBoardView = GameBoardViewImpl(initialLevel, model)
   private case class GameBoardViewImpl(initialLevel: GameLevel, modelUpdater: ModelUpdater)
-      extends AbstractBoardImpl(initialLevel.width, initialLevel.height, modelUpdater)
-      with GameBoardView {
+    extends AbstractBoardImpl(initialLevel.width, initialLevel.height, modelUpdater)
+    with GameBoardView {
 
     drawSetupBoard(initialLevel.setupBoard)
 
@@ -105,9 +105,9 @@ object GameBoardView {
     override def drawSetupBoard(board: Board[GameSetupCell]): Unit = draw(board, true, true)
 
     private def draw(
-        board: Board[_ <: GameCell],
-        draggableCell: Boolean = false,
-        droppablePlayableArea: Boolean = false
+      board: Board[_ <: GameCell],
+      draggableCell: Boolean = false,
+      droppablePlayableArea: Boolean = false
     ): Unit = {
       drawPavement(false)
       val playableAreaPosition = initialLevel.playableArea.position
@@ -118,18 +118,20 @@ object GameBoardView {
         initialLevel.playableArea.height,
         droppablePlayableArea
       )
-      board.cells.foreach(c =>
-        drawImageView(
-          GameCellView(
-            if (c.isInstanceOf[GameSetupCell]) CellConverter.fromSetup(c.asInstanceOf[GameSetupCell]) else c,
-            innerComponent
-          ).innerComponent.getImage,
-          c.position.x,
-          c.position.y,
-          modelUpdater,
-          draggable = draggableCell && c.isInstanceOf[GameSetupCell] && c.asInstanceOf[GameSetupCell].playable
+      board
+        .cells
+        .foreach(c =>
+          drawImageView(
+            GameCellView(
+              if (c.isInstanceOf[GameSetupCell]) CellConverter.fromSetup(c.asInstanceOf[GameSetupCell]) else c,
+              innerComponent
+            ).innerComponent.getImage,
+            c.position.x,
+            c.position.y,
+            modelUpdater,
+            draggable = draggableCell && c.isInstanceOf[GameSetupCell] && c.asInstanceOf[GameSetupCell].playable
+          )
         )
-      )
     }
   }
 }
@@ -140,27 +142,31 @@ sealed trait EditorBoardView extends BoardView {
 object EditorBoardView {
   def apply(level: EditorLevel, model: ModelUpdater): EditorBoardView = GameBoardViewImpl(level, model)
   private case class GameBoardViewImpl(initialLevel: EditorLevel, modelUpdater: ModelUpdater)
-      extends AbstractBoardImpl(initialLevel.width, initialLevel.height, modelUpdater)
-      with EditorBoardView {
+    extends AbstractBoardImpl(initialLevel.width, initialLevel.height, modelUpdater)
+    with EditorBoardView {
 
     drawBoard(initialLevel.board)
 
     override def drawBoard(board: Board[EditorSetupCell]): Unit = {
       drawPavement(true)
-      initialLevel.playableArea.foreach(p => {
-        val playableArea = initialLevel.playableArea
-        val playableAreaPosition = p.position
-        drawPlayableArea(playableAreaPosition.x, playableAreaPosition.y, p.width, p.height, true)
-      })
-      board.cells.foreach(c =>
-        drawImageView(
-          EditorCellView(c, innerComponent).innerComponent.getImage,
-          c.position.x,
-          c.position.y,
-          modelUpdater,
-          draggable = c.playable
+      initialLevel
+        .playableArea
+        .foreach(p => {
+          val playableArea = initialLevel.playableArea
+          val playableAreaPosition = p.position
+          drawPlayableArea(playableAreaPosition.x, playableAreaPosition.y, p.width, p.height, true)
+        })
+      board
+        .cells
+        .foreach(c =>
+          drawImageView(
+            EditorCellView(c, innerComponent).innerComponent.getImage,
+            c.position.x,
+            c.position.y,
+            modelUpdater,
+            draggable = c.playable
+          )
         )
-      )
 
     }
   }

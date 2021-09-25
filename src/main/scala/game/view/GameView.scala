@@ -165,8 +165,10 @@ object GameView {
 
     override def backToMenu(): Unit = controller.goBack()
 
-    override def manageCell(cell: ImageView, newPosition: Position, isInBoard: Boolean): Unit = {
+    override def manageCell(cell: ImageView, newPosition: Position): Unit = {
       val board = boardView.get.innerComponent
+      board.getChildren.remove(cell)
+      board.add(cell, newPosition.x, newPosition.y)
       controller.updateModel(Position(GridPane.getColumnIndex(cell), GridPane.getRowIndex(cell)), newPosition)
     }
   }

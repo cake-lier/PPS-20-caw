@@ -81,9 +81,9 @@ object LevelEditorView {
       boardView = Some(newBoardView)
     })
 
-    override def manageCell(cellImage: ImageView, newPosition: Position, isInBoard: Boolean): Unit = {
+    override def manageCell(cellImage: ImageView, newPosition: Position): Unit = {
       val board = boardView.get.innerComponent
-      if (isInBoard)
+      if (board.getChildren.contains(cellImage))
         controller.updateCellPosition(Position(GridPane.getColumnIndex(cellImage), GridPane.getRowIndex(cellImage)), newPosition)
         board.getChildren.remove(cellImage)
         board.add(cellImage, newPosition.x, newPosition.y)
