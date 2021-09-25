@@ -1,8 +1,5 @@
 package it.unibo.pps.caw.menu
 
-import java.io.File
-import java.nio.file.Path
-
 /** The parent controller to the [[MainMenuController]].
   *
   * This trait is used for abstracting the functionalities which the [[MainMenuController]] needs from its parent controller so as
@@ -14,13 +11,13 @@ trait ParentMainMenuController {
   /** Asks the parent controller to return the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
   val levelsCount: Int
 
-  /** Asks the parent controller to start a new game. It needs the [[Path]] of the file containing the level from which starting
-    * the game.
+  /** Asks the parent controller to start a new game. It needs the path of the file containing the level from which starting the
+    * game.
     *
     * @param levelPath
-    *   the [[Path]] of the file containing the level from which starting to play the game
+    *   the path of the file containing the level from which starting to play the game
     */
-  def startGame(levelPath: Path): Unit
+  def startGame(levelPath: String): Unit
 
   /** Asks the parent controller to start a new game. It needs the index of the default level from which starting the game.
     *
@@ -46,13 +43,13 @@ trait MainMenuController extends LevelSelectionController with SettingsControlle
   /** Returns the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
   val levelsCount: Int
 
-  /** Starts a new game for playing the level contained in the file with the given [[Path]]. No other level will be played after
-    * this one, the only option for the player will be to exit the game.
+  /** Starts a new game for playing the level contained in the file with the given path. No other level will be played after this
+    * one, the only option for the player will be to exit the game.
     *
     * @param levelPath
-    *   the [[Path]] to the file containing the [[it.unibo.pps.caw.game.model.Level]] to play in the new game
+    *   the path to the file containing the [[it.unibo.pps.caw.game.model.Level]] to play in the new game
     */
-  def startGame(levelPath: Path): Unit
+  def startGame(levelPath: String): Unit
 
   /** Exits the application. */
   def exit(): Unit
@@ -69,7 +66,7 @@ object MainMenuController {
 
     override def startGame(levelIndex: Int): Unit = parentController.startGame(levelIndex)
 
-    override def startGame(levelPath: Path): Unit = parentController.startGame(levelPath)
+    override def startGame(levelPath: String): Unit = parentController.startGame(levelPath)
 
     override def exit(): Unit = parentController.exit()
 

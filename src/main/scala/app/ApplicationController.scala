@@ -1,16 +1,11 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.game.model.{Level, PlayableArea, Position}
+import it.unibo.pps.caw.game.model.Level
 import it.unibo.pps.caw.menu.ParentMainMenuController
-
-import java.io.File
-import java.nio.file.{Files, Path, Paths}
-import scala.io.Source
-import scala.jdk.StreamConverters.given
-import scala.util.{Failure, Try, Using}
 import cats.implicits.given
-import it.unibo.pps.caw.game.controller.ParentGameController
-import it.unibo.pps.caw.LevelLoader
+import play.api.libs.json.Json
+import it.unibo.pps.caw.game.controller.{Deserializer, ParentGameController}
+import it.unibo.pps.caw.Loader
 
 /** The controller of the main application.
   *
@@ -26,20 +21,21 @@ object ApplicationController {
   /* Default implementation of the ApplicationController trait. */
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
 
-    override def startGame(levelPath: Path): Unit =
-      LevelLoader.load(levelPath).fold(_ => view.showError("An error has occured, could not load level"), view.showGame(_))
+    override def startGame(levelPath: String): Unit =
+      (for {
+        f <- Loader.load(levelPath)
+        l <- Deserializer.deserializeLevel(f)
+      } yield l).fold(_ => view.showError("An error has occured, could not load level"), view.showGame(_))
 
     private val levelFiles: Seq[Level] =
-      Files
-        .list(Paths.get(ClassLoader.getSystemResource("levels/").toURI))
-        .toScala(Seq)
-        .filter(_.getFileName.toString.endsWith(".json"))
-        .map(LevelLoader.load(_))
-        .sequence
-        .getOrElse {
-          view.showError("An error has occured, could not load level")
-          Seq()
-        }
+      (for {
+        f <- Loader.load("levels.json")
+        s <- Json.parse(f).as[Seq[String]].map(n => Loader.load(s"levels/$n")).sequence
+        l <- s.map(Deserializer.deserializeLevel(_)).sequence
+      } yield l).getOrElse {
+        view.showError("An error has occured, could not load level")
+        Seq.empty
+      }
 
     override val levelsCount: Int = levelFiles.length
 
