@@ -31,7 +31,8 @@ object RulesEngine {
       Using(Source.fromResource("cellmachine.pl")) { c => PrologEngine(Clause(c.getLines.mkString(" "))) }.get
 
     def nextState(board: Board[IdCell], cell: IdCell): Board[IdCell] = {
-      val cellState: Map[Int, Boolean] = board.cells
+      val cellState: Map[Int, Boolean] = board
+        .cells
         .map(c => if (c.id == cell.id) (c.id, true) else (c.id, c.updated))
         .toMap
 
@@ -40,16 +41,66 @@ object RulesEngine {
         case c if (c.id > cellState.keySet.max) => CellConverter.toUpdated(c, true) // new cell created by a generator
         case c                                  => CellConverter.toUpdated(c, cellState(c.id))
       }
-
       val resBoard = PrologParser.deserializeBoard(
-        extractTerm(engine(PrologParser.createSerializedPredicate(board, cellState.keySet.max + 1, cell))).toString
+        extractTerm(
+          engine(PrologParser.createSerializedPredicate(getPartialBoard(board, cell), cellState.keySet.max + 1, cell))
+        ).toString
       )
-
-      Board(resBoard.cells.map(updateCell))
+      updateGloabalBoard(board, Board[IdCell](resBoard.cells.map(updateCell)), cell)
     }
   }
 
   def apply(): RulesEngine = RulesEngineImpl()
+
+  private def updateGloabalBoard(globalboard: Board[IdCell], partialBoard: Board[IdCell], cell: IdCell): Board[IdCell] =
+    cell match {
+      case IdGeneratorCell(position, orientation, _, _) =>
+        orientation match {
+          case Right | Left => Board[IdCell](globalboard.cells.filter(_.position.y != position.y).toSet ++ partialBoard.cells)
+          case Top | Down   => Board[IdCell](globalboard.cells.filter(_.position.x != position.x).toSet ++ partialBoard.cells)
+        }
+      case IdMoverCell(position, orientation, _, _) =>
+        orientation match {
+          case Right | Left => Board[IdCell](globalboard.cells.filter(_.position.y != position.y).toSet ++ partialBoard.cells)
+          case Top | Down   => Board[IdCell](globalboard.cells.filter(_.position.x != position.x).toSet ++ partialBoard.cells)
+        }
+      case IdRotatorCell(position, _, _, _) =>
+        Board[IdCell](
+          globalboard
+            .cells
+            .filter(c =>
+              c.position != Position(position.x, position.y) && c.position != Position(position.x, position.y - 1) &&
+                c.position != Position(position.x, position.y + 1) &&
+                c.position != Position(position.x - 1, position.y) && c.position != Position(position.x + 1, position.y)
+            )
+            .toSet ++ partialBoard.cells
+        )
+
+      case _ => globalboard
+    }
+
+  private def getPartialBoard(board: Board[IdCell], cell: IdCell): Board[IdCell] = cell match {
+    case IdGeneratorCell(position, orientation, _, _) =>
+      orientation match {
+        case Right | Left => Board[IdCell](board.cells.filter(_.position.y == position.y))
+        case Top | Down   => Board[IdCell](board.cells.filter(_.position.x == position.x))
+      }
+    case IdMoverCell(position, orientation, _, _) =>
+      orientation match {
+        case Right | Left => Board[IdCell](board.cells.filter(_.position.y == position.y))
+        case Top | Down   => Board[IdCell](board.cells.filter(_.position.x == position.x))
+      }
+    case IdRotatorCell(position, _, _, _) =>
+      Board[IdCell](
+        board
+          .cells
+          .filter(c =>
+            c.position == Position(position.x, position.y - 1) || c.position == Position(position.x, position.y + 1) ||
+              c.position == Position(position.x - 1, position.y) || c.position == Position(position.x + 1, position.y)
+          ) + cell
+      )
+    case _ => board
+  }
 }
 
 /* An utility object for prolog serialization and deserialization */
