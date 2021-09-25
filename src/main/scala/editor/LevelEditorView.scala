@@ -131,7 +131,18 @@ object LevelEditorView {
 
     private def addRemovePlayableAreaHandler(cell: ImageView): Unit = {
       val board = boardView.get.innerComponent
-      controller.removePlayableArea()
+      cell.setOnMouseClicked(e => {
+        if (e.getButton.equals(MouseButton.SECONDARY)) {
+          board
+            .getChildren
+            .stream()
+            .toScala(Seq)
+            .filter(n => n.asInstanceOf[ImageView].getImage.equals(CellImage.PlayAreaTile.image))
+            .foreach(n => board.getChildren.remove(n))
+          controller.removePlayableArea()
+          e.consume()
+        }
+      })
     }
 
     private def addRemoveCellHandler(cell: ImageView, newPosition: Position): Unit = {
