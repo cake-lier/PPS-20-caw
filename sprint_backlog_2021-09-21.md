@@ -21,10 +21,10 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>Fare refactoring del model</td>
             <td>Matteo Castellucci</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>4</td>
+            <td>4</td>
+            <td>4</td>
+            <td>4</td>
             <td></td>
             <td></td>
             <td></td>
@@ -56,7 +56,7 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
         <tr>
             <td rowspan="4">Aggiunta di un level editor nel gioco standalone</td>
             <td>Creazione di una pagina del menu "editor" e di un "EditorView"</td>
-            <td>Lorenzo Gardini</td>
+            <td>Lorenzo Gardini & Yuqi Sun</td>
             <td>6</td>
             <td></td>
             <td></td>
@@ -107,23 +107,23 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>Creazione di un'applicazione con il solo gioco per il DSL</td>
             <td>Matteo Castellucci</td>
             <td>2</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>2</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Creazione di un'applicazione con il solo editor per il DSL</td>
             <td>Matteo Castellucci</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
             <td></td>
             <td></td>
         </tr>
