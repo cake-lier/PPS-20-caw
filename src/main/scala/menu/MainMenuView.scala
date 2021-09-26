@@ -78,11 +78,6 @@ object MainMenuView {
     }
     loadButton.setOnMouseClicked(_ => {
       FilePicker.pickFile(scene).foreach(f => controller.startGame(f.toPath))
-      
-//      val chooser: FileChooser = FileChooser()
-//      chooser.title = "Choose a level file"
-//      chooser.extensionFilters.add(FileChooser.ExtensionFilter("Level file", "*.json"))
-//      Option(chooser.showOpenDialog(scene.getWindow)).foreach(f => controller.startGame(f.toPath))
     })
     settingsButton.setOnMouseClicked(_ => scene.root.value = SettingsView(controller, audioPlayer, scene))
     exitButton.setOnMouseClicked(_ => controller.exit())

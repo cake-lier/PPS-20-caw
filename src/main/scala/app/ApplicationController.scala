@@ -29,10 +29,10 @@ import it.unibo.pps.caw.game.LevelManager
   */
 
 trait ApplicationController
-  extends ParentGameController
-  with ParentMainMenuController
-  with ParentLevelEditorController
-  with ParentLevelEditorMenuController
+    extends ParentGameController
+    with ParentMainMenuController
+    with ParentLevelEditorController
+    with ParentLevelEditorMenuController
 
 /** Companion object to the [[ApplicationController]] trait, containing its factory method. */
 object ApplicationController {
@@ -71,8 +71,9 @@ object ApplicationController {
 
     override def openLevelMenuView(): Unit = view.showEditorMenuView()
 
-    override def saveLevel(file: File, level: EditorLevel): Unit =
-      Serializer.serializeLevel(level).map(s => Using(PrintWriter(file)) { _.write(s) })
+    override def saveLevel(file: File, level: EditorLevel): Unit = 
+      LevelManager.writeLevel(file, level)
+    
 
     override def openLevelEditor(width: Int, height: Int): Unit =
       view.showLevelEditor(width, height)

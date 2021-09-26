@@ -9,7 +9,7 @@ import scala.util.Try
 object Serializer {
   def serializeLevel(level: Level): Try[String] =
     Try {
-      Json.prettyPrint(
+      val string = Json.prettyPrint(
         JsObject(
           Seq(
             "width" -> JsNumber(level.width),
@@ -26,6 +26,8 @@ object Serializer {
           )
         )
       )
+      print(string)
+      string
     }
 
   def parseCell(cell: SetupCell): JsObject = {
