@@ -91,9 +91,8 @@ object ApplicationView {
   private class ApplicationViewImpl(stage: PrimaryStage) extends ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
     private val audioPlayer: AudioPlayer = AudioPlayer()
-    /*private val screenSize: Rectangle2D = Screen.getPrimary.getBounds
-    private val scene: Scene = Scene(screenSize.getWidth * 0.80, screenSize.getHeight * 0.80)*/
-    private val scene: Scene = Scene(1080, 720)
+    setScreenSize()
+    private val scene: Scene = Scene(stage.getWidth, stage.getHeight)
     private var visibleView: ViewComponent[? <: Pane] =
       //MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
       LevelEditorView(controller, scene, "chiudi", EditorLevel(5, 5, Board(SetupEnemyCell((2, 2), true))))
@@ -132,6 +131,34 @@ object ApplicationView {
       Platform.runLater(() => {
         visibleView = newVisibleView; scene.root.value = visibleView.innerComponent
       })
+
+      import javafx.geometry.Rectangle2D
+
+    import javafx.stage.Screen
+
+    private def setScreenSize(): Unit = {
+      val heightRatio = 9
+      val widthRatio = 16
+      val screenBounds: Rectangle2D = Screen.getPrimary.getVisualBounds
+      stage.setX(screenBounds.getMinX)
+      stage.setY(screenBounds.getMinY)
+      stage.centerOnScreen()
+      val unitaryHeight: Double = screenBounds.getHeight / heightRatio
+      val unitaryWidth: Double = screenBounds.getWidth / widthRatio
+      if (screenBounds.getWidth < unitaryHeight * widthRatio) {
+        stage.setWidth(screenBounds.getWidth)
+        stage.setHeight(unitaryWidth * heightRatio)
+      } else {
+        if (screenBounds.getHeight < unitaryWidth * heightRatio) {
+          stage.setHeight(screenBounds.getHeight)
+          stage.setWidth(unitaryHeight * widthRatio)
+        } else {
+          stage.setHeight(screenBounds.getHeight)
+          stage.setWidth(screenBounds.getWidth)
+        }
+      }
+      stage.setResizable(false)
+    }
   }
 
   /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX's [[PrimaryStage]] for creating a view for the

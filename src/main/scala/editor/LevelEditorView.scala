@@ -33,16 +33,16 @@ trait PlayableAreaUpdater {
 
 object LevelEditorView {
   private final class LevelEditorViewImpl(
-    parentLevelEditorController: ParentLevelEditorController,
-    scene: Scene,
-    closeEditorButtonText: String,
-    width: Int,
-    height: Int,
-    level: Option[Level]
+      parentLevelEditorController: ParentLevelEditorController,
+      scene: Scene,
+      closeEditorButtonText: String,
+      width: Int,
+      height: Int,
+      level: Option[Level]
   ) extends AbstractViewComponent[Pane]("editor.fxml")
-    with LevelEditorView
-    with ModelUpdater
-    with PlayableAreaUpdater {
+      with LevelEditorView
+      with ModelUpdater
+      with PlayableAreaUpdater {
 
     @FXML
     var backButton: Button = _
@@ -88,6 +88,7 @@ object LevelEditorView {
 
     override def printLevel(level: Level): Unit = Platform.runLater(() => {
       val newBoardView: EditorBoardView = EditorBoardView(level, this, this)
+      
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
       GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
       GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
@@ -194,19 +195,19 @@ object LevelEditorView {
   }
 
   def apply(
-    parentLevelEditorController: ParentLevelEditorController,
-    scene: Scene,
-    closeEditorButtonText: String,
-    boardWidth: Int,
-    boardHeight: Int
+      parentLevelEditorController: ParentLevelEditorController,
+      scene: Scene,
+      closeEditorButtonText: String,
+      boardWidth: Int,
+      boardHeight: Int
   ): LevelEditorView =
     LevelEditorViewImpl(parentLevelEditorController, scene, closeEditorButtonText, boardWidth, boardHeight, None)
 
   def apply(
-    parentLevelEditorController: ParentLevelEditorController,
-    scene: Scene,
-    closeEditorButtonText: String,
-    level: Level
+      parentLevelEditorController: ParentLevelEditorController,
+      scene: Scene,
+      closeEditorButtonText: String,
+      level: Level
   ): LevelEditorView =
     LevelEditorViewImpl(parentLevelEditorController, scene, closeEditorButtonText, level.width, level.height, Some(level))
 
