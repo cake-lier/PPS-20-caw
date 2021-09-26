@@ -2,6 +2,7 @@ package it.unibo.pps.caw.menu
 
 import it.unibo.pps.caw.{AudioPlayer, SoundButton, Track, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.FilePicker
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.{GridPane, Pane}
@@ -76,10 +77,12 @@ object MainMenuView {
       playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, controller))
     }
     loadButton.setOnMouseClicked(_ => {
-      val chooser: FileChooser = FileChooser()
-      chooser.title = "Choose a level file"
-      chooser.extensionFilters.add(FileChooser.ExtensionFilter("Level file", "*.json"))
-      Option(chooser.showOpenDialog(scene.getWindow)).foreach(f => controller.startGame(f.toPath))
+      FilePicker.pickFile(scene).foreach(f => controller.startGame(f.toPath))
+      
+//      val chooser: FileChooser = FileChooser()
+//      chooser.title = "Choose a level file"
+//      chooser.extensionFilters.add(FileChooser.ExtensionFilter("Level file", "*.json"))
+//      Option(chooser.showOpenDialog(scene.getWindow)).foreach(f => controller.startGame(f.toPath))
     })
     settingsButton.setOnMouseClicked(_ => scene.root.value = SettingsView(controller, audioPlayer, scene))
     exitButton.setOnMouseClicked(_ => controller.exit())

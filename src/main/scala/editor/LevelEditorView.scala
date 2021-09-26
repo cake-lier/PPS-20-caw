@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.editor
 
-import it.unibo.pps.caw.{FilePicker, ViewComponent}
+import it.unibo.pps.caw.common.FilePicker
+import it.unibo.pps.caw.ViewComponent
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.{Board, BoardView, CellImage, DragAndDrop, EditorBoardView, ModelUpdater, Position, TileView}
 import it.unibo.pps.caw.editor.controller.{LevelEditorController, ParentLevelEditorController}
@@ -27,7 +28,7 @@ trait LevelEditorView extends ViewComponent[Pane] {
 trait PlayableAreaUpdater {
   def createPlayableArea(topRight: Position, downLeft: Position): Unit
   def removeCell(position: Position): Unit
-  def removePlayableArea():Unit
+  def removePlayableArea(): Unit
 }
 
 object LevelEditorView {

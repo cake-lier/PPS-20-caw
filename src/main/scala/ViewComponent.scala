@@ -52,16 +52,3 @@ object ViewComponent {
       def apply(component: ViewComponent[A]) = component.innerComponent
   }
 }
-
-object FilePicker {
-  def pickFile(scene: Scene): Option[File] = {
-    val chooser: FileChooser = FileChooser()
-    chooser.title = "Choose a level file"
-    chooser.extensionFilters.add(FileChooser.ExtensionFilter("Level file", "*.json"))
-    Option(chooser.showOpenDialog(scene.getWindow))
-  }
-  def saveFile(scene: Scene): Option[File] = {
-    val chooser: FileChooser = FileChooser()
-    Option(chooser.showSaveDialog(scene.getWindow))
-  }
-}

@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.editor.view
 
-import it.unibo.pps.caw.{FilePicker, ViewComponent}
+import it.unibo.pps.caw.common.FilePicker
+import it.unibo.pps.caw.ViewComponent
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
 import javafx.application.Platform
@@ -19,11 +20,11 @@ trait LevelEditorMenuView extends ViewComponent[Pane]
 
 object LevelEditorMenuView {
   private final class LevelEditorMenuViewImpl(
-      parentLevelEditorController: ParentLevelEditorMenuController,
-      scene: Scene,
-      buttonMessage: String
+    parentLevelEditorController: ParentLevelEditorMenuController,
+    scene: Scene,
+    buttonMessage: String
   ) extends AbstractViewComponent[Pane]("editor_menu_page.fxml")
-      with LevelEditorMenuView {
+    with LevelEditorMenuView {
     @FXML
     var backButton: Button = _
     @FXML
@@ -55,9 +56,9 @@ object LevelEditorMenuView {
   }
 
   def apply(
-      parentLevelEditorController: ParentLevelEditorMenuController,
-      scene: Scene,
-      buttonMessage: String
+    parentLevelEditorController: ParentLevelEditorMenuController,
+    scene: Scene,
+    buttonMessage: String
   ): LevelEditorMenuView =
     LevelEditorMenuViewImpl(parentLevelEditorController, scene, buttonMessage)
 }

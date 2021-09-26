@@ -29,10 +29,10 @@ import it.unibo.pps.caw.game.LevelManager
   */
 
 trait ApplicationController
-    extends ParentGameController
-    with ParentMainMenuController
-    with ParentLevelEditorController
-    with ParentLevelEditorMenuController
+  extends ParentGameController
+  with ParentMainMenuController
+  with ParentLevelEditorController
+  with ParentLevelEditorMenuController
 
 /** Companion object to the [[ApplicationController]] trait, containing its factory method. */
 object ApplicationController {
