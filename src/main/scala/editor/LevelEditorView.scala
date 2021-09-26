@@ -21,12 +21,13 @@ import scala.jdk.StreamConverters.given
 import java.io.File
 
 trait LevelEditorView extends ViewComponent[Pane] {
-  def createBoard(level: Level): Unit
-  def updateLevel(level: Level, isPlayableAreaSet: Boolean): Unit
+  def printLevel(level: Level): Unit
 }
 
 trait PlayableAreaUpdater {
   def createPlayableArea(topRight: Position, downLeft: Position): Unit
+  def removeCell(position: Position): Unit
+  def removePlayableArea():Unit
 }
 
 object LevelEditorView {
@@ -84,7 +85,7 @@ object LevelEditorView {
     resetAll.setOnMouseClicked(_ => controller.resetLevel())
     rotateCellsButton.setOnMouseClicked(_ => rotateButtons())
 
-    override def createBoard(level: Level): Unit = Platform.runLater(() => {
+    override def printLevel(level: Level): Unit = Platform.runLater(() => {
       val newBoardView: EditorBoardView = EditorBoardView(level, this, this)
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
       GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
@@ -94,10 +95,6 @@ object LevelEditorView {
       boardView = Some(newBoardView)
     })
 
-    override def updateLevel(level: Level, isPlayableAreaSet: Boolean): Unit = Platform.runLater(() => {
-      boardView.get.drawBoard(level.board, isPlayableAreaSet)
-    })
-
     override def manageCell(cellImage: ImageView, newPosition: Position): Unit = {
       val board = boardView.get.innerComponent
       if (board.getChildren.contains(cellImage)) {
@@ -105,55 +102,19 @@ object LevelEditorView {
           Position(GridPane.getColumnIndex(cellImage), GridPane.getRowIndex(cellImage)),
           newPosition
         )
-        board.getChildren.remove(cellImage)
-        addRemoveCellHandler(cellImage, newPosition)
-        board.add(cellImage, newPosition.x, newPosition.y)
       } else {
-        val setupCell = getSetupCell(cellImage.getImage, newPosition)
-        controller.setCell(setupCell)
-        val cellView = CellView.apply(setupCell, board).innerComponent
-        DragAndDrop.addDragFeature(cellView)
-        addRemoveCellHandler(cellView, newPosition)
-        board.add(cellView, newPosition.x, newPosition.y)
+        controller.setCell(getSetupCell(cellImage.getImage, newPosition))
       }
     }
 
     override def createPlayableArea(topRight: Position, downLeft: Position): Unit = {
       val board = boardView.get.innerComponent
-      for (x <- topRight.x to downLeft.x; y <- topRight.y to downLeft.y) {
-        val tileView = TileView(CellImage.PlayAreaTile.image, board).innerComponent
-        addRemovePlayableAreaHandler(tileView)
-        DragAndDrop.addDropFeature(tileView, this)
-        board.add(tileView, x, y)
-      }
       controller.setPlayableArea(topRight, downLeft.x - topRight.x + 1, downLeft.y - topRight.y + 1)
     }
 
-    private def addRemovePlayableAreaHandler(cell: ImageView): Unit = {
-      val board = boardView.get.innerComponent
-      cell.setOnMouseClicked(e => {
-        if (e.getButton.equals(MouseButton.SECONDARY)) {
-          board
-            .getChildren
-            .stream()
-            .toScala(Seq)
-            .filter(n => n.asInstanceOf[ImageView].getImage.equals(CellImage.PlayAreaTile.image))
-            .foreach(n => board.getChildren.remove(n))
-          controller.removePlayableArea()
-          e.consume()
-        }
-      })
-    }
+    override def removeCell(position: Position): Unit = controller.removeCell(position)
 
-    private def addRemoveCellHandler(cell: ImageView, newPosition: Position): Unit = {
-      cell.setOnMouseClicked(e => {
-        if (e.getButton.equals(MouseButton.SECONDARY)) {
-          boardView.get.innerComponent.getChildren.remove(cell)
-          controller.removeCell(newPosition)
-          e.consume()
-        }
-      })
-    }
+    override def removePlayableArea(): Unit = controller.removePlayableArea()
 
     private def setButtonImages(): Map[ImageView, Image] = {
       Map(

@@ -12,6 +12,7 @@ import it.unibo.pps.caw.editor.{LevelEditorView, PlayableAreaUpdater}
 import it.unibo.pps.caw.game.view.CellView as GameCellView
 import it.unibo.pps.caw.editor.view.CellView as EditorCellView
 import javafx.application.Platform
+import javafx.scene.Node
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.{ColumnConstraints, GridPane, RowConstraints}
@@ -53,8 +54,26 @@ abstract class AbstractBoardImpl(levelWidth: Int, levelHeight: Int, model: Model
       x <- 0 until levelWidth
       y <- 0 until levelHeight
     } do {
-      drawImageView(CellImage.DefaultTile.image, x, y, model, droppable = droppablePavement)
+      drawImageView(
+        TileView.apply(CellImage.DefaultTile.image, innerComponent).innerComponent,
+        x,
+        y,
+        model,
+        droppable = droppablePavement
+      )
     }
+  }
+
+  protected def applyHandler(f: Node => Boolean, h: Node => Unit): Unit = {
+    innerComponent
+      .getChildren
+      .stream()
+      .filter(f(_))
+      .forEach(h(_))
+  }
+
+  protected def applyHandler(h: Node => Unit): Unit = {
+    applyHandler(_ => true, h)
   }
 
   protected def drawPlayableArea(
@@ -67,18 +86,24 @@ abstract class AbstractBoardImpl(levelWidth: Int, levelHeight: Int, model: Model
     for {
       x <- 0 until playableAreaWidth
       y <- 0 until playableAreaHeight
-    } do drawImageView(CellImage.PlayAreaTile.image, x + positionX, y + positionY, model, droppable = droppablePlayableArea)
+    } do
+      drawImageView(
+        TileView.apply(CellImage.PlayAreaTile.image, innerComponent).innerComponent,
+        x + positionX,
+        y + positionY,
+        model,
+        droppable = droppablePlayableArea
+      )
   }
 
   protected def drawImageView(
-    image: Image,
+    node: ImageView,
     x: Int,
     y: Int,
     model: ModelUpdater,
     droppable: Boolean = false,
     draggable: Boolean = false
   ): Unit = {
-    val node = TileView(image, innerComponent).innerComponent
     if (droppable) { DragAndDrop.addDropFeature(node, model) }
     if (draggable) { DragAndDrop.addDragFeature(node) }
     innerComponent.add(node, x, y)
@@ -123,24 +148,25 @@ object GameBoardView {
       )
       board
         .cells
-        .foreach(c =>
+        .foreach(c => {
+          val node = GameCellView(
+            if (c.isInstanceOf[GameSetupCell]) CellConverter.fromSetup(c.asInstanceOf[GameSetupCell]) else c,
+            innerComponent
+          )
           drawImageView(
-            GameCellView(
-              if (c.isInstanceOf[GameSetupCell]) CellConverter.fromSetup(c.asInstanceOf[GameSetupCell]) else c,
-              innerComponent
-            ).innerComponent.getImage,
+            node.innerComponent,
             c.position.x,
             c.position.y,
             modelUpdater,
             draggable = draggableCell && c.isInstanceOf[GameSetupCell] && c.asInstanceOf[GameSetupCell].playable
           )
-        )
+        })
     }
   }
 }
 
 sealed trait EditorBoardView extends BoardView {
-  def drawBoard(board: Board[EditorSetupCell], playableAreaSet: Boolean): Unit
+  def drawBoard(board: Board[EditorSetupCell]): Unit
 }
 
 object EditorBoardView {
@@ -155,14 +181,14 @@ object EditorBoardView {
 
     var topLeftPosition = Position(0, 0)
     var downRightPosition = Position(0, 0)
-    var isPlayableAreaSet = false
-    drawBoard(initialLevel.board, false)
+    drawBoard(initialLevel.board)
 
-    override def drawBoard(board: Board[EditorSetupCell], playableAreaSet: Boolean): Unit = {
+    override def drawBoard(board: Board[EditorSetupCell]): Unit = {
       clearComponents()
       drawPavement(true)
-      isPlayableAreaSet = playableAreaSet
-      innerComponent.getChildren.forEach(n => createPlayableArea(n.asInstanceOf[ImageView]))
+      if (initialLevel.playableArea.isEmpty) {
+        applyHandler(n => createPlayableArea(n.asInstanceOf[ImageView]))
+      }
       initialLevel
         .playableArea
         .foreach(p => {
@@ -170,32 +196,47 @@ object EditorBoardView {
           val playableAreaPosition = p.position
           drawPlayableArea(playableAreaPosition.x, playableAreaPosition.y, p.width, p.height, true)
         })
+      applyHandler(n => n.asInstanceOf[ImageView].getImage.equals(CellImage.PlayAreaTile.image), n => removePlayableArea(n))
+
       board
         .cells
-        .foreach(c =>
+        .foreach(c => {
+          val node: ImageView = EditorCellView(c, innerComponent).innerComponent
+          node.setOnMouseClicked(e => {
+            if (e.getButton.equals(MouseButton.SECONDARY)) {
+              updater.removeCell(c.position.x, c.position.y)
+              e.consume()
+            }
+          })
           drawImageView(
-            EditorCellView(c, innerComponent).innerComponent.getImage,
+            node,
             c.position.x,
             c.position.y,
             modelUpdater,
             draggable = c.playable
           )
-        )
+        })
+    }
+
+    private def removePlayableArea(node: Node) = {
+      node.setOnMouseClicked(e => {
+        if (e.getButton.equals(MouseButton.SECONDARY)) {
+          updater.removePlayableArea()
+          e.consume()
+        }
+      })
     }
 
     private def createPlayableArea(imageView: ImageView) = {
       imageView.setOnDragDetected(e => {
-        if (!isPlayableAreaSet) {
-          topLeftPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
-          imageView.startFullDrag()
-          e.consume()
-        }
+        topLeftPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
+        imageView.startFullDrag()
+        e.consume()
       })
 
       imageView.setOnMouseDragReleased(e => {
         downRightPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
         updater.createPlayableArea(topLeftPosition, downRightPosition)
-        isPlayableAreaSet = true
         e.consume()
       })
 
