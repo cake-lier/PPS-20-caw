@@ -23,7 +23,12 @@ case class Settings(volumeMusic: Double, volumeSFX: Double, solvedLevels: Set[In
   */
 trait SettingsManager {
 
+  /** Returns default settings. */
+  def getDefault(): Settings
+
   /** Load settings from disk. If the settings file does not exist, it is created.
+    *
+    * The settings file is a .json that corresponds to the json representation of case class [[Settings]].
     *
     * @return
     *   the requested [[Settings]] or an exception from file reading/writing
@@ -46,10 +51,13 @@ object SettingsManager {
 
   private class SettingsManagerImpl() extends SettingsManager {
 
-    val defaultSettings = "{\"volumeMusic\":0.3,\"volumeSFX\":0.7,\"solvedLevels\":[]}"
-    val filePath = System.getProperty("user.home") + File.separator + ".settings.json"
+    private val defaultSettings = Settings(0.3, 0.7, Set())
+    private val defaultSettingsJson = Json.toJson(defaultSettings)(Json.writes[Settings])
+    private val filePath = System.getProperty("user.home") + File.separator + ".settings.json"
 
-    def load(): Try[Settings] = {
+    override def getDefault(): Settings = defaultSettings
+
+    override def load(): Try[Settings] = {
       Loader.loadAbsolute(filePath) match {
         case Success(jsonString: String) => {
           val json = Json.parse(jsonString)
@@ -58,20 +66,20 @@ object SettingsManager {
           val solvedLevels = (json \ "solvedLevels").as[Set[Int]]
           Success(Settings(volumeMusic, volumeSFX, solvedLevels))
         }
-        case Failure(e: FileNotFoundException) => writeSettings(defaultSettings) match {
+        case Failure(e: FileNotFoundException) => writeSettings(defaultSettingsJson.toString) match {
           case Failure(e) => Failure(e)
-          case _ => load()
+          case _ => Success(defaultSettings)
         }
         case Failure(e) => Failure(e)
       }
     }
 
-    def save(settings: Settings): Try[Unit] = {
+    override def save(settings: Settings): Try[Unit] = {
       val jsonSettings = Json.toJson(settings)(Json.writes[Settings])
       writeSettings(jsonSettings.toString)
     }
 
-    /* Creates or overwrites file, managing exceptions */
+    /* Creates or overwrites file */
     private def writeSettings(body: String): Try[Unit] = Using(new FileWriter(File(filePath)))(_.write(body))
 
   }
@@ -90,7 +98,7 @@ object Test extends App{
     case Success(s) => println(s)
     case Failure(exception) => println("failed : " + exception.toString)
   }
-  sm.save(Settings(0.2, 0.5, Set(1, 9, 8, 4)))
+  sm.save(Settings(0.2, 0.6, Set(1, 9)))
 
   sm.load() match {
     case Success(s) => println(s)

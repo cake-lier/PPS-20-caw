@@ -26,6 +26,15 @@ trait ParentMainMenuController {
     */
   def startGame(levelIndex: Int): Unit
 
+  /** Asks the parent controller to save volume settings in settings file.
+    *
+    * @param volumeMusic
+    *   the value of Music volume.
+    * @param volumeSFX
+    *   the value of SFX volume.
+    */
+  def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit
+
   /** Asks the parent controller to go back to the previous state of the application. */
   def goBack(): Unit
 

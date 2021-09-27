@@ -4,7 +4,7 @@ import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.game.model.{Board, Cell, Level, Position}
 import it.unibo.pps.caw.game.view.{BoardView, ModelUpdater}
-import it.unibo.pps.caw.game.controller.{GameController, ParentGameController}
+import it.unibo.pps.caw.game.controller.{GameController, ParentDefaultGameController, ParentGameController}
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -184,7 +184,7 @@ object GameView {
 
   /* Extension of AbstractGameView for displaying default levels. */
   private class DefaultGameView(
-    parentController: ParentGameController,
+    parentController: ParentDefaultGameController,
     audioPlayer: AudioPlayer,
     levels: Seq[Level],
     levelIndex: Int,
@@ -199,7 +199,7 @@ object GameView {
     override protected def createController(): GameController = GameController(parentController, this, level)
   }
 
-  /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentGameController]] so as to be able to complete the
+  /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentDefaultGameController]] so as to be able to complete the
     * construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
     * music, the sequence of default [[Level]] to be used during this game, the index of the default [[Level]] from which starting
     * the game and the ScalaFX's [[Scene]] on which displaying the instance after being constructed.
@@ -218,7 +218,7 @@ object GameView {
     *   a new [[GameView]] instance
     */
   def apply(
-    parentController: ParentGameController,
+    parentController: ParentDefaultGameController,
     audioPlayer: AudioPlayer,
     levels: Seq[Level],
     levelIndex: Int,
