@@ -1,22 +1,20 @@
 package it.unibo.pps.caw.game.view
 
-import it.unibo.pps.caw.game.model.{Board, Cell, CellConverter, Level, Position}
+import it.unibo.pps.caw.game.model.{BaseCell, Board, Level, Position, SetupCell}
 import it.unibo.pps.caw.ViewComponent
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import javafx.application.Platform
 import javafx.scene.image.ImageView
 import javafx.scene.layout.{ColumnConstraints, GridPane, RowConstraints}
 
-import scala.jdk.StreamConverters
-
 trait ModelUpdater {
   def updateCell(oldPosition: Position, newPosition: Position): Unit
 }
 
 trait BoardView extends ViewComponent[GridPane] {
-  def resetBoard(initialLevel: Level): Unit
+  def resetBoard(level: Level[SetupCell]): Unit
 
-  def updateBoard(level: Level, currentBoard: Board[Cell]): Unit
+  def updateBoard(update: Level[SetupCell]): Unit
 }
 
 /** Factory for new [[Board]] instance. */
@@ -26,10 +24,10 @@ object BoardView {
     * @param levelInfo
     *   the [[Level]] containing all the board's information to be drawn
     */
-  def apply(level: Level, model: ModelUpdater): BoardView = BoardViewImpl(level, model)
+  def apply(level: Level[SetupCell], model: ModelUpdater): BoardView = BoardViewImpl(level, model)
 
   /** Implementation of the Board. */
-  private class BoardViewImpl(initialLevel: Level, model: ModelUpdater)
+  private class BoardViewImpl(initialLevel: Level[SetupCell], model: ModelUpdater)
     extends AbstractViewComponent[GridPane](fxmlFileName = "board.fxml")
     with BoardView
     with DragAndDrop {
@@ -38,37 +36,37 @@ object BoardView {
     private var boardWidth: Double = innerComponent.getPrefWidth
     private var boardHeight: Double = innerComponent.getPrefHeight
 
-    if (initialLevel.width / initialLevel.height >= 2) {
-      boardHeight = (boardWidth / initialLevel.width) * initialLevel.height
+    if (initialLevel.dimensions.width / initialLevel.dimensions.height >= 2) {
+      boardHeight = (boardWidth / initialLevel.dimensions.width) * initialLevel.dimensions.height
     } else {
-      boardWidth = (boardHeight / initialLevel.height) * initialLevel.width
+      boardWidth = (boardHeight / initialLevel.dimensions.height) * initialLevel.dimensions.width
     }
 
     innerComponent.setPrefSize(boardWidth, boardHeight)
-    (0 until initialLevel.width).foreach { _ =>
+    (0 until initialLevel.dimensions.width).foreach { _ =>
       val columnConstraints: ColumnConstraints = ColumnConstraints()
-      columnConstraints.setPercentWidth(boardWidth / initialLevel.width)
+      columnConstraints.setPercentWidth(boardWidth / initialLevel.dimensions.width)
       innerComponent.getColumnConstraints.add(columnConstraints)
     }
-    (0 until initialLevel.height).foreach { _ =>
+    (0 until initialLevel.dimensions.height).foreach { _ =>
       val rowConstraints: RowConstraints = RowConstraints()
-      rowConstraints.setPercentHeight(boardHeight / initialLevel.height)
+      rowConstraints.setPercentHeight(boardHeight / initialLevel.dimensions.height)
       innerComponent.getRowConstraints.add(rowConstraints)
     }
 
     placePavement()
     drawFromLevel(initialLevel)
 
-    def resetBoard(initialLevel: Level): Unit = {
+    def resetBoard(level: Level[SetupCell]): Unit = {
       innerComponent.getChildren().clear()
       placePavement()
-      drawFromLevel(initialLevel)
+      drawFromLevel(level)
     }
 
-    override def updateBoard(level: Level, currentBoard: Board[Cell]): Unit = {
+    override def updateBoard(update: Level[SetupCell]): Unit = {
       innerComponent.getChildren().clear()
       placePavement()
-      drawFromUpdate(level, currentBoard.cells)
+      drawFromUpdate(update)
     }
 
     /* Places the default tiles in the grid. */
@@ -80,21 +78,21 @@ object BoardView {
     }
 
     /* Adds the playable area and cells. */
-    private def drawFromLevel(level: Level): Unit = {
+    private def drawFromLevel(level: Level[SetupCell]): Unit = {
       val playableArea = level.playableArea
       for {
-        x <- 0 until playableArea.width
-        y <- 0 until playableArea.height
+        x <- 0 until playableArea.dimensions.width
+        y <- 0 until playableArea.dimensions.height
       } do {
         val node = TileView(CellImage.PlayAreaTile.image, innerComponent)
         addDropFeature(node, innerComponent, model)
         innerComponent.add(node, playableArea.position.x + x, playableArea.position.y + y)
       }
       level
-        .setupBoard
+        .board
         .cells
         .foreach(c => {
-          val node = CellView(CellConverter.fromSetup(c), innerComponent)
+          val node = CellView(c, innerComponent)
           if (c.playable) {
             addDragFeature(node)
           }
@@ -102,17 +100,16 @@ object BoardView {
         })
     }
 
-    private def drawFromUpdate(level: Level, cells: Set[Cell]): Unit = {
-      val playableArea = level.playableArea
+    private def drawFromUpdate(update: Level[SetupCell]): Unit = {
       for {
-        x <- 0 until playableArea.width
-        y <- 0 until playableArea.height
+        x <- 0 until update.playableArea.dimensions.width
+        y <- 0 until update.playableArea.dimensions.height
       } do {
         val node = TileView(CellImage.PlayAreaTile.image, innerComponent)
         addDropFeature(node, innerComponent, model)
-        innerComponent.add(node, playableArea.position.x + x, playableArea.position.y + y)
+        innerComponent.add(node, update.playableArea.position.x + x, update.playableArea.position.y + y)
       }
-      cells.foreach(c => innerComponent.add(CellView(c, innerComponent), c.position.x, c.position.y))
+      update.board.cells.foreach(c => innerComponent.add(CellView(c, innerComponent), c.position.x, c.position.y))
     }
   }
 }

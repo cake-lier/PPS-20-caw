@@ -1,8 +1,7 @@
 package it.unibo.pps.caw.game.controller
 
-import it.unibo.pps.caw.game.model.{Level, Model, PlayableArea, Position}
+import it.unibo.pps.caw.game.model.{BaseCell, Level, GameModel, PlayableArea, Position}
 import it.unibo.pps.caw.game.view.GameView
-
 import javafx.application.Platform
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
@@ -58,7 +57,7 @@ trait GameController {
     */
   def nextLevel(): Unit
 
-  /** Updates the [[Model]] moving the [[it.unibo.pps.caw.game.model.Cell]] which has a [[Position]] equal to the given old
+  /** Updates the [[GameModel]] moving the [[it.unibo.pps.caw.game.model.Cell]] which has a [[Position]] equal to the given old
     * [[Position]] parameter to the [[Position]] given by the new [[Position]] parameter.
     *
     * @param oldPosition
@@ -73,13 +72,17 @@ trait GameController {
 object GameController {
 
   /* Abstract implementation of the GameController trait for factorizing common behaviors. */
-  private abstract class AbstractGameController(parentController: ParentGameController, view: GameView, initialLevel: Level)
-    extends GameController {
+  private abstract class AbstractGameController(
+    parentController: ParentGameController,
+    view: GameView,
+    initialLevel: Level[BaseCell],
+    levelIndex: Option[Int]
+  ) extends GameController {
     protected val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     protected var updatesHandler: Option[ScheduledFuture[?]] = None
-    protected var model = Model(initialLevel)
+    protected var model = GameModel(initialLevel, levelIndex)
 
-    view.drawLevel(model.initialLevel, model.isLevelCompleted)
+    view.drawLevel(model.state.initialStateLevel, model.state.isCurrentLevelCompleted)
 
     def startUpdates(): Unit = updatesHandler match {
       case Some(_) => ()
@@ -95,14 +98,14 @@ object GameController {
     }
 
     def step(): Unit = {
-      model = model.update()
-      view.drawLevelUpdate(model.initialLevel, model.currentBoard, model.didEnemyExplode, model.isLevelCompleted)
+      model = model.update
+      view.drawLevelUpdate(model.state.currentStateLevel, model.state.didEnemyDie, model.state.isCurrentLevelCompleted)
     }
 
     def resetLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
       model = model.reset
-      view.drawLevelReset(model.initialLevel)
+      view.drawLevelReset(model.state.initialStateLevel)
     }
 
     def goBack(): Unit = {
@@ -116,8 +119,8 @@ object GameController {
   }
 
   /* Extension of the AbstractGameController class for playing a generic level. */
-  private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level)
-    extends AbstractGameController(parentController, view, initialLevel) {
+  private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level[BaseCell])
+    extends AbstractGameController(parentController, view, initialLevel, None) {
 
     def nextLevel(): Unit = goBack()
   }
@@ -126,18 +129,16 @@ object GameController {
   private class DefaultGameController(
     parentController: ParentGameController,
     view: GameView,
-    levels: Seq[Level],
+    levels: Seq[Level[BaseCell]],
     initialLevelIndex: Int
-  ) extends AbstractGameController(parentController, view, levels(initialLevelIndex - 1)) {
-    private var currentIndex: Int = initialLevelIndex
+  ) extends AbstractGameController(parentController, view, levels(initialLevelIndex - 1), Some(initialLevelIndex)) {
 
     def nextLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
-      model.nextLevelIndex(currentIndex) match {
+      model.state.nextLevelIndex match {
         case Some(v) => {
-          currentIndex = v
-          model = Model(levels(currentIndex - 1))
-          view.drawLevel(model.initialLevel, model.isLevelCompleted)
+          model = GameModel(levels(v - 1), Some(v))
+          view.drawLevel(model.state.initialStateLevel, model.state.isCurrentLevelCompleted)
         }
         case None => goBack()
       }
@@ -158,7 +159,7 @@ object GameController {
     * @return
     *   a new [[GameController]] instance
     */
-  def apply(parentController: ParentGameController, view: GameView, level: Level): GameController =
+  def apply(parentController: ParentGameController, view: GameView, level: Level[BaseCell]): GameController =
     ExternalGameController(parentController, view, level)
 
   /** Returns a new instance of the [[GameController]] trait. It must receive the [[ParentGameController]], which it represents
@@ -178,6 +179,11 @@ object GameController {
     * @return
     *   a new [[GameController]] instance
     */
-  def apply(parentController: ParentGameController, view: GameView, levels: Seq[Level], levelIndex: Int): GameController =
+  def apply(
+    parentController: ParentGameController,
+    view: GameView,
+    levels: Seq[Level[BaseCell]],
+    levelIndex: Int
+  ): GameController =
     DefaultGameController(parentController, view, levels, levelIndex)
 }

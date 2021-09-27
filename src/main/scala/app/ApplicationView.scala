@@ -2,7 +2,7 @@ package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController, SettingsView}
 import it.unibo.pps.caw.ViewComponent
-import it.unibo.pps.caw.game.model.Level
+import it.unibo.pps.caw.game.model.{BaseCell, Level}
 import javafx.application.Platform
 import scalafx.scene.control.Alert
 import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
@@ -11,7 +11,7 @@ import it.unibo.pps.caw.game.view.GameView
 import javafx.scene.layout.Pane
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
-import it.unibo.pps.caw.ViewComponent.given
+import it.unibo.pps.caw.ViewComponent
 
 import java.io.File
 import java.nio.file.Path
@@ -41,7 +41,7 @@ trait ApplicationView {
     * @param level
     *   the [[Level]] which will be first displayed
     */
-  def showGame(level: Level): Unit
+  def showGame(level: Level[BaseCell]): Unit
 
   /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing a default [[Level]]. The [[Level]]
     * which will be played will be the one with the given index between the given sequence of default [[Level]]. After playing
@@ -52,7 +52,7 @@ trait ApplicationView {
     * @param levelIndex
     *   the index of the [[Level]] which will be first displayed in the given sequence of [[Level]]
     */
-  def showGame(levels: Seq[Level], levelIndex: Int): Unit
+  def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit
 }
 
 /** Companion object for the [[ApplicationView]] trait, containing its factory method. */
@@ -74,10 +74,10 @@ object ApplicationView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: Level): Unit =
+    override def showGame(level: Level[BaseCell]): Unit =
       Platform.runLater(() => scene.root.value = GameView(controller, audioPlayer, level, scene))
 
-    override def showGame(levels: Seq[Level], levelIndex: Int): Unit =
+    override def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit =
       Platform.runLater(() => scene.root.value = GameView(controller, audioPlayer, levels, levelIndex, scene))
 
     override def showMainMenu(): Unit = Platform.runLater(() => scene.root.value = MainMenuView(controller, audioPlayer, scene))

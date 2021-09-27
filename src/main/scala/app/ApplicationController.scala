@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.game.model.Level
+import it.unibo.pps.caw.game.model.{BaseCell, Level}
 import it.unibo.pps.caw.menu.ParentMainMenuController
 import cats.implicits.given
 import play.api.libs.json.Json
@@ -27,7 +27,7 @@ object ApplicationController {
         l <- Deserializer.deserializeLevel(f)
       } yield l).fold(_ => view.showError("An error has occured, could not load level"), view.showGame(_))
 
-    private val levelFiles: Seq[Level] =
+    private val levelFiles: Seq[Level[BaseCell]] =
       (for {
         f <- Loader.load("levels.json")
         s <- Json.parse(f).as[Seq[String]].map(n => Loader.load(s"levels/$n")).sequence

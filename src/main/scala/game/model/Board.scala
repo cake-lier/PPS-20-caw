@@ -1,12 +1,44 @@
-package it.unibo.pps.caw
-package game.model
+package it.unibo.pps.caw.game.model
 
-trait Board[A]{
+/** A group of cells in the game world.
+  *
+  * Every cell in the [[Board]] should have a unique [[Position]] because no two cells can be placed in the same [[Position]]. It
+  * must be constructed through its companion object.
+  * @tparam A
+  *   the type of [[Cell]] in this [[Board]]
+  */
+trait Board[A <: Cell] {
+
+  /** Returns the cells in this [[Board]]. */
   val cells: Set[A]
 }
 
-object Board{
-  case class BoardImpl[A](val cells: Set[A]) extends Board[A]
-  def apply[A](cells: A*): Board[A] = BoardImpl(cells.toSet)
-  def apply[A](cells: Set[A]): Board[A] = BoardImpl(cells)
+/** Companion object of the [[Board]] trait, containing its factory methods. */
+object Board {
+
+  /* Default implementation of the Board trait. */
+  private case class BoardImpl[A <: Cell](val cells: Set[A]) extends Board[A]
+
+  /** Returns a new instance of the [[Board]] trait given the [[Cell]] that are contained into the [[Board]] itself. If two or
+    * more [[Cell]] have the same [[Position]], only the first will be kept in the [[Board]].
+    *
+    * @param cells
+    *   the [[Cell]] in the created [[Board]]
+    * @tparam A
+    *   the type of [[Cell]] in this [[Board]]
+    * @return
+    *   a new [[Board]] instance
+    */
+  def apply[A <: Cell](cells: A*): Board[A] = BoardImpl(cells.toSet)
+
+  /** Returns a new instance of the [[Board]] trait given the [[Cell]] that are contained into the [[Board]] itself.
+    *
+    * @param cells
+    *   the [[Cell]] in the created [[Board]]
+    * @tparam A
+    *   the type of [[Cell]] in this [[Board]]
+    * @return
+    *   a new [[Board]] instance
+    */
+  def apply[A <: Cell](cells: Set[A]): Board[A] = BoardImpl(cells)
 }

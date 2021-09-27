@@ -30,7 +30,7 @@
         <RowConstraints percentHeight="15.0" />
       <RowConstraints />
     </rowConstraints>
-    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Choose a level" GridPane.columnIndex="1"
+    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Choose a update" GridPane.columnIndex="1"
            GridPane.rowIndex="1">
         <font>
             <Font size="18.0" />

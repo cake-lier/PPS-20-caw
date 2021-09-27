@@ -33,7 +33,7 @@
                  GridPane.columnIndex="1" GridPane.rowIndex="3"/>
     <SoundButton fx:id="editorButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Level Editor"
                  GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-    <SoundButton fx:id="loadButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Load a level"
+    <SoundButton fx:id="loadButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Load a update"
                  GridPane.columnIndex="1" GridPane.rowIndex="7"/>
     <SoundButton fx:id="settingsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Settings"
                  GridPane.columnIndex="1" GridPane.rowIndex="9"/>

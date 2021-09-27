@@ -19,5 +19,5 @@ object Loader {
     *   a [[Try]] with the contents of the file in a string
     */
   def load(path: String): Try[String] =
-    Using(Source.fromInputStream(ClassLoader.getSystemResourceAsStream(path)))(_.getLines.mkString)
+    Using(Source.fromResource(path))(_.getLines.mkString)
 }

@@ -1,47 +1,55 @@
 package it.unibo.pps.caw.game.model
 
-/** Represent the concept of a game area */
-trait Area {
+/** A level of the game, with its structure and its cells.
+  *
+  * A [[Level]] is a part of the game in which this is divided. Every level is characterized by its [[Dimensions]], its
+  * [[PlayableArea]] and the [[Cell]] which are part of the [[Board]] of this [[Level]]. Every [[Cell]] is fully contained into
+  * the [[Level]] and the same goes for the [[PlayableArea]]. Moreover, if a [[Cell]] is also contained into the [[PlayableArea]]
+  * is then a "playable" [[Cell]], which means that it can be manipulated by the player and mover in another [[Position]] inside
+  * the [[PlayableArea]]. It must be constructed through its companion object.
+  * @tparam A
+  *   the type of [[Cell]] inside the [[Board]] which is part of this [[Level]]
+  */
+trait Level[A <: Cell] {
 
-  /** the width of the area */
-  def width: Int
+  /** Returns the [[Dimensions]] of this [[Level]]. */
+  val dimensions: Dimensions
 
-  /** the height of the area */
-  def height: Int
+  /** Returns the [[Board]] which is part of this [[Level]]. */
+  val board: Board[A]
+
+  /** Returns the [[PlayableArea]] of this [[Level]]. */
+  val playableArea: PlayableArea
 }
 
-/** Companion object of trait [[Area]] */
-object Area {
-  private case class AreaImpl(width: Int, height: Int, cells: Set[Cell]) extends Area
-  def apply(width: Int, height: Int, cells: Set[Cell]): Area = AreaImpl(width, height, cells)
-}
-
-/** Represent the area in which one the player can move [[Cell]] on it */
-trait PlayableArea extends Area {
-
-  /** top-left area coordinates */
-  def position: Position
-}
-
-/** Companion object of trait [[PlayableArea]] */
-object PlayableArea {
-  private case class PlayableAreaImpl(position: Position, width: Int, height: Int) extends PlayableArea
-  def apply(position: Position, width: Int, height: Int): PlayableArea =
-    PlayableAreaImpl(position, width, height)
-}
-
-/** Represent the main structure of the game */
-trait Level extends Area {
-
-  /** the set of [[Cell]] in the level */
-  def setupBoard:Board[SetupCell]
-
-  /** the [[PlayableArea]] of the game */
-  def playableArea: PlayableArea
-}
-
+/** Companion object of the [[Level]] trait, containing its factory method. */
 object Level {
-  private case class LevelImpl(width: Int, height: Int, setupBoard: Board[SetupCell], playableArea: PlayableArea) extends Level
-  def apply(width: Int, height: Int, setupBoard: Board[SetupCell], playableArea: PlayableArea): Level =
-    LevelImpl(width, height, setupBoard, playableArea)
+
+  /* Default implementation of the Level trait. */
+  private case class LevelImpl[A <: Cell](dimensions: Dimensions, board: Board[A], playableArea: PlayableArea) extends Level[A]
+
+  /** Returns a new instance of the [[Level]] trait given its [[Dimensions]], its [[Board]] of [[Cell]] and its [[PlayableArea]].
+    *
+    * @param dimensions
+    *   the [[Dimensions]] of the created [[Level]]
+    * @param board
+    *   the [[Board]] of [[Cell]] of the created [[Level]]
+    * @param playableArea
+    *   the [[PlayableArea]] of the created [[Level]]
+    * @tparam A
+    *   the type of [[Cell]] inside the [[Board]] which is part of this [[Level]]
+    * @return
+    *   a new [[Level]] instance
+    */
+  def apply[A <: Cell](dimensions: Dimensions, board: Board[A], playableArea: PlayableArea): Level[A] =
+    LevelImpl(dimensions, board, playableArea)
+
+  extension [A <: Cell](l: Level[A]) {
+    def copy(
+      dimensions: Dimensions = l.dimensions,
+      board: Board[A] = l.board,
+      playableArea: PlayableArea = l.playableArea
+    ): Level[A] =
+      LevelImpl(dimensions, board, playableArea)
+  }
 }
