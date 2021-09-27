@@ -77,9 +77,9 @@ object GameView {
 
   /* Abstract implementation of the GameView trait for factorizing common behaviors. */
   private abstract class AbstractGameView(parentController: ParentGameController, audioPlayer: AudioPlayer, scene: Scene)
-    extends AbstractViewComponent[GridPane]("game.fxml")
-    with GameView
-    with ModelUpdater {
+      extends AbstractViewComponent[GridPane]("game.fxml")
+      with GameView
+      with ModelUpdater {
     @FXML
     var resetButton: Button = _
     @FXML
@@ -165,7 +165,7 @@ object GameView {
     })
 
     override def drawLevel(level: Level, isCompleted: Boolean): Unit = Platform.runLater(() => {
-      val newBoardView: GameBoardView = GameBoardView(level, this)
+      val newBoardView: GameBoardView = GameBoardView(scene.getWidth, scene.getHeight, level, this)
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
       GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
       GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
@@ -188,18 +188,18 @@ object GameView {
 
   /* Extension of AbstractGameView for displaying default levels. */
   private class DefaultGameView(
-    parentController: ParentGameController,
-    audioPlayer: AudioPlayer,
-    levels: Seq[Level],
-    levelIndex: Int,
-    scene: Scene
+      parentController: ParentGameController,
+      audioPlayer: AudioPlayer,
+      levels: Seq[Level],
+      levelIndex: Int,
+      scene: Scene
   ) extends AbstractGameView(parentController, audioPlayer, scene) {
     override protected def createController(): GameController = GameController(parentController, this, levels, levelIndex)
   }
 
   /* Extension of AbstractGameView for displaying a generic level. */
   private class ExternalGameView(parentController: ParentGameController, audioPlayer: AudioPlayer, level: Level, scene: Scene)
-    extends AbstractGameView(parentController, audioPlayer, scene) {
+      extends AbstractGameView(parentController, audioPlayer, scene) {
     override protected def createController(): GameController = GameController(parentController, this, level)
   }
 
@@ -222,11 +222,11 @@ object GameView {
     *   a new [[GameView]] instance
     */
   def apply(
-    parentController: ParentGameController,
-    audioPlayer: AudioPlayer,
-    levels: Seq[Level],
-    levelIndex: Int,
-    scene: Scene
+      parentController: ParentGameController,
+      audioPlayer: AudioPlayer,
+      levels: Seq[Level],
+      levelIndex: Int,
+      scene: Scene
   ): GameView =
     DefaultGameView(parentController, audioPlayer, levels, levelIndex, scene)
 

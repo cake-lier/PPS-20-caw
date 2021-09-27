@@ -87,8 +87,8 @@ object LevelEditorView {
     rotateCellsButton.setOnMouseClicked(_ => rotateButtons())
 
     override def printLevel(level: Level): Unit = Platform.runLater(() => {
-      val newBoardView: EditorBoardView = EditorBoardView(level, this, this)
-      
+      val newBoardView: EditorBoardView = EditorBoardView(scene.getWidth, scene.getHeight, level, this, this)
+
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
       GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
       GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
