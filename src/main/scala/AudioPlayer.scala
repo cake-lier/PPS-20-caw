@@ -1,6 +1,5 @@
 package it.unibo.pps.caw
 
-import it.unibo.pps.caw.menu.SettingsUtils
 import scalafx.scene.media.AudioClip
 import scalafx.scene.media.{Media, MediaPlayer}
 
@@ -82,16 +81,8 @@ object AudioPlayer {
     private var soundPlayers: Map[Track, Set[MediaPlayer]] = Map()
     private var volumes: Map[AudioType, Double] = Map()
 
-    SettingsUtils.load() match {
-      case Success(settings) => {
-        setVolume(settings.volumeMusic, AudioType.Music)
-        setVolume(settings.volumeSFX, AudioType.Sound)
-      }
-      case _ => {
-        setVolume(0.3, AudioType.Music)
-        setVolume(0.7, AudioType.Sound)
-      }
-    }
+    setVolume(0.3, AudioType.Music)
+    setVolume(0.7, AudioType.Sound)
 
     override def play(track: Track): Unit = track.audioType match {
       case AudioType.Music => {
