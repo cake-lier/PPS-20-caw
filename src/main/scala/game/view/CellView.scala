@@ -1,9 +1,10 @@
 package it.unibo.pps.caw.game.view
 
-import it.unibo.pps.caw.game.model.*
 import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.game.model._
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
+import it.unibo.pps.caw.common.CellImage
 
 trait CellView extends ViewComponent[ImageView]
 
@@ -27,8 +28,8 @@ object CellView {
     cell match {
       case RotatorCell(_, rotation) =>
         rotation match {
-          case Rotation.Clockwise => innerComponent.setImage(CellImage.RotatorRight.image)
-          case Rotation.Counterclockwise  => innerComponent.setImage(CellImage.RotatorLeft.image)
+          case Rotation.Clockwise        => innerComponent.setImage(CellImage.RotatorRight.image)
+          case Rotation.Counterclockwise => innerComponent.setImage(CellImage.RotatorLeft.image)
         }
       case GeneratorCell(_, orientation) =>
         orientation match {

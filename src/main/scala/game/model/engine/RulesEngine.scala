@@ -1,17 +1,17 @@
-package engine
+package it.unibo.pps.caw.game.model.engine
 import alice.tuprolog.{Prolog, Struct, Term, Theory}
 import com.google.gson.{Gson, JsonArray}
 import _root_.engine.{Clause, PrologEngine}
 import _root_.engine.PrologEngine.extractTerm
-import it.unibo.pps.caw.game.model._
-import it.unibo.pps.caw.game.model.CellTypes._
-import it.unibo.pps.caw.game.model.Push._
-import it.unibo.pps.caw.game.model.Orientation._
-import it.unibo.pps.caw.game.model.Rotation._
+import it.unibo.pps.caw.common.{Board, Position}
+import it.unibo.pps.caw.game.model.*
+import it.unibo.pps.caw.game.model.CellTypes.*
+import it.unibo.pps.caw.game.model.Push.*
+import it.unibo.pps.caw.game.model.Orientation.*
+import it.unibo.pps.caw.game.model.Rotation.*
 
 import scala.annotation.tailrec
 import scala.io.Source
-
 import scala.reflect.ClassTag
 import scala.util.Using
 import scala.util.matching.Regex
@@ -111,15 +111,15 @@ private object PrologParser {
     val cellType: String = cell match {
       case _: IdWallCell  => "wall"
       case _: IdEnemyCell => "enemy"
-      case m: IdMoverCell => "mover_" + m.orientation.getOrientation
+      case m: IdMoverCell => "mover_" + m.orientation.orientation
       case b: IdBlockCell =>
         "block" + (b.push match {
           case Horizontal => "_hor"
           case Vertical   => "_ver"
           case _          => ""
         })
-      case g: IdGeneratorCell => "generator_" + g.orientation.getOrientation
-      case r: IdRotatorCell   => "rotator_" + r.rotation.getRotation
+      case g: IdGeneratorCell => "generator_" + g.orientation.orientation
+      case r: IdRotatorCell   => "rotator_" + r.rotation.rotation
     }
     Term.createTerm("cell" + Seq(cell.id, cellType, cell.position.x, cell.position.y).mkString("(", ",", ")"))
   }
@@ -131,11 +131,11 @@ private object PrologParser {
   def createSerializedPredicate(board: Board[IdCell], maxId: Long, cell: IdCell): Term = {
     var seq = Seq("[" + board.cells.map(serializeCell).mkString(",") + "]", cell.position.x, cell.position.y)
     val action: String = cell match {
-      case m: IdMoverCell => "mover_" + m.orientation.getOrientation
+      case m: IdMoverCell => "mover_" + m.orientation.orientation
       case g: IdGeneratorCell =>
         seq = seq :+ maxId.toString
-        "generator_" + g.orientation.getOrientation
-      case r: IdRotatorCell => "rotator_" + r.rotation.getRotation
+        "generator_" + g.orientation.orientation
+      case r: IdRotatorCell => "rotator_" + r.rotation.rotation
     }
 
     seq = seq :+ "NB"

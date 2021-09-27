@@ -21,5 +21,5 @@ trait LevelSelectionController {
   def startGame(levelIndex: Int): Unit
 
   /** Returns to the main menu. */
-  def backToMainMenu(): Unit
+  def goBack(): Unit
 }

@@ -8,5 +8,5 @@ package it.unibo.pps.caw.menu
 trait SettingsController {
 
   /** Goes back to the main menu. */
-  def backToMainMenu(): Unit
+  def goBack(): Unit
 }

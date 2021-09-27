@@ -2,7 +2,8 @@ package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.game.controller.{Deserializer, ParentGameController}
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.game.model.{Level, PlayableArea, Position}
+import it.unibo.pps.caw.game.model.{Level}
+import it.unibo.pps.caw.common.{Position, PlayableArea}
 import it.unibo.pps.caw.menu.MainMenuView
 import it.unibo.pps.caw.AudioPlayer
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent

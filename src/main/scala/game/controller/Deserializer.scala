@@ -1,11 +1,11 @@
 package it.unibo.pps.caw.game.controller
 
 import it.unibo.pps.caw.game.model.*
-
 import io.vertx.core.json.JsonObject
 import io.vertx.core.Vertx
 import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
-import play.api.libs.json.{JsArray, JsObject, Json, JsValue}
+import it.unibo.pps.caw.common.{Board, PlayableArea, Position}
+import play.api.libs.json.{JsArray, JsObject, JsValue, Json}
 
 import scala.io.Source
 import scala.util.{Try, Using}
@@ -42,14 +42,13 @@ object Deserializer {
 
   /* deserialize all cells in their specific types, grouping them into a Set */
   private def deserializeCells(
-    jsonLevels: JsObject,
-    playableAreaPoint: Position,
-    playableAreaWidth: Int,
-    playableAreaHeight: Int
+      jsonLevels: JsObject,
+      playableAreaPoint: Position,
+      playableAreaWidth: Int,
+      playableAreaHeight: Int
   ): Board[SetupCell] = {
     Board[SetupCell](
-      jsonLevels
-        .value
+      jsonLevels.value
         .flatMap((cellType, jsCell) =>
           jsCell
             .as[JsArray]

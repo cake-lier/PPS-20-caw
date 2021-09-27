@@ -1,8 +1,8 @@
 package it.unibo.pps.caw.game.controller
 
-import it.unibo.pps.caw.game.model.{Level, Model, PlayableArea, Position}
+import it.unibo.pps.caw.common.Position
+import it.unibo.pps.caw.game.model.{Level, Model}
 import it.unibo.pps.caw.game.view.GameView
-
 import javafx.application.Platform
 import javafx.scene.control.Alert
 import javafx.scene.control.Alert.AlertType
@@ -74,7 +74,7 @@ object GameController {
 
   /* Abstract implementation of the GameController trait for factorizing common behaviors. */
   private abstract class AbstractGameController(parentController: ParentGameController, view: GameView, initialLevel: Level)
-    extends GameController {
+      extends GameController {
     protected val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     protected var updatesHandler: Option[ScheduledFuture[?]] = None
     protected var model = Model(initialLevel)
@@ -117,17 +117,17 @@ object GameController {
 
   /* Extension of the AbstractGameController class for playing a generic level. */
   private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level)
-    extends AbstractGameController(parentController, view, initialLevel) {
+      extends AbstractGameController(parentController, view, initialLevel) {
 
     def nextLevel(): Unit = goBack()
   }
 
   /* Extension of the AbstractGameController class for playing the default levels. */
   private class DefaultGameController(
-    parentController: ParentGameController,
-    view: GameView,
-    levels: Seq[Level],
-    initialLevelIndex: Int
+      parentController: ParentGameController,
+      view: GameView,
+      levels: Seq[Level],
+      initialLevelIndex: Int
   ) extends AbstractGameController(parentController, view, levels(initialLevelIndex - 1)) {
     private var currentIndex: Int = initialLevelIndex
 

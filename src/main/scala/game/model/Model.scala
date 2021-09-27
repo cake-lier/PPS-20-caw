@@ -2,6 +2,7 @@ package it.unibo.pps.caw
 package game.model
 
 import engine.RulesEngine
+import it.unibo.pps.caw.common.{Board, Position}
 
 /** Trait representing the model of the game. Changing the state creates another [[Model]] instance */
 sealed trait Model {
@@ -39,7 +40,7 @@ sealed trait Model {
   val isLevelCompleted: Boolean
 
   def nextLevelIndex(currentIndex: Int): Option[Int]
-  
+
   val didEnemyExplode: Boolean
 }
 

@@ -19,8 +19,8 @@
     </columnConstraints>
     <rowConstraints>
         <RowConstraints percentHeight="2.5" />
-      <RowConstraints minHeight="10.0" percentHeight="7.5" prefHeight="30.0" />
-      <RowConstraints minHeight="10.0" percentHeight="2.5" prefHeight="30.0" />
+        <RowConstraints minHeight="10.0" percentHeight="7.5" prefHeight="30.0" />
+        <RowConstraints minHeight="10.0" percentHeight="2.5" prefHeight="30.0" />
         <RowConstraints percentHeight="85.0" />
         <RowConstraints percentHeight="2.5" />
         <RowConstraints percentHeight="7.5" />
