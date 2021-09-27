@@ -37,9 +37,9 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>4</td>
             <td>3</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Cercare e sistemare bug vari ed eventuali</td>
@@ -58,13 +58,13 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>Creazione di una pagina del menu "editor" e di un "EditorView"</td>
             <td>Lorenzo Gardini & Yuqi Sun</td>
             <td>6</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>6</td>
+            <td>6</td>
+            <td>4</td>
+            <td>4</td>
+            <td>3</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Creazione di un "EditorController"</td>
