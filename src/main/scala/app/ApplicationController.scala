@@ -46,11 +46,15 @@ object ApplicationController {
     override def addSolvedLevel(index: Int): Unit =
       settings = Settings(settings.volumeMusic, settings.volumeSFX, settings.solvedLevels ++ Set(index))
 
-    override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit = println("voolume")
+    override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit =
+      settings = Settings(volumeMusic, volumeSFX, settings.solvedLevels)
 
     override def goBack(): Unit = view.showMainMenu()
 
-    override def exit(): Unit = sys.exit()
+    override def exit(): Unit = {
+      settingsManager.save(settings)
+      sys.exit()
+    }
   }
 
   /** Returns a new instance of the [[ApplicationController]] trait. It must receive the [[ApplicationView]] which will be called

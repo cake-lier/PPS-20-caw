@@ -80,6 +80,9 @@ object MainMenuController {
     override def exit(): Unit = parentController.exit()
 
     override def backToMainMenu(): Unit = parentController.goBack()
+
+    override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit =
+      parentController.saveVolumeSettings(volumeMusic, volumeSFX)
   }
 
   /** Returns a new instance of the [[MainMenuController]] trait. It must receive the [[ParentMainMenuController]], which it
