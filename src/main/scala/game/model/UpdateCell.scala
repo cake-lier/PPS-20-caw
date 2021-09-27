@@ -1,5 +1,7 @@
 package it.unibo.pps.caw.game.model
 
+import it.unibo.pps.caw.common.Position
+
 /** Represent a [[Cell]] during the update phase */
 sealed trait UpdateCell extends Cell {
 

@@ -4,6 +4,7 @@ import it.unibo.pps.caw.game.model.*
 import io.vertx.core.json.JsonObject
 import io.vertx.core.Vertx
 import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
+import it.unibo.pps.caw.common.{Board, Dimensions, Position, PlayableArea}
 import it.unibo.pps.caw.Loader
 import play.api.libs.json.{JsArray, JsObject, Json, JsValue}
 

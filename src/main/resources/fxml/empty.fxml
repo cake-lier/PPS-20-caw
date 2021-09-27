@@ -4,8 +4,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<FlowPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" styleClass="background" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
-      <Label maxHeight="Infinity" text="Sorry, but an error has occurred and we couldn't load your update." BorderPane.alignment="CENTER">
+<FlowPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+          styleClass="background" stylesheets="@../css/main.css" xmlns="http://javafx.com/javafx/11.0.2">
+      <Label maxHeight="Infinity" text="Sorry, but an error has occurred and we couldn't load your level." BorderPane.alignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>

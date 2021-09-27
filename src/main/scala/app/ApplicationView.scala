@@ -1,17 +1,19 @@
 package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController, SettingsView}
-import it.unibo.pps.caw.ViewComponent
-import it.unibo.pps.caw.game.model.{BaseCell, Level}
 import javafx.application.Platform
 import scalafx.scene.control.Alert
+import it.unibo.pps.caw.game.model.{BaseCell, Level as GameLevel}
+import it.unibo.pps.caw.editor.model.{SetupEnemyCell, Level as EditorLevel}
+import it.unibo.pps.caw.editor.LevelEditorView
+import it.unibo.pps.caw.editor.view.LevelEditorMenuView
+import it.unibo.pps.caw.game.view.GameView
 import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
 import it.unibo.pps.caw.game.controller.ParentGameController
-import it.unibo.pps.caw.game.view.GameView
 import javafx.scene.layout.Pane
+import javafx.stage.Screen
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
-import it.unibo.pps.caw.ViewComponent
 
 import java.io.File
 import java.nio.file.Path
@@ -41,7 +43,7 @@ trait ApplicationView {
     * @param level
     *   the [[Level]] which will be first displayed
     */
-  def showGame(level: Level[BaseCell]): Unit
+  def showGame(level: GameLevel[BaseCell]): Unit
 
   /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing a default [[Level]]. The [[Level]]
     * which will be played will be the one with the given index between the given sequence of default [[Level]]. After playing
@@ -52,7 +54,27 @@ trait ApplicationView {
     * @param levelIndex
     *   the index of the [[Level]] which will be first displayed in the given sequence of [[Level]]
     */
-  def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit
+  def showGame(levels: Seq[GameLevel[BaseCell]], levelIndex: Int): Unit
+
+  /** Shows the [[LevelEditorView]] to the player with an empty level, hiding the currently displayed view.
+    * @param width:
+    *   the width of the empty [[Level]]
+    * @param height:
+    *   the height of the empty [[Level]]
+    */
+  def showLevelEditor(width: Int, height: Int): Unit
+
+  /** Shows the [[LevelEditorView]] to the player with an empty level, hiding the currently displayed view.
+    * @param level:
+    *   the loaded level
+    */
+  def showLevelEditor(level: EditorLevel): Unit
+
+  /** Shows the [[LevelEditorMenuView]] to the player.
+    * @param buttonText:
+    *   the text to be written in the back or close button of [[LevelEditorView]] and [[LevelEditorMenuView]]
+    */
+  def showEditorMenuView(): Unit
 }
 
 /** Companion object for the [[ApplicationView]] trait, containing its factory method. */
@@ -62,25 +84,72 @@ object ApplicationView {
   private class ApplicationViewImpl(stage: PrimaryStage) extends ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
     private val audioPlayer: AudioPlayer = AudioPlayer()
-    private val scene: Scene = Scene(1080, 720)
+    setScreenSize()
+    private val scene: Scene = Scene(stage.getWidth, stage.getHeight)
+    private var visibleView: ViewComponent[? <: Pane] =
+      MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
 
     stage.resizable = false
     stage.maximized = false
     stage.title = "Cells at Work"
-    scene.root.value = MainMenuView(controller, audioPlayer, scene)
+    scene.root.value = visibleView
     stage.scene = scene
     stage.show()
     stage.setOnCloseRequest(_ => controller.exit())
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: Level[BaseCell]): Unit =
-      Platform.runLater(() => scene.root.value = GameView(controller, audioPlayer, level, scene))
+    override def showGame(level: GameLevel[BaseCell]): Unit = setVisibleView(GameView(controller, audioPlayer, level, scene))
 
-    override def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit =
-      Platform.runLater(() => scene.root.value = GameView(controller, audioPlayer, levels, levelIndex, scene))
+    override def showGame(levels: Seq[GameLevel[BaseCell]], levelIndex: Int): Unit = setVisibleView(
+      GameView(controller, audioPlayer, levels, levelIndex, scene)
+    )
 
-    override def showMainMenu(): Unit = Platform.runLater(() => scene.root.value = MainMenuView(controller, audioPlayer, scene))
+    override def showMainMenu(): Unit = setVisibleView(
+      MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
+    )
+
+    override def showLevelEditor(width: Int, height: Int): Unit = setVisibleView(
+      LevelEditorView(controller, scene, "Menu", width, height)
+    )
+
+    override def showLevelEditor(level: EditorLevel): Unit = setVisibleView(
+      LevelEditorView(controller, scene, "Menu", level)
+    )
+
+    override def showEditorMenuView(): Unit = setVisibleView(LevelEditorMenuView(controller, scene, "Menu"))
+
+    private def setVisibleView(newVisibleView: ViewComponent[? <: Pane]) =
+      Platform.runLater(() => {
+        visibleView = newVisibleView; scene.root.value = visibleView.innerComponent
+      })
+
+    import javafx.geometry.Rectangle2D
+    import javafx.stage.Screen
+
+    private def setScreenSize(): Unit = {
+      val heightRatio = 9
+      val widthRatio = 16
+      val screenBounds: Rectangle2D = Screen.getPrimary.getVisualBounds
+      stage.setX(screenBounds.getMinX)
+      stage.setY(screenBounds.getMinY)
+      stage.centerOnScreen()
+      val unitaryHeight: Double = screenBounds.getHeight / heightRatio
+      val unitaryWidth: Double = screenBounds.getWidth / widthRatio
+      if (screenBounds.getWidth < unitaryHeight * widthRatio) {
+        stage.setWidth(screenBounds.getWidth)
+        stage.setHeight(unitaryWidth * heightRatio)
+      } else {
+        if (screenBounds.getHeight < unitaryWidth * heightRatio) {
+          stage.setHeight(screenBounds.getHeight)
+          stage.setWidth(unitaryHeight * widthRatio)
+        } else {
+          stage.setHeight(screenBounds.getHeight)
+          stage.setWidth(screenBounds.getWidth)
+        }
+      }
+      stage.setResizable(false)
+    }
   }
 
   /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX's [[PrimaryStage]] for creating a view for the

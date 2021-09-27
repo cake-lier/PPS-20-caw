@@ -1,5 +1,7 @@
 package it.unibo.pps.caw.game.model
 
+import it.unibo.pps.caw.common.{Board, Dimensions, PlayableArea}
+
 /** A level of the game, with its structure and its cells.
   *
   * A [[Level]] is a part of the game in which this is divided. Every level is characterized by its [[Dimensions]], its
@@ -7,6 +9,7 @@ package it.unibo.pps.caw.game.model
   * the [[Level]] and the same goes for the [[PlayableArea]]. Moreover, if a [[Cell]] is also contained into the [[PlayableArea]]
   * is then a "playable" [[Cell]], which means that it can be manipulated by the player and mover in another [[Position]] inside
   * the [[PlayableArea]]. It must be constructed through its companion object.
+ *
   * @tparam A
   *   the type of [[Cell]] inside the [[Board]] which is part of this [[Level]]
   */

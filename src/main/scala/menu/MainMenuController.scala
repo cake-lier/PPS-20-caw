@@ -31,6 +31,9 @@ trait ParentMainMenuController {
 
   /** Asks the parent controller to exit the application. */
   def exit(): Unit
+
+  /** Asks the parent controller to open the [[LevelMenuView]] */
+  def openLevelMenuView(): Unit
 }
 
 /** The controller which manages the main menu part of the application.
@@ -53,12 +56,19 @@ trait MainMenuController extends LevelSelectionController with SettingsControlle
 
   /** Exits the application. */
   def exit(): Unit
+
+  /** Open the [[LevelMenuView]]
+    * @param buttonText:
+    *   the text to be printed in the button for back or close action
+    */
+  def openLevelMenuView(): Unit
 }
 
 /** Companion object to the [[MainMenuController]] trait, containing its factory method. */
 object MainMenuController {
 
   /* Default implementation of the MainMenuController trait. */
+
   private class MainMenuControllerImpl(parentController: ParentMainMenuController, view: MainMenuView)
     extends MainMenuController {
 
@@ -70,7 +80,9 @@ object MainMenuController {
 
     override def exit(): Unit = parentController.exit()
 
-    override def backToMainMenu(): Unit = parentController.goBack()
+    override def openLevelMenuView(): Unit = parentController.openLevelMenuView()
+
+    override def goBack(): Unit = parentController.goBack()
   }
 
   /** Returns a new instance of the [[MainMenuController]] trait. It must receive the [[ParentMainMenuController]], which it

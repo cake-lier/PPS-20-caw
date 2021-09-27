@@ -1,11 +1,21 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.game.model.{BaseCell, Level}
+import it.unibo.pps.caw.game.model.{BaseCell, Level as GameLevel}
+import it.unibo.pps.caw.editor.controller.{ParentLevelEditorController, Serializer}
+import it.unibo.pps.caw.game.controller.{Deserializer, ParentGameController}
+import it.unibo.pps.caw.editor.view.ParentLevelEditorMenuController
+import it.unibo.pps.caw.editor.model.Level as EditorLevel
 import it.unibo.pps.caw.menu.ParentMainMenuController
+import it.unibo.pps.caw.game.LevelManager
+import it.unibo.pps.caw.Loader
+import java.io.{File, PrintWriter}
+import java.nio.file.{Files, Path, Paths}
+import scala.io.Source
+import scala.jdk.StreamConverters.given
+import scala.util.{Failure, Try, Using}
 import cats.implicits.given
 import play.api.libs.json.Json
-import it.unibo.pps.caw.game.controller.{Deserializer, ParentGameController}
-import it.unibo.pps.caw.Loader
+import javafx.scene.layout.AnchorPane
 
 /** The controller of the main application.
   *
@@ -13,7 +23,12 @@ import it.unibo.pps.caw.Loader
   * application and provides them the functionalities that are common between all controllers or that are "higher-level" ones,
   * such that no other controller should be responsible for them. It must be created through its companion object.
   */
-trait ApplicationController extends ParentGameController with ParentMainMenuController
+
+trait ApplicationController
+  extends ParentGameController
+  with ParentMainMenuController
+  with ParentLevelEditorController
+  with ParentLevelEditorMenuController
 
 /** Companion object to the [[ApplicationController]] trait, containing its factory method. */
 object ApplicationController {
@@ -27,7 +42,7 @@ object ApplicationController {
         l <- Deserializer.deserializeLevel(f)
       } yield l).fold(_ => view.showError("An error has occured, could not load level"), view.showGame(_))
 
-    private val levelFiles: Seq[Level[BaseCell]] =
+    private val levelFiles: Seq[GameLevel[BaseCell]] =
       (for {
         f <- Loader.load("levels.json")
         s <- Json.parse(f).as[Seq[String]].map(n => Loader.load(s"levels/$n")).sequence
@@ -37,13 +52,30 @@ object ApplicationController {
         Seq.empty
       }
 
-    override val levelsCount: Int = levelFiles.length
-
     override def startGame(levelIndex: Int): Unit = view.showGame(levelFiles, levelIndex)
+
+    override val levelsCount: Int = levelFiles.length
 
     override def exit(): Unit = sys.exit()
 
     override def goBack(): Unit = view.showMainMenu()
+
+    override def backToLevelEditorMenu(): Unit = view.showEditorMenuView()
+
+    override def closeEditor(): Unit = view.showMainMenu()
+
+    override def closeLevelEditorMenu(): Unit = view.showMainMenu()
+
+    override def openLevelMenuView(): Unit = view.showEditorMenuView()
+
+    override def saveLevel(file: File, level: EditorLevel): Unit =
+      LevelManager.writeLevel(file, level)
+
+    override def openLevelEditor(width: Int, height: Int): Unit =
+      view.showLevelEditor(width, height)
+
+    override def openLevelEditor(level: File): Unit =
+      LevelManager.loadLevelLevelEditor(level).foreach(view.showLevelEditor)
   }
 
   /** Returns a new instance of the [[ApplicationController]] trait. It must receive the [[ApplicationView]] which will be called

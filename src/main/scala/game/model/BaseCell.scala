@@ -1,5 +1,7 @@
 package it.unibo.pps.caw.game.model
 
+import it.unibo.pps.caw.common.{PlayableArea, Position}
+
 /** A base cell, with no added properties with respect to the original [[Cell]] type. */
 sealed trait BaseCell extends Cell
 
@@ -22,11 +24,11 @@ object BaseRotatorCell {
   /** Returns a new instance of the [[BaseRotatorCell]] trait given its [[Position]] and its [[Rotation]].
     *
     * @param position
-    * the [[Position]] of the [[BaseRotatorCell]] to create
+    *   the [[Position]] of the [[BaseRotatorCell]] to create
     * @param rotation
-    * the [[Rotation]] of the [[BaseRotatorCell]] to create
+    *   the [[Rotation]] of the [[BaseRotatorCell]] to create
     * @return
-    * a new [[BaseRotatorCell]] instance
+    *   a new [[BaseRotatorCell]] instance
     */
   def apply(position: Position, rotation: Rotation): BaseRotatorCell = BaseRotatorCellImpl(position, rotation)
 

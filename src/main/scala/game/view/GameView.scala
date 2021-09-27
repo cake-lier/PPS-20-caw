@@ -2,8 +2,8 @@ package it.unibo.pps.caw.game.view
 
 import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.game.model.{BaseCell, Board, Level, Position, SetupCell}
-import it.unibo.pps.caw.game.view.{BoardView, ModelUpdater}
+import it.unibo.pps.caw.common.{Board, BoardView, GameBoardView, ModelUpdater, Position}
+import it.unibo.pps.caw.game.model.{BaseCell, Level, SetupCell}
 import it.unibo.pps.caw.game.controller.{GameController, ParentGameController}
 import javafx.application.Platform
 import javafx.event.EventHandler
@@ -11,6 +11,7 @@ import javafx.fxml.FXML
 import javafx.geometry.{HPos, Insets, VPos}
 import javafx.scene.control.{Alert, Button}
 import javafx.scene.control.Alert.AlertType
+import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.collections.ObservableBuffer.Update
@@ -95,7 +96,7 @@ object GameView {
     var nextButton: Button = _
     override val innerComponent: GridPane = loader.load[GridPane]
     private val controller: GameController = createController()
-    private var boardView: Option[BoardView] = None
+    private var boardView: Option[GameBoardView] = None
     private var isCurrentLevelCompleted: Boolean = false
     audioPlayer.play(Track.GameMusic)
 
@@ -146,7 +147,7 @@ object GameView {
       Platform.runLater(() =>
         boardView match {
           case Some(b) => {
-            b.updateBoard(update)
+            b.drawGameBoard(update.board)
             audioPlayer.play(Track.Step)
             if (didEnemyExplode) {
               audioPlayer.play(Track.Explosion)
@@ -166,13 +167,13 @@ object GameView {
 
     override def drawLevelReset(level: Level[SetupCell]): Unit = Platform.runLater(() => {
       boardView match {
-        case Some(b) => b.resetBoard(level)
+        case Some(b) => b.drawSetupBoard(level.board)
         case None    => Console.err.print("The board was not initialized")
       }
     })
 
     override def drawLevel(level: Level[SetupCell], isCompleted: Boolean): Unit = Platform.runLater(() => {
-      val newBoardView: BoardView = BoardView(level, this)
+      val newBoardView: GameBoardView = GameBoardView(scene.getWidth, scene.getHeight, level, this)
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
       GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
       GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
@@ -185,8 +186,11 @@ object GameView {
 
     override def backToMenu(): Unit = controller.goBack()
 
-    override def updateCell(oldPosition: Position, newPosition: Position): Unit = {
-      controller.updateModel(oldPosition, newPosition)
+    override def manageCell(cell: ImageView, newPosition: Position): Unit = {
+      val board = boardView.get.innerComponent
+      controller.updateModel(Position(GridPane.getColumnIndex(cell), GridPane.getRowIndex(cell)), newPosition)
+      board.getChildren.remove(cell)
+      board.add(cell, newPosition.x, newPosition.y)
     }
   }
 

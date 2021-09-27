@@ -3,6 +3,7 @@ package it.unibo.pps.caw.game.model.engine
 import alice.tuprolog.{Prolog, Struct, Term, Theory}
 import com.google.gson.{Gson, JsonArray}
 import it.unibo.pps.caw.game.model.*
+import it.unibo.pps.caw.common.{Board, Position}
 
 import scala.annotation.tailrec
 import scala.io.Source

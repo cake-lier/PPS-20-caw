@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.game.controller
 
-import it.unibo.pps.caw.game.model.{BaseCell, Level, GameModel, PlayableArea, Position}
+import it.unibo.pps.caw.game.model.{BaseCell, Level, GameModel}
+import it.unibo.pps.caw.common.Position
 import it.unibo.pps.caw.game.view.GameView
 import javafx.application.Platform
 import javafx.scene.control.Alert

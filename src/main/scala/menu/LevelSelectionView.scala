@@ -51,7 +51,7 @@ object LevelSelectionView {
 
     override val innerComponent: Pane = loader.load[GridPane]
 
-    backButton.setOnMouseClicked(_ => controller.backToMainMenu())
+    backButton.setOnMouseClicked(_ => controller.goBack())
     val constraints: RowConstraints = RowConstraints()
     val rows: Int = (controller.levelsCount / 10.0).ceil.toInt
     val minTableRows: Int = 4

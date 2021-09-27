@@ -1,5 +1,7 @@
 package it.unibo.pps.caw.game.model
 
+import it.unibo.pps.caw.common.{Board, PlayableArea, Position}
+
 /** A cell, an element of a [[Board]] in the game.
   *
   * The [[Cell]] represents the atomic entity of the game, its smallest component. A [[Cell]] is alive and, being so, it has a
@@ -12,7 +14,7 @@ trait Cell extends Ordered[Cell] {
 
   /** Returns the [[Position]] of this [[Cell]] into the [[Board]] in which is inserted. */
   val position: Position
-
+  
   final override def compare(that: Cell): Int = (position.x - that.position.x) + (position.y - that.position.y)
 
   final override def equals(obj: Any): Boolean = obj match {
@@ -22,7 +24,6 @@ trait Cell extends Ordered[Cell] {
 
   final override def hashCode(): Int = position.hashCode()
 }
-
 
 /** The rotator [[Cell]], the [[Cell]] that can rotate other [[Cell]].
   *

@@ -1,5 +1,6 @@
 package it.unibo.pps.caw.game.model
 
+import it.unibo.pps.caw.common.{Board, PlayableArea, Position}
 import it.unibo.pps.caw.game.model.engine.RulesEngine
 
 import scala.annotation.tailrec
