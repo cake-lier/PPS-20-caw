@@ -21,7 +21,7 @@ object ApplicationController {
   /* Default implementation of the ApplicationController trait. */
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
     private val settingsManager = SettingsManager()
-    private var settings: Settings = settingsManager.load().getOrElse(settingsManager.getDefault())
+    var settings: Settings = settingsManager.load().getOrElse(settingsManager.getDefault())
 
     override def startGame(levelPath: String): Unit =
       (for {

@@ -91,17 +91,3 @@ object SettingsManager {
     */
   def apply(): SettingsManager = SettingsManagerImpl()
 }
-
-object Test extends App{
-  val sm = SettingsManager()
-  sm.load() match {
-    case Success(s) => println(s)
-    case Failure(exception) => println("failed : " + exception.toString)
-  }
-  sm.save(Settings(0.2, 0.6, Set(1, 9)))
-
-  sm.load() match {
-    case Success(s) => println(s)
-    case _ => println("fail")
-  }
-}

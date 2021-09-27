@@ -1,5 +1,7 @@
 package it.unibo.pps.caw.menu
 
+import it.unibo.pps.caw.Settings
+
 /** The parent controller to the [[MainMenuController]].
   *
   * This trait is used for abstracting the functionalities which the [[MainMenuController]] needs from its parent controller so as
@@ -10,6 +12,9 @@ trait ParentMainMenuController {
 
   /** Asks the parent controller to return the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
   val levelsCount: Int
+
+  /** Returns the current game settings. */
+  def settings: Settings
 
   /** Asks the parent controller to start a new game. It needs the path of the file containing the level from which starting the
     * game.
@@ -72,6 +77,8 @@ object MainMenuController {
     extends MainMenuController {
 
     override val levelsCount: Int = parentController.levelsCount
+
+    override def solvedLevels: Set[Int] = parentController.settings.solvedLevels
 
     override def startGame(levelIndex: Int): Unit = parentController.startGame(levelIndex)
 

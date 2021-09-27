@@ -1,17 +1,16 @@
 package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController, SettingsView}
-import it.unibo.pps.caw.ViewComponent
-import it.unibo.pps.caw.game.model.Level
+import it.unibo.pps.caw.{AudioPlayer, AudioType, Track, ViewComponent}
 import javafx.application.Platform
 import scalafx.scene.control.Alert
-import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
 import it.unibo.pps.caw.game.controller.ParentGameController
 import it.unibo.pps.caw.game.view.GameView
 import javafx.scene.layout.Pane
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
-import it.unibo.pps.caw.ViewComponent.given
+import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.game.model.Level
 
 import java.io.File
 import java.nio.file.Path
@@ -71,6 +70,8 @@ object ApplicationView {
     stage.scene = scene
     stage.show()
     stage.setOnCloseRequest(_ => controller.exit())
+    audioPlayer.setVolume(controller.settings.volumeMusic, AudioType.Music)
+    audioPlayer.setVolume(controller.settings.volumeSFX, AudioType.Sound)
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
