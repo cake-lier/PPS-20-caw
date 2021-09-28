@@ -24,7 +24,7 @@ case class Settings(volumeMusic: Double, volumeSFX: Double, solvedLevels: Set[In
 trait SettingsManager {
 
   /** Returns default settings. */
-  def getDefault(): Settings
+  val defaultSettings: Settings
 
   /** Load settings from disk. If the settings file does not exist, it is created.
     *
@@ -50,12 +50,9 @@ trait SettingsManager {
 object SettingsManager {
 
   private class SettingsManagerImpl() extends SettingsManager {
-
-    private val defaultSettings = Settings(0.3, 0.7, Set())
+    val defaultSettings = Settings(0.3, 0.7, Set())
     private val defaultSettingsJson = Json.toJson(defaultSettings)(Json.writes[Settings])
     private val filePath = System.getProperty("user.home") + File.separator + ".settings.json"
-
-    override def getDefault(): Settings = defaultSettings
 
     override def load(): Try[Settings] = {
       Loader.loadAbsolute(filePath) match {

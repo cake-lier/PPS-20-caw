@@ -21,14 +21,14 @@ object ApplicationController {
   /* Default implementation of the ApplicationController trait. */
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
     private val settingsManager = SettingsManager()
-    private var _settings: Settings = settingsManager.load().getOrElse(settingsManager.getDefault())
+    private var _settings: Settings = settingsManager.load().getOrElse(settingsManager.defaultSettings)
     def settings: Settings = _settings
 
     override def startGame(levelPath: String): Unit =
       (for {
         f <- Loader.load(levelPath)
         l <- Deserializer.deserializeLevel(f)
-      } yield l).fold(_ => view.showError("An error has occured, could not load level"), view.showGame(_))
+      } yield l).fold(_ => view.showError("An error has occurred, could not load level"), view.showGame(_))
 
     private val levelFiles: Seq[Level] =
       (for {
@@ -53,7 +53,7 @@ object ApplicationController {
     override def goBack(): Unit = view.showMainMenu()
 
     override def exit(): Unit = {
-      settingsManager.save(_settings)
+      if (settingsManager.save(_settings).isFailure) view.showError("An error has occurred, could not save settings")
       sys.exit()
     }
   }
