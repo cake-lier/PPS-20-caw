@@ -110,11 +110,11 @@ object ApplicationView {
     )
 
     override def showLevelEditor(width: Int, height: Int): Unit = setVisibleView(
-      LevelEditorView(controller, scene, "Menu", width, height)
+      LevelEditorView(controller, scene, "Menu", audioPlayer, width, height)
     )
 
     override def showLevelEditor(level: EditorLevel): Unit = setVisibleView(
-      LevelEditorView(controller, scene, "Menu", level)
+      LevelEditorView(controller, scene, "Menu", audioPlayer, level)
     )
 
     override def showEditorMenuView(): Unit = setVisibleView(LevelEditorMenuView(controller, scene, "Menu"))

@@ -2,12 +2,12 @@ package it.unibo.pps.caw.common
 
 import it.unibo.pps.caw.game.model.{BaseCell, Level as GameLevel, SetupCell as GameSetupCell}
 import it.unibo.pps.caw.editor.model.{
+  Board as EditorBoard,
   Cell as EditorCell,
   Level as EditorLevel,
-  SetupCell as EditorSetupCell,
-  Board as EditorBoard
+  SetupCell as EditorSetupCell
 }
-import it.unibo.pps.caw.{game, ViewComponent}
+import it.unibo.pps.caw.{ViewComponent, game}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.{DragAndDrop, ModelUpdater, PlayableArea, TileView}
 import it.unibo.pps.caw.game.{model, view}
@@ -17,6 +17,7 @@ import it.unibo.pps.caw.game.view.CellView as GameCellView
 import it.unibo.pps.caw.editor.view.CellView as EditorCellView
 import javafx.application.Platform
 import javafx.scene.Node
+import javafx.scene.effect.Glow
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.{ColumnConstraints, GridPane, RowConstraints}
@@ -212,8 +213,8 @@ object EditorBoardView {
   ) extends AbstractBoardViewImpl(screenWidth, screenHeight, initialLevel.width, initialLevel.height, modelUpdater)
     with EditorBoardView {
 
-    var topLeftPosition = Position(0, 0)
-    var downRightPosition = Position(0, 0)
+    var startPosition = Position(0, 0)
+    var endPosition = Position(0, 0)
     drawBoard(initialLevel.board)
 
     override def drawBoard(board: EditorBoard[EditorSetupCell]): Unit = {
@@ -257,18 +258,40 @@ object EditorBoardView {
     }
 
     private def createPlayableArea(imageView: ImageView) = {
+      val glow = new Glow()
       imageView.setOnDragDetected(e => {
-        topLeftPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
+        startPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
         imageView.startFullDrag()
         e.consume()
       })
 
       imageView.setOnMouseDragReleased(e => {
-        downRightPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
-        updater.createPlayableArea(topLeftPosition, downRightPosition)
+        endPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
+        updater.createPlayableArea(startPosition, endPosition)
         e.consume()
       })
 
+      imageView.setOnMouseDragEntered(e => {
+        glow.setLevel(0.3)
+        applyHandler(
+          n =>
+            n.asInstanceOf[ImageView].getImage.equals(CellImage.DefaultTile.image) &&
+              GridPane.getRowIndex(n) >= startPosition.y && GridPane.getRowIndex(n) <= GridPane.getRowIndex(imageView) &&
+              GridPane.getColumnIndex(n) >= startPosition.x && GridPane.getColumnIndex(n) <= GridPane.getColumnIndex(imageView),
+          n => n.setEffect(glow)
+        )
+      })
+
+      imageView.setOnMouseDragExited(e => {
+        glow.setLevel(0)
+        applyHandler(
+          n =>
+            n.asInstanceOf[ImageView].getImage.equals(CellImage.DefaultTile.image) &&
+              GridPane.getRowIndex(n) < startPosition.y && GridPane.getRowIndex(n) >= GridPane.getRowIndex(imageView) &&
+              GridPane.getColumnIndex(n) < startPosition.x && GridPane.getColumnIndex(n) >= GridPane.getColumnIndex(imageView),
+          n => n.setEffect(glow)
+        )
+      })
     }
   }
 }

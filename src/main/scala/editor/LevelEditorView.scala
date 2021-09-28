@@ -1,7 +1,7 @@
 package it.unibo.pps.caw.editor
 
 import it.unibo.pps.caw.common.FilePicker
-import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
 import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.{BoardView, CellImage, DragAndDrop, EditorBoardView, ModelUpdater, Position, TileView}
 import it.unibo.pps.caw.editor.controller.{LevelEditorController, ParentLevelEditorController}
@@ -16,9 +16,9 @@ import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{MouseButton, MouseEvent}
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
-import scala.jdk.StreamConverters
-import scala.jdk.StreamConverters.given
 
+import scala.jdk.StreamConverters
+import scala.jdk.StreamConverters
 import java.io.File
 
 trait LevelEditorView extends ViewComponent[Pane] {
@@ -36,6 +36,7 @@ object LevelEditorView {
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,
     closeEditorButtonText: String,
+    audioPlayer: AudioPlayer,
     width: Int,
     height: Int,
     level: Option[Level]
@@ -63,11 +64,7 @@ object LevelEditorView {
     @FXML
     var wallCellView: ImageView = _
     @FXML
-    var playAreaCellView: ImageView = _
-    @FXML
     var rotateCellsButton: Button = _
-    @FXML
-    var levelEditorMenuButton: Button = _
 
     override val innerComponent: GridPane = loader.load[GridPane]
 
@@ -79,7 +76,7 @@ object LevelEditorView {
       .map(LevelEditorController(parentLevelEditorController, this, _))
       .getOrElse(LevelEditorController(parentLevelEditorController, this, width, height))
 
-    levelEditorMenuButton.setOnMouseClicked(_ => controller.backToLevelEditorMenu())
+    audioPlayer.play(Track.EditorMusic)
     backButton.setText(closeEditorButtonText)
     backButton.setOnMouseClicked(_ => controller.closeEditor())
     saveButton.setOnMouseClicked(_ => FilePicker.saveFile(scene).foreach(controller.saveLevel))
@@ -198,17 +195,27 @@ object LevelEditorView {
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,
     closeEditorButtonText: String,
+    audioPlayer: AudioPlayer,
     boardWidth: Int,
     boardHeight: Int
   ): LevelEditorView =
-    LevelEditorViewImpl(parentLevelEditorController, scene, closeEditorButtonText, boardWidth, boardHeight, None)
+    LevelEditorViewImpl(parentLevelEditorController, scene, closeEditorButtonText, audioPlayer, boardWidth, boardHeight, None)
 
   def apply(
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,
     closeEditorButtonText: String,
+    audioPlayer: AudioPlayer,
     level: Level
   ): LevelEditorView =
-    LevelEditorViewImpl(parentLevelEditorController, scene, closeEditorButtonText, level.width, level.height, Some(level))
+    LevelEditorViewImpl(
+      parentLevelEditorController,
+      scene,
+      closeEditorButtonText,
+      audioPlayer,
+      level.width,
+      level.height,
+      Some(level)
+    )
 
 }
