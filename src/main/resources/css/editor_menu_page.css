@@ -1,0 +1,11 @@
+*{
+    -fx-font-family: 'Minecraftia';
+}
+
+.button, .label, .text-field {
+    -fx-font-size: 24px;
+}
+
+#backButton {
+    -fx-font-size: 14px;
+}

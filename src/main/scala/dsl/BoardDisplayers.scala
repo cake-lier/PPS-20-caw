@@ -47,4 +47,35 @@ trait BoardDisplayers {
     */
   def saveIt(path: String)(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit =
     executeAction(ops)(b => Files.writeString(Paths.get(path), BoardSerializer.serialize(b), StandardOpenOption.CREATE_NEW))
+
+  import java.time.LocalDateTime
+  import java.nio.file.Path
+
+  private def launchApplication(ops: ListBuffer[BoardBuilder => BoardBuilder], launcher: Array[String] => Unit): Unit = {
+    executeAction(ops)(b => {
+      val tempPath: Path = Files.createTempFile(s"level_${LocalDateTime.now()}", ".json")
+      Files.writeString(tempPath, BoardSerializer.serialize(b))
+      launcher(Array(tempPath.toString))
+    })
+  }
+
+  /** Opens the application for playing a level as created by the user through the DSL after checking the correctness of the
+    * stored data and serializing it in JSON format into a temporary file. This means that, if not coupled with another action
+    * intended to saving the file to a specific location, after the closing of the launched application, the file containing the
+    * [[Board]] will not be stored anywhere. No options for saving the file will be shown in-game.
+    *
+    * @param ops
+    *   the list of operations to which add this specific operation
+    */
+  def playIt(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit = launchApplication(ops, DSLGameMain.main(_))
+
+    /** Opens the application for editing a level as created by the user through the DSL after checking the correctness of the
+    * stored data and serializing it in JSON format into a temporary file. This means that, if not coupled with another action
+    * intended to saving the file to a specific location, after the closing of the launched application, the file containing the
+    * [[Board]] will not be stored anywhere. An option for saving the file will be shown while the editor is open.
+    *
+    * @param ops
+    *   the list of operations to which add this specific operation
+    */
+  def editIt(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit = launchApplication(ops, DSLEditorMain.main(_))
 }

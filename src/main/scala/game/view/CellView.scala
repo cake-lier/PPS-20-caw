@@ -1,9 +1,9 @@
 package it.unibo.pps.caw.game.view
 
 import it.unibo.pps.caw.game.model.*
-import it.unibo.pps.caw.ViewComponent
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
+import it.unibo.pps.caw.common.{CellImage, ViewComponent}
 
 trait CellView extends ViewComponent[ImageView]
 
@@ -16,42 +16,41 @@ object CellView {
     * @param gridPane
     *   the gridpain in which the cell will be drawn
     */
-  def apply(cell: Cell, gridPane: GridPane): CellView = CellImpl(cell, gridPane)
+  def apply(cell: SetupCell, gridPane: GridPane): CellView = CellImpl(cell, gridPane)
 
   /* Implementation of the CellView. */
-  private class CellImpl(cell: Cell, gridPane: GridPane) extends CellView {
+  private class CellImpl(cell: SetupCell, gridPane: GridPane) extends CellView {
     override val innerComponent: ImageView = ImageView()
     innerComponent.fitWidthProperty().bind(gridPane.heightProperty().divide(gridPane.getRowConstraints.size()))
     innerComponent.setPreserveRatio(true)
-
     cell match {
-      case RotatorCell(_, rotation) =>
+      case SetupRotatorCell(_, rotation, _) =>
         rotation match {
-          case Rotation.Clockwise => innerComponent.setImage(CellImage.RotatorRight.image)
-          case Rotation.Counterclockwise  => innerComponent.setImage(CellImage.RotatorLeft.image)
+          case Rotation.Clockwise        => innerComponent.setImage(CellImage.RotatorRight.image)
+          case Rotation.Counterclockwise => innerComponent.setImage(CellImage.RotatorLeft.image)
         }
-      case GeneratorCell(_, orientation) =>
+      case SetupGeneratorCell(_, orientation, _) =>
         orientation match {
           case Orientation.Right => innerComponent.setImage(CellImage.GeneratorRight.image)
           case Orientation.Down  => innerComponent.setImage(CellImage.GeneratorDown.image)
           case Orientation.Left  => innerComponent.setImage(CellImage.GeneratorLeft.image)
           case Orientation.Top   => innerComponent.setImage(CellImage.GeneratorTop.image)
         }
-      case EnemyCell(_) => innerComponent.setImage(CellImage.Enemy.image)
-      case MoverCell(_, orientation) =>
+      case _: SetupEnemyCell => innerComponent.setImage(CellImage.Enemy.image)
+      case SetupMoverCell(_, orientation, _) =>
         orientation match {
           case Orientation.Right => innerComponent.setImage(CellImage.MoverRight.image)
           case Orientation.Down  => innerComponent.setImage(CellImage.MoverDown.image)
           case Orientation.Left  => innerComponent.setImage(CellImage.MoverLeft.image)
           case Orientation.Top   => innerComponent.setImage(CellImage.MoverTop.image)
         }
-      case BlockCell(_, push) =>
+      case SetupBlockCell(_, push, _) =>
         push match {
           case Push.Both       => innerComponent.setImage(CellImage.Block.image)
           case Push.Vertical   => innerComponent.setImage(CellImage.BlockVertical.image)
           case Push.Horizontal => innerComponent.setImage(CellImage.BlockHorizontal.image)
         }
-      case WallCell(_) => innerComponent.setImage(CellImage.Wall.image)
+      case _: SetupWallCell => innerComponent.setImage(CellImage.Wall.image)
     }
   }
 }

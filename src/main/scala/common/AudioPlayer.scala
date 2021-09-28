@@ -1,7 +1,8 @@
-package it.unibo.pps.caw
+package it.unibo.pps.caw.common
 
-import scalafx.scene.media.AudioClip
 import scalafx.scene.media.{Media, MediaPlayer}
+
+import scala.util.Success
 
 /** The possible audio types for a given [[Track]]. */
 enum AudioType {

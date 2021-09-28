@@ -8,5 +8,8 @@ package it.unibo.pps.caw.menu
 trait SettingsController {
 
   /** Goes back to the main menu. */
-  def backToMainMenu(): Unit
+  def goBack(): Unit
+
+  /** Saves values of volume as set in [[SettingsView]]. */
+  def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit
 }

@@ -17,6 +17,14 @@ Compile / resourceGenerators += Def.task {
 
 Compile / excludeFilter := "*.pl"
 
+assembly / mainClass := Some("it.unibo.pps.caw.app.Main")
+assembly / assemblyJarName := "caw.jar"
+assembly / assemblyMergeStrategy := {
+  case "META-INF/io.netty.versions.properties" => MergeStrategy.concat
+  case "module-info.class"                     => MergeStrategy.discard
+  case v                                       => (ThisBuild / assemblyMergeStrategy).value(v)
+}
+
 lazy val osName = System.getProperty("os.name") match {
   case n if n.startsWith("Linux")   => "linux"
   case n if n.startsWith("Mac")     => "mac"
@@ -30,6 +38,6 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-kernel" % "2.6.1",
   "com.typesafe.play" %% "play-json" % "2.10.0-RC5",
   "org.scalafx" %% "scalafx" % "16.0.0-R24",
-  "io.vertx" % "vertx-json-schema" % "4.1.3",
+  "io.vertx" % "vertx-json-schema" % "4.1.4",
   "it.unibo.alice.tuprolog" % "tuprolog" % "3.3.0"
 ) ++ Seq("base", "controls", "fxml", "graphics", "media").map(m => "org.openjfx" % s"javafx-$m" % "16" classifier osName)

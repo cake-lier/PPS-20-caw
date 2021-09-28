@@ -12,6 +12,9 @@ trait LevelSelectionController {
   /** Returns the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
   val levelsCount: Int
 
+  /** Returns the indexes of default solved levels. */
+  def solvedLevels: Set[Int]
+
   /** Starts a new game beginning from one of the default levels, which index is given. Then, the game will continue using the
     * level next to this one, and then the next one and so on until the last one is reached or the player exits the game.
     *
@@ -21,5 +24,5 @@ trait LevelSelectionController {
   def startGame(levelIndex: Int): Unit
 
   /** Returns to the main menu. */
-  def backToMainMenu(): Unit
+  def goBack(): Unit
 }

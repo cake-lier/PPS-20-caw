@@ -1,16 +1,16 @@
 package it.unibo.pps.caw.game.view
 
-import it.unibo.pps.caw.{AudioPlayer, Track, ViewComponent}
-import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.game.model.{Board, Cell, Level, Position}
-import it.unibo.pps.caw.game.view.{BoardView, ModelUpdater}
-import it.unibo.pps.caw.game.controller.{GameController, ParentGameController}
+import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.{AudioPlayer, Board, BoardView, GameBoardView, ModelUpdater, Position, Track, ViewComponent}
+import it.unibo.pps.caw.game.model.{BaseCell, Level, SetupCell}
+import it.unibo.pps.caw.game.controller.{GameController, ParentDefaultGameController, ParentGameController}
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXML
 import javafx.geometry.{HPos, Insets, VPos}
 import javafx.scene.control.{Alert, Button}
 import javafx.scene.control.Alert.AlertType
+import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.collections.ObservableBuffer.Update
@@ -40,7 +40,7 @@ trait GameView extends ViewComponent[GridPane] {
     * @param isCompleted
     *   whether or not this [[Level]] has been completed
     */
-  def drawLevel(level: Level, isCompleted: Boolean): Unit
+  def drawLevel(level: Level[SetupCell], isCompleted: Boolean): Unit
 
   /** Displays the update to the currently displayed [[Level]], without resetting the component displaying it. This means that
     * this method is not to be called when there is a change between [[Level]], but only during steps over the same [[Level]].
@@ -54,14 +54,18 @@ trait GameView extends ViewComponent[GridPane] {
     * @param isCompleted
     *   whether or not this [[Level]] has been completed
     */
-  def drawLevelUpdate(level: Level, currentBoard: Board[Cell], didEnemyExplode: Boolean, isCompleted: Boolean): Unit
+  def drawLevelUpdate(
+    update: Level[SetupCell],
+    didEnemyExplode: Boolean,
+    isCompleted: Boolean
+  ): Unit
 
   /** Displays again the initial configuration of the [[Level]], resetting the [[GameView]].
     *
     * @param level
     *   the initial configuration of the [[Level]]
     */
-  def drawLevelReset(level: Level): Unit
+  def drawLevelReset(level: Level[SetupCell]): Unit
 
   /** Displays the given error message to the player.
     *
@@ -91,7 +95,7 @@ object GameView {
     var nextButton: Button = _
     override val innerComponent: GridPane = loader.load[GridPane]
     private val controller: GameController = createController()
-    private var boardView: Option[BoardView] = None
+    private var boardView: Option[GameBoardView] = None
     private var isCurrentLevelCompleted: Boolean = false
     audioPlayer.play(Track.GameMusic)
 
@@ -134,11 +138,15 @@ object GameView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.ERROR, message))
 
-    override def drawLevelUpdate(level: Level, currentBoard: Board[Cell], didEnemyExplode: Boolean, isCompleted: Boolean): Unit =
+    override def drawLevelUpdate(
+      update: Level[SetupCell],
+      didEnemyExplode: Boolean,
+      isCompleted: Boolean
+    ): Unit =
       Platform.runLater(() =>
         boardView match {
           case Some(b) => {
-            b.updateBoard(level, currentBoard)
+            b.drawGameBoard(update.board)
             audioPlayer.play(Track.Step)
             if (didEnemyExplode) {
               audioPlayer.play(Track.Explosion)
@@ -156,15 +164,15 @@ object GameView {
         }
       )
 
-    override def drawLevelReset(level: Level): Unit = Platform.runLater(() => {
+    override def drawLevelReset(level: Level[SetupCell]): Unit = Platform.runLater(() => {
       boardView match {
-        case Some(b) => b.resetBoard(level)
+        case Some(b) => b.drawSetupBoard(level.board)
         case None    => Console.err.print("The board was not initialized")
       }
     })
 
-    override def drawLevel(level: Level, isCompleted: Boolean): Unit = Platform.runLater(() => {
-      val newBoardView: BoardView = BoardView(level, this)
+    override def drawLevel(level: Level[SetupCell], isCompleted: Boolean): Unit = Platform.runLater(() => {
+      val newBoardView: GameBoardView = GameBoardView(scene.getWidth, scene.getHeight, level, this)
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
       GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
       GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
@@ -177,16 +185,19 @@ object GameView {
 
     override def backToMenu(): Unit = controller.goBack()
 
-    override def updateCell(oldPosition: Position, newPosition: Position): Unit = {
-      controller.updateModel(oldPosition, newPosition)
+    override def manageCell(cell: ImageView, newPosition: Position): Unit = {
+      val board = boardView.get.innerComponent
+      controller.updateModel(Position(GridPane.getColumnIndex(cell), GridPane.getRowIndex(cell)), newPosition)
+      board.getChildren.remove(cell)
+      board.add(cell, newPosition.x, newPosition.y)
     }
   }
 
   /* Extension of AbstractGameView for displaying default levels. */
   private class DefaultGameView(
-    parentController: ParentGameController,
+    parentController: ParentDefaultGameController,
     audioPlayer: AudioPlayer,
-    levels: Seq[Level],
+    levels: Seq[Level[BaseCell]],
     levelIndex: Int,
     scene: Scene
   ) extends AbstractGameView(parentController, audioPlayer, scene) {
@@ -194,12 +205,16 @@ object GameView {
   }
 
   /* Extension of AbstractGameView for displaying a generic level. */
-  private class ExternalGameView(parentController: ParentGameController, audioPlayer: AudioPlayer, level: Level, scene: Scene)
-    extends AbstractGameView(parentController, audioPlayer, scene) {
+  private class ExternalGameView(
+    parentController: ParentGameController,
+    audioPlayer: AudioPlayer,
+    level: Level[BaseCell],
+    scene: Scene
+  ) extends AbstractGameView(parentController, audioPlayer, scene) {
     override protected def createController(): GameController = GameController(parentController, this, level)
   }
 
-  /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentGameController]] so as to be able to complete the
+  /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentDefaultGameController]] so as to be able to complete the
     * construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
     * music, the sequence of default [[Level]] to be used during this game, the index of the default [[Level]] from which starting
     * the game and the ScalaFX's [[Scene]] on which displaying the instance after being constructed.
@@ -218,9 +233,9 @@ object GameView {
     *   a new [[GameView]] instance
     */
   def apply(
-    parentController: ParentGameController,
+    parentController: ParentDefaultGameController,
     audioPlayer: AudioPlayer,
-    levels: Seq[Level],
+    levels: Seq[Level[BaseCell]],
     levelIndex: Int,
     scene: Scene
   ): GameView =
@@ -242,6 +257,6 @@ object GameView {
     * @return
     *   a new [[GameView]] instance
     */
-  def apply(parentController: ParentGameController, audioPlayer: AudioPlayer, level: Level, scene: Scene): GameView =
+  def apply(parentController: ParentGameController, audioPlayer: AudioPlayer, level: Level[BaseCell], scene: Scene): GameView =
     ExternalGameView(parentController, audioPlayer, level, scene)
 }

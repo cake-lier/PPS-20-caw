@@ -1,10 +1,10 @@
 package it.unibo.pps.caw.game.controller
 
 import it.unibo.pps.caw.game.model.*
-
 import io.vertx.core.json.JsonObject
 import io.vertx.core.Vertx
 import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
+import it.unibo.pps.caw.common.{Board, Dimensions, Loader, PlayableArea, Position}
 import play.api.libs.json.{JsArray, JsObject, Json, JsValue}
 
 import scala.io.Source
@@ -21,86 +21,91 @@ object Deserializer {
     * @return
     *   [[Level]] instance filled by the data read from inside the file
     */
-  def deserializeLevel(jsonStringLevel: String): Try[Level] = {
+  def deserializeLevel(jsonStringLevel: String): Try[Level[BaseCell]] = {
     for {
       _ <- Try(if (jsonStringLevel.isEmpty) throw IllegalArgumentException())
       _ <- isValidJson(jsonStringLevel)
     } yield {
       val jsonLevel = Json.parse(jsonStringLevel)
       val jsonPlayableArea = (jsonLevel \ "playableArea").as[JsObject]
-      val playableAreaWidth = (jsonPlayableArea \ "width").as[Int]
-      val playableAreaHeight = (jsonPlayableArea \ "height").as[Int]
+      val playableAreaDimensions = extractDimensions(jsonPlayableArea)
       val playableAreaPosition = extractPosition(jsonPlayableArea)
       Level(
-        (jsonLevel \ "width").as[Int],
-        (jsonLevel \ "height").as[Int],
-        deserializeCells((jsonLevel \ "cells").as[JsObject], playableAreaPosition, playableAreaWidth, playableAreaHeight),
-        PlayableArea(playableAreaPosition, playableAreaWidth, playableAreaHeight)
+        extractDimensions(jsonLevel),
+        deserializeCells((jsonLevel \ "cells").as[JsObject], playableAreaPosition, playableAreaDimensions),
+        PlayableArea(playableAreaPosition, playableAreaDimensions)
       )
     }
   }
 
   /* deserialize all cells in their specific types, grouping them into a Set */
   private def deserializeCells(
-    jsonLevels: JsObject,
-    playableAreaPoint: Position,
-    playableAreaWidth: Int,
-    playableAreaHeight: Int
-  ): Board[SetupCell] = {
-    Board[SetupCell](
-      jsonLevels
+    jsonLevel: JsObject,
+    playableAreaPosition: Position,
+    playableAreaDimensions: Dimensions
+  ): Board[BaseCell] =
+    Board(
+      jsonLevel
         .value
-        .flatMap((cellType, jsCell) =>
-          jsCell
+        .flatMap((t, a) =>
+          a
             .as[JsArray]
             .value
-            .map(jsCell =>
-              val position = extractPosition(jsCell)
-              val isInside = insideArea(position, playableAreaPoint, playableAreaWidth, playableAreaHeight)
-              EnumHelper.toCellTypes(cellType).get match {
-                case CellTypes.Mover =>
-                  SetupMoverCell(position, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get, isInside)
-                case CellTypes.Block =>
-                  SetupBlockCell(position, EnumHelper.toPush((jsCell \ "push").as[String]).get, isInside)
-                case CellTypes.Enemy => SetupEnemyCell(position, isInside)
-                case CellTypes.Rotator =>
-                  SetupRotatorCell(position, EnumHelper.toRotation((jsCell \ "rotation").as[String]).get, isInside)
-                case CellTypes.Wall => SetupWallCell(position, isInside)
-                case CellTypes.Generator =>
-                  SetupGeneratorCell(position, EnumHelper.toOrientation((jsCell \ "orientation").as[String]).get, isInside)
-                case _ => throw IllegalStateException()
+            .map(c =>
+              val position = extractPosition(c)
+              CellType.fromName(t) match {
+                case Some(CellType.Mover) =>
+                  Orientation.fromName((c \ "orientation").as[String]) match {
+                    case Some(o) => Some(BaseMoverCell(position, o))
+                    case _       => None
+                  }
+                case Some(CellType.Block) =>
+                  Push.fromName((c \ "push").as[String]) match {
+                    case Some(p) => Some(BaseBlockCell(position, p))
+                    case _       => None
+                  }
+                case Some(CellType.Enemy) => Some(BaseEnemyCell(position))
+                case Some(CellType.Rotator) =>
+                  Rotation.fromName((c \ "rotation").as[String]) match {
+                    case Some(r) => Some(BaseRotatorCell(position, r))
+                    case _       => None
+                  }
+                case Some(CellType.Wall) => Some(BaseWallCell(position))
+                case Some(CellType.Generator) =>
+                  Orientation.fromName((c \ "orientation").as[String]) match {
+                    case Some(o) => Some(BaseGeneratorCell(position, o))
+                    case _       => None
+                  }
+                case _ => None
               }
             )
+            .filter(_.isDefined)
+            .map(_.get)
             .toSet
         )
         .toSet
     )
-  }
 
-  /* Validate the provided JSON in string format with the schema. If success true is returned, otherwise false*/
-  private def isValidJson(jsonString: String): Try[Unit] = {
+  /* Validate the provided JSON in string format with the schema. */
+  private def isValidJson(json: String): Try[Unit] = {
     val vertx: Vertx = Vertx.vertx()
     val validationTry: Try[Unit] = for {
-      s <- Using(Source.fromResource("board_schema.json"))(_.getLines.mkString)
+      s <- Loader.loadResource("board_schema.json")
       _ <- Try {
         SchemaParser
           .createDraft201909SchemaParser(SchemaRouter.create(vertx, SchemaRouterOptions()))
           .parseFromString(s)
-          .validateSync(JsonObject(jsonString))
+          .validateSync(JsonObject(json))
       }.recover(_ => throw IllegalArgumentException())
     } yield ()
     vertx.close()
     validationTry
   }
 
-  /* Extract and return the position of specific item from JSON  */
-  private def extractPosition(jsCell: JsValue): Position = {
-    Position((jsCell \ "x").as[Int], (jsCell \ "y").as[Int])
-  }
+  /* Extract the Dimensions of specific JSON item. */
+  private def extractDimensions(dimensioned: JsValue): Dimensions =
+    ((dimensioned \ "width").as[Int], (dimensioned \ "height").as[Int])
 
-  /* Check if a point in within a specific area*/
-  private def insideArea(point: Position, startingAreaPoint: Position, width: Int, height: Int): Boolean = {
-    point.x >= startingAreaPoint.x && point.x <= (startingAreaPoint.x + width) &&
-    point.y >= startingAreaPoint.y && point.y <= (startingAreaPoint.y + height)
-  }
+  /* Extract the Position of specific JSON item. */
+  private def extractPosition(positioned: JsValue): Position = ((positioned \ "x").as[Int], (positioned \ "y").as[Int])
 }

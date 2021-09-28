@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import it.unibo.pps.caw.SoundButton?>
+<?import it.unibo.pps.caw.common.SoundButton?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
@@ -12,8 +12,7 @@
 <?import javafx.scene.text.Font?>
 <?import java.net.URL?>
 
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0"
-          prefWidth="1080.0" styleClass="background" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="background" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints percentWidth="20.0" />
         <ColumnConstraints percentWidth="60.0" />
@@ -53,7 +52,7 @@
             </columnConstraints>
         </GridPane>
     </ScrollPane>
-    <SoundButton styleClass="backButton" fx:id="backButton" maxHeight="Infinity" maxWidth="Infinity" text="Back" GridPane.columnIndex="1"
+    <SoundButton styleClass="backButton" alignment="BOTTOM_CENTER" fx:id="backButton" maxHeight="Infinity" maxWidth="Infinity" text="Back" GridPane.columnIndex="1"
                  GridPane.rowIndex="5" />
     <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
         <center>

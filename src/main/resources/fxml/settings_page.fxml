@@ -5,10 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import it.unibo.pps.caw.SoundButton?>
+<?import it.unibo.pps.caw.common.SoundButton?>
 <?import java.net.URL?>
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0"
-          prefWidth="1080.0" styleClass="background" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="background" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints percentWidth="15.0" />
         <ColumnConstraints percentWidth="17.5" />

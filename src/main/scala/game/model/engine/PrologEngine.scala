@@ -1,9 +1,8 @@
-package engine
+package it.unibo.pps.caw.game.model.engine
+
 import alice.tuprolog.*
 
 import scala.util.{Success, Try}
-import scala.language.implicitConversions
-import scala.Int
 
 /** Represent a prolog clause */
 sealed trait Clause {

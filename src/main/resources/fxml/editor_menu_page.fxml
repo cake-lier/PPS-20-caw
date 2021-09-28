@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="background" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="2.5" />
+        <ColumnConstraints percentWidth="7.0" />
+        <ColumnConstraints percentWidth="10.0" />
+      <ColumnConstraints percentWidth="70.0" />
+      <ColumnConstraints percentWidth="17.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="7.5" />
+      <RowConstraints percentHeight="15.0" />
+      <RowConstraints percentHeight="60.0" />
+      <RowConstraints percentHeight="15.0" />
+    </rowConstraints>
+    <Button id="backButton" fx:id="backButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+    <GridPane GridPane.columnIndex="3" GridPane.rowIndex="3">
+        <columnConstraints>
+            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints percentHeight="25.0" valignment="CENTER" vgrow="SOMETIMES" />
+            <RowConstraints percentHeight="15.0" vgrow="SOMETIMES" />
+            <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints percentHeight="20.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+        <GridPane>
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                <ColumnConstraints hgrow="SOMETIMES" />
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES" />
+            </rowConstraints>
+            <Button fx:id="loadFile" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Load from file" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        </GridPane>
+      <Label text="or" GridPane.rowIndex="1">
+         <GridPane.margin>
+            <Insets top="25.0" />
+         </GridPane.margin>
+         <padding>
+            <Insets bottom="-30.0" />
+         </padding>
+      </Label>
+      <Label alignment="CENTER" maxHeight="1.7976931348623157E308" text="New Board" GridPane.rowIndex="2">
+         <padding>
+            <Insets bottom="-45.0" />
+         </padding></Label>
+        <GridPane GridPane.rowIndex="3">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0" />
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="40.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES" />
+            </rowConstraints>
+            <TextField fx:id="width" alignment="BOTTOM_CENTER" promptText="Width" GridPane.columnIndex="0">
+            <GridPane.margin>
+               <Insets />
+            </GridPane.margin>
+            <opaqueInsets>
+               <Insets />
+            </opaqueInsets>
+            <padding>
+               <Insets bottom="-10.0" top="10.0" />
+            </padding></TextField>
+            <TextField fx:id="height" alignment="BOTTOM_CENTER" promptText="Height" GridPane.columnIndex="2" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+            <padding>
+               <Insets bottom="-10.0" top="10.0" />
+            </padding></TextField>
+            <Label text="X" GridPane.columnIndex="1">
+            <GridPane.margin>
+               <Insets top="30.0" />
+            </GridPane.margin></Label>
+        </GridPane>
+        <GridPane GridPane.rowIndex="4">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+                <ColumnConstraints hgrow="SOMETIMES" />
+                <ColumnConstraints hgrow="SOMETIMES" percentWidth="20.0" />
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints vgrow="SOMETIMES" />
+            </rowConstraints>
+            <Button fx:id="continue" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Continue" GridPane.columnIndex="1" />
+        </GridPane>
+    </GridPane>
+   <stylesheets>
+      <URL value="@../css/main.css" />
+      <URL value="@../css/editor_menu_page.css" />
+   </stylesheets>
+
+</GridPane>

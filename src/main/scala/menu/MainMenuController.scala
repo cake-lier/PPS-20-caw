@@ -1,7 +1,6 @@
 package it.unibo.pps.caw.menu
 
-import java.io.File
-import java.nio.file.Path
+import it.unibo.pps.caw.common.Settings
 
 /** The parent controller to the [[MainMenuController]].
   *
@@ -14,13 +13,16 @@ trait ParentMainMenuController {
   /** Asks the parent controller to return the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
   val levelsCount: Int
 
-  /** Asks the parent controller to start a new game. It needs the [[Path]] of the file containing the level from which starting
-    * the game.
+  /** Returns the current game settings. */
+  def settings: Settings
+
+  /** Asks the parent controller to start a new game. It needs the path of the file containing the level from which starting the
+    * game.
     *
     * @param levelPath
-    *   the [[Path]] of the file containing the level from which starting to play the game
+    *   the path of the file containing the level from which starting to play the game
     */
-  def startGame(levelPath: Path): Unit
+  def startGame(levelPath: String): Unit
 
   /** Asks the parent controller to start a new game. It needs the index of the default level from which starting the game.
     *
@@ -29,11 +31,23 @@ trait ParentMainMenuController {
     */
   def startGame(levelIndex: Int): Unit
 
+  /** Asks the parent controller to save volume settings in settings file.
+    *
+    * @param volumeMusic
+    *   the value of Music volume.
+    * @param volumeSFX
+    *   the value of SFX volume.
+    */
+  def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit
+
   /** Asks the parent controller to go back to the previous state of the application. */
   def goBack(): Unit
 
   /** Asks the parent controller to exit the application. */
   def exit(): Unit
+
+  /** Asks the parent controller to open the [[LevelMenuView]] */
+  def openLevelMenuView(): Unit
 }
 
 /** The controller which manages the main menu part of the application.
@@ -46,34 +60,48 @@ trait MainMenuController extends LevelSelectionController with SettingsControlle
   /** Returns the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
   val levelsCount: Int
 
-  /** Starts a new game for playing the level contained in the file with the given [[Path]]. No other level will be played after
-    * this one, the only option for the player will be to exit the game.
+  /** Starts a new game for playing the level contained in the file with the given path. No other level will be played after this
+    * one, the only option for the player will be to exit the game.
     *
     * @param levelPath
-    *   the [[Path]] to the file containing the [[it.unibo.pps.caw.game.model.Level]] to play in the new game
+    *   the path to the file containing the [[it.unibo.pps.caw.game.model.Level]] to play in the new game
     */
-  def startGame(levelPath: Path): Unit
+  def startGame(levelPath: String): Unit
 
   /** Exits the application. */
   def exit(): Unit
+
+  /** Open the [[LevelMenuView]]
+    * @param buttonText:
+    *   the text to be printed in the button for back or close action
+    */
+  def openLevelMenuView(): Unit
 }
 
 /** Companion object to the [[MainMenuController]] trait, containing its factory method. */
 object MainMenuController {
 
   /* Default implementation of the MainMenuController trait. */
+
   private class MainMenuControllerImpl(parentController: ParentMainMenuController, view: MainMenuView)
     extends MainMenuController {
 
     override val levelsCount: Int = parentController.levelsCount
 
+    override def solvedLevels: Set[Int] = parentController.settings.solvedLevels
+
     override def startGame(levelIndex: Int): Unit = parentController.startGame(levelIndex)
 
-    override def startGame(levelPath: Path): Unit = parentController.startGame(levelPath)
+    override def startGame(levelPath: String): Unit = parentController.startGame(levelPath)
 
     override def exit(): Unit = parentController.exit()
 
-    override def backToMainMenu(): Unit = parentController.goBack()
+    override def openLevelMenuView(): Unit = parentController.openLevelMenuView()
+
+    override def goBack(): Unit = parentController.goBack()
+
+    override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit =
+      parentController.saveVolumeSettings(volumeMusic, volumeSFX)
   }
 
   /** Returns a new instance of the [[MainMenuController]] trait. It must receive the [[ParentMainMenuController]], which it
