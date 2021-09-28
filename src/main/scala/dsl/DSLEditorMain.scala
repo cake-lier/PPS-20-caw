@@ -49,6 +49,7 @@ object DSLEditorMain extends JFXApp3 {
             },
             editorScene,
             "Close",
+            AudioPlayer(),
             l
           )
         }
