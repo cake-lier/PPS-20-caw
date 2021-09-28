@@ -3,12 +3,13 @@ package it.unibo.pps.caw.app
 import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController, SettingsView}
 import javafx.application.Platform
 import scalafx.scene.control.Alert
-import it.unibo.pps.caw.game.model.{BaseCell, Level as GameLevel}
 import it.unibo.pps.caw.editor.model.{SetupEnemyCell, Level as EditorLevel}
 import it.unibo.pps.caw.editor.LevelEditorView
 import it.unibo.pps.caw.editor.view.LevelEditorMenuView
 import it.unibo.pps.caw.game.view.GameView
 import it.unibo.pps.caw.common.{AudioPlayer, AudioType, StageResizer, ViewComponent}
+import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.game.controller.ParentGameController
 import javafx.scene.layout.Pane
 import javafx.stage.Screen
@@ -43,7 +44,7 @@ trait ApplicationView {
     * @param level
     *   the [[Level]] which will be first displayed
     */
-  def showGame(level: GameLevel[BaseCell]): Unit
+  def showGame(level: Level[BaseCell]): Unit
 
   /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing a default [[Level]]. The [[Level]]
     * which will be played will be the one with the given index between the given sequence of default [[Level]]. After playing
@@ -54,7 +55,7 @@ trait ApplicationView {
     * @param levelIndex
     *   the index of the [[Level]] which will be first displayed in the given sequence of [[Level]]
     */
-  def showGame(levels: Seq[GameLevel[BaseCell]], levelIndex: Int): Unit
+  def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit
 
   /** Shows the [[LevelEditorView]] to the player with an empty level, hiding the currently displayed view.
     * @param width:
@@ -99,9 +100,9 @@ object ApplicationView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: GameLevel[BaseCell]): Unit = show(GameView(controller, audioPlayer, level, scene))
+    override def showGame(level: Level[BaseCell]): Unit = show(GameView(controller, audioPlayer, level, scene))
 
-    override def showGame(levels: Seq[GameLevel[BaseCell]], levelIndex: Int): Unit =
+    override def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit =
       show(GameView(controller, audioPlayer, levels, levelIndex, scene))
 
     override def showMainMenu(): Unit =

@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.editor.controller
 
-import it.unibo.pps.caw.common.Position
+import it.unibo.pps.caw.common.model.Position
 import it.unibo.pps.caw.editor.model.*
 import play.api.libs.json.*
 

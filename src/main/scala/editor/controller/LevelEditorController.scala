@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.editor.controller
 
-import it.unibo.pps.caw.common.{Dimensions, Position}
+import it.unibo.pps.caw.common.model.{Dimensions, Position}
 import it.unibo.pps.caw.editor.LevelEditorView
 import it.unibo.pps.caw.editor.model.{Cell, Level, LevelEditorModel, SetupCell}
 

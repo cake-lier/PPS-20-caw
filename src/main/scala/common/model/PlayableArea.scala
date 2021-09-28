@@ -1,6 +1,6 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw.common.model
 
-import it.unibo.pps.caw.game.model.{Cell, Level}
+import it.unibo.pps.caw.common.model.cell.Cell
 
 /** The area of a [[Level]] on which the player can move [[Cell]].
   *

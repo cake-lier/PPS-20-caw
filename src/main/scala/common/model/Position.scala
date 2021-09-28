@@ -1,6 +1,4 @@
-package it.unibo.pps.caw.common
-
-import it.unibo.pps.caw.editor.model.Cell
+package it.unibo.pps.caw.common.model
 
 /** The position of an entity in the game world.
   *

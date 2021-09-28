@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.editor.view
 
-import it.unibo.pps.caw.game.model.Level
+import it.unibo.pps.caw.common.model.Level
 
 import java.io.File
 

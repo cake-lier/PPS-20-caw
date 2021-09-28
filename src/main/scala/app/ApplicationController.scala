@@ -1,6 +1,5 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.game.model.{BaseCell, Level as GameLevel}
 import it.unibo.pps.caw.editor.controller.{ParentLevelEditorController, Serializer}
 import it.unibo.pps.caw.game.controller.{Deserializer, ParentDefaultGameController}
 import it.unibo.pps.caw.editor.view.ParentLevelEditorMenuController
@@ -14,6 +13,8 @@ import scala.jdk.StreamConverters
 import scala.util.{Failure, Try, Using}
 import cats.implicits.given
 import it.unibo.pps.caw.common.{LevelManager, Loader, Settings, SettingsManager}
+import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.model.cell.BaseCell
 import play.api.libs.json.Json
 
 import concurrent.ExecutionContext.Implicits.global
@@ -51,7 +52,7 @@ object ApplicationController {
         l <- Deserializer.deserializeLevel(f)
       } yield l).fold(_ => view.showError("An error has occurred, could not load level"), view.showGame(_))
 
-    private val levelFiles: Seq[GameLevel[BaseCell]] =
+    private val levelFiles: Seq[Level[BaseCell]] =
       (for {
         f <- Loader.loadResource("levels.json")
         s <- Json.parse(f).as[Seq[String]].map(n => Loader.loadResource(s"levels/$n")).sequence

@@ -1,6 +1,6 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw.common.model
 
-import it.unibo.pps.caw.game.model.Cell
+import it.unibo.pps.caw.common.model.cell.Cell
 
 /** A group of cells in the game world.
   *

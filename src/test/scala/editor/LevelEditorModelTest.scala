@@ -1,7 +1,7 @@
 package it.unibo.pps.caw.editor
 
-import it.unibo.pps.caw.common.{PlayableArea, Position}
-import it.unibo.pps.caw.editor.model.{Level, LevelEditorModel, SetupEnemyCell, Board}
+import it.unibo.pps.caw.common.model.{PlayableArea, Position}
+import it.unibo.pps.caw.editor.model.{Board, Level, LevelEditorModel, SetupEnemyCell}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 

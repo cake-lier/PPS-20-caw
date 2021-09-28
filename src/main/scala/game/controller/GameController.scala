@@ -1,7 +1,8 @@
 package it.unibo.pps.caw.game.controller
 
-import it.unibo.pps.caw.game.model.{BaseCell, Level, GameModel}
-import it.unibo.pps.caw.common.Position
+import it.unibo.pps.caw.common.model.{Level, Position}
+import it.unibo.pps.caw.common.model.cell.{BaseCell, Cell}
+import it.unibo.pps.caw.game.model.GameModel
 import it.unibo.pps.caw.game.view.GameView
 import javafx.application.Platform
 import javafx.scene.control.Alert
@@ -73,13 +74,13 @@ trait GameController {
     */
   def nextLevel(): Unit
 
-  /** Updates the [[GameModel]] moving the [[it.unibo.pps.caw.game.model.Cell]] which has a [[Position]] equal to the given old
+  /** Updates the [[GameModel]] moving the [[Cell]] which has a [[Position]] equal to the given old
     * [[Position]] parameter to the [[Position]] given by the new [[Position]] parameter.
     *
     * @param oldPosition
-    *   the [[Position]] in which a [[it.unibo.pps.caw.game.model.Cell]] is located
+    *   the [[Position]] in which a [[Cell]] is located
     * @param newPosition
-    *   the [[Position]] to which the [[it.unibo.pps.caw.game.model.Cell]] located at the old [[Position]] parameter is moved
+    *   the [[Position]] to which the [[Cell]] located at the old [[Position]] parameter is moved
     */
   def updateModel(oldPosition: Position, newPosition: Position): Unit
 }

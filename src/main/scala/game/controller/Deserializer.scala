@@ -1,10 +1,23 @@
 package it.unibo.pps.caw.game.controller
 
-import it.unibo.pps.caw.game.model.*
 import io.vertx.core.json.JsonObject
 import io.vertx.core.Vertx
 import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
-import it.unibo.pps.caw.common.{Board, Dimensions, Loader, PlayableArea, Position}
+import it.unibo.pps.caw.common.Loader
+import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, Position, PlayableArea}
+import it.unibo.pps.caw.common.model.cell.{
+  BaseBlockCell,
+  BaseCell,
+  BaseEnemyCell,
+  BaseGeneratorCell,
+  BaseMoverCell,
+  BaseRotatorCell,
+  BaseWallCell,
+  CellType,
+  Orientation,
+  Push,
+  Rotation
+}
 import play.api.libs.json.{JsArray, JsObject, Json, JsValue}
 
 import scala.io.Source
