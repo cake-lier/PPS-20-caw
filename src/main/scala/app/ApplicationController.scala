@@ -7,6 +7,13 @@ import play.api.libs.json.Json
 import it.unibo.pps.caw.game.controller.{Deserializer, ParentDefaultGameController}
 import it.unibo.pps.caw.{Loader, Settings, SettingsManager}
 
+import concurrent.ExecutionContext.Implicits.global
+import java.util.concurrent.{ConcurrentHashMap, CopyOnWriteArraySet}
+import scala.concurrent.Future
+import scala.util.Try
+import scala.collection.mutable.Set
+import scala.jdk.CollectionConverters.given
+
 /** The controller of the main application.
   *
   * This controller represents the main, standalone application. Hence, it is parent to all other controllers created inside this
@@ -23,6 +30,8 @@ object ApplicationController {
     private val settingsManager = SettingsManager()
     private var _settings: Settings = settingsManager.load().getOrElse(settingsManager.defaultSettings)
     def settings: Settings = _settings
+
+    private val futures: Set[Future[Try[Unit]]] = ConcurrentHashMap.newKeySet[Future[Try[Unit]]]().asScala
 
     override def startGame(levelPath: String): Unit =
       (for {
@@ -44,17 +53,26 @@ object ApplicationController {
 
     override def startGame(levelIndex: Int): Unit = view.showGame(levelFiles, levelIndex)
 
-    override def addSolvedLevel(index: Int): Unit =
-      _settings = Settings(_settings.volumeMusic, _settings.volumeSFX, _settings.solvedLevels ++ Set(index))
+    override def addSolvedLevel(index: Int): Unit = {
+      _settings = Settings(settings.volumeMusic, settings.volumeSFX, settings.solvedLevels ++ Set(index))
+      saveSettings(settings)
+    }
 
-    override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit =
-      _settings = Settings(volumeMusic, volumeSFX, _settings.solvedLevels)
+    override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit = {
+      _settings = Settings(volumeMusic, volumeSFX, settings.solvedLevels)
+      saveSettings(settings)
+    }
 
     override def goBack(): Unit = view.showMainMenu()
 
-    override def exit(): Unit = {
-      if (settingsManager.save(_settings).isFailure) view.showError("An error has occurred, could not save settings")
-      sys.exit()
+    override def exit(): Unit = Future.sequence(futures).onComplete(_ => sys.exit())
+
+    private def saveSettings(s: Settings): Unit = {
+      val future: Future[Try[Unit]] = Future(
+        settingsManager.save(settings).recover(_ => view.showError("An error has occured, could not save level"))
+      )
+      futures.add(future)
+      future.onComplete(_ => futures.remove(future))
     }
   }
 
