@@ -106,13 +106,15 @@ object ApplicationView {
     override def showMainMenu(): Unit =
       show(MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0))
 
-    override def showLevelEditor(width: Int, height: Int): Unit = show(LevelEditorView(controller, scene, "Menu", width, height))
+    override def showLevelEditor(width: Int, height: Int): Unit =
+      show(LevelEditorView(controller, scene, "Menu", audioPlayer, width, height))
 
-    override def showLevelEditor(level: EditorLevel): Unit = show(LevelEditorView(controller, scene, "Menu", level))
+    override def showLevelEditor(level: EditorLevel): Unit = show(LevelEditorView(controller, scene, "Menu", audioPlayer, level))
 
     override def showEditorMenuView(): Unit = show(LevelEditorMenuView(controller, scene, "Menu"))
 
     private def show(view: ViewComponent[? <: Pane]) = Platform.runLater(() => scene.root.value = view)
+
   }
 
   /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX's [[PrimaryStage]] for creating a view for the

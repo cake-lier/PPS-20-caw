@@ -45,7 +45,8 @@ object ApplicationController {
     private val levelFiles: Seq[GameLevel[BaseCell]] =
       (for {
         f <- Loader.load("levels.json")
-        l <- Json.parse(f).as[Seq[String]].map(n => LevelManager.load(s"levels/$n")).sequence
+        s <- Json.parse(f).as[Seq[String]].map(n => Loader.load(s"levels/$n")).sequence
+        l <- s.map(Deserializer.deserializeLevel(_)).sequence
       } yield l).getOrElse {
         view.showError("An error has occured, could not load level")
         Seq.empty

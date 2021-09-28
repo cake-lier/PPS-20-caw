@@ -52,7 +52,7 @@
             </columnConstraints>
         </GridPane>
     </ScrollPane>
-    <SoundButton styleClass="backButton" fx:id="backButton" maxHeight="Infinity" maxWidth="Infinity" text="Back" GridPane.columnIndex="1"
+    <SoundButton styleClass="backButton" alignment="BOTTOM_CENTER" fx:id="backButton" maxHeight="Infinity" maxWidth="Infinity" text="Back" GridPane.columnIndex="1"
                  GridPane.rowIndex="5" />
     <BorderPane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="3">
         <center>

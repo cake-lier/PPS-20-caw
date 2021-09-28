@@ -26,7 +26,6 @@ object Serializer {
           )
         )
       )
-      print(string)
       string
     }
 

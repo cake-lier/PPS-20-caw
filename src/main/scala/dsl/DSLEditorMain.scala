@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.common.{LevelManager, StageResizer}
+import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, StageResizer}
 import it.unibo.pps.caw.editor.LevelEditorView
 import it.unibo.pps.caw.editor.controller.{Deserializer, ParentLevelEditorController}
 import it.unibo.pps.caw.editor.model.Level
@@ -48,7 +48,7 @@ object DSLEditorMain extends JFXApp3 {
               override def saveLevel(path: String, level: Level): Unit = LevelManager.writeLevel(path, level)
             },
             editorScene,
-            closeEditorButtonText = "Close",
+            "Close",
             l
           )
         }

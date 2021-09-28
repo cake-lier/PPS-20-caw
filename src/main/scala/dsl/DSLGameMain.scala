@@ -57,14 +57,3 @@ object DSLGameMain extends JFXApp3 {
       )
   }
 }
-
-import CellsAtWorkDSL.*
-
-@main
-def main(): Unit =
-  board {
-    withDimensions(10, 10)
-    hasPlayableArea withDimensions (4, 4) at (1, 1)
-    hasMoverCell facing top at (2, 2)
-    editIt
-  }
