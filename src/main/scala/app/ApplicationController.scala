@@ -21,7 +21,8 @@ object ApplicationController {
   /* Default implementation of the ApplicationController trait. */
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
     private val settingsManager = SettingsManager()
-    var settings: Settings = settingsManager.load().getOrElse(settingsManager.getDefault())
+    private var _settings: Settings = settingsManager.load().getOrElse(settingsManager.getDefault())
+    def settings: Settings = _settings
 
     override def startGame(levelPath: String): Unit =
       (for {
@@ -44,15 +45,15 @@ object ApplicationController {
     override def startGame(levelIndex: Int): Unit = view.showGame(levelFiles, levelIndex)
 
     override def addSolvedLevel(index: Int): Unit =
-      settings = Settings(settings.volumeMusic, settings.volumeSFX, settings.solvedLevels ++ Set(index))
+      _settings = Settings(_settings.volumeMusic, _settings.volumeSFX, _settings.solvedLevels ++ Set(index))
 
     override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit =
-      settings = Settings(volumeMusic, volumeSFX, settings.solvedLevels)
+      _settings = Settings(volumeMusic, volumeSFX, _settings.solvedLevels)
 
     override def goBack(): Unit = view.showMainMenu()
 
     override def exit(): Unit = {
-      settingsManager.save(settings)
+      settingsManager.save(_settings)
       sys.exit()
     }
   }

@@ -29,5 +29,7 @@ object LevelButton {
 
     innerComponent.setText(number.toString)
     innerComponent.setOnMouseClicked(_ => controller.startGame(number))
+
+    if (controller.solvedLevels.contains(number)) innerComponent.setStyle("-fx-border-color: cyan; -fx-text-fill: cyan;")
   }
 }
