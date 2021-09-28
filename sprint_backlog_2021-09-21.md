@@ -25,9 +25,9 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>4</td>
             <td>4</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>2</td>
+            <td>1</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Fare refactoring di GameView e BoardView</td>
@@ -124,8 +124,8 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>3</td>
             <td>3</td>
             <td>3</td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>0</td>
         </tr>
         <tr>
             <td rowspan="3">Aggiungere file di settings per supporto ai livelli progressivi</td>
