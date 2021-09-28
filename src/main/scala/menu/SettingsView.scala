@@ -51,7 +51,10 @@ object SettingsView {
 
     setupSlider(musicVolumeSlider, AudioType.Music)
     setupSlider(effectsVolumeSlider, AudioType.Sound)
-    backFromSettingsButton.setOnMouseClicked(_ => controller.goBack())
+    backFromSettingsButton.setOnMouseClicked(_ => {
+      controller.saveVolumeSettings(audioPlayer.getVolume(AudioType.Music), audioPlayer.getVolume(AudioType.Sound))
+      controller.goBack()
+    })
 
     private def setupSlider(slider: Slider, audioType: AudioType): Unit = {
       slider.setValue(audioPlayer.getVolume(audioType) * slider.getMax)

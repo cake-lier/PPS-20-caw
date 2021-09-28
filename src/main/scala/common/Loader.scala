@@ -18,5 +18,15 @@ object Loader {
     * @return
     *   a [[Try]] with the contents of the file in a string
     */
-  def load(path: String): Try[String] = Using(Source.fromResource(path))(_.getLines.mkString)
+  def loadResource(path: String): Try[String] = Using(Source.fromResource(path))(_.getLines.mkString)
+
+  /** Loads a file from disk. It needs the absolute path to the file and returns a [[Try]] with the content of the file in a string
+    * if the loading was successful, an exception otherwise.
+    *
+    * @param path
+    *   the path to the file to load
+    * @return
+    *   a [[Try]] with the contents of the file in a string
+    */
+  def loadFile(path: String): Try[String] = Using(Source.fromFile(path))(_.getLines.mkString)
 }

@@ -24,6 +24,21 @@ trait ParentGameController {
   def goBack(): Unit
 }
 
+/** The parent controller to the [[GameController]] for default levels.
+  *
+  * This trait extends [[ParentGameController]] to add functionalities pertaining to the game's default levels to the
+  * parent controller to the [[GameController]].
+  */
+trait ParentDefaultGameController extends ParentGameController {
+
+  /** Asks the parent controller to add a default level to set of solved levels.
+    *
+    * @param index
+    *   the index of the level that has been solved
+    */
+  def addSolvedLevel(index: Int): Unit
+}
+
 /** The controller which manages the game part of an application.
   *
   * This controller is the mediator between the [[GameView]] and the [[GameModel]]. It intercepts the inputs of the player while
@@ -128,21 +143,28 @@ object GameController {
 
   /* Extension of the AbstractGameController class for playing the default levels. */
   private class DefaultGameController(
-    parentController: ParentGameController,
+    parentController: ParentDefaultGameController,
     view: GameView,
     levels: Seq[Level[BaseCell]],
     initialLevelIndex: Int
   ) extends AbstractGameController(parentController, view, levels(initialLevelIndex - 1), Some(initialLevelIndex)) {
+    private var currentLevelIndex: Int = initialLevelIndex
 
     def nextLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
       model.state.nextLevelIndex match {
         case Some(v) => {
+          currentLevelIndex = v
           model = GameModel(levels(v - 1), Some(v))
           view.drawLevel(model.state.initialStateLevel, model.state.isCurrentLevelCompleted)
         }
         case None => goBack()
       }
+    }
+
+    override def step(): Unit = {
+      super.step()
+      if (model.state.isCurrentLevelCompleted) parentController.addSolvedLevel(currentLevelIndex)
     }
   }
 
@@ -163,7 +185,7 @@ object GameController {
   def apply(parentController: ParentGameController, view: GameView, level: Level[BaseCell]): GameController =
     ExternalGameController(parentController, view, level)
 
-  /** Returns a new instance of the [[GameController]] trait. It must receive the [[ParentGameController]], which it represents
+  /** Returns a new instance of the [[GameController]] trait. It must receive the [[ParentDefaultGameController]], which it represents
     * its parent controller which provides all functionalities which must be delegated to this type of controllers, the
     * [[GameView]] which will be called by and will call the returned [[GameController]] instance, the sequence of default
     * [[Level]] which will be used during this game and the index of the default [[Level]] in the given sequence from which
@@ -181,7 +203,7 @@ object GameController {
     *   a new [[GameController]] instance
     */
   def apply(
-    parentController: ParentGameController,
+    parentController: ParentDefaultGameController,
     view: GameView,
     levels: Seq[Level[BaseCell]],
     levelIndex: Int

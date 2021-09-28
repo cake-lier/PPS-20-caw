@@ -8,8 +8,7 @@ import it.unibo.pps.caw.editor.model.{SetupEnemyCell, Level as EditorLevel}
 import it.unibo.pps.caw.editor.LevelEditorView
 import it.unibo.pps.caw.editor.view.LevelEditorMenuView
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.common.ViewComponent
-import it.unibo.pps.caw.common.{AudioPlayer, StageResizer, ViewComponent}
+import it.unibo.pps.caw.common.{AudioPlayer, AudioType, StageResizer, ViewComponent}
 import it.unibo.pps.caw.game.controller.ParentGameController
 import javafx.scene.layout.Pane
 import javafx.stage.Screen
@@ -95,6 +94,8 @@ object ApplicationView {
     stage.scene = scene
     stage.show()
     stage.setOnCloseRequest(_ => controller.exit())
+    audioPlayer.setVolume(controller.settings.volumeMusic, AudioType.Music)
+    audioPlayer.setVolume(controller.settings.volumeSFX, AudioType.Sound)
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 

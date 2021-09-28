@@ -1,5 +1,7 @@
 package it.unibo.pps.caw.menu
 
+import it.unibo.pps.caw.common.Settings
+
 /** The parent controller to the [[MainMenuController]].
   *
   * This trait is used for abstracting the functionalities which the [[MainMenuController]] needs from its parent controller so as
@@ -10,6 +12,9 @@ trait ParentMainMenuController {
 
   /** Asks the parent controller to return the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
   val levelsCount: Int
+
+  /** Returns the current game settings. */
+  def settings: Settings
 
   /** Asks the parent controller to start a new game. It needs the path of the file containing the level from which starting the
     * game.
@@ -25,6 +30,15 @@ trait ParentMainMenuController {
     *   the index of the level from which starting to play the game
     */
   def startGame(levelIndex: Int): Unit
+
+  /** Asks the parent controller to save volume settings in settings file.
+    *
+    * @param volumeMusic
+    *   the value of Music volume.
+    * @param volumeSFX
+    *   the value of SFX volume.
+    */
+  def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit
 
   /** Asks the parent controller to go back to the previous state of the application. */
   def goBack(): Unit
@@ -74,6 +88,8 @@ object MainMenuController {
 
     override val levelsCount: Int = parentController.levelsCount
 
+    override def solvedLevels: Set[Int] = parentController.settings.solvedLevels
+
     override def startGame(levelIndex: Int): Unit = parentController.startGame(levelIndex)
 
     override def startGame(levelPath: String): Unit = parentController.startGame(levelPath)
@@ -83,6 +99,9 @@ object MainMenuController {
     override def openLevelMenuView(): Unit = parentController.openLevelMenuView()
 
     override def goBack(): Unit = parentController.goBack()
+
+    override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit =
+      parentController.saveVolumeSettings(volumeMusic, volumeSFX)
   }
 
   /** Returns a new instance of the [[MainMenuController]] trait. It must receive the [[ParentMainMenuController]], which it
