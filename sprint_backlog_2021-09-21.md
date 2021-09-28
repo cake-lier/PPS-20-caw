@@ -132,37 +132,37 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>Modificare GameView perchè mostri come sbloccati solamente i livelli vinti</td>
             <td>Elena Rughi</td>
             <td>2</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Modificare GameModel perché accetti l'ultimo livello sbloccato dal giocatore</td>
             <td>Elena Rughi</td>
             <td>2</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+            <td>2</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Aggiungere metodi di serializzazione e deserializzazione del file di impostazioni</td>
             <td>Elena Rughi</td>
             <td>6</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>6</td>
+            <td>6</td>
+            <td>5</td>
+            <td>3</td>
+            <td>2</td>
+            <td>1</td>
+            <td>0</td>
         </tr>
     </tbody>
 </table>
