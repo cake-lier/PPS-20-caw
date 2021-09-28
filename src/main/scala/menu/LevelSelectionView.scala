@@ -1,7 +1,7 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.{SoundButton, ViewComponent}
-import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.{SoundButton, ViewComponent}
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, ScrollPane}
 import javafx.scene.image.ImageView

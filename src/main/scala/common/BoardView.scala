@@ -7,8 +7,8 @@ import it.unibo.pps.caw.editor.model.{
   SetupCell as EditorSetupCell,
   Board as EditorBoard
 }
-import it.unibo.pps.caw.{game, ViewComponent}
-import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.game
+import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.{DragAndDrop, ModelUpdater, PlayableArea, TileView}
 import it.unibo.pps.caw.game.{model, view}
 import it.unibo.pps.caw.common.CellImage

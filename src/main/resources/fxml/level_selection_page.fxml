@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import it.unibo.pps.caw.SoundButton?>
+<?import it.unibo.pps.caw.common.SoundButton?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
@@ -29,7 +29,7 @@
         <RowConstraints percentHeight="15.0" />
       <RowConstraints />
     </rowConstraints>
-    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Choose a update" GridPane.columnIndex="1"
+    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Choose a level" GridPane.columnIndex="1"
            GridPane.rowIndex="1">
         <font>
             <Font size="18.0" />

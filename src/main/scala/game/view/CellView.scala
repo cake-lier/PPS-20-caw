@@ -1,10 +1,9 @@
 package it.unibo.pps.caw.game.view
 
 import it.unibo.pps.caw.game.model.*
-import it.unibo.pps.caw.ViewComponent
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
-import it.unibo.pps.caw.common.CellImage
+import it.unibo.pps.caw.common.{CellImage, ViewComponent}
 
 trait CellView extends ViewComponent[ImageView]
 

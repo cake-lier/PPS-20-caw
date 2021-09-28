@@ -6,14 +6,14 @@ import it.unibo.pps.caw.game.controller.{Deserializer, ParentGameController}
 import it.unibo.pps.caw.editor.view.ParentLevelEditorMenuController
 import it.unibo.pps.caw.editor.model.Level as EditorLevel
 import it.unibo.pps.caw.menu.ParentMainMenuController
-import it.unibo.pps.caw.game.LevelManager
-import it.unibo.pps.caw.Loader
+
 import java.io.{File, PrintWriter}
 import java.nio.file.{Files, Path, Paths}
 import scala.io.Source
-import scala.jdk.StreamConverters.given
+import scala.jdk.StreamConverters
 import scala.util.{Failure, Try, Using}
 import cats.implicits.given
+import it.unibo.pps.caw.common.{LevelManager, Loader}
 import play.api.libs.json.Json
 import javafx.scene.layout.AnchorPane
 
@@ -45,8 +45,7 @@ object ApplicationController {
     private val levelFiles: Seq[GameLevel[BaseCell]] =
       (for {
         f <- Loader.load("levels.json")
-        s <- Json.parse(f).as[Seq[String]].map(n => Loader.load(s"levels/$n")).sequence
-        l <- s.map(Deserializer.deserializeLevel(_)).sequence
+        l <- Json.parse(f).as[Seq[String]].map(n => LevelManager.load(s"levels/$n")).sequence
       } yield l).getOrElse {
         view.showError("An error has occured, could not load level")
         Seq.empty
@@ -68,14 +67,14 @@ object ApplicationController {
 
     override def openLevelMenuView(): Unit = view.showEditorMenuView()
 
-    override def saveLevel(file: File, level: EditorLevel): Unit =
-      LevelManager.writeLevel(file, level)
+    override def saveLevel(path: String, level: EditorLevel): Unit =
+      LevelManager.writeLevel(path, level)
 
     override def openLevelEditor(width: Int, height: Int): Unit =
       view.showLevelEditor(width, height)
 
-    override def openLevelEditor(level: File): Unit =
-      LevelManager.loadLevelLevelEditor(level).foreach(view.showLevelEditor)
+    override def openLevelEditor(path: String): Unit =
+      LevelManager.loadLevelLevelEditor(path).foreach(view.showLevelEditor)
   }
 
   /** Returns a new instance of the [[ApplicationController]] trait. It must receive the [[ApplicationView]] which will be called

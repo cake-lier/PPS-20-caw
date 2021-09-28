@@ -7,21 +7,21 @@ import java.io.File
 trait ParentLevelEditorMenuController {
   def closeLevelEditorMenu(): Unit
   def openLevelEditor(width: Int, height: Int): Unit
-  def openLevelEditor(level: File): Unit
+  def openLevelEditor(path: String): Unit
 }
 
 sealed trait LevelEditorMenuController {
   def openLevelEditor(width: Int, height: Int): Unit
-  def openLevelEditor(level: File): Unit
+  def openLevelEditor(path: String): Unit
 }
 
 object LevelEditorMenuController {
   private case class LevelEditorMenuControllerImpl(parentLevelEditorMenuController: ParentLevelEditorMenuController)
-      extends LevelEditorMenuController {
+    extends LevelEditorMenuController {
     def openLevelEditor(width: Int, height: Int): Unit =
       parentLevelEditorMenuController.openLevelEditor(width, height)
-    def openLevelEditor(level: File): Unit =
-      parentLevelEditorMenuController.openLevelEditor(level)
+    def openLevelEditor(path: String): Unit =
+      parentLevelEditorMenuController.openLevelEditor(path)
   }
 
   def apply(parentLevelEditorMenuController: ParentLevelEditorMenuController): LevelEditorMenuController =

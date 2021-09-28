@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import it.unibo.pps.caw.SoundButton?>
+<?import it.unibo.pps.caw.common.SoundButton?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -33,7 +33,7 @@
                  GridPane.columnIndex="1" GridPane.rowIndex="3"/>
     <SoundButton fx:id="editorButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Level Editor"
                  GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-    <SoundButton fx:id="loadButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Load a update"
+    <SoundButton fx:id="loadButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Load a level"
                  GridPane.columnIndex="1" GridPane.rowIndex="7"/>
     <SoundButton fx:id="settingsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Settings"
                  GridPane.columnIndex="1" GridPane.rowIndex="9"/>

@@ -1,4 +1,4 @@
-package it.unibo.pps.caw
+package it.unibo.pps.caw.common
 
 import scala.io.Source
 import scala.util.{Try, Using}
@@ -18,6 +18,5 @@ object Loader {
     * @return
     *   a [[Try]] with the contents of the file in a string
     */
-  def load(path: String): Try[String] =
-    Using(Source.fromResource(path))(_.getLines.mkString)
+  def load(path: String): Try[String] = Using(Source.fromResource(path))(_.getLines.mkString)
 }

@@ -1,9 +1,7 @@
 package it.unibo.pps.caw.editor
 
-import it.unibo.pps.caw.common.FilePicker
-import it.unibo.pps.caw.ViewComponent
-import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{BoardView, CellImage, DragAndDrop, EditorBoardView, ModelUpdater, Position, TileView}
+import it.unibo.pps.caw.common.*
+import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.editor.controller.{LevelEditorController, ParentLevelEditorController}
 import it.unibo.pps.caw.editor.model.*
 import it.unibo.pps.caw.editor.view.CellView
@@ -16,9 +14,9 @@ import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{MouseButton, MouseEvent}
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
-import scala.jdk.StreamConverters
-import scala.jdk.StreamConverters.given
 
+import scala.jdk.StreamConverters
+import scala.jdk.StreamConverters
 import java.io.File
 
 trait LevelEditorView extends ViewComponent[Pane] {
@@ -82,7 +80,7 @@ object LevelEditorView {
     levelEditorMenuButton.setOnMouseClicked(_ => controller.backToLevelEditorMenu())
     backButton.setText(closeEditorButtonText)
     backButton.setOnMouseClicked(_ => controller.closeEditor())
-    saveButton.setOnMouseClicked(_ => FilePicker.saveFile(scene).foreach(controller.saveLevel))
+    saveButton.setOnMouseClicked(_ => FilePicker.saveFile(scene).foreach(f => controller.saveLevel(f.getPath)))
     resetAll.setOnMouseClicked(_ => controller.resetLevel())
     rotateCellsButton.setOnMouseClicked(_ => rotateButtons())
 

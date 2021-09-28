@@ -1,8 +1,7 @@
 package it.unibo.pps.caw.editor.view
 
-import it.unibo.pps.caw.editor.model._
-import it.unibo.pps.caw.common.CellImage
-import it.unibo.pps.caw.ViewComponent
+import it.unibo.pps.caw.editor.model.*
+import it.unibo.pps.caw.common.{CellImage, ViewComponent}
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
 

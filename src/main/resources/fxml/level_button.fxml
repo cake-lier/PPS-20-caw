@@ -2,7 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.GridPane?>
-<?import it.unibo.pps.caw.SoundButton?>
+<?import it.unibo.pps.caw.common.SoundButton?>
 
 <SoundButton xmlns="http://javafx.com/javafx" stylesheets="@../css/level_selection_page.css" styleClass="levelButton"
              alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity">

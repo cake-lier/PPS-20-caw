@@ -1,8 +1,8 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.menu.{LevelSelectionView, ParentMainMenuController}
-import it.unibo.pps.caw.{AudioPlayer, AudioType, SoundButton, Track, ViewComponent}
+import it.unibo.pps.caw.common.{AudioPlayer, AudioType, SoundButton, ViewComponent}
 import javafx.fxml.FXML
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
