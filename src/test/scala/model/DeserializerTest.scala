@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.model
 
-import it.unibo.pps.caw.common.{PlayableArea, Board}
+import it.unibo.pps.caw.common.model.{Board, Level, PlayableArea}
+import it.unibo.pps.caw.common.model.cell.{Orientation, PlayableGeneratorCell, PlayableMoverCell}
 import it.unibo.pps.caw.game.controller.Deserializer
 import it.unibo.pps.caw.game.model.*
 import org.scalatest.funspec.AnyFunSpec
@@ -41,10 +42,10 @@ class DeserializerTest extends AnyFunSpec with Matchers {
         Deserializer.deserializeLevel(jsonLevel).getOrElse(None) shouldBe Level(
           (50, 60),
           Board(
-            SetupMoverCell((1, 2), Orientation.Right, true),
-            SetupMoverCell((0, 0), Orientation.Top, false),
-            SetupGeneratorCell((1, 2), Orientation.Right, true),
-            SetupGeneratorCell((0, 0), Orientation.Top, false)
+            PlayableMoverCell((1, 2), Orientation.Right, true),
+            PlayableMoverCell((0, 0), Orientation.Top, false),
+            PlayableGeneratorCell((1, 2), Orientation.Right, true),
+            PlayableGeneratorCell((0, 0), Orientation.Top, false)
           ),
           PlayableArea((1, 2), (20, 30))
         )

@@ -13,7 +13,7 @@
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
-        <ColumnConstraints percentWidth="2.5" />
+        <ColumnConstraints percentWidth="5.0" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
         <ColumnConstraints percentWidth="7.5" />
@@ -50,7 +50,16 @@
     <ImageView id="enemy-button" fx:id="enemyCellView" styleClass="block-button" GridPane.columnIndex="12" GridPane.rowIndex="5" />
     <ImageView id="wall-button" fx:id="wallCellView" styleClass="block-button" GridPane.columnIndex="13" GridPane.rowIndex="5" />
     <Button fx:id="backButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    <Button fx:id="saveButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Save" GridPane.columnIndex="13" GridPane.rowIndex="1" />
+    <Button fx:id="rulesButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="How to" GridPane.columnIndex="2" GridPane.rowIndex="1">
+        <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+        </GridPane.margin>
+    </Button>
+    <Button fx:id="saveButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Save" GridPane.columnIndex="13" GridPane.rowIndex="1">
+        <GridPane.margin>
+            <Insets left="5.0" right="5.0" />
+        </GridPane.margin>
+    </Button>
     <stylesheets>
         <URL value="@../css/main.css" />
         <URL value="@../css/editor.css" />

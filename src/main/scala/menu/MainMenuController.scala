@@ -1,7 +1,8 @@
 package it.unibo.pps.caw.menu
 
 import it.unibo.pps.caw.common.{LevelManager, Settings}
-import it.unibo.pps.caw.editor.controller.{LevelEditorMenuController, ParentLevelEditorMenuController}
+import it.unibo.pps.caw.editor.controller.ParentLevelEditorMenuController
+import it.unibo.pps.caw.common.model.Level
 
 /** The parent controller to the [[MainMenuController]].
   *
@@ -11,7 +12,7 @@ import it.unibo.pps.caw.editor.controller.{LevelEditorMenuController, ParentLeve
   */
 trait ParentMainMenuController {
 
-  /** Asks the parent controller to return the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
+  /** Asks the parent controller to return the number of default [[Level]] available. */
   val levelsCount: Int
 
   /** Returns the current game settings. */
@@ -72,14 +73,14 @@ trait ParentMainMenuController {
   */
 trait MainMenuController extends LevelSelectionController with SettingsController with ParentLevelEditorMenuController {
 
-  /** Returns the number of default [[it.unibo.pps.caw.game.model.Level]] available. */
+  /** Returns the number of default [[Level]] available. */
   val levelsCount: Int
 
   /** Starts a new game for playing the level contained in the file with the given path. No other level will be played after this
     * one, the only option for the player will be to exit the game.
     *
     * @param levelPath
-    *   the path to the file containing the [[it.unibo.pps.caw.game.model.Level]] to play in the new game
+    *   the path to the file containing the [[Level]] to play in the new game
     */
   def startGame(levelPath: String): Unit
 

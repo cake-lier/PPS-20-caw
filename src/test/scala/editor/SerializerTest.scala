@@ -2,7 +2,7 @@ package it.unibo.pps.caw.editor
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.json.schema.{Schema, SchemaParser, SchemaRouter, SchemaRouterOptions}
-import it.unibo.pps.caw.common.PlayableArea
+import it.unibo.pps.caw.common.model.PlayableArea
 import it.unibo.pps.caw.dsl.entities.PushableCell
 import it.unibo.pps.caw.editor.controller.{Deserializer, Serializer}
 import it.unibo.pps.caw.editor.model.*

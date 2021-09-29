@@ -1,11 +1,11 @@
 package it.unibo.pps.caw
 
-import it.unibo.pps.caw.common.PlayableArea
+import it.unibo.pps.caw.common.model.{Board, Level, PlayableArea}
+import it.unibo.pps.caw.common.model.cell.Orientation
+import it.unibo.pps.caw.common.model.cell.{PlayableGeneratorCell, PlayableMoverCell}
 import it.unibo.pps.caw.game.controller.Deserializer
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-import it.unibo.pps.caw.game.model.*
-import it.unibo.pps.caw.common.Board
 
 import scala.io.Source
 import scala.util.{Failure, Success}
@@ -45,10 +45,10 @@ class DeserializerTest extends AnyFunSpec with Matchers {
               (50, 60),
               Board(
                 Set(
-                  SetupMoverCell((1, 2), Orientation.Right, true),
-                  SetupMoverCell((0, 0), Orientation.Top, false),
-                  SetupGeneratorCell((1, 2), Orientation.Right, true),
-                  SetupGeneratorCell((0, 0), Orientation.Top, false)
+                  PlayableMoverCell((1, 2), Orientation.Right, true),
+                  PlayableMoverCell((0, 0), Orientation.Top, false),
+                  PlayableGeneratorCell((1, 2), Orientation.Right, true),
+                  PlayableGeneratorCell((0, 0), Orientation.Top, false)
                 )
               ),
               PlayableArea((1, 2), (20, 30))

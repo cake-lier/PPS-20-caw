@@ -2,10 +2,10 @@ package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.game.controller.{Deserializer, ParentGameController}
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.game.model.Level
-import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, PlayableArea, Position, StageResizer}
+import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, StageResizer}
 import it.unibo.pps.caw.menu.MainMenuView
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.model.Level
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.Alert

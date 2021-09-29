@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw.common.model
 
 /** The dimensions of an area into the game world.
   *

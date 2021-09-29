@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.editor.model
 
-import it.unibo.pps.caw.common.{Dimensions, PlayableArea}
+import it.unibo.pps.caw.common.model.{Dimensions, PlayableArea}
 
 /** Represent the main structure of the game */
 trait Level extends Dimensions {

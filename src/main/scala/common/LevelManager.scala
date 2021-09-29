@@ -1,8 +1,8 @@
 package it.unibo.pps.caw.common
 
+import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.editor.controller.Serializer
-import it.unibo.pps.caw.game.model.BaseCell
-import it.unibo.pps.caw.game.model.Level as GameLevel
 import it.unibo.pps.caw.game.controller.Deserializer as GameDeserializer
 import it.unibo.pps.caw.editor.model.Level as EditorLevel
 import it.unibo.pps.caw.editor.controller.Deserializer as EditorDeserializer
@@ -27,7 +27,7 @@ object LevelManager {
     * @return
     *   the [[Level]] result from deserializing the given file wrapped in a [[Try]]
     */
-  def load(path: String): Try[GameLevel[BaseCell]] =
+  def load(path: String): Try[Level[BaseCell]] =
     for {
       f <- Using(Source.fromFile(path))(_.getLines.mkString)
       l <- GameDeserializer.deserializeLevel(f)

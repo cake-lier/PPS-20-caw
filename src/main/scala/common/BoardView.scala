@@ -1,10 +1,11 @@
 package it.unibo.pps.caw.common
 
-import it.unibo.pps.caw.game.model.{BaseCell, Level as GameLevel, SetupCell as GameSetupCell}
 import it.unibo.pps.caw.editor.model.{Board as EditorBoard, Cell as EditorCell, Level as EditorLevel, SetupCell as EditorSetupCell}
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{DragAndDrop, ModelUpdater, PlayableArea, TileView}
+import it.unibo.pps.caw.common.{DragAndDrop, ModelUpdater, TileView}
 import it.unibo.pps.caw.common.CellImage
+import it.unibo.pps.caw.common.model.{Board, Level, Position}
+import it.unibo.pps.caw.common.model.cell.PlayableCell
 import it.unibo.pps.caw.game.view.CellView as GameCellView
 import it.unibo.pps.caw.editor.view.{PlayableAreaUpdater, CellView as EditorCellView}
 import javafx.application.Platform
@@ -121,23 +122,23 @@ abstract class AbstractBoardViewImpl(
 }
 
 sealed trait GameBoardView extends BoardView {
-  def drawSetupBoard(board: Board[GameSetupCell]): Unit
-  def drawGameBoard(board: Board[GameSetupCell]): Unit
+  def drawSetupBoard(board: Board[PlayableCell]): Unit
+  def drawGameBoard(board: Board[PlayableCell]): Unit
 }
 
 object GameBoardView {
   def apply(
-    screenWidth: Double,
-    screenHeight: Double,
-    initialLevel: GameLevel[GameSetupCell],
-    model: ModelUpdater
+             screenWidth: Double,
+             screenHeight: Double,
+             initialLevel: Level[PlayableCell],
+             model: ModelUpdater
   ): GameBoardView =
     GameBoardViewImpl(screenWidth, screenHeight, initialLevel, model)
   private case class GameBoardViewImpl(
-    screenWidth: Double,
-    screenHeight: Double,
-    initialLevel: GameLevel[GameSetupCell],
-    modelUpdater: ModelUpdater
+                                        screenWidth: Double,
+                                        screenHeight: Double,
+                                        initialLevel: Level[PlayableCell],
+                                        modelUpdater: ModelUpdater
   ) extends AbstractBoardViewImpl(
       screenWidth,
       screenHeight,
@@ -149,14 +150,14 @@ object GameBoardView {
 
     drawSetupBoard(initialLevel.board)
 
-    override def drawGameBoard(board: Board[GameSetupCell]): Unit = draw(board)
+    override def drawGameBoard(board: Board[PlayableCell]): Unit = draw(board)
 
-    override def drawSetupBoard(board: Board[GameSetupCell]): Unit = draw(board, true, true)
+    override def drawSetupBoard(board: Board[PlayableCell]): Unit = draw(board, true, true)
 
     private def draw(
-      board: Board[GameSetupCell],
-      draggableCell: Boolean = false,
-      droppablePlayableArea: Boolean = false
+                      board: Board[PlayableCell],
+                      draggableCell: Boolean = false,
+                      droppablePlayableArea: Boolean = false
     ): Unit = {
       clearComponents()
       drawPavement(false)

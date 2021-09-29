@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.game.model
 
-import it.unibo.pps.caw.common.{Board, PlayableArea, Position}
+import it.unibo.pps.caw.common.model.{cell, Board, Level, PlayableArea, Position}
+import it.unibo.pps.caw.common.model.cell.{BaseBlockCell, BaseCell, BaseEnemyCell, BaseGeneratorCell, BaseMoverCell, BaseRotatorCell, BaseWallCell, Cell, EnemyCell, PlayableBlockCell, PlayableCell, PlayableEnemyCell, PlayableGeneratorCell, PlayableMoverCell, PlayableRotatorCell, PlayableWallCell}
 import it.unibo.pps.caw.game.model.engine.RulesEngine
 
 import scala.annotation.tailrec
@@ -42,9 +43,9 @@ object GameModel {
     extends GameModel {
 
     def this(
-      initialLevel: Level[SetupCell],
-      levelIndex: Option[Int],
-      initialBoard: Board[BaseCell]
+              initialLevel: Level[PlayableCell],
+              levelIndex: Option[Int],
+              initialBoard: Board[BaseCell]
     ) =
       this(
         GameState(
@@ -120,7 +121,7 @@ object GameModel {
           .initialStateLevel
           .copy(board = Board(state.initialStateLevel.board.cells.map(convertToCurrentSetup(_)))),
         didEnemyDie = false,
-        isCurrentLevelCompleted = state.initialStateLevel.board.cells.filter(_.isInstanceOf[SetupEnemyCell]).size == 0
+        isCurrentLevelCompleted = state.initialStateLevel.board.cells.filter(_.isInstanceOf[PlayableEnemyCell]).size == 0
       ),
       initialBoard,
       initialBoard
@@ -132,12 +133,12 @@ object GameModel {
           .cells
           .find(_.position == previousPosition)
           .map(_ match {
-            case _: BaseWallCell         => BaseWallCell(currentPosition)
-            case _: BaseEnemyCell        => BaseEnemyCell(currentPosition)
-            case BaseRotatorCell(_, r)   => BaseRotatorCell(currentPosition, r)
-            case BaseGeneratorCell(_, o) => BaseGeneratorCell(currentPosition, o)
-            case BaseMoverCell(_, o)     => BaseMoverCell(currentPosition, o)
-            case BaseBlockCell(_, p)     => BaseBlockCell(currentPosition, p)
+            case _: BaseWallCell         => cell.BaseWallCell(currentPosition)
+            case _: BaseEnemyCell        => cell.BaseEnemyCell(currentPosition)
+            case BaseRotatorCell(_, r)   => cell.BaseRotatorCell(currentPosition, r)
+            case BaseGeneratorCell(_, o) => cell.BaseGeneratorCell(currentPosition, o)
+            case BaseMoverCell(_, o)     => cell.BaseMoverCell(currentPosition, o)
+            case BaseBlockCell(_, p)     => cell.BaseBlockCell(currentPosition, p)
           })
           .get
       val updatedBoard: Board[BaseCell] = Board(currentBoard.cells.filter(_.position != previousPosition) + updatedCell)
@@ -174,7 +175,7 @@ object GameModel {
       (initialLevelState.playableArea.position.x + 1, initialLevelState.playableArea.position.y + 1),
       initialLevelState.playableArea.dimensions
     )
-    val levelWithCorners: Level[SetupCell] = Level(
+    val levelWithCorners: Level[PlayableCell] = Level(
       (initialLevelState.dimensions.width + 2, initialLevelState.dimensions.height + 2),
       Board(boardWithCorners.cells.map(convertBaseToInitialSetup(playableAreaWithCorners)(_))),
       playableAreaWithCorners
@@ -182,37 +183,37 @@ object GameModel {
     GameModelImpl(levelWithCorners, levelIndex, boardWithCorners)
   }
 
-  private def convertBaseToCurrentSetup(cell: BaseCell): SetupCell = cell match {
-    case BaseRotatorCell(p, r)   => SetupRotatorCell(p, r)
-    case BaseGeneratorCell(p, o) => SetupGeneratorCell(p, o)
-    case BaseEnemyCell(p)        => SetupEnemyCell(p)
-    case BaseMoverCell(p, o)     => SetupMoverCell(p, o)
-    case BaseBlockCell(p, d)     => SetupBlockCell(p, d)
-    case BaseWallCell(p)         => SetupWallCell(p)
+  private def convertBaseToCurrentSetup(cell: BaseCell): PlayableCell = cell match {
+    case BaseRotatorCell(p, r)   => PlayableRotatorCell(p, r)
+    case BaseGeneratorCell(p, o) => PlayableGeneratorCell(p, o)
+    case BaseEnemyCell(p)        => PlayableEnemyCell(p)
+    case BaseMoverCell(p, o)     => PlayableMoverCell(p, o)
+    case BaseBlockCell(p, d)     => PlayableBlockCell(p, d)
+    case BaseWallCell(p)         => PlayableWallCell(p)
   }
 
-  private def convertToCurrentSetup(cell: SetupCell): SetupCell = cell match {
-    case SetupRotatorCell(p, r, _)   => SetupRotatorCell(p, r)
-    case SetupGeneratorCell(p, o, _) => SetupGeneratorCell(p, o)
-    case SetupEnemyCell(p, _)        => SetupEnemyCell(p)
-    case SetupMoverCell(p, o, _)     => SetupMoverCell(p, o)
-    case SetupBlockCell(p, d, _)     => SetupBlockCell(p, d)
-    case SetupWallCell(p, _)         => SetupWallCell(p)
+  private def convertToCurrentSetup(cell: PlayableCell): PlayableCell = cell match {
+    case PlayableRotatorCell(p, r, _)   => PlayableRotatorCell(p, r)
+    case PlayableGeneratorCell(p, o, _) => PlayableGeneratorCell(p, o)
+    case PlayableEnemyCell(p, _)        => PlayableEnemyCell(p)
+    case PlayableMoverCell(p, o, _)     => PlayableMoverCell(p, o)
+    case PlayableBlockCell(p, d, _)     => PlayableBlockCell(p, d)
+    case PlayableWallCell(p, _)         => PlayableWallCell(p)
   }
 
-  private def convertBaseToInitialSetup(playableArea: PlayableArea)(cell: BaseCell): SetupCell = {
+  private def convertBaseToInitialSetup(playableArea: PlayableArea)(cell: BaseCell): PlayableCell = {
     def isCellInsidePlayableArea(position: Position): Boolean =
       position.x >= playableArea.position.x &&
         position.x <= (playableArea.position.x + playableArea.dimensions.width) &&
         position.y >= playableArea.position.y &&
         position.y <= (playableArea.position.y + playableArea.dimensions.height)
     cell match {
-      case BaseRotatorCell(p, r)   => SetupRotatorCell(p, r, isCellInsidePlayableArea(p))
-      case BaseGeneratorCell(p, o) => SetupGeneratorCell(p, o, isCellInsidePlayableArea(p))
-      case BaseEnemyCell(p)        => SetupEnemyCell(p, isCellInsidePlayableArea(p))
-      case BaseMoverCell(p, o)     => SetupMoverCell(p, o, isCellInsidePlayableArea(p))
-      case BaseBlockCell(p, d)     => SetupBlockCell(p, d, isCellInsidePlayableArea(p))
-      case BaseWallCell(p)         => SetupWallCell(p, isCellInsidePlayableArea(p))
+      case BaseRotatorCell(p, r)   => PlayableRotatorCell(p, r, isCellInsidePlayableArea(p))
+      case BaseGeneratorCell(p, o) => PlayableGeneratorCell(p, o, isCellInsidePlayableArea(p))
+      case BaseEnemyCell(p)        => PlayableEnemyCell(p, isCellInsidePlayableArea(p))
+      case BaseMoverCell(p, o)     => PlayableMoverCell(p, o, isCellInsidePlayableArea(p))
+      case BaseBlockCell(p, d)     => PlayableBlockCell(p, d, isCellInsidePlayableArea(p))
+      case BaseWallCell(p)         => PlayableWallCell(p, isCellInsidePlayableArea(p))
     }
   }
 }

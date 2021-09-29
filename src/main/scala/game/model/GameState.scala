@@ -1,10 +1,13 @@
 package it.unibo.pps.caw.game.model
 
+import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.model.cell.PlayableCell
+
 trait GameState {
 
-  val initialStateLevel: Level[SetupCell]
+  val initialStateLevel: Level[PlayableCell]
 
-  val currentStateLevel: Level[SetupCell]
+  val currentStateLevel: Level[PlayableCell]
 
   val isCurrentLevelCompleted: Boolean
 
@@ -15,28 +18,28 @@ trait GameState {
 
 object GameState {
   private case class GameStateImpl(
-    initialStateLevel: Level[SetupCell],
-    currentStateLevel: Level[SetupCell],
-    nextLevelIndex: Option[Int],
-    didEnemyDie: Boolean,
-    isCurrentLevelCompleted: Boolean
+                                    initialStateLevel: Level[PlayableCell],
+                                    currentStateLevel: Level[PlayableCell],
+                                    nextLevelIndex: Option[Int],
+                                    didEnemyDie: Boolean,
+                                    isCurrentLevelCompleted: Boolean
   ) extends GameState
 
   def apply(
-    initialStateLevel: Level[SetupCell],
-    currentStateLevel: Level[SetupCell],
-    nextLevelIndex: Option[Int],
-    didEnemyDie: Boolean,
-    isCurrentLevelCompleted: Boolean
+             initialStateLevel: Level[PlayableCell],
+             currentStateLevel: Level[PlayableCell],
+             nextLevelIndex: Option[Int],
+             didEnemyDie: Boolean,
+             isCurrentLevelCompleted: Boolean
   ): GameState = GameStateImpl(initialStateLevel, currentStateLevel, nextLevelIndex, didEnemyDie, isCurrentLevelCompleted)
 
   extension (s: GameState) {
     def copy(
-      initialStateLevel: Level[SetupCell] = s.initialStateLevel,
-      currentStateLevel: Level[SetupCell] = s.currentStateLevel,
-      nextLevelIndex: Option[Int] = s.nextLevelIndex,
-      didEnemyDie: Boolean = s.didEnemyDie,
-      isCurrentLevelCompleted: Boolean = s.isCurrentLevelCompleted
+              initialStateLevel: Level[PlayableCell] = s.initialStateLevel,
+              currentStateLevel: Level[PlayableCell] = s.currentStateLevel,
+              nextLevelIndex: Option[Int] = s.nextLevelIndex,
+              didEnemyDie: Boolean = s.didEnemyDie,
+              isCurrentLevelCompleted: Boolean = s.isCurrentLevelCompleted
     ): GameState = GameStateImpl(initialStateLevel, currentStateLevel, nextLevelIndex, didEnemyDie, isCurrentLevelCompleted)
   }
 }

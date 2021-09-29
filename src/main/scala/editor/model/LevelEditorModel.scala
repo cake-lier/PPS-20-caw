@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.editor.model
 
-import it.unibo.pps.caw.common.{Dimensions, PlayableArea, Position}
+import it.unibo.pps.caw.common.model.{Dimensions, PlayableArea, Position}
 import it.unibo.pps.caw.editor.model.Board
 
 sealed trait LevelEditorModel {

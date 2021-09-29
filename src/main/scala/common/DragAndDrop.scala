@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.common
 
-import it.unibo.pps.caw.common.Position
+import it.unibo.pps.caw.common.model.Position
 import it.unibo.pps.caw.editor.model.SetupCell
 import javafx.scene.Node
 import javafx.scene.image.ImageView

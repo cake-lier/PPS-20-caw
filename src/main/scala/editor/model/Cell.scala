@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.editor.model
 
-import it.unibo.pps.caw.common.Position
+import it.unibo.pps.caw.common.model.Position
 
 /** Represent a cell of the game */
 trait Cell extends Ordered[Cell] {

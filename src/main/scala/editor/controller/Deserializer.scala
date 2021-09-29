@@ -1,10 +1,10 @@
 package it.unibo.pps.caw.editor.controller
 
 import it.unibo.pps.caw.editor.model.*
-import it.unibo.pps.caw.common.{Dimensions, PlayableArea, Position}
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
+import it.unibo.pps.caw.common.model.{Dimensions, PlayableArea, Position}
 import play.api.libs.json.{JsArray, JsObject, Json, JsValue}
 
 import scala.io.Source

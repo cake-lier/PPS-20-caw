@@ -1,28 +1,46 @@
 package it.unibo.pps.caw.game.model
 
-import it.unibo.pps.caw.common.{Board, Dimensions, PlayableArea}
+import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea}
+import it.unibo.pps.caw.common.model.cell.{
+  BaseBlockCell,
+  BaseCell,
+  BaseEnemyCell,
+  BaseGeneratorCell,
+  BaseMoverCell,
+  BaseRotatorCell,
+  BaseWallCell,
+  Orientation,
+  PlayableBlockCell,
+  PlayableCell,
+  PlayableEnemyCell,
+  PlayableGeneratorCell,
+  PlayableMoverCell,
+  PlayableRotatorCell,
+  PlayableWallCell,
+  Push
+}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 /** Tests for class [[GameModel]] */
 class GameModelTest extends AnyFunSpec with Matchers {
   private val dimensions: Dimensions = (4, 4)
-  private def convertBoard(board: Board[BaseCell]): Board[SetupCell] =
+  private def convertBoard(board: Board[BaseCell]): Board[PlayableCell] =
     Board(
       board
         .cells
         .map(_ match {
-          case BaseRotatorCell(p, r)   => SetupRotatorCell((p.x + 1, p.y + 1), r)
-          case BaseGeneratorCell(p, o) => SetupGeneratorCell((p.x + 1, p.y + 1), o)
-          case BaseEnemyCell(p)        => SetupEnemyCell((p.x + 1, p.y + 1))
-          case BaseMoverCell(p, o)     => SetupMoverCell((p.x + 1, p.y + 1), o)
-          case BaseBlockCell(p, d)     => SetupBlockCell((p.x + 1, p.y + 1), d)
-          case BaseWallCell(p)         => SetupWallCell((p.x + 1, p.y + 1))
+          case BaseRotatorCell(p, r)   => PlayableRotatorCell((p.x + 1, p.y + 1), r)
+          case BaseGeneratorCell(p, o) => PlayableGeneratorCell((p.x + 1, p.y + 1), o)
+          case BaseEnemyCell(p)        => PlayableEnemyCell((p.x + 1, p.y + 1))
+          case BaseMoverCell(p, o)     => PlayableMoverCell((p.x + 1, p.y + 1), o)
+          case BaseBlockCell(p, d)     => PlayableBlockCell((p.x + 1, p.y + 1), d)
+          case BaseWallCell(p)         => PlayableWallCell((p.x + 1, p.y + 1))
         }) ++
-        (0 to dimensions.width + 1).map(i => SetupWallCell((i, 0))) ++
-        (0 to dimensions.width + 1).map(i => SetupWallCell((i, dimensions.height + 1))) ++
-        (1 to dimensions.height).map(i => SetupWallCell((0, i))) ++
-        (1 to dimensions.height).map(i => SetupWallCell((dimensions.width + 1, i)))
+        (0 to dimensions.width + 1).map(i => PlayableWallCell((i, 0))) ++
+        (0 to dimensions.width + 1).map(i => PlayableWallCell((i, dimensions.height + 1))) ++
+        (1 to dimensions.height).map(i => PlayableWallCell((0, i))) ++
+        (1 to dimensions.height).map(i => PlayableWallCell((dimensions.width + 1, i)))
     )
   private val gameModel: GameModel = GameModel(
     Level(
@@ -48,12 +66,12 @@ class GameModelTest extends AnyFunSpec with Matchers {
               .board
               .cells
               .map(_ match {
-                case SetupRotatorCell(p, r, _)   => SetupRotatorCell(p, r)
-                case SetupGeneratorCell(p, o, _) => SetupGeneratorCell(p, o)
-                case SetupEnemyCell(p, _)        => SetupEnemyCell(p)
-                case SetupMoverCell(p, o, _)     => SetupMoverCell(p, o)
-                case SetupBlockCell(p, d, _)     => SetupBlockCell(p, d)
-                case SetupWallCell(p, _)         => SetupWallCell(p)
+                case PlayableRotatorCell(p, r, _)   => PlayableRotatorCell(p, r)
+                case PlayableGeneratorCell(p, o, _) => PlayableGeneratorCell(p, o)
+                case PlayableEnemyCell(p, _)        => PlayableEnemyCell(p)
+                case PlayableMoverCell(p, o, _)     => PlayableMoverCell(p, o)
+                case PlayableBlockCell(p, d, _)     => PlayableBlockCell(p, d)
+                case PlayableWallCell(p, _)         => PlayableWallCell(p)
               })
           ),
           gameModel.state.currentStateLevel.playableArea
