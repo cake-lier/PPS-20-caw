@@ -1,9 +1,9 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.editor.controller.{ParentLevelEditorController, Serializer}
-import it.unibo.pps.caw.game.controller.{Deserializer, ParentDefaultGameController}
+import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
+import it.unibo.pps.caw.game.controller.ParentDefaultGameController
 import it.unibo.pps.caw.editor.view.ParentLevelEditorMenuController
-import it.unibo.pps.caw.editor.model.Level as EditorLevel
+import it.unibo.pps.caw.editor.model.LevelBuilder as EditorLevel
 import it.unibo.pps.caw.menu.ParentMainMenuController
 
 import java.io.{File, PrintWriter}
@@ -12,9 +12,9 @@ import scala.io.Source
 import scala.jdk.StreamConverters
 import scala.util.{Failure, Try, Using}
 import cats.implicits.given
-import it.unibo.pps.caw.common.{LevelManager, Loader, Settings, SettingsManager}
+import it.unibo.pps.caw.common.{Deserializer, LevelManager, Loader, Settings, SettingsManager}
 import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.model.cell.BaseCell
+import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
 import play.api.libs.json.Json
 
 import concurrent.ExecutionContext.Implicits.global
@@ -48,7 +48,7 @@ object ApplicationController {
 
     override def startGame(levelPath: String): Unit =
       (for {
-        f <- Loader.loadResource(levelPath)
+        f <- Loader.loadFile(levelPath)
         l <- Deserializer.deserializeLevel(f)
       } yield l).fold(_ => view.showError("An error has occurred, could not load level"), view.showGame(_))
 
@@ -74,14 +74,17 @@ object ApplicationController {
 
     override def openLevelMenuView(): Unit = view.showEditorMenuView()
 
-    override def saveLevel(path: String, level: EditorLevel): Unit =
+    override def saveLevel(path: String, level: Level[BaseCell]): Unit =
       LevelManager.writeLevel(path, level)
 
     override def openLevelEditor(width: Int, height: Int): Unit =
       view.showLevelEditor(width, height)
 
-    override def openLevelEditor(path: String): Unit =
-      LevelManager.loadLevelLevelEditor(path).foreach(view.showLevelEditor)
+    override def openLevelEditor(levelPath: String): Unit =
+      (for {
+        f <- Loader.loadFile(levelPath)
+        l <- Deserializer.deserializeLevel(f)
+      } yield l).fold(_ => view.showError("An error has occurred, could not load level"), view.showLevelEditor(_))
 
     override def addSolvedLevel(index: Int): Unit = {
       _settings = Settings(settings.volumeMusic, settings.volumeSFX, settings.solvedLevels ++ Set(index))

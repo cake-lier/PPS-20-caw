@@ -1,14 +1,12 @@
 package it.unibo.pps.caw.common
 
-import it.unibo.pps.caw.editor.model.{Board as EditorBoard, Cell as EditorCell, Level as EditorLevel, SetupCell as EditorSetupCell}
+import it.unibo.pps.caw.editor.model.LevelBuilder
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.{DragAndDrop, ModelUpdater, TileView}
 import it.unibo.pps.caw.common.CellImage
 import it.unibo.pps.caw.common.model.{Board, Level, Position}
 import it.unibo.pps.caw.common.model.cell.PlayableCell
 import it.unibo.pps.caw.editor.{LevelEditorView, PlayableAreaUpdater}
-import it.unibo.pps.caw.game.view.CellView as GameCellView
-import it.unibo.pps.caw.editor.view.CellView as EditorCellView
 import javafx.application.Platform
 import javafx.scene.Node
 import javafx.scene.effect.Glow
@@ -129,17 +127,18 @@ sealed trait GameBoardView extends BoardView {
 
 object GameBoardView {
   def apply(
-             screenWidth: Double,
-             screenHeight: Double,
-             initialLevel: Level[PlayableCell],
-             model: ModelUpdater
+    screenWidth: Double,
+    screenHeight: Double,
+    initialLevel: Level[PlayableCell],
+    model: ModelUpdater
   ): GameBoardView =
     GameBoardViewImpl(screenWidth, screenHeight, initialLevel, model)
+
   private case class GameBoardViewImpl(
-                                        screenWidth: Double,
-                                        screenHeight: Double,
-                                        initialLevel: Level[PlayableCell],
-                                        modelUpdater: ModelUpdater
+    screenWidth: Double,
+    screenHeight: Double,
+    initialLevel: Level[PlayableCell],
+    modelUpdater: ModelUpdater
   ) extends AbstractBoardViewImpl(
       screenWidth,
       screenHeight,
@@ -156,9 +155,9 @@ object GameBoardView {
     override def drawSetupBoard(board: Board[PlayableCell]): Unit = draw(board, true, true)
 
     private def draw(
-                      board: Board[PlayableCell],
-                      draggableCell: Boolean = false,
-                      droppablePlayableArea: Boolean = false
+      board: Board[PlayableCell],
+      draggableCell: Boolean = false,
+      droppablePlayableArea: Boolean = false
     ): Unit = {
       clearComponents()
       drawPavement(false)
@@ -172,7 +171,7 @@ object GameBoardView {
       board
         .cells
         .foreach(c => {
-          val node = GameCellView(c, innerComponent)
+          val node = CellView(c, innerComponent)
           drawImageView(
             node.innerComponent,
             c.position.x,
@@ -186,22 +185,24 @@ object GameBoardView {
 }
 
 sealed trait EditorBoardView extends BoardView {
-  def drawBoard(board: EditorBoard[EditorSetupCell]): Unit
+  def drawBoard(board: Board[PlayableCell]): Unit
 }
 
 object EditorBoardView {
+
   def apply(
     screenWidth: Double,
     screenHeight: Double,
-    level: EditorLevel,
+    level: LevelBuilder,
     model: ModelUpdater,
     updater: PlayableAreaUpdater
   ): EditorBoardView =
     EditorBoardViewImpl(screenWidth, screenHeight, level, model, updater)
+
   private case class EditorBoardViewImpl(
     screenWidth: Double,
     screenHeight: Double,
-    initialLevel: EditorLevel,
+    initialLevel: LevelBuilder,
     modelUpdater: ModelUpdater,
     updater: PlayableAreaUpdater
   ) extends AbstractBoardViewImpl(screenWidth, screenHeight, initialLevel.width, initialLevel.height, modelUpdater)
@@ -211,7 +212,7 @@ object EditorBoardView {
     var endPosition = Position(0, 0)
     drawBoard(initialLevel.board)
 
-    override def drawBoard(board: EditorBoard[EditorSetupCell]): Unit = {
+    override def drawBoard(board: Board[PlayableCell]): Unit = {
       clearComponents()
       drawPavement(true)
       if (initialLevel.playableArea.isEmpty) {
@@ -225,7 +226,7 @@ object EditorBoardView {
       board
         .cells
         .foreach(c => {
-          val node: ImageView = EditorCellView(c, innerComponent).innerComponent
+          val node: ImageView = CellView(c, innerComponent).innerComponent
           node.setOnMouseClicked(e => {
             if (e.getButton.equals(MouseButton.SECONDARY)) {
               updater.removeCell(c.position.x, c.position.y)

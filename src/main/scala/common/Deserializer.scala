@@ -1,10 +1,9 @@
-package it.unibo.pps.caw.game.controller
+package it.unibo.pps.caw.common
 
-import io.vertx.core.json.JsonObject
 import io.vertx.core.Vertx
+import io.vertx.core.json.JsonObject
 import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
-import it.unibo.pps.caw.common.Loader
-import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, Position, PlayableArea}
+import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea, Position}
 import it.unibo.pps.caw.common.model.cell.{
   BaseBlockCell,
   BaseCell,
@@ -20,8 +19,7 @@ import it.unibo.pps.caw.common.model.cell.{
 }
 import play.api.libs.json.{JsArray, JsObject, Json, JsValue}
 
-import scala.io.Source
-import scala.util.{Try, Using}
+import scala.util.Try
 
 /** Object for deserialization of [[Level]] components written in JSON format. */
 object Deserializer {

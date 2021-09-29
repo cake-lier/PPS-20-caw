@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.game.controller.{Deserializer, ParentGameController}
+import it.unibo.pps.caw.game.controller.ParentGameController
 import it.unibo.pps.caw.game.view.GameView
 import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, StageResizer}
 import it.unibo.pps.caw.menu.MainMenuView

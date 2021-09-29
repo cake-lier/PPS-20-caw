@@ -3,7 +3,7 @@ package it.unibo.pps.caw
 import it.unibo.pps.caw.common.model.{Board, Level, PlayableArea}
 import it.unibo.pps.caw.common.model.cell.Orientation
 import it.unibo.pps.caw.common.model.cell.{PlayableGeneratorCell, PlayableMoverCell}
-import it.unibo.pps.caw.game.controller.Deserializer
+import it.unibo.pps.caw.common.Deserializer
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -37,7 +37,7 @@ class DeserializerTest extends AnyFunSpec with Matchers {
       }
     }
     describe("when with correct json") {
-      it("should produce a Level") {
+      it("should produce a LevelBuilder") {
         val jsonLevel = Source.fromResource("test_level.json").getLines.mkString
         Deserializer.deserializeLevel(jsonLevel) match {
           case Success(l) =>

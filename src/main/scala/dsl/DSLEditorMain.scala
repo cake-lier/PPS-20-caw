@@ -1,9 +1,11 @@
 package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, StageResizer}
+import it.unibo.pps.caw.common.model.cell.BaseCell
+import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.editor.LevelEditorView
-import it.unibo.pps.caw.editor.controller.{Deserializer, ParentLevelEditorController}
-import it.unibo.pps.caw.editor.model.Level
+import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
+import it.unibo.pps.caw.editor.model.LevelBuilder
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.FlowPane
 import scalafx.application.JFXApp3
@@ -35,7 +37,7 @@ object DSLEditorMain extends JFXApp3 {
     val editorScene: Scene = Scene(stage.width.value, stage.height.value)
     stage.scene = editorScene
     LevelManager
-      .loadLevelLevelEditor(parameters.raw(0))
+      .load(parameters.raw(0))
       .fold(
         _ => editorScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
         l => {
@@ -45,7 +47,7 @@ object DSLEditorMain extends JFXApp3 {
 
               override def backToLevelEditorMenu(): Unit = sys.exit()
 
-              override def saveLevel(path: String, level: Level): Unit = LevelManager.writeLevel(path, level)
+              override def saveLevel(path: String, level: Level[BaseCell]): Unit = LevelManager.writeLevel(path, level)
             },
             editorScene,
             "Close",

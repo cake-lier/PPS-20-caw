@@ -3,7 +3,6 @@ package it.unibo.pps.caw.app
 import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController, SettingsView}
 import javafx.application.Platform
 import scalafx.scene.control.Alert
-import it.unibo.pps.caw.editor.model.{SetupEnemyCell, Level as EditorLevel}
 import it.unibo.pps.caw.editor.LevelEditorView
 import it.unibo.pps.caw.editor.view.LevelEditorMenuView
 import it.unibo.pps.caw.game.view.GameView
@@ -69,7 +68,7 @@ trait ApplicationView {
     * @param level:
     *   the loaded level
     */
-  def showLevelEditor(level: EditorLevel): Unit
+  def showLevelEditor(level: Level[BaseCell]): Unit
 
   /** Shows the [[LevelEditorMenuView]] to the player.
     * @param buttonText:
@@ -111,7 +110,8 @@ object ApplicationView {
     override def showLevelEditor(width: Int, height: Int): Unit =
       show(LevelEditorView(controller, scene, "Menu", audioPlayer, width, height))
 
-    override def showLevelEditor(level: EditorLevel): Unit = show(LevelEditorView(controller, scene, "Menu", audioPlayer, level))
+    override def showLevelEditor(level: Level[BaseCell]): Unit =
+      show(LevelEditorView(controller, scene, "Menu", audioPlayer, level))
 
     override def showEditorMenuView(): Unit = show(LevelEditorMenuView(controller, scene, "Menu"))
 

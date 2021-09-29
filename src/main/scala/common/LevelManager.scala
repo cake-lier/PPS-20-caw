@@ -1,11 +1,8 @@
 package it.unibo.pps.caw.common
 
 import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.editor.model.LevelBuilder as EditorLevel
 import it.unibo.pps.caw.common.model.cell.BaseCell
-import it.unibo.pps.caw.editor.controller.Serializer
-import it.unibo.pps.caw.game.controller.Deserializer as GameDeserializer
-import it.unibo.pps.caw.editor.model.Level as EditorLevel
-import it.unibo.pps.caw.editor.controller.Deserializer as EditorDeserializer
 
 import java.io.File
 import java.nio.file.{Files, Path, Paths}
@@ -30,16 +27,10 @@ object LevelManager {
   def load(path: String): Try[Level[BaseCell]] =
     for {
       f <- Using(Source.fromFile(path))(_.getLines.mkString)
-      l <- GameDeserializer.deserializeLevel(f)
+      l <- Deserializer.deserializeLevel(f)
     } yield l
 
-  def loadLevelLevelEditor(path: String): Try[EditorLevel] =
-    for {
-      f <- Using(Source.fromFile(path))(_.getLines().mkString)
-      l <- EditorDeserializer.deserializeLevel(f)
-    } yield l
-
-  def writeLevel(path: String, level: EditorLevel): Try[Unit] =
+  def writeLevel(path: String, level: Level[BaseCell]): Try[Unit] =
     for {
       s <- Serializer.serializeLevel(level)
       _ <- Try(Files.writeString(Paths.get(path), s))

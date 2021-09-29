@@ -1,7 +1,24 @@
 package it.unibo.pps.caw.game.model
 
 import it.unibo.pps.caw.common.model.{cell, Board, Level, PlayableArea, Position}
-import it.unibo.pps.caw.common.model.cell.{BaseBlockCell, BaseCell, BaseEnemyCell, BaseGeneratorCell, BaseMoverCell, BaseRotatorCell, BaseWallCell, Cell, EnemyCell, PlayableBlockCell, PlayableCell, PlayableEnemyCell, PlayableGeneratorCell, PlayableMoverCell, PlayableRotatorCell, PlayableWallCell}
+import it.unibo.pps.caw.common.model.cell.{
+  BaseBlockCell,
+  BaseCell,
+  BaseEnemyCell,
+  BaseGeneratorCell,
+  BaseMoverCell,
+  BaseRotatorCell,
+  BaseWallCell,
+  Cell,
+  EnemyCell,
+  PlayableBlockCell,
+  PlayableCell,
+  PlayableEnemyCell,
+  PlayableGeneratorCell,
+  PlayableMoverCell,
+  PlayableRotatorCell,
+  PlayableWallCell
+}
 import it.unibo.pps.caw.game.model.engine.RulesEngine
 
 import scala.annotation.tailrec
@@ -42,11 +59,7 @@ object GameModel {
   private class GameModelImpl(val state: GameState, initialBoard: Board[BaseCell], currentBoard: Board[BaseCell])
     extends GameModel {
 
-    def this(
-              initialLevel: Level[PlayableCell],
-              levelIndex: Option[Int],
-              initialBoard: Board[BaseCell]
-    ) =
+    def this(initialLevel: Level[PlayableCell], levelIndex: Option[Int], initialBoard: Board[BaseCell]) =
       this(
         GameState(
           initialLevel,

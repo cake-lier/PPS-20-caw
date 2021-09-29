@@ -1,47 +1,43 @@
 package it.unibo.pps.caw.editor
+
 import io.vertx.core.Vertx
-import io.vertx.core.json.JsonObject
-import io.vertx.json.schema.{Schema, SchemaParser, SchemaRouter, SchemaRouterOptions}
-import it.unibo.pps.caw.common.model.PlayableArea
-import it.unibo.pps.caw.dsl.entities.PushableCell
-import it.unibo.pps.caw.editor.controller.{Deserializer, Serializer}
-import it.unibo.pps.caw.editor.model.*
+import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea}
+import it.unibo.pps.caw.common.model.cell.*
+import it.unibo.pps.caw.common.{Deserializer, Serializer}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{BeforeAndAfterAll, Suite}
 
 import scala.io.Source
-import scala.util.{Failure, Success, Try, Using}
 
-trait ShoutDownVertx extends BeforeAndAfterAll { this: Suite =>
-  override def afterAll(): Unit = {
-    Vertx.vertx().close()
-  }
-}
-class SerializerTest extends AnyFunSpec with Matchers with ShoutDownVertx {
-  val oneCellLevel = Level(20, 20, Board(SetupEnemyCell((5, 5), true)), PlayableArea((0, 0), (3, 3)))
-  val allCellsLevel = Level(
-    20,
-    20,
+class SerializerTest extends AnyFunSpec with Matchers with BeforeAndAfterAll { this: Suite =>
+  val oneCellLevel: Level[BaseCell] =
+    Level(Dimensions(20, 20), Board(BaseEnemyCell((5, 5))), PlayableArea((0, 0), (3, 3)))
+  val allCellsLevel: Level[BaseCell] = Level(
+    Dimensions(20, 20),
     Board(
-      SetupWallCell((1, 1), true),
-      SetupEnemyCell((2, 2), true),
-      SetupRotatorCell((3, 3), Rotation.Counterclockwise, true),
-      SetupRotatorCell((3, 3), Rotation.Clockwise, true),
-      SetupGeneratorCell((4, 4), Orientation.Right, true),
-      SetupGeneratorCell((4, 4), Orientation.Left, true),
-      SetupGeneratorCell((4, 4), Orientation.Top, true),
-      SetupGeneratorCell((4, 4), Orientation.Down, true),
-      SetupMoverCell((5, 5), Orientation.Right, true),
-      SetupMoverCell((5, 5), Orientation.Left, true),
-      SetupMoverCell((5, 5), Orientation.Top, true),
-      SetupMoverCell((5, 5), Orientation.Down, true),
-      SetupBlockCell((6, 6), Push.Both, true),
-      SetupBlockCell((6, 6), Push.Vertical, true),
-      SetupBlockCell((6, 6), Push.Horizontal, true)
+      BaseWallCell((1, 1)),
+      BaseEnemyCell((2, 2)),
+      BaseRotatorCell((3, 3), Rotation.Counterclockwise),
+      BaseRotatorCell((3, 3), Rotation.Clockwise),
+      BaseGeneratorCell((4, 4), Orientation.Right),
+      BaseGeneratorCell((4, 4), Orientation.Left),
+      BaseGeneratorCell((4, 4), Orientation.Top),
+      BaseGeneratorCell((4, 4), Orientation.Down),
+      BaseMoverCell((5, 5), Orientation.Right),
+      BaseMoverCell((5, 5), Orientation.Left),
+      BaseMoverCell((5, 5), Orientation.Top),
+      BaseMoverCell((5, 5), Orientation.Down),
+      BaseBlockCell((6, 6), Push.Both),
+      BaseBlockCell((6, 6), Push.Vertical),
+      BaseBlockCell((6, 6), Push.Horizontal)
     ),
     PlayableArea((0, 0), (3, 3))
   )
+
+  override def afterAll(): Unit = {
+    Vertx.vertx().close()
+  }
 
   describe("Serializer") {
     describe("With single cell") {
@@ -56,7 +52,7 @@ class SerializerTest extends AnyFunSpec with Matchers with ShoutDownVertx {
     }
   }
 
-  private def validate(level: Level): Unit =
+  private def validate(level: Level[BaseCell]): Unit =
     for {
       s <- Serializer.serializeLevel(level)
       r <- Deserializer.deserializeLevel(s)

@@ -45,7 +45,18 @@ object Board {
     */
   def apply[A <: Cell](cells: Set[A]): Board[A] = BoardImpl(cells)
 
+  /** Returns a new instance of the [[Board]] trait which is empty.
+    *
+    * @tparam A
+    *   the type of [[Cell]] in this [[Board]]
+    * @return
+    *   a new empty [[Board]] instance
+    */
   def empty[A <: Cell]: Board[A] = BoardImpl(Set.empty)
 
+  /** Converts a [[Set]] into a [[Board]] by wrapping it into a new one. */
   given fromSetToBoard[A <: Cell]: Conversion[Set[A], Board[A]] = Board(_)
+
+  /** Converts a [[Board]] into a [[Set]] by unwrapping its contents. */
+  given fromBoardToSet[A <: Cell]: Conversion[Board[A], Set[A]] = _.cells
 }

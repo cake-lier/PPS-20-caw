@@ -1,12 +1,11 @@
 package it.unibo.pps.caw.editor
 
-import it.unibo.pps.caw.common.*
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{AudioPlayer, Track, ViewComponent}
-import it.unibo.pps.caw.common.model.Position
+import it.unibo.pps.caw.common.*
+import it.unibo.pps.caw.common.model.{Level, Position}
+import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.editor.controller.{LevelEditorController, ParentLevelEditorController}
-import it.unibo.pps.caw.editor.model.*
-import it.unibo.pps.caw.editor.view.CellView
+import it.unibo.pps.caw.editor.model.LevelBuilder
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXML
@@ -16,11 +15,15 @@ import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{MouseButton, MouseEvent}
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
+import scalafx.scene.control.Alert
+import scalafx.scene.control.Alert.AlertType
 
 import java.io.File
 
 trait LevelEditorView extends ViewComponent[Pane] {
-  def printLevel(level: Level): Unit
+  def printLevel(level: LevelBuilder): Unit
+
+  def showError(message: String): Unit
 }
 
 trait PlayableAreaUpdater {
@@ -37,7 +40,7 @@ object LevelEditorView {
     audioPlayer: AudioPlayer,
     width: Int,
     height: Int,
-    level: Option[Level]
+    level: Option[Level[BaseCell]]
   ) extends AbstractViewComponent[Pane]("editor.fxml")
     with LevelEditorView
     with ModelUpdater
@@ -81,7 +84,7 @@ object LevelEditorView {
     resetAll.setOnMouseClicked(_ => controller.resetLevel())
     rotateCellsButton.setOnMouseClicked(_ => rotateButtons())
 
-    override def printLevel(level: Level): Unit = Platform.runLater(() => {
+    override def printLevel(level: LevelBuilder): Unit = Platform.runLater(() => {
       val newBoardView: EditorBoardView = EditorBoardView(scene.getWidth, scene.getHeight, level, this, this)
 
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
@@ -91,6 +94,8 @@ object LevelEditorView {
       innerComponent.add(newBoardView.innerComponent, 2, 3, 11, 1)
       boardView = Some(newBoardView)
     })
+
+    override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.Error, message).showAndWait())
 
     override def manageCell(cellImage: ImageView, newPosition: Position): Unit = {
       val board = boardView.get.innerComponent
@@ -124,25 +129,25 @@ object LevelEditorView {
       )
     }
 
-    private def getSetupCell(image: Image, newPosition: Position): SetupCell = image match {
-      case CellImage.GeneratorRight.image  => SetupGeneratorCell(newPosition, Orientation.Right, true)
-      case CellImage.GeneratorLeft.image   => SetupGeneratorCell(newPosition, Orientation.Left, true)
-      case CellImage.GeneratorTop.image    => SetupGeneratorCell(newPosition, Orientation.Top, true)
-      case CellImage.GeneratorDown.image   => SetupGeneratorCell(newPosition, Orientation.Down, true)
-      case CellImage.RotatorRight.image    => SetupRotatorCell(newPosition, Rotation.Clockwise, true)
-      case CellImage.RotatorLeft.image     => SetupRotatorCell(newPosition, Rotation.Counterclockwise, true)
-      case CellImage.MoverRight.image      => SetupMoverCell(newPosition, Orientation.Right, true)
-      case CellImage.MoverLeft.image       => SetupMoverCell(newPosition, Orientation.Left, true)
-      case CellImage.MoverTop.image        => SetupMoverCell(newPosition, Orientation.Top, true)
-      case CellImage.MoverDown.image       => SetupMoverCell(newPosition, Orientation.Down, true)
-      case CellImage.Block.image           => SetupBlockCell(newPosition, Push.Both, true)
-      case CellImage.BlockHorizontal.image => SetupBlockCell(newPosition, Push.Horizontal, true)
-      case CellImage.BlockVertical.image   => SetupBlockCell(newPosition, Push.Vertical, true)
-      case CellImage.Enemy.image           => SetupEnemyCell(newPosition, true)
-      case CellImage.Wall.image            => SetupWallCell(newPosition, true)
+    private def getSetupCell(image: Image, newPosition: Position): BaseCell = image match {
+      case CellImage.GeneratorRight.image  => BaseGeneratorCell(newPosition, Orientation.Right)
+      case CellImage.GeneratorLeft.image   => BaseGeneratorCell(newPosition, Orientation.Left)
+      case CellImage.GeneratorTop.image    => BaseGeneratorCell(newPosition, Orientation.Top)
+      case CellImage.GeneratorDown.image   => BaseGeneratorCell(newPosition, Orientation.Down)
+      case CellImage.RotatorRight.image    => BaseRotatorCell(newPosition, Rotation.Clockwise)
+      case CellImage.RotatorLeft.image     => BaseRotatorCell(newPosition, Rotation.Counterclockwise)
+      case CellImage.MoverRight.image      => BaseMoverCell(newPosition, Orientation.Right)
+      case CellImage.MoverLeft.image       => BaseMoverCell(newPosition, Orientation.Left)
+      case CellImage.MoverTop.image        => BaseMoverCell(newPosition, Orientation.Top)
+      case CellImage.MoverDown.image       => BaseMoverCell(newPosition, Orientation.Down)
+      case CellImage.Block.image           => BaseBlockCell(newPosition, Push.Both)
+      case CellImage.BlockHorizontal.image => BaseBlockCell(newPosition, Push.Horizontal)
+      case CellImage.BlockVertical.image   => BaseBlockCell(newPosition, Push.Vertical)
+      case CellImage.Enemy.image           => BaseEnemyCell(newPosition)
+      case CellImage.Wall.image            => BaseWallCell(newPosition)
     }
 
-    private def setGraphic(buttonCellImageView: ImageView, image: Image): Tuple2[ImageView, Image] = {
+    private def setGraphic(buttonCellImageView: ImageView, image: Image): (ImageView, Image) = {
       DragAndDrop.addDragFeature(buttonCellImageView)
       buttonCellImageView.setImage(image)
       buttonCellImageView.setFitHeight(70)
@@ -204,16 +209,15 @@ object LevelEditorView {
     scene: Scene,
     closeEditorButtonText: String,
     audioPlayer: AudioPlayer,
-    level: Level
+    level: Level[BaseCell]
   ): LevelEditorView =
     LevelEditorViewImpl(
       parentLevelEditorController,
       scene,
       closeEditorButtonText,
       audioPlayer,
-      level.width,
-      level.height,
+      level.dimensions.width,
+      level.dimensions.height,
       Some(level)
     )
-
 }

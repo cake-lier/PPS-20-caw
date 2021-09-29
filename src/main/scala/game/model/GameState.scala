@@ -18,28 +18,28 @@ trait GameState {
 
 object GameState {
   private case class GameStateImpl(
-                                    initialStateLevel: Level[PlayableCell],
-                                    currentStateLevel: Level[PlayableCell],
-                                    nextLevelIndex: Option[Int],
-                                    didEnemyDie: Boolean,
-                                    isCurrentLevelCompleted: Boolean
+    initialStateLevel: Level[PlayableCell],
+    currentStateLevel: Level[PlayableCell],
+    nextLevelIndex: Option[Int],
+    didEnemyDie: Boolean,
+    isCurrentLevelCompleted: Boolean
   ) extends GameState
 
   def apply(
-             initialStateLevel: Level[PlayableCell],
-             currentStateLevel: Level[PlayableCell],
-             nextLevelIndex: Option[Int],
-             didEnemyDie: Boolean,
-             isCurrentLevelCompleted: Boolean
+    initialStateLevel: Level[PlayableCell],
+    currentStateLevel: Level[PlayableCell],
+    nextLevelIndex: Option[Int],
+    didEnemyDie: Boolean,
+    isCurrentLevelCompleted: Boolean
   ): GameState = GameStateImpl(initialStateLevel, currentStateLevel, nextLevelIndex, didEnemyDie, isCurrentLevelCompleted)
 
   extension (s: GameState) {
     def copy(
-              initialStateLevel: Level[PlayableCell] = s.initialStateLevel,
-              currentStateLevel: Level[PlayableCell] = s.currentStateLevel,
-              nextLevelIndex: Option[Int] = s.nextLevelIndex,
-              didEnemyDie: Boolean = s.didEnemyDie,
-              isCurrentLevelCompleted: Boolean = s.isCurrentLevelCompleted
+      initialStateLevel: Level[PlayableCell] = s.initialStateLevel,
+      currentStateLevel: Level[PlayableCell] = s.currentStateLevel,
+      nextLevelIndex: Option[Int] = s.nextLevelIndex,
+      didEnemyDie: Boolean = s.didEnemyDie,
+      isCurrentLevelCompleted: Boolean = s.isCurrentLevelCompleted
     ): GameState = GameStateImpl(initialStateLevel, currentStateLevel, nextLevelIndex, didEnemyDie, isCurrentLevelCompleted)
   }
 }
