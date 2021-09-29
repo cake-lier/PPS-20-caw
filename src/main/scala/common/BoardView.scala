@@ -111,7 +111,6 @@ abstract class AbstractBoardViewImpl(
     draggable: Boolean = false
   ): Unit = {
     if (droppable) { DragAndDrop.addDropFeature(node, model) }
-    if (draggable) { DragAndDrop.addDragFeature(node) }
     innerComponent.add(node, x, y)
   }
 

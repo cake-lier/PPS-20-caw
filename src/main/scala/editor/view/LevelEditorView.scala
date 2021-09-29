@@ -13,7 +13,7 @@ import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.{HPos, Insets, VPos}
 import javafx.scene.control.Button
 import javafx.scene.image.{Image, ImageView}
-import javafx.scene.input.{MouseButton, MouseEvent}
+import javafx.scene.input.{ClipboardContent, MouseButton, MouseEvent, TransferMode}
 import javafx.scene.layout.{FlowPane, GridPane, Pane}
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert
@@ -56,17 +56,17 @@ object LevelEditorView {
     @FXML
     var resetAll: Button = _
     @FXML
-    var moverCellView: ImageView = _
+    var moverCellView: DraggableImageView = _
     @FXML
-    var rotateCellView: ImageView = _
+    var rotateCellView: DraggableImageView = _
     @FXML
-    var generateCellView: ImageView = _
+    var generateCellView: DraggableImageView = _
     @FXML
-    var blockCellView: ImageView = _
+    var blockCellView: DraggableImageView = _
     @FXML
-    var enemyCellView: ImageView = _
+    var enemyCellView: DraggableImageView = _
     @FXML
-    var wallCellView: ImageView = _
+    var wallCellView: DraggableImageView = _
     @FXML
     var rotateCellsButton: Button = _
 
@@ -76,7 +76,7 @@ object LevelEditorView {
 
     private var boardView: Option[EditorBoardView] = None
 
-    private var sprites: Map[ImageView, Image] = setButtonImages()
+    private var sprites: Map[DraggableImageView, Image] = setButtonImages()
 
     private val controller: LevelEditorController = level
       .map(LevelEditorController(parentLevelEditorController, this, _))
@@ -129,7 +129,7 @@ object LevelEditorView {
 
     override def removePlayableArea(): Unit = controller.removePlayableArea()
 
-    private def setButtonImages(): Map[ImageView, Image] = {
+    private def setButtonImages(): Map[DraggableImageView, Image] = {
       Map(
         setGraphic(enemyCellView, CellImage.Enemy.image),
         setGraphic(wallCellView, CellImage.Wall.image),
@@ -158,8 +158,7 @@ object LevelEditorView {
       case CellImage.Wall.image            => BaseWallCell(newPosition)
     }
 
-    private def setGraphic(buttonCellImageView: ImageView, image: Image): (ImageView, Image) = {
-      DragAndDrop.addDragFeature(buttonCellImageView)
+    private def setGraphic(buttonCellImageView: DraggableImageView, image: Image): Tuple2[DraggableImageView, Image] = {
       buttonCellImageView.setImage(image)
       buttonCellImageView.setFitHeight(70)
       buttonCellImageView.setPreserveRatio(true)

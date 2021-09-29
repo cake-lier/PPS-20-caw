@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.common
 
 import it.unibo.pps.caw.common.model.cell.*
+import it.unibo.pps.caw.common.{CellImage, ViewComponent, DraggableImageView}
 
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
@@ -20,7 +21,7 @@ object CellView {
 
   /* Implementation of the CellView. */
   private class CellImpl(cell: PlayableCell, gridPane: GridPane) extends CellView {
-    override val innerComponent: ImageView = ImageView()
+    override val innerComponent: ImageView = if (cell.playable) DraggableImageView() else ImageView()
     innerComponent.fitWidthProperty().bind(gridPane.heightProperty().divide(gridPane.getRowConstraints.size()))
     innerComponent.setPreserveRatio(true)
     cell match {

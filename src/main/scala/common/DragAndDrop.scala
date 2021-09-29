@@ -8,16 +8,6 @@ import javafx.scene.layout.GridPane
 
 /** Provides the necessary functions to drag and drop an ImageView. */
 object DragAndDrop {
-
-  def addDragFeature(node: ImageView) = {
-    node.setOnDragDetected(e => {
-      val content = new ClipboardContent()
-      content.putImage(node.getImage)
-      node.startDragAndDrop(TransferMode.MOVE).setContent(content)
-      e.consume()
-    })
-  }
-
   def addDropFeature(node: Node, model: ModelUpdater): Unit = {
     node.setOnDragDropped(e => {
       if (e.getDragboard.hasImage) {

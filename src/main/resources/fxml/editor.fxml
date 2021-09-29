@@ -3,8 +3,8 @@
 <?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import it.unibo.pps.caw.common.DraggableImageView?>
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="background" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
@@ -43,12 +43,12 @@
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
     </Button>
-    <ImageView id="mover-button" fx:id="moverCellView" styleClass="block-button" GridPane.columnIndex="8" GridPane.rowIndex="5" />
-    <ImageView id="generate-button" fx:id="generateCellView" styleClass="block-button" GridPane.columnIndex="9" GridPane.rowIndex="5" />
-    <ImageView id="rotate-button" fx:id="rotateCellView" styleClass="block-button" GridPane.columnIndex="10" GridPane.rowIndex="5" />
-    <ImageView id="block-button" fx:id="blockCellView" styleClass="block-button" GridPane.columnIndex="11" GridPane.rowIndex="5" />
-    <ImageView id="enemy-button" fx:id="enemyCellView" styleClass="block-button" GridPane.columnIndex="12" GridPane.rowIndex="5" />
-    <ImageView id="wall-button" fx:id="wallCellView" styleClass="block-button" GridPane.columnIndex="13" GridPane.rowIndex="5" />
+    <DraggableImageView id="mover-button" fx:id="moverCellView" styleClass="block-button" GridPane.columnIndex="8" GridPane.rowIndex="5" />
+    <DraggableImageView id="generate-button" fx:id="generateCellView" styleClass="block-button" GridPane.columnIndex="9" GridPane.rowIndex="5" />
+    <DraggableImageView id="rotate-button" fx:id="rotateCellView" styleClass="block-button" GridPane.columnIndex="10" GridPane.rowIndex="5" />
+    <DraggableImageView id="block-button" fx:id="blockCellView" styleClass="block-button" GridPane.columnIndex="11" GridPane.rowIndex="5" />
+    <DraggableImageView id="enemy-button" fx:id="enemyCellView" styleClass="block-button" GridPane.columnIndex="12" GridPane.rowIndex="5" />
+    <DraggableImageView id="wall-button" fx:id="wallCellView" styleClass="block-button" GridPane.columnIndex="13" GridPane.rowIndex="5" />
     <Button fx:id="backButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
     <Button fx:id="rulesButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="How to" GridPane.columnIndex="2" GridPane.rowIndex="1">
         <GridPane.margin>
