@@ -2,7 +2,7 @@ package it.unibo.pps.caw.editor.view
 
 import it.unibo.pps.caw.common.{FilePicker, ViewComponent}
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
+import it.unibo.pps.caw.editor.controller.{LevelEditorMenuController, ParentLevelEditorController, ParentLevelEditorMenuController}
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
@@ -49,11 +49,11 @@ object LevelEditorMenuView {
     //TODO: change value for dimensions also in the schema
     width.textProperty().addListener(changeListener(width))
     height.textProperty().addListener(changeListener(height))
-    backButton.setOnMouseClicked(_ => parentLevelEditorController.closeLevelEditorMenu())
+    backButton.setOnMouseClicked(_ => parentLevelEditorController.goBack())
     loadFile.setOnMouseClicked(_ =>
-      FilePicker.pickFile(scene).foreach(f => parentLevelEditorController.openLevelEditor(f.getPath))
+      FilePicker.pickFile(scene).foreach(f => parentLevelEditorController.startLevelEditor(f.getPath))
     )
-    continue.setOnMouseClicked(_ => parentLevelEditorController.openLevelEditor(width.getText.toInt, height.getText.toInt))
+    continue.setOnMouseClicked(_ => parentLevelEditorController.startLevelEditor(width.getText.toInt, height.getText.toInt))
   }
 
   def apply(

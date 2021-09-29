@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane maxHeight="Infinity" maxWidth="Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="rules" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+    <columnConstraints>
+        <ColumnConstraints percentWidth="5" />
+        <ColumnConstraints percentWidth="5.0" />
+        <ColumnConstraints percentWidth="25.0" />
+        <ColumnConstraints percentWidth="15" />
+        <ColumnConstraints percentWidth="20" />
+        <ColumnConstraints percentWidth="20" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="7.5" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="75.0" />
+        <RowConstraints percentHeight="2.5" />
+        <RowConstraints percentHeight="7.5" />
+        <RowConstraints percentHeight="3.0" />
+    </rowConstraints>
+    <FlowPane alignment="CENTER_RIGHT" columnHalignment="CENTER" orientation="VERTICAL" GridPane.columnIndex="2" GridPane.rowIndex="3">
+        <Label text="Click on the board to select a playable area." />
+        <Label text="Use right click to remove the playable area." textAlignment="RIGHT" />
+        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+            <Image url="@../imgs/arrow.png" />
+        </ImageView>
+    </FlowPane>
+    <FlowPane alignment="BOTTOM_CENTER" orientation="VERTICAL" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="5" GridPane.rowIndex="3">
+        <Label text="Drag and drop a cell to the board." />
+        <Label text="Use right click to remove the cell." />
+    </FlowPane>
+    <FlowPane alignment="BOTTOM_CENTER" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="3">
+        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" rotate="66.2">
+            <Image url="@../imgs/arrow.png" />
+        </ImageView>
+    </FlowPane>
+    <stylesheets>
+        <URL value="@../css/main.css" />
+        <URL value="@../css/rules.css" />
+    </stylesheets>
+</GridPane>

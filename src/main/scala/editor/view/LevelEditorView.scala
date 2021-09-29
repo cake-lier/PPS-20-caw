@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.editor
+package it.unibo.pps.caw.editor.view
 
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.*
@@ -6,14 +6,15 @@ import it.unibo.pps.caw.common.model.{Level, Position}
 import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.editor.controller.{LevelEditorController, ParentLevelEditorController}
 import it.unibo.pps.caw.editor.model.LevelBuilder
+import it.unibo.pps.caw.common.{AudioPlayer, Track, ViewComponent}
 import javafx.application.Platform
 import javafx.event.EventHandler
-import javafx.fxml.FXML
+import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.{HPos, Insets, VPos}
 import javafx.scene.control.Button
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.{MouseButton, MouseEvent}
-import javafx.scene.layout.{GridPane, Pane}
+import javafx.scene.layout.{FlowPane, GridPane, Pane}
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert
 import scalafx.scene.control.Alert.AlertType
@@ -49,6 +50,8 @@ object LevelEditorView {
     @FXML
     var backButton: Button = _
     @FXML
+    var rulesButton: Button = _
+    @FXML
     var saveButton: Button = _
     @FXML
     var resetAll: Button = _
@@ -69,6 +72,8 @@ object LevelEditorView {
 
     override val innerComponent: GridPane = loader.load[GridPane]
 
+    private val rulesPage = FXMLLoader.load[GridPane](ClassLoader.getSystemResource("fxml/editor_rules.fxml"))
+
     private var boardView: Option[EditorBoardView] = None
 
     private var sprites: Map[ImageView, Image] = setButtonImages()
@@ -81,6 +86,12 @@ object LevelEditorView {
     backButton.setText(closeEditorButtonText)
     backButton.setOnMouseClicked(_ => controller.closeEditor())
     saveButton.setOnMouseClicked(_ => FilePicker.saveFile(scene).foreach(f => controller.saveLevel(f.getPath)))
+    rulesButton.setOnMouseClicked(_ => {
+      innerComponent.add(rulesPage, 0, 0, 15, 7)
+    })
+    rulesPage.setOnMouseClicked(_ => {
+      innerComponent.getChildren.remove(rulesPage)
+    })
     resetAll.setOnMouseClicked(_ => controller.resetLevel())
     rotateCellsButton.setOnMouseClicked(_ => rotateButtons())
 

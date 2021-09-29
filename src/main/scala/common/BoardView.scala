@@ -6,7 +6,7 @@ import it.unibo.pps.caw.common.{DragAndDrop, ModelUpdater, TileView}
 import it.unibo.pps.caw.common.CellImage
 import it.unibo.pps.caw.common.model.{Board, Level, Position}
 import it.unibo.pps.caw.common.model.cell.PlayableCell
-import it.unibo.pps.caw.editor.{LevelEditorView, PlayableAreaUpdater}
+import it.unibo.pps.caw.editor.view.PlayableAreaUpdater
 import javafx.application.Platform
 import javafx.scene.Node
 import javafx.scene.effect.Glow

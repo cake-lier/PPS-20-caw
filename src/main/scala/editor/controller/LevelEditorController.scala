@@ -2,17 +2,15 @@ package it.unibo.pps.caw.editor.controller
 
 import it.unibo.pps.caw.common.model.{Dimensions, Level, Position}
 import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
-import it.unibo.pps.caw.editor.LevelEditorView
 import it.unibo.pps.caw.editor.model.LevelEditorModel
-
+import it.unibo.pps.caw.editor.view.LevelEditorView
 import java.io.File
-import java.util.concurrent.{Executors, ExecutorService}
+import java.util.concurrent.{ExecutorService, Executors}
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 import scala.io.Source
 
 trait ParentLevelEditorController {
   def closeEditor(): Unit
-  def backToLevelEditorMenu(): Unit
   def saveLevel(path: String, level: Level[BaseCell]): Unit
 }
 

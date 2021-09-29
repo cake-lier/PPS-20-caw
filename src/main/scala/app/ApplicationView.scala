@@ -3,8 +3,7 @@ package it.unibo.pps.caw.app
 import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController, SettingsView}
 import javafx.application.Platform
 import scalafx.scene.control.Alert
-import it.unibo.pps.caw.editor.LevelEditorView
-import it.unibo.pps.caw.editor.view.LevelEditorMenuView
+import it.unibo.pps.caw.editor.view.{LevelEditorMenuView, LevelEditorView}
 import it.unibo.pps.caw.game.view.GameView
 import it.unibo.pps.caw.common.{AudioPlayer, AudioType, StageResizer, ViewComponent}
 import it.unibo.pps.caw.common.model.Level
@@ -70,11 +69,6 @@ trait ApplicationView {
     */
   def showLevelEditor(level: Level[BaseCell]): Unit
 
-  /** Shows the [[LevelEditorMenuView]] to the player.
-    * @param buttonText:
-    *   the text to be written in the back or close button of [[LevelEditorView]] and [[LevelEditorMenuView]]
-    */
-  def showEditorMenuView(): Unit
 }
 
 /** Companion object for the [[ApplicationView]] trait, containing its factory method. */
@@ -112,8 +106,6 @@ object ApplicationView {
 
     override def showLevelEditor(level: Level[BaseCell]): Unit =
       show(LevelEditorView(controller, scene, "Menu", audioPlayer, level))
-
-    override def showEditorMenuView(): Unit = show(LevelEditorMenuView(controller, scene, "Menu"))
 
     private def show(view: ViewComponent[? <: Pane]) = Platform.runLater(() => scene.root.value = view)
 

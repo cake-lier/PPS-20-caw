@@ -3,9 +3,10 @@ package it.unibo.pps.caw.dsl
 import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, StageResizer}
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.editor.LevelEditorView
+import it.unibo.pps.caw.editor.view.LevelEditorView
 import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
 import it.unibo.pps.caw.editor.model.LevelBuilder
+import it.unibo.pps.caw.editor.view.LevelEditorView
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.FlowPane
 import scalafx.application.JFXApp3
@@ -44,8 +45,6 @@ object DSLEditorMain extends JFXApp3 {
           editorScene.root.value = LevelEditorView(
             new ParentLevelEditorController {
               override def closeEditor(): Unit = sys.exit()
-
-              override def backToLevelEditorMenu(): Unit = sys.exit()
 
               override def saveLevel(path: String, level: Level[BaseCell]): Unit = LevelManager.writeLevel(path, level)
             },
