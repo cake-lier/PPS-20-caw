@@ -1,9 +1,8 @@
 package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.game.model.{BaseCell, Level as GameLevel}
-import it.unibo.pps.caw.editor.controller.{ParentLevelEditorController, Serializer}
+import it.unibo.pps.caw.editor.controller.{ParentLevelEditorController, ParentLevelEditorMenuController, Serializer}
 import it.unibo.pps.caw.game.controller.{Deserializer, ParentDefaultGameController}
-import it.unibo.pps.caw.editor.view.ParentLevelEditorMenuController
 import it.unibo.pps.caw.editor.model.Level as EditorLevel
 import it.unibo.pps.caw.menu.ParentMainMenuController
 
@@ -32,7 +31,6 @@ trait ApplicationController
   extends ParentDefaultGameController
   with ParentMainMenuController
   with ParentLevelEditorController
-  with ParentLevelEditorMenuController
 
 /** Companion object to the [[ApplicationController]] trait, containing its factory method. */
 object ApplicationController {
@@ -47,7 +45,7 @@ object ApplicationController {
 
     override def startGame(levelPath: String): Unit =
       (for {
-        f <- Loader.loadResource(levelPath)
+        f <- Loader.loadFile(levelPath)
         l <- Deserializer.deserializeLevel(f)
       } yield l).fold(_ => view.showError("An error has occurred, could not load level"), view.showGame(_))
 
@@ -65,22 +63,14 @@ object ApplicationController {
 
     override val levelsCount: Int = levelFiles.length
 
-    override def backToLevelEditorMenu(): Unit = view.showEditorMenuView()
+    override def startLevelEditor(width: Int, height: Int): Unit = view.showLevelEditor(width, height)
+
+    override def startLevelEditor(path: String): Unit = LevelManager.loadLevelLevelEditor(path).foreach(view.showLevelEditor)
 
     override def closeEditor(): Unit = view.showMainMenu()
 
-    override def closeLevelEditorMenu(): Unit = view.showMainMenu()
-
-    override def openLevelMenuView(): Unit = view.showEditorMenuView()
-
     override def saveLevel(path: String, level: EditorLevel): Unit =
       LevelManager.writeLevel(path, level)
-
-    override def openLevelEditor(width: Int, height: Int): Unit =
-      view.showLevelEditor(width, height)
-
-    override def openLevelEditor(path: String): Unit =
-      LevelManager.loadLevelLevelEditor(path).foreach(view.showLevelEditor)
 
     override def addSolvedLevel(index: Int): Unit = {
       _settings = Settings(settings.volumeMusic, settings.volumeSFX, settings.solvedLevels ++ Set(index))

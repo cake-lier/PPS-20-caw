@@ -1,18 +1,12 @@
 package it.unibo.pps.caw.common
 
 import it.unibo.pps.caw.game.model.{BaseCell, Level as GameLevel, SetupCell as GameSetupCell}
-import it.unibo.pps.caw.editor.model.{
-  Board as EditorBoard,
-  Cell as EditorCell,
-  Level as EditorLevel,
-  SetupCell as EditorSetupCell
-}
+import it.unibo.pps.caw.editor.model.{Board as EditorBoard, Cell as EditorCell, Level as EditorLevel, SetupCell as EditorSetupCell}
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.{DragAndDrop, ModelUpdater, PlayableArea, TileView}
 import it.unibo.pps.caw.common.CellImage
-import it.unibo.pps.caw.editor.{LevelEditorView, PlayableAreaUpdater}
 import it.unibo.pps.caw.game.view.CellView as GameCellView
-import it.unibo.pps.caw.editor.view.CellView as EditorCellView
+import it.unibo.pps.caw.editor.view.{PlayableAreaUpdater, CellView as EditorCellView}
 import javafx.application.Platform
 import javafx.scene.Node
 import javafx.scene.effect.Glow

@@ -1,9 +1,9 @@
 package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, StageResizer}
-import it.unibo.pps.caw.editor.LevelEditorView
 import it.unibo.pps.caw.editor.controller.{Deserializer, ParentLevelEditorController}
 import it.unibo.pps.caw.editor.model.Level
+import it.unibo.pps.caw.editor.view.LevelEditorView
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.FlowPane
 import scalafx.application.JFXApp3
@@ -42,8 +42,6 @@ object DSLEditorMain extends JFXApp3 {
           editorScene.root.value = LevelEditorView(
             new ParentLevelEditorController {
               override def closeEditor(): Unit = sys.exit()
-
-              override def backToLevelEditorMenu(): Unit = sys.exit()
 
               override def saveLevel(path: String, level: Level): Unit = LevelManager.writeLevel(path, level)
             },

@@ -1,7 +1,8 @@
 package it.unibo.pps.caw.menu
 
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{AudioPlayer, FilePicker, SoundButton, ViewComponent, Track}
+import it.unibo.pps.caw.common.{AudioPlayer, FilePicker, SoundButton, Track, ViewComponent}
+import it.unibo.pps.caw.editor.view.LevelEditorMenuView
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.{GridPane, Pane}
@@ -77,7 +78,7 @@ object MainMenuView {
       //FilePicker.pickFile(scene).foreach(f => controller.startGame(f.toPath))
     })
     settingsButton.setOnMouseClicked(_ => scene.root.value = SettingsView(controller, audioPlayer, scene))
+    editorButton.setOnMouseClicked(_ => scene.root.value = LevelEditorMenuView(controller, scene, "Menu"))
     exitButton.setOnMouseClicked(_ => controller.exit())
-    editorButton.setOnMouseClicked(_ => parentController.openLevelMenuView())
   }
 }

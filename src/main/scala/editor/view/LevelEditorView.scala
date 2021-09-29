@@ -1,11 +1,10 @@
-package it.unibo.pps.caw.editor
+package it.unibo.pps.caw.editor.view
 
-import it.unibo.pps.caw.common.*
+import it.unibo.pps.caw.common._
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{AudioPlayer, Track, ViewComponent}
+import it.unibo.pps.caw.editor.model._
 import it.unibo.pps.caw.editor.controller.{LevelEditorController, ParentLevelEditorController}
-import it.unibo.pps.caw.editor.model.*
-import it.unibo.pps.caw.editor.view.CellView
+
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXML

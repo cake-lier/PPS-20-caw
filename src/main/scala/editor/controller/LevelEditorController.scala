@@ -1,23 +1,21 @@
 package it.unibo.pps.caw.editor.controller
 
 import it.unibo.pps.caw.common.{Dimensions, Position}
-import it.unibo.pps.caw.editor.LevelEditorView
 import it.unibo.pps.caw.editor.model.{Cell, Level, LevelEditorModel, SetupCell}
+import it.unibo.pps.caw.editor.view.LevelEditorView
 
 import java.io.File
-import java.util.concurrent.{Executors, ExecutorService}
+import java.util.concurrent.{ExecutorService, Executors}
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
 import scala.io.Source
 
 trait ParentLevelEditorController {
   def closeEditor(): Unit
-  def backToLevelEditorMenu(): Unit
   def saveLevel(path: String, level: Level): Unit
 }
 
 sealed trait LevelEditorController {
   def closeEditor(): Unit
-  def backToLevelEditorMenu(): Unit
   def resetLevel(): Unit
   def setCell(cell: SetupCell): Unit
   def updateCellPosition(oldPosition: Position, newPosition: Position): Unit
@@ -72,8 +70,6 @@ object LevelEditorController {
       updateShowLevel(levelEditorModel.updateCellPosition(oldPosition, newPosition))
       levelEditorView.printLevel(levelEditorModel.currentLevel)
     }
-
-    override def backToLevelEditorMenu(): Unit = parentLevelEditorController.backToLevelEditorMenu()
 
     private def updateShowLevel(newLevelEditorModel: LevelEditorModel): Unit =
       levelEditorModel = newLevelEditorModel
