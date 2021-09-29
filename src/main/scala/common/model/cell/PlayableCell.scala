@@ -27,7 +27,7 @@ object PlayableRotatorCell {
     extends PlayableRotatorCell
 
   /** Returns a new instance of the [[PlayableRotatorCell]] trait given its [[Position]], its [[Rotation]] and if it is playable
-    * or not. By default, it is not playable unless explicitly stated otherwise.
+    * or not.
     *
     * @param position
     *   the [[Position]] of the [[PlayableRotatorCell]] to create
@@ -38,7 +38,7 @@ object PlayableRotatorCell {
     * @return
     *   a new [[PlayableRotatorCell]] instance
     */
-  def apply(position: Position, rotation: Rotation, playable: Boolean = false): PlayableRotatorCell =
+  def apply(position: Position, rotation: Rotation, playable: Boolean): PlayableRotatorCell =
     PlayableRotatorCellImpl(position, rotation, playable)
 
   /** Extracts the [[Position]], [[Rotation]] and "playable" properties from the given instance of [[PlayableRotatorCell]].
@@ -62,7 +62,7 @@ object PlayableGeneratorCell {
     extends PlayableGeneratorCell
 
   /** Returns a new instance of the [[PlayableGeneratorCell]] trait given its [[Position]], its [[Orientation]] and if it is
-    * playable or not. By default, it is not playable unless explicitly stated otherwise.
+    * playable or not.
     *
     * @param position
     *   the [[Position]] of the [[PlayableGeneratorCell]] to create
@@ -73,7 +73,7 @@ object PlayableGeneratorCell {
     * @return
     *   a new [[PlayableGeneratorCell]] instance
     */
-  def apply(position: Position, orientation: Orientation, playable: Boolean = false): PlayableGeneratorCell =
+  def apply(position: Position, orientation: Orientation, playable: Boolean): PlayableGeneratorCell =
     PlayableGeneratorCellImpl(position, orientation, playable)
 
   /** Extracts the [[Position]], [[Orientation]] and "playable" properties from the given instance of [[PlayableGeneratorCell]].
@@ -95,8 +95,7 @@ object PlayableEnemyCell {
   /* Default implementation of the PlayableEnemyCell trait. */
   private case class PlayableEnemyCellImpl(position: Position, playable: Boolean) extends PlayableEnemyCell
 
-  /** Returns a new instance of the [[PlayableEnemyCell]] trait given its [[Position]] and if it is playable or not. By default,
-    * it is not playable unless explicitly stated otherwise.
+  /** Returns a new instance of the [[PlayableEnemyCell]] trait given its [[Position]] and if it is playable or not.
     *
     * @param position
     *   the [[Position]] of the [[PlayableEnemyCell]] to create
@@ -105,7 +104,7 @@ object PlayableEnemyCell {
     * @return
     *   a new [[PlayableEnemyCell]] instance
     */
-  def apply(position: Position, playable: Boolean = false): PlayableEnemyCell = PlayableEnemyCellImpl(position, playable)
+  def apply(position: Position, playable: Boolean): PlayableEnemyCell = PlayableEnemyCellImpl(position, playable)
 
   /** Extracts the [[Position]] and "playable" properties from the given instance of [[PlayableEnemyCell]].
     *
@@ -128,7 +127,7 @@ object PlayableMoverCell {
     extends PlayableMoverCell
 
   /** Returns a new instance of the [[PlayableMoverCell]] trait given its [[Position]], its [[Orientation]] and if it is playable
-    * or not. By default, it is not playable unless explicitly stated otherwise.
+    * or not.
     *
     * @param position
     *   the [[Position]] of the [[PlayableMoverCell]] to create
@@ -139,7 +138,7 @@ object PlayableMoverCell {
     * @return
     *   a new [[PlayableMoverCell]] instance
     */
-  def apply(position: Position, orientation: Orientation, playable: Boolean = false): PlayableMoverCell =
+  def apply(position: Position, orientation: Orientation, playable: Boolean): PlayableMoverCell =
     PlayableMoverCellImpl(position, orientation, playable)
 
   /** Extracts the [[Position]], [[Orientation]] and "playable" properties from the given instance of [[PlayableMoverCell]].
@@ -162,7 +161,7 @@ object PlayableBlockCell {
   private case class PlayableBlockCellImpl(position: Position, push: Push, playable: Boolean) extends PlayableBlockCell
 
   /** Returns a new instance of the [[PlayableBlockCell]] trait given its [[Position]], its [[Push]] direction and if it is
-    * playable or not. By default, it is not playable unless explicitly stated otherwise.
+    * playable or not.
     *
     * @param position
     *   the [[Position]] of the [[PlayableBlockCell]] to create
@@ -173,7 +172,7 @@ object PlayableBlockCell {
     * @return
     *   a new [[PlayableBlockCell]] instance
     */
-  def apply(position: Position, push: Push, playable: Boolean = false): PlayableBlockCell =
+  def apply(position: Position, push: Push, playable: Boolean): PlayableBlockCell =
     PlayableBlockCellImpl(position, push, playable)
 
   /** Extracts the [[Position]], [[Push]] direction and "playable" properties from the given instance of [[PlayableBlockCell]].
@@ -195,8 +194,7 @@ object PlayableWallCell {
   /* Default implementation of the PlayableWallCell trait. */
   private case class PlayableWallCellImpl(position: Position, playable: Boolean) extends PlayableWallCell
 
-  /** Returns a new instance of the [[PlayableWallCell]] trait given its [[Position]] and if it is playable or not. By default, it
-    * is not playable unless explicitly stated otherwise.
+  /** Returns a new instance of the [[PlayableWallCell]] trait given its [[Position]] and if it is playable or not.
     *
     * @param position
     *   the [[Position]] of the [[PlayableWallCell]] to create
@@ -205,7 +203,7 @@ object PlayableWallCell {
     * @return
     *   a new [[PlayableWallCell]] instance
     */
-  def apply(position: Position, playable: Boolean = false): PlayableWallCell = PlayableWallCellImpl(position, playable)
+  def apply(position: Position, playable: Boolean): PlayableWallCell = PlayableWallCellImpl(position, playable)
 
   /** Extracts the [[Position]] and "playable" properties from the given instance of [[PlayableWallCell]].
     *

@@ -36,15 +36,15 @@ object ApplicationController {
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
     private val settingsManager = SettingsManager()
     private var _settings: Settings = settingsManager.load().getOrElse(settingsManager.defaultSettings)
-    def settings: Settings = _settings
 
     private val futures: Set[Future[Try[Unit]]] = ConcurrentHashMap.newKeySet[Future[Try[Unit]]]().asScala
 
-    override def startGame(levelPath: String): Unit =
-      (for {
-        f <- Loader.loadFile(levelPath)
-        l <- Deserializer.deserializeLevel(f)
-      } yield l).fold(_ => view.showError("An error has occurred, could not load level"), view.showGame(_))
+    override def closeGame(): Unit = view.showMainMenu()
+
+    override def addSolvedLevel(index: Int): Unit = {
+      _settings = Settings(settings.volumeMusic, settings.volumeSFX, settings.solvedLevels ++ Set(index))
+      saveSettings(settings)
+    }
 
     private val levelFiles: Seq[Level[BaseCell]] =
       (for {
@@ -56,23 +56,21 @@ object ApplicationController {
         Seq.empty
       }
 
-    override def startGame(levelIndex: Int): Unit = view.showGame(levelFiles, levelIndex)
-
     override val levelsCount: Int = levelFiles.length
 
-    override def startLevelEditor(width: Int, height: Int): Unit = view.showLevelEditor(width, height)
+    override def settings: Settings = _settings
 
-    override def startLevelEditor(path: String): Unit =
-      LevelManager.load(path).fold(_ => view.showError("An error has occured, could not load level"), view.showLevelEditor(_))
+    override def startGame(levelPath: String): Unit =
+      LevelManager.load(levelPath).fold(_ => view.showError("An error has occurred, could not load level"), view.showGame(_))
 
-    override def closeEditor(): Unit = view.showMainMenu()
+    override def startGame(levelIndex: Int): Unit = view.showGame(levelFiles, levelIndex)
 
-    override def saveLevel(path: String, level: Level[BaseCell]): Unit =
-      LevelManager.writeLevel(path, level)
-
-    override def addSolvedLevel(index: Int): Unit = {
-      _settings = Settings(settings.volumeMusic, settings.volumeSFX, settings.solvedLevels ++ Set(index))
-      saveSettings(settings)
+    private def saveSettings(s: Settings): Unit = {
+      val future: Future[Try[Unit]] = Future(
+        settingsManager.save(settings).recover(_ => view.showError("An error has occured, could not save settings"))
+      )
+      futures.add(future)
+      future.onComplete(_ => futures.remove(future))
     }
 
     override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit = {
@@ -80,17 +78,20 @@ object ApplicationController {
       saveSettings(settings)
     }
 
-    override def goBack(): Unit = view.showMainMenu()
+    override def startLevelEditor(width: Int, height: Int): Unit = view.showLevelEditor(width, height)
+
+    override def startLevelEditor(levelPath: String): Unit =
+      LevelManager
+        .load(levelPath)
+        .fold(_ => view.showError("An error has occured, could not load level"), view.showLevelEditor(_))
+
+    override def showMainMenu(): Unit = view.showMainMenu()
 
     override def exit(): Unit = Future.sequence(futures).onComplete(_ => sys.exit())
 
-    private def saveSettings(s: Settings): Unit = {
-      val future: Future[Try[Unit]] = Future(
-        settingsManager.save(settings).recover(_ => view.showError("An error has occured, could not save level"))
-      )
-      futures.add(future)
-      future.onComplete(_ => futures.remove(future))
-    }
+    override def closeEditor(): Unit = view.showMainMenu()
+
+    override def saveLevel(path: String, level: Level[BaseCell]): Unit = LevelManager.writeLevel(path, level)
   }
 
   /** Returns a new instance of the [[ApplicationController]] trait. It must receive the [[ApplicationView]] which will be called

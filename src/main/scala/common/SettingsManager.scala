@@ -3,8 +3,6 @@ package it.unibo.pps.caw.common
 import play.api.libs.json.Json
 
 import java.io.{File, FileNotFoundException, FileWriter}
-import java.nio.file.{Files, Path}
-import scala.io.Source
 import scala.util.{Failure, Success, Try, Using}
 
 /** Representation of game settings: the music volume, the SFX volume and the indexes of completed default levels.
@@ -18,8 +16,8 @@ import scala.util.{Failure, Success, Try, Using}
   */
 case class Settings(volumeMusic: Double, volumeSFX: Double, solvedLevels: Set[Int])
 
-/** The manager for the game settings: it allows to load and save settings to a file so as to memorize the settings
-  * between game sessions.
+/** The manager for the game settings: it allows to load and save settings to a file so as to memorize the settings between game
+  * sessions.
   */
 trait SettingsManager {
 
@@ -43,7 +41,6 @@ trait SettingsManager {
     *   an exception if it occurs during file writing
     */
   def save(settings: Settings): Try[Unit]
-
 }
 
 /** Companion object to the [[SettingsManager]] trait */
@@ -63,10 +60,11 @@ object SettingsManager {
           val solvedLevels = (json \ "solvedLevels").as[Set[Int]]
           Success(Settings(volumeMusic, volumeSFX, solvedLevels))
         }
-        case Failure(e: FileNotFoundException) => writeSettings(defaultSettingsJson.toString) match {
-          case Failure(e) => Failure(e)
-          case _ => Success(defaultSettings)
-        }
+        case Failure(e: FileNotFoundException) =>
+          writeSettings(defaultSettingsJson.toString) match {
+            case Failure(e) => Failure(e)
+            case _          => Success(defaultSettings)
+          }
         case Failure(e) => Failure(e)
       }
     }
@@ -78,7 +76,6 @@ object SettingsManager {
 
     /* Creates or overwrites file */
     private def writeSettings(body: String): Try[Unit] = Using(new FileWriter(File(filePath)))(_.write(body))
-
   }
 
   /** Returns a new instance of the [[SettingsManager]] trait.

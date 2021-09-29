@@ -47,7 +47,7 @@ object DSLGameMain extends JFXApp3 {
             new ParentGameController {
 
               /** Asks the parent controller to go back to the previous state of the application. */
-              override def goBack(): Unit = sys.exit()
+              override def closeGame(): Unit = sys.exit()
             },
             AudioPlayer(),
             l,

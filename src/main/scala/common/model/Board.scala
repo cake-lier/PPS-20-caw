@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.common.model
 
-import it.unibo.pps.caw.common.model.cell.Cell
+import it.unibo.pps.caw.common.model.cell.*
 
 /** A group of cells in the game world.
   *
@@ -53,6 +53,20 @@ object Board {
     *   a new empty [[Board]] instance
     */
   def empty[A <: Cell]: Board[A] = BoardImpl(Set.empty)
+
+  extension (board: Board[BaseCell]) {
+    def toPlayableCells(isPlayable: BaseCell => Boolean): Board[PlayableCell] =
+      board.map(c =>
+        c match {
+          case BaseRotatorCell(p, r)   => PlayableRotatorCell(p, r, isPlayable(c))
+          case BaseGeneratorCell(p, o) => PlayableGeneratorCell(p, o, isPlayable(c))
+          case BaseEnemyCell(p)        => PlayableEnemyCell(p, isPlayable(c))
+          case BaseMoverCell(p, o)     => PlayableMoverCell(p, o, isPlayable(c))
+          case BaseBlockCell(p, d)     => PlayableBlockCell(p, d, isPlayable(c))
+          case BaseWallCell(p)         => PlayableWallCell(p, isPlayable(c))
+        }
+      )
+  }
 
   /** Converts a [[Set]] into a [[Board]] by wrapping it into a new one. */
   given fromSetToBoard[A <: Cell]: Conversion[Set[A], Board[A]] = Board(_)

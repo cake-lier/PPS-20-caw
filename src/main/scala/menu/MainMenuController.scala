@@ -58,12 +58,11 @@ trait ParentMainMenuController {
     */
   def startLevelEditor(path: String): Unit
 
-  /** Asks the parent controller to go back to the previous state of the application. */
-  def goBack(): Unit
+  /** Asks the parent controller to show the main menu initial page. */
+  def showMainMenu(): Unit
 
   /** Asks the parent controller to exit the application. */
   def exit(): Unit
-
 }
 
 /** The controller which manages the main menu part of the application.
@@ -86,7 +85,6 @@ trait MainMenuController extends LevelSelectionController with SettingsControlle
 
   /** Exits the application. */
   def exit(): Unit
-
 }
 
 /** Companion object to the [[MainMenuController]] trait, containing its factory method. */
@@ -107,7 +105,7 @@ object MainMenuController {
 
     override def exit(): Unit = parentController.exit()
 
-    override def goBack(): Unit = parentController.goBack()
+    override def goBack(): Unit = parentController.showMainMenu()
 
     override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit =
       parentController.saveVolumeSettings(volumeMusic, volumeSFX)

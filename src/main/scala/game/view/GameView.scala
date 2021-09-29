@@ -128,7 +128,7 @@ object GameView {
       resetButton.setVisible(true)
     })
     playSimulationButton.setOnMouseClicked(startSimulationHandler)
-    backToLevelsButton.setOnMouseClicked(_ => controller.goBack())
+    backToLevelsButton.setOnMouseClicked(_ => controller.closeGame())
     nextButton.setOnMouseClicked(_ => {
       controller.nextLevel()
       resetButton.setVisible(false)
@@ -184,7 +184,7 @@ object GameView {
       nextButton.setVisible(false)
     })
 
-    override def backToMenu(): Unit = controller.goBack()
+    override def backToMenu(): Unit = controller.closeGame()
 
     override def manageCell(cell: ImageView, newPosition: Position): Unit = {
       val board = boardView.get.innerComponent
