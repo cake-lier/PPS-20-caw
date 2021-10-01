@@ -9,7 +9,7 @@ import java.nio.file.{Files, Path, Paths}
 import scala.jdk.StreamConverters
 import scala.util.{Failure, Try}
 import cats.implicits.given
-import it.unibo.pps.caw.common.{LevelStorage, LevelParser, FileStorage, Settings, SettingsManager}
+import it.unibo.pps.caw.common.{LevelStorage, LevelParser, FileStorage, Settings, SettingsStorage}
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
 import play.api.libs.json.Json
@@ -36,7 +36,7 @@ object ApplicationController {
     private val fileStorage = FileStorage()
     private val levelParser = LevelParser(fileStorage)
     private val levelStorage = LevelStorage(fileStorage, levelParser)
-    private val settingsManager = SettingsManager(fileStorage)
+    private val settingsManager = SettingsStorage(fileStorage)
     private var _settings: Settings = settingsManager.load().getOrElse(settingsManager.defaultSettings)
     private val futures: Set[Future[Try[Unit]]] = ConcurrentHashMap.newKeySet[Future[Try[Unit]]]().asScala
 

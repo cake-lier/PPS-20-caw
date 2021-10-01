@@ -16,10 +16,10 @@ import scala.util.{Failure, Success, Try, Using}
   */
 case class Settings(volumeMusic: Double, volumeSFX: Double, solvedLevels: Set[Int])
 
-/** The manager for the game settings: it allows to load and save settings to a file so as to memorize the settings between game
-  * sessions.
+/** Represents storage for the game settings: it allows to load and save settings to a file so as to memorize the
+  * settings between game sessions.
   */
-trait SettingsManager {
+trait SettingsStorage {
 
   /** Returns default settings. */
   val defaultSettings: Settings
@@ -43,10 +43,10 @@ trait SettingsManager {
   def save(settings: Settings): Try[Unit]
 }
 
-/** Companion object to the [[SettingsManager]] trait */
-object SettingsManager {
+/** Companion object to the [[SettingsStorage]] trait */
+object SettingsStorage {
 
-  private class SettingsManagerImpl(fileStorage: FileStorage) extends SettingsManager {
+  private class SettingsStorageImpl(fileStorage: FileStorage) extends SettingsStorage {
     val defaultSettings = Settings(0.3, 0.7, Set())
     private val defaultSettingsJson = Json.toJson(defaultSettings)(Json.writes[Settings])
     private val filePath = System.getProperty("user.home") + File.separator + ".settings.json"
@@ -78,10 +78,10 @@ object SettingsManager {
     private def writeSettings(body: String): Try[Unit] = Using(new FileWriter(File(filePath)))(_.write(body))
   }
 
-  /** Returns a new instance of the [[SettingsManager]] trait.
+  /** Returns a new instance of the [[SettingsStorage]] trait.
     *
     * @return
-    *   a new [[SettingsManager]] instance
+    * a new [[SettingsStorage]] instance
     */
-  def apply(fileStorage: FileStorage): SettingsManager = SettingsManagerImpl(fileStorage)
+  def apply(fileStorage: FileStorage): SettingsStorage = SettingsStorageImpl(fileStorage)
 }
