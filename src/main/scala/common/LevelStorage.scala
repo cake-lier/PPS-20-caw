@@ -14,7 +14,7 @@ import scala.util.{Try, Using}
   * This module contains only one helper method which is useful when deserializing a file containing a [[Level]] for trasforming
   * it into an instance of that class.
   */
-trait LevelManager {
+trait LevelStorage {
   /** Deserializes the file associated to the given [[Path]] producing a [[Level]] object which represents the [[Level]] contained
     * into the file itself. This operation can fail and, as such, the object is wrapped inside a [[Try]].
     *
@@ -23,27 +23,36 @@ trait LevelManager {
     * @return
     *   the [[Level]] result from deserializing the given file wrapped in a [[Try]]
     */
-  def load(path: String): Try[Level[BaseCell]]
+  def loadLevel(path: String): Try[Level[BaseCell]]
 
-  def writeLevel(path: String, level: Level[BaseCell]): Try[Unit]
+  /** Save the [[Level]] to disk, in the specified path.
+    *
+    * @param path
+    *   the path of the level file to save to
+    * @param level
+    *   the [[Level]] instance to be saved
+    * @return
+    *   an [[java.io.IOException]] if the file can't be saved
+    */
+  def saveLevel(path: String, level: Level[BaseCell]): Try[Unit]
 }
 
-object LevelManager {
+object LevelStorage {
 
-  private class LevelManagerImpl(levelParser: LevelParser) extends LevelManager {
-    def load(path: String): Try[Level[BaseCell]] =
+  private class LevelStorageImpl(levelParser: LevelParser) extends LevelStorage {
+    def loadLevel(path: String): Try[Level[BaseCell]] =
       for {
         f <- Using(Source.fromFile(path))(_.getLines.mkString)
         l <- levelParser.deserializeLevel(f)
       } yield l
 
-    def writeLevel(path: String, level: Level[BaseCell]): Try[Unit] =
+    def saveLevel(path: String, level: Level[BaseCell]): Try[Unit] =
       for {
         s <- levelParser.serializeLevel(level)
         _ <- Try(Files.writeString(Paths.get(path), s))
       } yield ()
   }
 
-  def apply(levelParser: LevelParser): LevelManager = LevelManagerImpl(levelParser)
+  def apply(levelParser: LevelParser): LevelStorage = LevelStorageImpl(levelParser)
 
 }

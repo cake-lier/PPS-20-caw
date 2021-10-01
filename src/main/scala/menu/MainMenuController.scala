@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.common.{LevelManager, Settings}
+import it.unibo.pps.caw.common.{LevelStorage, Settings}
 import it.unibo.pps.caw.editor.controller.ParentLevelEditorMenuController
 import it.unibo.pps.caw.common.model.Level
 

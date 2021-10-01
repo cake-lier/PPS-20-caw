@@ -10,7 +10,7 @@ import scala.io.Source
 import scala.jdk.StreamConverters
 import scala.util.{Failure, Try, Using}
 import cats.implicits.given
-import it.unibo.pps.caw.common.{LevelManager, LevelParser, Loader, Settings, SettingsManager}
+import it.unibo.pps.caw.common.{LevelStorage, LevelParser, Loader, Settings, SettingsManager}
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
 import play.api.libs.json.Json
@@ -35,7 +35,7 @@ object ApplicationController {
   /* Default implementation of the ApplicationController trait. */
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
     private val levelParser = LevelParser()
-    private val levelManager = LevelManager(levelParser)
+    private val levelManager = LevelStorage(levelParser)
     private val settingsManager = SettingsManager()
     private var _settings: Settings = settingsManager.load().getOrElse(settingsManager.defaultSettings)
     private val futures: Set[Future[Try[Unit]]] = ConcurrentHashMap.newKeySet[Future[Try[Unit]]]().asScala
@@ -62,7 +62,7 @@ object ApplicationController {
     override def settings: Settings = _settings
 
     override def startGame(levelPath: String): Unit =
-      levelManager.load(levelPath).fold(_ => view.showError("An error has occurred, could not load level"), view.showGame(_))
+      levelManager.loadLevel(levelPath).fold(_ => view.showError("An error has occurred, could not load level"), view.showGame(_))
 
     override def startGame(levelIndex: Int): Unit = view.showGame(levelFiles, levelIndex)
 
@@ -83,7 +83,7 @@ object ApplicationController {
 
     override def startLevelEditor(levelPath: String): Unit =
       levelManager
-        .load(levelPath)
+        .loadLevel(levelPath)
         .fold(_ => view.showError("An error has occured, could not load level"), view.showLevelEditor(_))
 
     override def showMainMenu(): Unit = view.showMainMenu()
@@ -92,7 +92,7 @@ object ApplicationController {
 
     override def closeEditor(): Unit = view.showMainMenu()
 
-    override def saveLevel(path: String, level: Level[BaseCell]): Unit = levelManager.writeLevel(path, level)
+    override def saveLevel(path: String, level: Level[BaseCell]): Unit = levelManager.saveLevel(path, level)
   }
 
   /** Returns a new instance of the [[ApplicationController]] trait. It must receive the [[ApplicationView]] which will be called

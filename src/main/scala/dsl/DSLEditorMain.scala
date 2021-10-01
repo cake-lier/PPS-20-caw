@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, LevelParser, StageResizer}
+import it.unibo.pps.caw.common.{AudioPlayer, LevelStorage, LevelParser, StageResizer}
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.editor.view.LevelEditorView
@@ -38,9 +38,9 @@ object DSLEditorMain extends JFXApp3 {
     val editorScene: Scene = Scene(stage.width.value, stage.height.value)
     stage.scene = editorScene
 
-    val levelManager = LevelManager(LevelParser())
+    val levelManager = LevelStorage(LevelParser())
     levelManager
-      .load(parameters.raw(0))
+      .loadLevel(parameters.raw(0))
       .fold(
         _ => editorScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
         l => {
@@ -48,7 +48,7 @@ object DSLEditorMain extends JFXApp3 {
             new ParentLevelEditorController {
               override def closeEditor(): Unit = sys.exit()
 
-              override def saveLevel(path: String, level: Level[BaseCell]): Unit = levelManager.writeLevel(path, level)
+              override def saveLevel(path: String, level: Level[BaseCell]): Unit = levelManager.saveLevel(path, level)
             },
             editorScene,
             "Close",
