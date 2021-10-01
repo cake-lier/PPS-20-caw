@@ -47,7 +47,23 @@ object Level {
   def apply[A <: Cell](dimensions: Dimensions, board: Board[A], playableArea: PlayableArea): Level[A] =
     LevelImpl(dimensions, board, playableArea)
 
+  /** Contains extension methods to the [[Level]] trait. */
   extension [A <: Cell](l: Level[A]) {
+
+    /** Copy constructor of the [[Level]] trait for creating a new instance copying the already created one and modifying its
+      * properties with the given values for its [[Dimensions]], its [[Board]] of [[Cell]] and its [[PlayableArea]].
+      *
+      * @param dimensions
+      *   the [[Dimensions]] of the created [[Level]]
+      * @param board
+      *   the [[Board]] of [[Cell]] of the created [[Level]]
+      * @param playableArea
+      *   the [[PlayableArea]] of the created [[Level]]
+      * @tparam A
+      *   the type of [[Cell]] inside the [[Board]] which is part of this [[Level]]
+      * @return
+      *   a new [[Level]] instance copied from the given one
+      */
     def copy(
       dimensions: Dimensions = l.dimensions,
       board: Board[A] = l.board,

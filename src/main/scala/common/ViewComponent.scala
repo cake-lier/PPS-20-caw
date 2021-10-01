@@ -1,5 +1,4 @@
-package it.unibo.pps.caw
-package common
+package it.unibo.pps.caw.common
 
 /** Wraps another view component.
   *

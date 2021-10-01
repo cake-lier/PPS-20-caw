@@ -19,10 +19,12 @@ trait ParentGameController {
   def closeGame(): Unit
 }
 
-/** The parent controller to the [[GameController]] for default levels.
+/** The parent controller to the [[GameController]] when playing the default levels.
   *
-  * This trait extends [[ParentGameController]] to add functionalities pertaining to the game's default levels to the parent
-  * controller to the [[GameController]].
+  * This trait extends [[ParentGameController]] to add functionalities pertaining to the game default levels to the
+  * [[ParentGameController]] itself. In this way, even these functionalities can be delegated to the parent controller of the
+  * [[GameController]] that encapsulates it and, being so, it can more modular because it can be reused in multiple contexts with
+  * multiple parent controllers.
   */
 trait ParentDefaultGameController extends ParentGameController {
 
@@ -43,7 +45,7 @@ trait ParentDefaultGameController extends ParentGameController {
   */
 trait GameController {
 
-  /** Goes back to the previous state of the application. */
+  /** Closes the game that is currently being played by the player. */
   def closeGame(): Unit
 
   /** Starts the periodic execution of game steps. It should be called when updates are paused or when they are not yet started,
@@ -63,9 +65,7 @@ trait GameController {
     */
   def resetLevel(): Unit
 
-  /** Goes to the next level, if the level currently played has a next level. If not, it simply goes back to the previous state of
-    * the application.
-    */
+  /** Goes to the next level, if the level currently played has a next level. If not, it simply closes the game. */
   def nextLevel(): Unit
 
   /** Updates the [[GameModel]] moving the [[Cell]] which has a [[Position]] equal to the given old [[Position]] parameter to the
@@ -76,7 +76,7 @@ trait GameController {
     * @param newPosition
     *   the [[Position]] to which the [[Cell]] located at the old [[Position]] parameter is moved
     */
-  def updateModel(oldPosition: Position, newPosition: Position): Unit
+  def moveCell(oldPosition: Position)(newPosition: Position): Unit
 }
 
 /** Companion object of the [[GameController]] trait, containing its factory method. */
@@ -85,15 +85,16 @@ object GameController {
   /* Abstract implementation of the GameController trait for factorizing common behaviors. */
   private abstract class AbstractGameController(
     parentController: ParentGameController,
-    view: GameView,
-    initialLevel: Level[BaseCell],
-    levelIndex: Option[Int]
+    view: GameView
   ) extends GameController {
     protected val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     protected var updatesHandler: Option[ScheduledFuture[?]] = None
-    protected var model = GameModel(initialLevel, levelIndex)
 
-    view.drawLevel(model.state.initialStateLevel, model.state.isCurrentLevelCompleted)
+    protected def createModel: GameModel
+
+    protected var model: GameModel = createModel
+
+    view.drawLevel(model.state.levelInitialState, model.state.isCurrentLevelCompleted)
 
     override def startUpdates(): Unit = updatesHandler match {
       case None => updatesHandler = Some(scheduler.scheduleAtFixedRate(() => step(), 0, 1, TimeUnit.SECONDS))
@@ -107,13 +108,26 @@ object GameController {
 
     override def step(): Unit = {
       model = model.update
-      view.drawLevelUpdate(model.state.currentStateLevel, model.state.didEnemyDie, model.state.isCurrentLevelCompleted)
+      if (model.state.isCurrentLevelCompleted) {
+        pauseUpdates()
+      }
+      view.drawLevelUpdate(model.state.levelCurrentState, model.state.didEnemyDie, model.state.isCurrentLevelCompleted)
+    }
+
+    override def nextLevel(): Unit = {
+      updatesHandler.foreach(_ => pauseUpdates())
+      if (model.state.hasNextLevel) {
+        model = model.nextLevel
+        view.drawLevel(model.state.levelInitialState, model.state.isCurrentLevelCompleted)
+      } else {
+        closeGame()
+      }
     }
 
     override def resetLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
       model = model.reset
-      view.drawLevelReset(model.state.initialStateLevel)
+      view.drawLevelReset(model.state.levelInitialState)
     }
 
     override def closeGame(): Unit = {
@@ -121,15 +135,15 @@ object GameController {
       parentController.closeGame()
     }
 
-    override def updateModel(oldPosition: Position, newPosition: Position): Unit = model =
-      model.updateCell(oldPosition, newPosition)
+    override def moveCell(oldPosition: Position)(newPosition: Position): Unit =
+      model = model.moveCell(oldPosition)(newPosition)
   }
 
   /* Extension of the AbstractGameController class for playing a generic level. */
   private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level[BaseCell])
-    extends AbstractGameController(parentController, view, initialLevel, None) {
+    extends AbstractGameController(parentController, view) {
 
-    override def nextLevel(): Unit = closeGame()
+    override protected def createModel: GameModel = GameModel(initialLevel)
   }
 
   /* Extension of the AbstractGameController class for playing the default levels. */
@@ -137,26 +151,15 @@ object GameController {
     parentController: ParentDefaultGameController,
     view: GameView,
     levels: Seq[Level[BaseCell]],
-    initialLevelIndex: Int
-  ) extends AbstractGameController(parentController, view, levels(initialLevelIndex - 1), Some(initialLevelIndex)) {
-    private var currentLevelIndex: Int = initialLevelIndex
+    initialIndex: Int
+  ) extends AbstractGameController(parentController, view) {
 
-    override def nextLevel(): Unit = {
-      updatesHandler.foreach(_ => pauseUpdates())
-      model.state.nextLevelIndex match {
-        case Some(v) => {
-          currentLevelIndex = v
-          model = GameModel(levels(v - 1), Some(v))
-          view.drawLevel(model.state.initialStateLevel, model.state.isCurrentLevelCompleted)
-        }
-        case _ => closeGame()
-      }
-    }
+    override protected def createModel: GameModel = GameModel(levels, initialIndex)
 
     override def step(): Unit = {
       super.step()
       if (model.state.isCurrentLevelCompleted) {
-        parentController.addSolvedLevel(currentLevelIndex)
+        parentController.addSolvedLevel(model.state.currentLevelIndex)
       }
     }
   }

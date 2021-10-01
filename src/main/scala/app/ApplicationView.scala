@@ -1,21 +1,16 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.menu.{MainMenuView, ParentMainMenuController, SettingsView}
+import it.unibo.pps.caw.menu.MainMenuView
 import javafx.application.Platform
 import scalafx.scene.control.Alert
-import it.unibo.pps.caw.editor.view.{LevelEditorMenuView, LevelEditorView}
+import it.unibo.pps.caw.editor.view.LevelEditorView
 import it.unibo.pps.caw.game.view.GameView
 import it.unibo.pps.caw.common.{AudioPlayer, AudioType, StageResizer, ViewComponent}
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.BaseCell
-import it.unibo.pps.caw.game.controller.ParentGameController
 import javafx.scene.layout.Pane
-import javafx.stage.Screen
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
-
-import java.io.File
-import java.nio.file.Path
 
 /** The view of the main application.
   *
@@ -68,7 +63,6 @@ trait ApplicationView {
     *   the loaded level
     */
   def showLevelEditor(level: Level[BaseCell]): Unit
-
 }
 
 /** Companion object for the [[ApplicationView]] trait, containing its factory method. */
@@ -88,8 +82,8 @@ object ApplicationView {
     stage.scene = scene
     stage.show()
     stage.setOnCloseRequest(_ => controller.exit())
-    audioPlayer.setVolume(controller.settings.volumeMusic, AudioType.Music)
-    audioPlayer.setVolume(controller.settings.volumeSFX, AudioType.Sound)
+    audioPlayer.setVolume(controller.settings.musicVolume, AudioType.Music)
+    audioPlayer.setVolume(controller.settings.soundVolume, AudioType.Sound)
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
@@ -108,14 +102,13 @@ object ApplicationView {
       show(LevelEditorView(controller, scene, "Menu", audioPlayer, level))
 
     private def show(view: ViewComponent[? <: Pane]) = Platform.runLater(() => scene.root.value = view)
-
   }
 
-  /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX's [[PrimaryStage]] for creating a view for the
+  /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX'state [[PrimaryStage]] for creating a view for the
     * application.
     *
     * @param stage
-    *   the ScalaFX's [[PrimaryStage]] used for creating a view for the application
+    *   the ScalaFX'state [[PrimaryStage]] used for creating a view for the application
     * @return
     *   a new [[ApplicationView]] instance
     */

@@ -45,10 +45,10 @@ trait RotatorCell extends Cell {
   * terms, the cell that can be generated is the one "behind" this generator. If no cell is present, no generation occurs. If the
   * generation occurs, the cell is placed "in front" of the generator, so adjacent to it but in the same direction of its
   * orientation. The generation exerts a force on the other cells in front of the generator, pushing them one position in the
-  * orientation of the cell. If there's no place to move, no generation occurs. Another case in which generation does not occur is
-  * when a cell exerting an opposite force is in front of the generator and, directly or indirectly, adjacent to it. These cells
-  * can be other [[GeneratorCell]] or [[MoverCell]]. This is also true for unmovable cells, like [[WallCell]] and [[BlockCell]]
-  * with a [[Push]] direction different from the orientation of this cell.
+  * orientation of the cell. If there is no place to move, no generation occurs. Another case in which generation does not occur
+  * is when a cell exerting an opposite force is in front of the generator and, directly or indirectly, adjacent to it. These
+  * cells can be other [[GeneratorCell]] or [[MoverCell]]. This is also true for unmovable cells, like [[WallCell]] and
+  * [[BlockCell]] with a [[Push]] direction different from the orientation of this cell.
   */
 trait GeneratorCell extends Cell {
 

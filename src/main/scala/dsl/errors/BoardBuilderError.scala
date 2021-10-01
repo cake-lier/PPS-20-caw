@@ -18,7 +18,7 @@ enum BoardBuilderError(val message: String) {
     */
   case PlayableAreaNotInBounds extends BoardBuilderError("The playable area exceeds the level bounds")
 
-  /** The error which arises when two or more [[it.unibo.pps.caw.dsl.entities.Cell]] s have the same
+  /** The error which arises when two or more [[it.unibo.pps.caw.dsl.entities.Cell]] state have the same
     * [[it.unibo.pps.caw.dsl .entities.Position]].
     */
   case SamePositionForDifferentCells extends BoardBuilderError("Two or more cells have the same position")

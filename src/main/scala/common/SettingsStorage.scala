@@ -7,14 +7,14 @@ import scala.util.{Failure, Success, Try, Using}
 
 /** Representation of game settings: the music volume, the SFX volume and the indexes of completed default levels.
   *
-  * @param volumeMusic
+  * @param musicVolume
   *   the volume of the music
-  * @param volumeSFX
+  * @param soundVolume
   *   the volume of special effects
   * @param solvedLevels
   *   a set of indexes of the default levels already solved by the player
   */
-case class Settings(volumeMusic: Double, volumeSFX: Double, solvedLevels: Set[Int])
+case class Settings(musicVolume: Double, soundVolume: Double, solvedLevels: Set[Int])
 
 /** Represents storage for the game settings: it allows to load and save settings to a file so as to memorize the
   * settings between game sessions.
@@ -55,8 +55,8 @@ object SettingsStorage {
       fileStorage.loadFile(filePath) match {
         case Success(jsonString: String) => {
           val json = Json.parse(jsonString)
-          val volumeMusic = (json \ "volumeMusic").as[Double]
-          val volumeSFX = (json \ "volumeSFX").as[Double]
+          val volumeMusic = (json \ "musicVolume").as[Double]
+          val volumeSFX = (json \ "soundVolume").as[Double]
           val solvedLevels = (json \ "solvedLevels").as[Set[Int]]
           Success(Settings(volumeMusic, volumeSFX, solvedLevels))
         }

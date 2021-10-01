@@ -4,12 +4,10 @@ import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.{SoundButton, ViewComponent}
 import it.unibo.pps.caw.common.model.Level
 import javafx.fxml.FXML
-import javafx.scene.control.{Button, ScrollPane}
+import javafx.scene.control.ScrollPane
 import javafx.scene.image.ImageView
 import javafx.scene.layout.{GridPane, Pane, RowConstraints}
 import scalafx.scene.Scene
-
-import java.nio.file.{Files, Paths}
 
 /** The "level selection" page on the main menu.
   *
@@ -23,12 +21,12 @@ trait LevelSelectionView extends ViewComponent[Pane]
 /** Companion object for the [[LevelSelectionView]] trait, being a factory for new [[LevelSelection]] instances. */
 object LevelSelectionView {
 
-  /** Returns a new instance of the [[LevelSelectionView]] trait. It receives a ScalaFX's [[Scene]] so as to draw and display
+  /** Returns a new instance of the [[LevelSelectionView]] trait. It receives a ScalaFX'state [[Scene]] so as to draw and display
     * itself on it and the [[LevelSelectionController]] so the constructed view can provide the services which should be
     * accessible through itself.
     *
     * @param scene
-    *   the ScalaFX's [[Scene]] on which the constructed [[LevelSelectionView]] will draw and display itself
+    *   the ScalaFX'state [[Scene]] on which the constructed [[LevelSelectionView]] will draw and display itself
     * @param controller
     *   the [[LevelSelectionController]] associated to the created [[LevelSelectionView]]
     * @return

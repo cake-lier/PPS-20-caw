@@ -2,11 +2,10 @@ package it.unibo.pps.caw.menu
 
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.ViewComponent
-import javafx.fxml.FXML
 import javafx.scene.control.Button
 
 /** A button on the "level selection" page in the main menu. */
-trait LevelButton
+trait LevelButton extends ViewComponent[Button]
 
 /** Companion object used as a factory for new [[LevelButton]] instances. */
 object LevelButton {
@@ -30,6 +29,8 @@ object LevelButton {
     innerComponent.setText(number.toString)
     innerComponent.setOnMouseClicked(_ => controller.startGame(number))
 
-    if (controller.solvedLevels.contains(number)) innerComponent.setStyle("-fx-border-color: cyan; -fx-text-fill: cyan;")
+    if (controller.solvedLevels.contains(number)) {
+      innerComponent.getStyleClass.add("completed")
+    }
   }
 }

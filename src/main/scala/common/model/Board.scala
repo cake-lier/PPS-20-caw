@@ -54,7 +54,18 @@ object Board {
     */
   def empty[A <: Cell]: Board[A] = BoardImpl(Set.empty)
 
+  /** Contains extension methods for a [[Board]] of the [[BaseCell]] type. */
   extension (board: Board[BaseCell]) {
+
+    /** Converts a [[Board]] of [[BaseCell]] to a [[PlayableCell]] one given the function for getting the value of the
+      * [[PlayableCell.playable]] property given the [[BaseCell]] currently being converted to a [[PlayableCell]].
+      *
+      * @param isPlayable
+      *   the function for getting the value of the [[PlayableCell.playable]] property to assign to the [[BaseCell]] currently
+      *   being converted to a [[PlayableCell]]
+      * @return
+      *   a new [[Board]] with the same [[BaseCell]] as before but converted to [[PlayableCell]]
+      */
     def toPlayableCells(isPlayable: BaseCell => Boolean): Board[PlayableCell] =
       board.map(c =>
         c match {
