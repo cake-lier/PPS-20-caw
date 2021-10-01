@@ -55,8 +55,8 @@ object SettingsManager {
       Loader.loadFile(filePath) match {
         case Success(jsonString: String) => {
           val json = Json.parse(jsonString)
-          val volumeMusic = (json \ "volumeMusic").as[Double]
-          val volumeSFX = (json \ "volumeSFX").as[Double]
+          val volumeMusic = (json \ "musicVolume").as[Double]
+          val volumeSFX = (json \ "soundVolume").as[Double]
           val solvedLevels = (json \ "solvedLevels").as[Set[Int]]
           Success(Settings(volumeMusic, volumeSFX, solvedLevels))
         }

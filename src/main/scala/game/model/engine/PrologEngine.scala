@@ -47,7 +47,7 @@ object PrologEngine {
 
   /** create a function that map from [[Term]] to goal
     * @param clauses:
-    *   list of [[Clause]] s, the [[Theory]]
+    *   list of [[Clause]] state, the [[Theory]]
     * @return
     *   a function [[Term]] to [[Term]] that is the result of goal
     */

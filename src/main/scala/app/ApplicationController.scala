@@ -1,22 +1,18 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.editor.controller.{ParentLevelEditorController, ParentLevelEditorMenuController}
+import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
 import it.unibo.pps.caw.game.controller.ParentDefaultGameController
 import it.unibo.pps.caw.menu.ParentMainMenuController
 
-import java.io.{File, PrintWriter}
-import java.nio.file.{Files, Path, Paths}
-import scala.io.Source
-import scala.jdk.StreamConverters
-import scala.util.{Failure, Try, Using}
+import scala.util.Try
 import cats.implicits.given
 import it.unibo.pps.caw.common.{Deserializer, LevelManager, Loader, Settings, SettingsManager}
 import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
+import it.unibo.pps.caw.common.model.cell.BaseCell
 import play.api.libs.json.Json
 
 import concurrent.ExecutionContext.Implicits.global
-import java.util.concurrent.{ConcurrentHashMap, CopyOnWriteArraySet}
+import java.util.concurrent.ConcurrentHashMap
 import scala.concurrent.Future
 import scala.collection.mutable.Set
 import scala.jdk.CollectionConverters.given
@@ -73,8 +69,8 @@ object ApplicationController {
       future.onComplete(_ => futures.remove(future))
     }
 
-    override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit = {
-      _settings = Settings(volumeMusic, volumeSFX, settings.solvedLevels)
+    override def saveVolumeSettings(musicVolume: Double, soundVolume: Double): Unit = {
+      _settings = Settings(musicVolume, soundVolume, settings.solvedLevels)
       saveSettings(settings)
     }
 

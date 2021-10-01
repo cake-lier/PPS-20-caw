@@ -7,80 +7,87 @@ import it.unibo.pps.caw.game.model.engine.RulesEngine
 
 import scala.annotation.tailrec
 
-/** The model of the game, containing all its business logic
+/** The model of the game, the component containing all its business logic.
+  *
+  * The model component contains all the logic of the game, deciding how the current state of the game should evolve given the
+  * input that the player has given or the passing of a game time "instant". More specifically, a game is made of several
+  * [[Level]] played in sequence or by a single level played alone. Nevertheless, the game behavior is always the same: the player
+  * begins playing from the first level that has selected and advances one level at a time, until the last level is reached. When
+  * the last level is completed, the game ends. In case the level the player wants to play is only one, it is in fact also the
+  * last level and, when completed, the game ends. A level is considered completed if and only if no [[EnemyCell]] are present on
+  * the board. For each level, the game divides in two macro-phases. The first is a "setup" phase, where the player can move
+  * around the [[Cell]] in the [[PlayableArea]] of the [[Level]] and arrange the cells as they please. The second phase is the
+  * phase where the time starts ticking and the system evolve and the player can not interact with the world anymore. Giving that
+  * the player not necessarily configured the level to destroy all enemy cells the first time, it is given to the player the
+  * possibility to reset the state of the game to just before the second phase beginned.
   */
 sealed trait GameModel {
 
-  /** Update the getPosition of a cell during setup phase
+  /** Allows to move a cell during the "setup" phase of the game given its current [[Position]] and the [[Position]] in which
+    * needs to be moved. If no cell is present in the specified current position, no action is performed. If the game is already
+    * in the second phase, so the method [[GameModel.update]] has already been called once, no action is performed.
     *
-    * @param previousPosition:
-    *   previuos [[Position]] for previuos [[Cell]]
-    * @param currentPosition:
-    *   new [[Position]] for [[Cell]]
+    * @param currentPosition
+    *   the [[Position]] of the [[Cell]] to move
+    * @param nextPosition
+    *   the [[Position]] of the [[Cell]] at the current position to which move it next
     * @return
-    *   updated instance of [[GameModel]]
+    *   an updated instance of [[GameModel]] where the [[Cell]] has been moved, if possible
     */
-  def updateCell(previousPosition: Position, currentPosition: Position): GameModel
+  def moveCell(currentPosition: Position)(nextPosition: Position): GameModel
 
-  /** Calculate the next state of the current [[Board]]
+  /** Updates the current state of the game, obtaining its next one.
     *
     * @return
-    *   updated instance of [[GameModel]]
+    *   an updated instance of [[GameModel]] where the state has been updated
     */
   def update: GameModel
 
-  /** Set the current board as the initial [[Board]]
+  /** Makes the game to swith to the next [[Level]]. This is only possible if the current level has been completed. If not, no
+    * action will be performed.
     *
     * @return
-    *   resetted instance of [[GameModel]]
+    *   an updated instance of [[GameModel]] where the level has been switched to the next, if possible
+    */
+  def nextLevel: GameModel
+
+  /** Resets the current [[Level]] to its state before the second phase of the game beginned, so before the first call to the
+    * [[GameModel.update]] method, allowing again the player to arrange the [[Cell]] in this level.
+    *
+    * @return
+    *   an updated instance of [[GameModel]] where its state it is the same as before starting to update it
     */
   def reset: GameModel
 
+  /** Returns the current [[GameState]]. */
   val state: GameState
 }
 
-/** Companion object for trait [[GameModel]]. */
+/** Companion object for trait [[GameModel]], containing its factory methods. */
 object GameModel {
 
-  def isPositionInsidePlayableArea(playableArea: PlayableArea)(position: Position): Boolean =
-    position.x >= playableArea.position.x &&
-      position.x <= (playableArea.position.x + playableArea.dimensions.width) &&
-      position.y >= playableArea.position.y &&
-      position.y <= (playableArea.position.y + playableArea.dimensions.height)
-
-  private def resetPlayableCell(cell: PlayableCell): PlayableCell = cell match {
-    case PlayableRotatorCell(p, r, _)   => PlayableRotatorCell(p, r, false)
-    case PlayableGeneratorCell(p, o, _) => PlayableGeneratorCell(p, o, false)
-    case PlayableEnemyCell(p, _)        => PlayableEnemyCell(p, false)
-    case PlayableMoverCell(p, o, _)     => PlayableMoverCell(p, o, false)
-    case PlayableBlockCell(p, d, _)     => PlayableBlockCell(p, d, false)
-    case PlayableWallCell(p, _)         => PlayableWallCell(p, false)
-  }
-
-  private def changeBaseCellPosition(cell: BaseCell)(getPosition: BaseCell => Position): BaseCell = cell match {
-    case _: BaseWallCell         => BaseWallCell(getPosition(cell))
-    case _: BaseEnemyCell        => BaseEnemyCell(getPosition(cell))
-    case BaseRotatorCell(_, r)   => BaseRotatorCell(getPosition(cell), r)
-    case BaseGeneratorCell(_, o) => BaseGeneratorCell(getPosition(cell), o)
-    case BaseMoverCell(_, o)     => BaseMoverCell(getPosition(cell), o)
-    case BaseBlockCell(_, p)     => BaseBlockCell(getPosition(cell), p)
-  }
-
-  private def isLevelCompleted(board: Board[? <: Cell]): Boolean = board.filter(_.isInstanceOf[EnemyCell]).size == 0
-
   /* Default implementation of the GameModel trait. */
-  private class GameModelImpl(val state: GameState, initialBoard: Board[BaseCell], currentBoard: Board[BaseCell])
-    extends GameModel {
+  private class GameModelImpl(
+    val state: GameState,
+    isSetupCompleted: Boolean,
+    levels: Seq[Level[BaseCell]],
+    initialBoard: Board[BaseCell],
+    currentBoard: Board[BaseCell]
+  ) extends GameModel {
 
-    def this(initialLevel: Level[PlayableCell], levelIndex: Option[Int], initialBoard: Board[BaseCell]) =
+    /* Alternative constructor to be used by the "apply" factory method. */
+    def this(levels: Seq[Level[BaseCell]], initialLevel: Level[PlayableCell], initialIndex: Int, initialBoard: Board[BaseCell]) =
       this(
         GameState(
           initialLevel,
-          initialLevel.copy(board = initialLevel.board.map(resetPlayableCell(_))),
-          levelIndex.map(_ + 1).filter(_ < 30),
-          isLevelCompleted(initialBoard),
-          false
+          initialLevel.copy(board = initialLevel.board.map(GameModelHelpers.resetPlayableCell(_))),
+          initialIndex,
+          initialIndex + 1 <= levels.length,
+          didEnemyDie = false,
+          GameModelHelpers.isLevelCompleted(initialBoard)
         ),
+        isSetupCompleted = false,
+        levels,
         initialBoard,
         initialBoard
       )
@@ -95,7 +102,7 @@ object GameModel {
         ).flatten match {
           case h :: t if (!h.updated) => {
             val newBoard = RulesEngine().nextState(board, h)
-            update(newBoard.cells.toSeq, newBoard)
+            update(newBoard.toSeq, newBoard)
           }
           case h :: t => update(t, board) // ignore already updated cells
           case _      => board
@@ -126,74 +133,111 @@ object GameModel {
           })
       GameModelImpl(
         state.copy(
-          currentStateLevel = state.currentStateLevel.copy(board = updatedBoard.toPlayableCells(_ => false)),
-          didEnemyDie = state.currentStateLevel.board.cells.filter(_.isInstanceOf[EnemyCell]).size >
+          currentStateLevel = state.levelCurrentState.copy(board = updatedBoard.toPlayableCells(_ => false)),
+          didEnemyDie = state.levelCurrentState.board.filter(_.isInstanceOf[EnemyCell]).size >
             updatedBoard.filter(_.isInstanceOf[EnemyCell]).size,
-          isCurrentLevelCompleted = isLevelCompleted(updatedBoard)
+          isCurrentLevelCompleted = GameModelHelpers.isLevelCompleted(updatedBoard)
         ),
+        isSetupCompleted = true,
+        levels,
         initialBoard,
         updatedBoard
       )
     }
 
+    override def nextLevel: GameModel =
+      if (state.hasNextLevel && state.isCurrentLevelCompleted) GameModel(levels, state.currentLevelIndex + 1) else this
+
     override def reset: GameModel =
       GameModelImpl(
         state.copy(
-          currentStateLevel = state
-            .initialStateLevel
-            .copy(board = state.initialStateLevel.board.map(resetPlayableCell(_))),
+          currentStateLevel =
+            state.levelInitialState.copy(board = state.levelInitialState.board.map(GameModelHelpers.resetPlayableCell(_))),
           didEnemyDie = false,
-          isCurrentLevelCompleted = isLevelCompleted(state.initialStateLevel.board)
+          isCurrentLevelCompleted = GameModelHelpers.isLevelCompleted(state.levelInitialState.board)
         ),
+        isSetupCompleted = false,
+        levels,
         initialBoard,
         initialBoard
       )
 
-    override def updateCell(previousPosition: Position, currentPosition: Position): GameModel =
-      currentBoard
-        .find(_.position == previousPosition)
-        .map(changeBaseCellPosition(_)(_ => currentPosition))
-        .map(c => currentBoard.filter(_.position != previousPosition) + c)
-        .map(b =>
-          GameModelImpl(
-            state.copy(
-              initialStateLevel = state
-                .currentStateLevel
-                .copy(board =
-                  b.toPlayableCells(c => isPositionInsidePlayableArea(state.currentStateLevel.playableArea)(c.position))
-                ),
-              currentStateLevel = state.currentStateLevel.copy(board = b.toPlayableCells(_ => false))
-            ),
-            b,
-            b
+    override def moveCell(currentPosition: Position)(nextPosition: Position): GameModel =
+      if (!isSetupCompleted)
+        currentBoard
+          .find(_.position == currentPosition)
+          .map(GameModelHelpers.changeBaseCellPosition(_)(_ => nextPosition))
+          .map(c => currentBoard.filter(_.position != currentPosition) + c)
+          .map(b =>
+            GameModelImpl(
+              state.copy(
+                initialStateLevel = state
+                  .levelCurrentState
+                  .copy(board =
+                    b.toPlayableCells(c =>
+                      GameModelHelpers.isPositionInsidePlayableArea(c.position)(state.levelCurrentState.playableArea)
+                    )
+                  ),
+                currentStateLevel = state.levelCurrentState.copy(board = b.toPlayableCells(_ => false))
+              ),
+              isSetupCompleted = false,
+              levels,
+              b,
+              b
+            )
           )
-        )
-        .getOrElse(this)
+          .getOrElse(this)
+      else this
   }
 
-  def apply(initialLevelState: Level[BaseCell], levelIndex: Option[Int]): GameModel = {
+  /** Returns a new instance of the [[GameModel]] trait to be used when playing a game with the default [[Level]]. For creating a
+    * new [[GameModel]] are indeed necessary the [[Seq]] of all default levels that have been previously stored and the index of
+    * the level from which beginning the game. The index of the level is equal to the position of the level in the sequence plus
+    * one.
+    *
+    * @param levels
+    *   the [[Seq]] of default [[Level]] previously stored
+    * @param initialIndex
+    *   the index of the level from which starting the game
+    * @return
+    *   a new [[GameModel]] instance
+    */
+  def apply(levels: Seq[Level[BaseCell]], initialIndex: Int): GameModel = {
     val boardWithCorners: Board[BaseCell] =
-      initialLevelState
+      levels(initialIndex - 1)
         .board
-        .map(changeBaseCellPosition(_)(c => (c.position.x + 1, c.position.y + 1))) ++
+        .map(GameModelHelpers.changeBaseCellPosition(_)(c => (c.position.x + 1, c.position.y + 1))) ++
         Set(
-          (0 to initialLevelState.dimensions.width + 1).map(i => BaseWallCell((i, 0))),
-          (0 to initialLevelState.dimensions.width + 1).map(i => BaseWallCell(i, initialLevelState.dimensions.height + 1)),
-          (1 to initialLevelState.dimensions.height).map(i => BaseWallCell(0, i)),
-          (1 to initialLevelState.dimensions.height).map(i => BaseWallCell(initialLevelState.dimensions.width + 1, i))
+          (0 to levels(initialIndex - 1).dimensions.width + 1).map(i => BaseWallCell((i, 0))),
+          (0 to levels(initialIndex - 1).dimensions.width + 1)
+            .map(i => BaseWallCell(i, levels(initialIndex - 1).dimensions.height + 1)),
+          (1 to levels(initialIndex - 1).dimensions.height).map(i => BaseWallCell(0, i)),
+          (1 to levels(initialIndex - 1).dimensions.height)
+            .map(i => BaseWallCell(levels(initialIndex - 1).dimensions.width + 1, i))
         ).flatten
     val playableAreaWithCorners: PlayableArea = PlayableArea(
-      (initialLevelState.playableArea.position.x + 1, initialLevelState.playableArea.position.y + 1),
-      initialLevelState.playableArea.dimensions
+      (levels(initialIndex - 1).playableArea.position.x + 1, levels(initialIndex - 1).playableArea.position.y + 1),
+      levels(initialIndex - 1).playableArea.dimensions
     )
     GameModelImpl(
+      levels,
       Level(
-        (initialLevelState.dimensions.width + 2, initialLevelState.dimensions.height + 2),
-        boardWithCorners.toPlayableCells(c => isPositionInsidePlayableArea(playableAreaWithCorners)(c.position)),
+        (levels(initialIndex - 1).dimensions.width + 2, levels(initialIndex - 1).dimensions.height + 2),
+        boardWithCorners.toPlayableCells(c => GameModelHelpers.isPositionInsidePlayableArea(c.position)(playableAreaWithCorners)),
         playableAreaWithCorners
       ),
-      levelIndex,
+      initialIndex,
       boardWithCorners
     )
   }
+
+  /** Returns a new instance of the [[GameModel]] trait to be used when playing a game with a [[Level]] created by a player. For
+    * creating a new [[GameModel]] is indeed necessary the level which will be played during the game.
+    *
+    * @param level
+    *   the [[Level]] created by a player to be played during this game
+    * @return
+    *   a new [[GameModel]] instance
+    */
+  def apply(level: Level[BaseCell]): GameModel = GameModel(Seq(level), 1)
 }

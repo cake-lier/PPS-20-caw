@@ -1,7 +1,5 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.common.model.Level
-
 /** The controller to be used by the level selection page in the main menu.
   *
   * This controller is capable of providing all information and services which are useful to the [[LevelSelectionView]]. These

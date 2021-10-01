@@ -80,9 +80,6 @@ object AudioPlayer {
     private var soundPlayers: Map[Track, Set[MediaPlayer]] = Map()
     private var volumes: Map[AudioType, Double] = Map()
 
-    setVolume(0.3, AudioType.Music)
-    setVolume(0.7, AudioType.Sound)
-
     override def play(track: Track): Unit = track.audioType match {
       case AudioType.Music => {
         (musicPlayers - track).foreach(_._2.stop())
@@ -90,6 +87,7 @@ object AudioPlayer {
       }
       case AudioType.Sound => {
         val soundPlayer: MediaPlayer = createPlayer(track)
+        soundPlayer.volume = volumes(AudioType.Sound)
         soundPlayers += (track -> (soundPlayers.getOrElse(track, Set()) + soundPlayer))
       }
     }

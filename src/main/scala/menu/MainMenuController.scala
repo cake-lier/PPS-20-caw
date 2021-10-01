@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.common.{LevelManager, Settings}
+import it.unibo.pps.caw.common.Settings
 import it.unibo.pps.caw.editor.controller.ParentLevelEditorMenuController
 import it.unibo.pps.caw.common.model.Level
 
@@ -33,14 +33,14 @@ trait ParentMainMenuController {
     */
   def startGame(levelIndex: Int): Unit
 
-  /** Asks the parent controller to save volume settings in settings file.
+  /** Asks the parent controller to save volume settings.
     *
-    * @param volumeMusic
-    *   the value of Music volume.
-    * @param volumeSFX
-    *   the value of SFX volume.
+    * @param musicVolume
+    *   the value of the music volume
+    * @param soundVolume
+    *   the value of sound effects volume
     */
-  def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit
+  def saveVolumeSettings(musicVolume: Double, soundVolume: Double): Unit
 
   /** Asks the parent controller to start the level editor with a blank level of specified dimensions.
     *
@@ -107,8 +107,8 @@ object MainMenuController {
 
     override def goBack(): Unit = parentController.showMainMenu()
 
-    override def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit =
-      parentController.saveVolumeSettings(volumeMusic, volumeSFX)
+    override def saveVolumeSettings(musicVolume: Double, soundVolume: Double): Unit =
+      parentController.saveVolumeSettings(musicVolume, soundVolume)
 
     override def startLevelEditor(width: Int, height: Int): Unit = parentController.startLevelEditor(width, height)
 

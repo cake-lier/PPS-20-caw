@@ -4,10 +4,8 @@ import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.{AudioPlayer, FilePicker, SoundButton, Track, ViewComponent}
 import it.unibo.pps.caw.editor.view.LevelEditorMenuView
 import javafx.fxml.FXML
-import javafx.scene.control.{Button, Label}
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
-import scalafx.stage.FileChooser
 
 /** The view which displays the main menu of the application.
   *
@@ -24,14 +22,14 @@ object MainMenuView {
 
   /** Returns a new instance of the [[MainMenuView]] trait. It receives a [[ParentMainMenuController]] so as to be able to
     * correctly create and then use its [[MainMenuController]], the [[AudioPlayer]] to be used for playing sounds and music and
-    * the ScalaFX's [[Scene]] in order to draw and display itself.
+    * the ScalaFX'state [[Scene]] in order to draw and display itself.
     *
     * @param parentController
     *   the [[ParentMainMenuController]] used so as to be able to correctly create and then use a [[MainMenuController]]
     * @param audioPlayer
     *   the [[AudioPlayer]] to be used for playing sounds and music
     * @param scene
-    *   the ScalaFX's [[Scene]] on which draw and display the created [[MainMenuView]] instance
+    *   the ScalaFX'state [[Scene]] on which draw and display the created [[MainMenuView]] instance
     * @return
     *   a new [[MainMenuView]] instance
     */
@@ -73,10 +71,7 @@ object MainMenuView {
       playButton.setDisable(false)
       playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, controller))
     }
-    loadButton.setOnMouseClicked(_ => {
-      FilePicker.pickFile(scene).foreach(f => controller.startGame(f.getPath))
-      //FilePicker.pickFile(scene).foreach(f => controller.startGame(f.toPath))
-    })
+    loadButton.setOnMouseClicked(_ => FilePicker.pickFile(scene).foreach(f => controller.startGame(f.getPath)))
     settingsButton.setOnMouseClicked(_ => scene.root.value = SettingsView(controller, audioPlayer, scene))
     editorButton.setOnMouseClicked(_ => scene.root.value = LevelEditorMenuView(controller, scene, "Menu"))
     exitButton.setOnMouseClicked(_ => controller.exit())

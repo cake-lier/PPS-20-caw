@@ -33,18 +33,17 @@ class GameModelTest extends AnyFunSpec with Matchers {
         BaseEnemyCell((4, 4))
       ),
       PlayableArea((0, 0), dimensions)
-    ),
-    None
+    )
   )
   describe("The game model") {
     describe("when first created") {
       it("should have the current state level equals to initial state level") {
-        gameModel.state.currentStateLevel shouldBe Level(
-          gameModel.state.currentStateLevel.dimensions,
+        gameModel.state.levelCurrentState shouldBe Level(
+          gameModel.state.levelCurrentState.dimensions,
           Board(
             gameModel
               .state
-              .initialStateLevel
+              .levelInitialState
               .board
               .cells
               .map(_ match {
@@ -56,7 +55,7 @@ class GameModelTest extends AnyFunSpec with Matchers {
                 case PlayableWallCell(p, _)         => PlayableWallCell(p, false)
               })
           ),
-          gameModel.state.currentStateLevel.playableArea
+          gameModel.state.levelCurrentState.playableArea
         )
       }
     }
@@ -67,10 +66,10 @@ class GameModelTest extends AnyFunSpec with Matchers {
     }
     describe("after updating a cell position") {
       it("should create a new instance of itself") {
-        gameModel should not equals gameModel.updateCell((2, 2), (3, 3))
+        gameModel should not equals gameModel.moveCell((2, 2))((3, 3))
       }
       it("should update the board with the same cell in the new position") {
-        gameModel.updateCell((2, 2), (3, 3)).state.currentStateLevel.board shouldBe convertBoard(
+        gameModel.moveCell((2, 2))((3, 3)).state.levelCurrentState.board shouldBe convertBoard(
           Board(
             BaseMoverCell((2, 2), Orientation.Right),
             BaseBlockCell((3, 3), Push.Both),
@@ -84,7 +83,7 @@ class GameModelTest extends AnyFunSpec with Matchers {
         gameModel should not equals gameModel.update
       }
       it("should update the board") {
-        gameModel.update.state.currentStateLevel.board shouldBe convertBoard(
+        gameModel.update.state.levelCurrentState.board shouldBe convertBoard(
           Board(
             BaseMoverCell((2, 1), Orientation.Right),
             BaseBlockCell((3, 3), Push.Both),
