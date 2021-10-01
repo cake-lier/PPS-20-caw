@@ -3,7 +3,7 @@ package it.unibo.pps.caw.editor
 import io.vertx.core.Vertx
 import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea}
 import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.common.{Deserializer, Serializer}
+import it.unibo.pps.caw.common.LevelParser
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{BeforeAndAfterAll, Suite}
@@ -11,6 +11,7 @@ import org.scalatest.{BeforeAndAfterAll, Suite}
 import scala.io.Source
 
 class SerializerTest extends AnyFunSpec with Matchers with BeforeAndAfterAll { this: Suite =>
+  val levelParser = LevelParser()
   val oneCellLevel: Level[BaseCell] =
     Level(Dimensions(20, 20), Board(BaseEnemyCell((5, 5))), PlayableArea((0, 0), (3, 3)))
   val allCellsLevel: Level[BaseCell] = Level(
@@ -54,7 +55,7 @@ class SerializerTest extends AnyFunSpec with Matchers with BeforeAndAfterAll { t
 
   private def validate(level: Level[BaseCell]): Unit =
     for {
-      s <- Serializer.serializeLevel(level)
-      r <- Deserializer.deserializeLevel(s)
+      s <- levelParser.serializeLevel(level)
+      r <- levelParser.deserializeLevel(s)
     } yield r
 }

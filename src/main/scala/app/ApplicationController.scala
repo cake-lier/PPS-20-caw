@@ -6,7 +6,7 @@ import it.unibo.pps.caw.menu.ParentMainMenuController
 
 import scala.util.Try
 import cats.implicits.given
-import it.unibo.pps.caw.common.{Deserializer, LevelManager, Loader, Settings, SettingsManager}
+import it.unibo.pps.caw.common.{LevelManager, LevelParser, Loader, Settings, SettingsManager}
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import play.api.libs.json.Json
@@ -30,15 +30,16 @@ object ApplicationController {
 
   /* Default implementation of the ApplicationController trait. */
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
+    private val levelParser = LevelParser()
+    private val levelManager = LevelManager(levelParser)
     private val settingsManager = SettingsManager()
     private var _settings: Settings = settingsManager.load().getOrElse(settingsManager.defaultSettings)
-
     private val futures: Set[Future[Try[Unit]]] = ConcurrentHashMap.newKeySet[Future[Try[Unit]]]().asScala
 
     override def closeGame(): Unit = view.showMainMenu()
 
     override def addSolvedLevel(index: Int): Unit = {
-      _settings = Settings(settings.volumeMusic, settings.volumeSFX, settings.solvedLevels ++ Set(index))
+      _settings = Settings(settings.musicVolume, settings.soundVolume, settings.solvedLevels ++ Set(index))
       saveSettings(settings)
     }
 
@@ -46,7 +47,7 @@ object ApplicationController {
       (for {
         f <- Loader.loadResource("levels.json")
         s <- Json.parse(f).as[Seq[String]].map(n => Loader.loadResource(s"levels/$n")).sequence
-        l <- s.map(Deserializer.deserializeLevel(_)).sequence
+        l <- s.map(levelParser.deserializeLevel(_)).sequence
       } yield l).getOrElse {
         view.showError("An error has occured, could not load level")
         Seq.empty
@@ -57,7 +58,7 @@ object ApplicationController {
     override def settings: Settings = _settings
 
     override def startGame(levelPath: String): Unit =
-      LevelManager.load(levelPath).fold(_ => view.showError("An error has occurred, could not load level"), view.showGame(_))
+      levelManager.load(levelPath).fold(_ => view.showError("An error has occurred, could not load level"), view.showGame(_))
 
     override def startGame(levelIndex: Int): Unit = view.showGame(levelFiles, levelIndex)
 
@@ -77,7 +78,7 @@ object ApplicationController {
     override def startLevelEditor(width: Int, height: Int): Unit = view.showLevelEditor(width, height)
 
     override def startLevelEditor(levelPath: String): Unit =
-      LevelManager
+      levelManager
         .load(levelPath)
         .fold(_ => view.showError("An error has occured, could not load level"), view.showLevelEditor(_))
 
@@ -87,7 +88,7 @@ object ApplicationController {
 
     override def closeEditor(): Unit = view.showMainMenu()
 
-    override def saveLevel(path: String, level: Level[BaseCell]): Unit = LevelManager.writeLevel(path, level)
+    override def saveLevel(path: String, level: Level[BaseCell]): Unit = levelManager.writeLevel(path, level)
   }
 
   /** Returns a new instance of the [[ApplicationController]] trait. It must receive the [[ApplicationView]] which will be called

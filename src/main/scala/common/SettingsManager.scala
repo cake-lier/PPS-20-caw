@@ -7,14 +7,14 @@ import scala.util.{Failure, Success, Try, Using}
 
 /** Representation of game settings: the music volume, the SFX volume and the indexes of completed default levels.
   *
-  * @param volumeMusic
+  * @param musicVolume
   *   the volume of the music
-  * @param volumeSFX
+  * @param soundVolume
   *   the volume of special effects
   * @param solvedLevels
   *   a set of indexes of the default levels already solved by the player
   */
-case class Settings(volumeMusic: Double, volumeSFX: Double, solvedLevels: Set[Int])
+case class Settings(musicVolume: Double, soundVolume: Double, solvedLevels: Set[Int])
 
 /** The manager for the game settings: it allows to load and save settings to a file so as to memorize the settings between game
   * sessions.

@@ -82,8 +82,8 @@ object ApplicationView {
     stage.scene = scene
     stage.show()
     stage.setOnCloseRequest(_ => controller.exit())
-    audioPlayer.setVolume(controller.settings.volumeMusic, AudioType.Music)
-    audioPlayer.setVolume(controller.settings.volumeSFX, AudioType.Sound)
+    audioPlayer.setVolume(controller.settings.musicVolume, AudioType.Music)
+    audioPlayer.setVolume(controller.settings.soundVolume, AudioType.Sound)
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 

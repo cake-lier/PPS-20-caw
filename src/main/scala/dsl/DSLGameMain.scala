@@ -2,7 +2,7 @@ package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.game.controller.ParentGameController
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, StageResizer}
+import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, LevelParser, StageResizer}
 import it.unibo.pps.caw.menu.MainMenuView
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.model.Level
@@ -38,7 +38,7 @@ object DSLGameMain extends JFXApp3 {
     StageResizer.resize(stage)
     val gameScene: Scene = Scene(stage.width.value, stage.height.value)
     stage.scene = gameScene
-    LevelManager
+    LevelManager(LevelParser())
       .load(parameters.raw(0))
       .fold(
         _ => gameScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),

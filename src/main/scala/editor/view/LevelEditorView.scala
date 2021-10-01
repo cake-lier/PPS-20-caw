@@ -27,7 +27,7 @@ trait LevelEditorView extends ViewComponent[Pane] {
   def showError(message: String): Unit
 }
 
-trait PlayableAreaUpdater {
+trait EditorUpdater {
   def createPlayableArea(topRight: Position, downLeft: Position): Unit
   def removeCell(position: Position): Unit
   def removePlayableArea(): Unit
@@ -45,7 +45,7 @@ object LevelEditorView {
   ) extends AbstractViewComponent[Pane]("editor.fxml")
     with LevelEditorView
     with ModelUpdater
-    with PlayableAreaUpdater {
+    with EditorUpdater {
 
     @FXML
     var backButton: Button = _
@@ -136,26 +136,26 @@ object LevelEditorView {
         setGraphic(generateCellView, CellImage.GeneratorRight.image),
         setGraphic(moverCellView, CellImage.MoverRight.image),
         setGraphic(blockCellView, CellImage.Block.image),
-        setGraphic(rotateCellView, CellImage.RotatorRight.image)
+        setGraphic(rotateCellView, CellImage.RotatorClockwise.image)
       )
     }
 
     private def getSetupCell(image: Image, newPosition: Position): BaseCell = image match {
-      case CellImage.GeneratorRight.image  => BaseGeneratorCell(newPosition, Orientation.Right)
-      case CellImage.GeneratorLeft.image   => BaseGeneratorCell(newPosition, Orientation.Left)
-      case CellImage.GeneratorTop.image    => BaseGeneratorCell(newPosition, Orientation.Top)
-      case CellImage.GeneratorDown.image   => BaseGeneratorCell(newPosition, Orientation.Down)
-      case CellImage.RotatorRight.image    => BaseRotatorCell(newPosition, Rotation.Clockwise)
-      case CellImage.RotatorLeft.image     => BaseRotatorCell(newPosition, Rotation.Counterclockwise)
-      case CellImage.MoverRight.image      => BaseMoverCell(newPosition, Orientation.Right)
-      case CellImage.MoverLeft.image       => BaseMoverCell(newPosition, Orientation.Left)
-      case CellImage.MoverTop.image        => BaseMoverCell(newPosition, Orientation.Top)
-      case CellImage.MoverDown.image       => BaseMoverCell(newPosition, Orientation.Down)
-      case CellImage.Block.image           => BaseBlockCell(newPosition, Push.Both)
-      case CellImage.BlockHorizontal.image => BaseBlockCell(newPosition, Push.Horizontal)
-      case CellImage.BlockVertical.image   => BaseBlockCell(newPosition, Push.Vertical)
-      case CellImage.Enemy.image           => BaseEnemyCell(newPosition)
-      case CellImage.Wall.image            => BaseWallCell(newPosition)
+      case CellImage.GeneratorRight.image          => BaseGeneratorCell(newPosition, Orientation.Right)
+      case CellImage.GeneratorLeft.image           => BaseGeneratorCell(newPosition, Orientation.Left)
+      case CellImage.GeneratorTop.image            => BaseGeneratorCell(newPosition, Orientation.Top)
+      case CellImage.GeneratorDown.image           => BaseGeneratorCell(newPosition, Orientation.Down)
+      case CellImage.RotatorClockwise.image        => BaseRotatorCell(newPosition, Rotation.Clockwise)
+      case CellImage.RotatorCounterclockwise.image => BaseRotatorCell(newPosition, Rotation.Counterclockwise)
+      case CellImage.MoverRight.image              => BaseMoverCell(newPosition, Orientation.Right)
+      case CellImage.MoverLeft.image               => BaseMoverCell(newPosition, Orientation.Left)
+      case CellImage.MoverTop.image                => BaseMoverCell(newPosition, Orientation.Top)
+      case CellImage.MoverDown.image               => BaseMoverCell(newPosition, Orientation.Down)
+      case CellImage.Block.image                   => BaseBlockCell(newPosition, Push.Both)
+      case CellImage.BlockHorizontal.image         => BaseBlockCell(newPosition, Push.Horizontal)
+      case CellImage.BlockVertical.image           => BaseBlockCell(newPosition, Push.Vertical)
+      case CellImage.Enemy.image                   => BaseEnemyCell(newPosition)
+      case CellImage.Wall.image                    => BaseWallCell(newPosition)
     }
 
     private def setGraphic(buttonCellImageView: DraggableImageView, image: Image): Tuple2[DraggableImageView, Image] = {
@@ -170,8 +170,8 @@ object LevelEditorView {
         setGraphic(
           rotateCellView,
           sprites(rotateCellView) match {
-            case CellImage.RotatorRight.image => CellImage.RotatorLeft.image
-            case _                            => CellImage.RotatorRight.image
+            case CellImage.RotatorClockwise.image => CellImage.RotatorCounterclockwise.image
+            case _                                => CellImage.RotatorClockwise.image
           }
         ),
         setGraphic(

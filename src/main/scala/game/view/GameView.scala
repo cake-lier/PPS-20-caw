@@ -1,7 +1,7 @@
 package it.unibo.pps.caw.game.view
 
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{AudioPlayer, GameBoardView, ModelUpdater, Track, ViewComponent}
+import it.unibo.pps.caw.common.{AudioPlayer, ModelUpdater, Track, ViewComponent}
 import it.unibo.pps.caw.common.model.{Board, Level, Position}
 import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
 import it.unibo.pps.caw.game.controller.{GameController, ParentDefaultGameController, ParentGameController}
@@ -176,11 +176,11 @@ object GameView {
 
     override def backToMenu(): Unit = controller.closeGame()
 
-    override def manageCell(cell: ImageView, newPosition: Position): Unit = {
+    override def manageCell(cellImageView: ImageView, newPosition: Position): Unit = {
       val board = boardView.get.innerComponent
-      controller.moveCell(Position(GridPane.getColumnIndex(cell), GridPane.getRowIndex(cell)))(newPosition)
-      board.getChildren.remove(cell)
-      board.add(cell, newPosition.x, newPosition.y)
+      controller.moveCell(Position(GridPane.getColumnIndex(cellImageView), GridPane.getRowIndex(cellImageView)))(newPosition)
+      board.getChildren.remove(cellImageView)
+      board.add(cellImageView, newPosition.x, newPosition.y)
     }
   }
 
@@ -192,7 +192,7 @@ object GameView {
     levelIndex: Int,
     scene: Scene
   ) extends AbstractGameView(parentController, audioPlayer, scene) {
-    
+
     override protected def createController(): GameController = GameController(parentController, this, levels, levelIndex)
   }
 
@@ -203,7 +203,7 @@ object GameView {
     level: Level[BaseCell],
     scene: Scene
   ) extends AbstractGameView(parentController, audioPlayer, scene) {
-    
+
     override protected def createController(): GameController = GameController(parentController, this, level)
   }
 

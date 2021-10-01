@@ -1,28 +1,58 @@
 package it.unibo.pps.caw.common
 import javafx.scene.image.Image
 
-/** Provides all the images necessary to draw a board.
-  *
-  * The singleton provides a map that returns its [[Image]] given the enum key [[Images.CellImage]].
-  */
+/** The images used to draw a board. */
 enum CellImage(imageName: String) {
   val image: Image = Image("imgs/" + imageName + ".png")
 
+  /** The image of the enemy. */
   case Enemy extends CellImage("enemy")
-  case RotatorRight extends CellImage("rotator_right")
-  case RotatorLeft extends CellImage("rotator_left")
+
+  /** The image of clockwise rotator. */
+  case RotatorClockwise extends CellImage("rotator_clockwise")
+
+  /** The image of the counterclockwise rotator. */
+  case RotatorCounterclockwise extends CellImage("rotator_counterclockwise")
+
+  /** The image of the right mover. */
   case MoverRight extends CellImage("mover_right")
+
+  /** The image of the left mover. */
   case MoverLeft extends CellImage("mover_left")
+
+  /** The image of the top mover. */
   case MoverTop extends CellImage("mover_top")
+
+  /** The image of the down. */
   case MoverDown extends CellImage("mover_down")
+
+  /** The image of the block. */
   case Block extends CellImage("block")
+
+  /** The image of the horizontal block . */
   case BlockHorizontal extends CellImage("block_horizontal")
+
+  /** The image of the vertical block. */
   case BlockVertical extends CellImage("block_vertical")
+
+  /** The image of the wall. */
   case Wall extends CellImage("wall")
+
+  /** The image of the right generator. */
   case GeneratorRight extends CellImage("generator_right")
+
+  /** The image of the left generator. */
   case GeneratorLeft extends CellImage("generator_left")
+
+  /** The image of the top generator. */
   case GeneratorTop extends CellImage("generator_top")
+
+  /** The image of the down generator. */
   case GeneratorDown extends CellImage("generator_down")
+
+  /** The image of the default tile. */
   case DefaultTile extends CellImage("default")
+
+  /** The image of the playable area tile. */
   case PlayAreaTile extends CellImage("play_area")
 }
