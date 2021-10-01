@@ -9,11 +9,7 @@ import java.nio.file.{Files, Path, Paths}
 import scala.io.Source
 import scala.util.{Try, Using}
 
-/** Module containing an utility method for loading [[Level]] files.
-  *
-  * This module contains only one helper method which is useful when deserializing a file containing a [[Level]] for trasforming
-  * it into an instance of that class.
-  */
+/** Represents the storage of [[Level]] files to disk, exposes methods to load and save level files. */
 trait LevelStorage {
   /** Deserializes the file associated to the given [[Path]] producing a [[Level]] object which represents the [[Level]] contained
     * into the file itself. This operation can fail and, as such, the object is wrapped inside a [[Try]].

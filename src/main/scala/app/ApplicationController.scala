@@ -10,7 +10,7 @@ import scala.io.Source
 import scala.jdk.StreamConverters
 import scala.util.{Failure, Try, Using}
 import cats.implicits.given
-import it.unibo.pps.caw.common.{LevelStorage, LevelParser, Loader, Settings, SettingsManager}
+import it.unibo.pps.caw.common.{LevelStorage, LevelParser, FileStorage, Settings, SettingsManager}
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
 import play.api.libs.json.Json
@@ -49,8 +49,8 @@ object ApplicationController {
 
     private val levelFiles: Seq[Level[BaseCell]] =
       (for {
-        f <- Loader.loadResource("levels.json")
-        s <- Json.parse(f).as[Seq[String]].map(n => Loader.loadResource(s"levels/$n")).sequence
+        f <- FileStorage.loadResource("levels.json")
+        s <- Json.parse(f).as[Seq[String]].map(n => FileStorage.loadResource(s"levels/$n")).sequence
         l <- s.map(levelParser.deserializeLevel(_)).sequence
       } yield l).getOrElse {
         view.showError("An error has occured, could not load level")

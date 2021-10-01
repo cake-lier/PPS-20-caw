@@ -52,7 +52,7 @@ object SettingsManager {
     private val filePath = System.getProperty("user.home") + File.separator + ".settings.json"
 
     override def load(): Try[Settings] = {
-      Loader.loadFile(filePath) match {
+      FileStorage.loadFile(filePath) match {
         case Success(jsonString: String) => {
           val json = Json.parse(jsonString)
           val volumeMusic = (json \ "volumeMusic").as[Double]

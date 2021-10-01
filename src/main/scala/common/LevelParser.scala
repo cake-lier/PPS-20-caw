@@ -128,7 +128,7 @@ object LevelParser {
     private def isValidJson(json: String): Try[Unit] = {
       val vertx: Vertx = Vertx.vertx()
       val validationTry: Try[Unit] = for {
-        s <- Loader.loadResource("board_schema.json")
+        s <- FileStorage.loadResource("board_schema.json")
         _ <- Try {
           SchemaParser
             .createDraft201909SchemaParser(SchemaRouter.create(vertx, SchemaRouterOptions()))
