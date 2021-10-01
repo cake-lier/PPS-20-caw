@@ -3,15 +3,14 @@ package it.unibo.pps.caw
 import it.unibo.pps.caw.common.model.{Board, Level, PlayableArea}
 import it.unibo.pps.caw.common.model.cell.Orientation
 import it.unibo.pps.caw.common.model.cell.{PlayableGeneratorCell, PlayableMoverCell}
-import it.unibo.pps.caw.common.LevelParser
+import it.unibo.pps.caw.common.{FileStorage, LevelParser}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
-
-import scala.io.Source
 import scala.util.{Failure, Success}
 
 class DeserializerTest extends AnyFunSpec with Matchers {
-  val levelParser = LevelParser()
+  val fileStorage = FileStorage()
+  val levelParser = LevelParser(fileStorage)
   describe("A JSON") {
     describe("when empty") {
       it("should produce IllegalArgumentException") {
@@ -31,7 +30,7 @@ class DeserializerTest extends AnyFunSpec with Matchers {
     }
     describe("when with nearly correct  json format") {
       it("should produce IllegalArgumentException") {
-        levelParser.deserializeLevel(Source.fromResource("invalid_test_level.json").getLines.mkString) match {
+        levelParser.deserializeLevel(fileStorage.loadResource("invalid_test_level.json").get) match {
           case Failure(x: IllegalArgumentException) => succeed
           case _                                    => fail("Left should be IllegalArgumentException")
         }
@@ -39,7 +38,7 @@ class DeserializerTest extends AnyFunSpec with Matchers {
     }
     describe("when with correct json") {
       it("should produce a LevelBuilder") {
-        val jsonLevel = Source.fromResource("test_level.json").getLines.mkString
+        val jsonLevel = fileStorage.loadResource("test_level.json").get
         levelParser.deserializeLevel(jsonLevel) match {
           case Success(l) =>
             l shouldBe Level(

@@ -46,13 +46,13 @@ trait SettingsManager {
 /** Companion object to the [[SettingsManager]] trait */
 object SettingsManager {
 
-  private class SettingsManagerImpl() extends SettingsManager {
+  private class SettingsManagerImpl(fileStorage: FileStorage) extends SettingsManager {
     val defaultSettings = Settings(0.3, 0.7, Set())
     private val defaultSettingsJson = Json.toJson(defaultSettings)(Json.writes[Settings])
     private val filePath = System.getProperty("user.home") + File.separator + ".settings.json"
 
     override def load(): Try[Settings] = {
-      FileStorage.loadFile(filePath) match {
+      fileStorage.loadFile(filePath) match {
         case Success(jsonString: String) => {
           val json = Json.parse(jsonString)
           val volumeMusic = (json \ "volumeMusic").as[Double]
@@ -83,5 +83,5 @@ object SettingsManager {
     * @return
     *   a new [[SettingsManager]] instance
     */
-  def apply(): SettingsManager = SettingsManagerImpl()
+  def apply(fileStorage: FileStorage): SettingsManager = SettingsManagerImpl(fileStorage)
 }

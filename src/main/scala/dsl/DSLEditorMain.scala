@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.common.{AudioPlayer, LevelStorage, LevelParser, StageResizer}
+import it.unibo.pps.caw.common.{AudioPlayer, FileStorage, LevelParser, LevelStorage, StageResizer}
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.editor.view.LevelEditorView
@@ -15,8 +15,6 @@ import scalafx.application.JFXApp3.PrimaryStage
 
 import java.io.File
 import java.nio.file.Paths
-import scala.io.Source
-import scala.util.Using
 
 /** The main class for the application launched by the DSL when asked by the user to edit a level with the
   * [[it.unibo.pps.caw.dsl.entities.Board]] which has been just created.
@@ -38,7 +36,8 @@ object DSLEditorMain extends JFXApp3 {
     val editorScene: Scene = Scene(stage.width.value, stage.height.value)
     stage.scene = editorScene
 
-    val levelManager = LevelStorage(LevelParser())
+    val fileStorage = FileStorage()
+    val levelManager = LevelStorage(fileStorage, LevelParser(fileStorage))
     levelManager
       .loadLevel(parameters.raw(0))
       .fold(

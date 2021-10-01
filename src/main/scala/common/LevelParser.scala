@@ -36,7 +36,7 @@ trait LevelParser {
 
 object LevelParser {
 
-  private class LevelParserImpl() extends LevelParser {
+  private class LevelParserImpl(fileStorage: FileStorage) extends LevelParser {
 
     def serializeLevel(level: Level[BaseCell]): Try[String] =
       Success(
@@ -128,7 +128,7 @@ object LevelParser {
     private def isValidJson(json: String): Try[Unit] = {
       val vertx: Vertx = Vertx.vertx()
       val validationTry: Try[Unit] = for {
-        s <- FileStorage.loadResource("board_schema.json")
+        s <- fileStorage.loadResource("board_schema.json")
         _ <- Try {
           SchemaParser
             .createDraft201909SchemaParser(SchemaRouter.create(vertx, SchemaRouterOptions()))
@@ -176,5 +176,5 @@ object LevelParser {
 
   }
 
-  def apply(): LevelParser = LevelParserImpl()
+  def apply(fileStorage: FileStorage): LevelParser = LevelParserImpl(fileStorage)
 }

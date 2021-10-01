@@ -6,8 +6,7 @@ import it.unibo.pps.caw.common.model.cell.BaseCell
 
 import java.io.File
 import java.nio.file.{Files, Path, Paths}
-import scala.io.Source
-import scala.util.{Try, Using}
+import scala.util.Try
 
 /** Represents the storage of [[Level]] files to disk, exposes methods to load and save level files. */
 trait LevelStorage {
@@ -35,10 +34,10 @@ trait LevelStorage {
 
 object LevelStorage {
 
-  private class LevelStorageImpl(levelParser: LevelParser) extends LevelStorage {
+  private class LevelStorageImpl(fileStorage: FileStorage, levelParser: LevelParser) extends LevelStorage {
     def loadLevel(path: String): Try[Level[BaseCell]] =
       for {
-        f <- Using(Source.fromFile(path))(_.getLines.mkString)
+        f <- fileStorage.loadFile(path)
         l <- levelParser.deserializeLevel(f)
       } yield l
 
@@ -49,6 +48,7 @@ object LevelStorage {
       } yield ()
   }
 
-  def apply(levelParser: LevelParser): LevelStorage = LevelStorageImpl(levelParser)
+  def apply(fileStorage: FileStorage, levelParser: LevelParser): LevelStorage
+    = LevelStorageImpl(fileStorage, levelParser)
 
 }

@@ -7,7 +7,6 @@ import it.unibo.pps.caw.editor.view.LevelEditorView
 import java.io.File
 import java.util.concurrent.{ExecutorService, Executors}
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor}
-import scala.io.Source
 
 trait ParentLevelEditorController {
   def closeEditor(): Unit

@@ -2,7 +2,7 @@ package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.game.controller.ParentGameController
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.common.{AudioPlayer, LevelStorage, LevelParser, StageResizer}
+import it.unibo.pps.caw.common.{AudioPlayer, FileStorage, LevelParser, LevelStorage, StageResizer}
 import it.unibo.pps.caw.menu.MainMenuView
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.model.Level
@@ -16,8 +16,7 @@ import scalafx.application.JFXApp3.{Parameters, PrimaryStage}
 import scalafx.scene.Scene
 
 import java.nio.file.{Path, Paths}
-import scala.io.Source
-import scala.util.{Failure, Try, Using}
+import scala.util.{Failure, Try}
 
 /** The main class for the application launched by the DSL when asked by the user to play a level with the
   * [[it.unibo.pps.caw.dsl.entities.Board]] which has been just created.
@@ -38,7 +37,8 @@ object DSLGameMain extends JFXApp3 {
     StageResizer.resize(stage)
     val gameScene: Scene = Scene(stage.width.value, stage.height.value)
     stage.scene = gameScene
-    LevelStorage(LevelParser())
+    val fileStorage = FileStorage()
+    LevelStorage(fileStorage, LevelParser(fileStorage))
       .loadLevel(parameters.raw(0))
       .fold(
         _ => gameScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
