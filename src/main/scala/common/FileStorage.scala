@@ -2,6 +2,7 @@ package it.unibo.pps.caw.common
 
 import scala.io.Source
 import scala.util.{Try, Using}
+import java.nio.file.{Files, OpenOption, Paths}
 
 /** Represents the storage of files to disk: it allows to load project resources or external files. */
 trait FileStorage {
@@ -24,6 +25,31 @@ trait FileStorage {
     *   a [[Try]] with the contents of the file in a string
     */
   def loadFile(path: String): Try[String]
+
+  /** Writes a file to disk. It needs the absolute path to the file and returns an exception if it occurs.
+    * If the file does not exist, it is created. If the file already exists, it gets overwritten.
+    *
+    * @param path
+    *   the path to the file to be written
+    * @param body
+    *   the content of the file to be written
+    * @return
+    *   a [[Try]] with a [[java.io.IOException]] if it occurs
+    */
+  def writeFile(path: String, body: String): Try[Unit]
+
+  /** Writes a file to disk, with [[OpenOption]]. It needs the absolute path to the file and returns an exception if it occurs.
+    * If the file does not exist, it is created. If the file already exists, it gets overwritten.
+    *
+    * @param path
+    *   the path to the file to be written
+    * @param body
+    *   the content of the file to be written
+    * @param options
+    * @return
+    *   an exception if it occurs during IO operations
+    */
+  def writeFile(path: String, body: String, options: OpenOption*): Try[Unit]
 }
 
 object FileStorage {
@@ -34,6 +60,10 @@ object FileStorage {
 
     def loadFile(path: String): Try[String] = Using(Source.fromFile(path))(_.getLines.mkString)
 
+    def writeFile(path: String, body: String): Try[Unit] = Try(Files.writeString(Paths.get(path), body))
+
+    def writeFile(path: String, body: String, options: OpenOption*): Try[Unit] =
+      Try(Files.writeString(Paths.get(path), body, options: _*))
   }
 
   def apply():FileStorage = FileStorageImpl()

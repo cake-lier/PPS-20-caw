@@ -24,7 +24,7 @@ trait SettingsStorage {
   /** Returns default settings. */
   val defaultSettings: Settings
 
-  /** Load settings from disk. If the settings file does not exist, it is created.
+  /** Loads settings from disk. If the settings file does not exist, it is created.
     *
     * The settings file is a .json that corresponds to the json representation of case class [[Settings]].
     *
@@ -33,12 +33,12 @@ trait SettingsStorage {
     */
   def load(): Try[Settings]
 
-  /** Save settings to disk. The settings file will be overwritten with the new settings.
+  /** Saves settings to disk. The settings file will be overwritten with the new settings.
     *
     * @param settings
     *   the [[Settings]] to be saved
     * @return
-    *   an exception if it occurs during file writing
+    *   an exception if it occurs during IO operations
     */
   def save(settings: Settings): Try[Unit]
 }
@@ -61,7 +61,7 @@ object SettingsStorage {
           Success(Settings(volumeMusic, volumeSFX, solvedLevels))
         }
         case Failure(e: FileNotFoundException) =>
-          writeSettings(defaultSettingsJson.toString) match {
+          fileStorage.writeFile(filePath, defaultSettingsJson.toString) match {
             case Failure(e) => Failure(e)
             case _          => Success(defaultSettings)
           }
@@ -71,11 +71,8 @@ object SettingsStorage {
 
     override def save(settings: Settings): Try[Unit] = {
       val jsonSettings = Json.toJson(settings)(Json.writes[Settings])
-      writeSettings(jsonSettings.toString)
+      fileStorage.writeFile(filePath, jsonSettings.toString)
     }
-
-    /* Creates or overwrites file */
-    private def writeSettings(body: String): Try[Unit] = Using(new FileWriter(File(filePath)))(_.write(body))
   }
 
   /** Returns a new instance of the [[SettingsStorage]] trait.

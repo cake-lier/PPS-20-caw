@@ -10,8 +10,8 @@ import scala.util.Try
 
 /** Represents the storage of [[Level]] files to disk: it allows to load and save level files. */
 trait LevelStorage {
-  /** Deserializes the file associated to the given [[Path]] producing a [[Level]] object which represents the [[Level]] contained
-    * into the file itself. This operation can fail and, as such, the object is wrapped inside a [[Try]].
+  /** Deserializes the file associated to the given [[Path]] producing a [[Level]] object which represents the [[Level]]
+    * contained into the file itself. This operation can fail and, as such, the object is wrapped inside a [[Try]].
     *
     * @param path
     *   the [[Path]] to the file to deserialize
@@ -27,7 +27,7 @@ trait LevelStorage {
     * @param level
     *   the [[Level]] instance to be saved
     * @return
-    *   an [[java.io.IOException]] if the file can't be saved
+    *   an exception if it occurs during IO operations
     */
   def saveLevel(path: String, level: Level[BaseCell]): Try[Unit]
 }
@@ -44,7 +44,7 @@ object LevelStorage {
     def saveLevel(path: String, level: Level[BaseCell]): Try[Unit] =
       for {
         s <- levelParser.serializeLevel(level)
-        _ <- Try(Files.writeString(Paths.get(path), s))
+        _ <- fileStorage.writeFile(path, s)
       } yield ()
   }
 
