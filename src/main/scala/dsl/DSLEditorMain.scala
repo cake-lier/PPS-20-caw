@@ -3,10 +3,9 @@ package it.unibo.pps.caw.dsl
 import it.unibo.pps.caw.common.{AudioPlayer, FileStorage, LevelParser, LevelStorage, StageResizer}
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.editor.view.LevelEditorView
+import it.unibo.pps.caw.editor.view.EditorView
 import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
 import it.unibo.pps.caw.editor.model.LevelBuilder
-import it.unibo.pps.caw.editor.view.LevelEditorView
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.FlowPane
 import scalafx.application.JFXApp3
@@ -43,7 +42,7 @@ object DSLEditorMain extends JFXApp3 {
       .fold(
         _ => editorScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
         l => {
-          editorScene.root.value = LevelEditorView(
+          editorScene.root.value = EditorView(
             new ParentLevelEditorController {
               override def closeEditor(): Unit = sys.exit()
 
