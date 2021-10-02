@@ -3,9 +3,12 @@ package it.unibo.pps.caw.game.controller
 import it.unibo.pps.caw.common.model.{Level, Position}
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.game.model.GameModel
+import it.unibo.pps.caw.game.model.engine.RulesEngine
 import it.unibo.pps.caw.game.view.GameView
 
 import java.util.concurrent.{Executors, ScheduledExecutorService, ScheduledFuture, TimeUnit}
+import scala.io.Source
+import scala.util.Using
 
 /** The parent controller to the [[GameController]].
   *
@@ -84,15 +87,15 @@ object GameController {
 
   /* Abstract implementation of the GameController trait for factorizing common behaviors. */
   private abstract class AbstractGameController(
-    parentController: ParentGameController,
-    view: GameView
+      parentController: ParentGameController,
+      view: GameView
   ) extends GameController {
     protected val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     protected var updatesHandler: Option[ScheduledFuture[?]] = None
+    protected val rulesEngine: RulesEngine = createRulesEngine()
+    protected def createModel(rulesEngine: RulesEngine): GameModel
 
-    protected def createModel: GameModel
-
-    protected var model: GameModel = createModel
+    protected var model: GameModel = createModel(rulesEngine)
 
     view.drawLevel(model.state.levelInitialState, model.state.isCurrentLevelCompleted)
 
@@ -137,24 +140,33 @@ object GameController {
 
     override def moveCell(oldPosition: Position)(newPosition: Position): Unit =
       model = model.moveCell(oldPosition)(newPosition)
+
+    private def createRulesEngine(): RulesEngine = {
+      Using(Source.fromResource("cellmachine.pl")) { _.getLines.mkString(" ") }
+        .map(RulesEngine(_))
+        .getOrElse({
+          view.showError("Impossible to load rules file")
+          RulesEngine()
+        })
+    }
   }
 
   /* Extension of the AbstractGameController class for playing a generic level. */
   private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level[BaseCell])
-    extends AbstractGameController(parentController, view) {
+      extends AbstractGameController(parentController, view) {
 
-    override protected def createModel: GameModel = GameModel(initialLevel)
+    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine, initialLevel)
   }
 
   /* Extension of the AbstractGameController class for playing the default levels. */
   private class DefaultGameController(
-    parentController: ParentDefaultGameController,
-    view: GameView,
-    levels: Seq[Level[BaseCell]],
-    initialIndex: Int
+      parentController: ParentDefaultGameController,
+      view: GameView,
+      levels: Seq[Level[BaseCell]],
+      initialIndex: Int
   ) extends AbstractGameController(parentController, view) {
 
-    override protected def createModel: GameModel = GameModel(levels, initialIndex)
+    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine, levels, initialIndex)
 
     override def step(): Unit = {
       super.step()
@@ -199,10 +211,10 @@ object GameController {
     *   a new [[GameController]] instance
     */
   def apply(
-    parentController: ParentDefaultGameController,
-    view: GameView,
-    levels: Seq[Level[BaseCell]],
-    levelIndex: Int
+      parentController: ParentDefaultGameController,
+      view: GameView,
+      levels: Seq[Level[BaseCell]],
+      levelIndex: Int
   ): GameController =
     DefaultGameController(parentController, view, levels, levelIndex)
 }

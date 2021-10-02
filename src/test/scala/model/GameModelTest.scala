@@ -3,12 +3,19 @@ package it.unibo.pps.caw.game.model
 import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea}
 import it.unibo.pps.caw.common.model.Board.toPlayableCells
 import it.unibo.pps.caw.common.model.cell.*
+import it.unibo.pps.caw.game.model.engine.RulesEngine
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+
+import scala.io.Source
+import scala.util.Using
 
 /** Tests for class [[GameModel]] */
 class GameModelTest extends AnyFunSpec with Matchers {
   private val dimensions: Dimensions = (4, 4)
+  private val rulesEngine: RulesEngine = RulesEngine(Using(Source.fromResource("cellmachine.pl")) {
+    _.getLines.mkString(" ")
+  }.get)
   private def convertBoard(board: Board[BaseCell]): Board[PlayableCell] =
     board
       .map(_ match {
@@ -25,6 +32,7 @@ class GameModelTest extends AnyFunSpec with Matchers {
       (1 to dimensions.height).map(i => PlayableWallCell((0, i), false)) ++
       (1 to dimensions.height).map(i => PlayableWallCell((dimensions.width + 1, i), false))
   private val gameModel: GameModel = GameModel(
+    rulesEngine,
     Level(
       dimensions,
       Board(
@@ -41,11 +49,7 @@ class GameModelTest extends AnyFunSpec with Matchers {
         gameModel.state.levelCurrentState shouldBe Level(
           gameModel.state.levelCurrentState.dimensions,
           Board(
-            gameModel
-              .state
-              .levelInitialState
-              .board
-              .cells
+            gameModel.state.levelInitialState.board.cells
               .map(_ match {
                 case PlayableRotatorCell(p, r, _)   => PlayableRotatorCell(p, r, false)
                 case PlayableGeneratorCell(p, o, _) => PlayableGeneratorCell(p, o, false)

@@ -2,9 +2,9 @@ package it.unibo.pps.caw.game.model.engine
 
 import alice.tuprolog.{Prolog, Struct, Term, Theory}
 import com.google.gson.{Gson, JsonArray}
-import it.unibo.pps.caw.game.model.*
-import it.unibo.pps.caw.common.model.{Board, Position}
-import it.unibo.pps.caw.common.model.cell.{Cell, Orientation, Push, Rotation}
+import it.unibo.pps.caw.common.model._
+import it.unibo.pps.caw.game.model._
+import it.unibo.pps.caw.common.model.cell.{BaseCell, *}
 
 import scala.annotation.tailrec
 import scala.io.Source
@@ -15,34 +15,28 @@ import scala.util.matching.Regex
 sealed trait RulesEngine {
 
   /** Calculate the next [[Board]] starting from the current [[Board]] and the [[Cell]] to be updated */
-  def nextState(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell]
+  def update(currentBoard: Board[BaseCell]): Board[BaseCell]
 }
 
 /** Companion object for trait [[RulesEngine]] */
 object RulesEngine {
 
-  private class RulesEngineImpl extends RulesEngine {
-    private val engine: Term => Term =
-      Using(Source.fromResource("cellmachine.pl"))(c => PrologEngine(Clause(c.getLines.mkString(" ")))).get
-
+  private class RulesEngineImpl(theory: String) extends RulesEngine {
+    private val engine: PrologEngine = PrologEngine(Clause(theory))
     def nextState(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = {
       val cellState: Map[Int, Boolean] =
-        board
-          .cells
+        board.cells
           .map(c => if (c.id == cell.id) (c.id, true) else (c.id, c.updated))
           .toMap
       val resBoard = PrologParser.deserializeBoard(
-        PrologEngine
-          .extractTerm(
-            engine(PrologParser.createSerializedPredicate(getPartialBoard(board, cell), cellState.keySet.max + 1, cell))
-          )
-          .toString
+        engine
+          .solve(Goal(PrologParser.createSerializedPredicate(getPartialBoard(board, cell), cellState.keySet.max + 1, cell)))
+          .getLastTerm
       )
       updateGloabalBoard(
         board,
         Board(
-          resBoard
-            .cells
+          resBoard.cells
             .map(_ match {
               case c if (c.id > cellState.keySet.max) => setUpdatedState(c, true) // new cell created by a generator
               case c                                  => setUpdatedState(c, cellState(c.id))
@@ -62,9 +56,9 @@ object RulesEngine {
     }
 
     private def updateGloabalBoard(
-      globalboard: Board[UpdateCell],
-      partialBoard: Board[UpdateCell],
-      cell: UpdateCell
+        globalboard: Board[UpdateCell],
+        partialBoard: Board[UpdateCell],
+        cell: UpdateCell
     ): Board[UpdateCell] =
       cell match {
         case UpdateGeneratorCell(position, orientation, _, _) =>
@@ -83,8 +77,7 @@ object RulesEngine {
           }
         case UpdateRotatorCell(position, _, _, _) =>
           Board[UpdateCell](
-            globalboard
-              .cells
+            globalboard.cells
               .filter(c =>
                 c.position != Position(position.x, position.y) && c.position != Position(position.x, position.y - 1) &&
                   c.position != Position(position.x, position.y + 1) &&
@@ -108,8 +101,7 @@ object RulesEngine {
         }
       case UpdateRotatorCell(position, _, _, _) =>
         Board[UpdateCell](
-          board
-            .cells
+          board.cells
             .filter(c =>
               c.position == Position(position.x, position.y - 1) ||
                 c.position == Position(position.x, position.y + 1) ||
@@ -119,93 +111,51 @@ object RulesEngine {
         )
       case _ => board
     }
-  }
 
-  def apply(): RulesEngine = RulesEngineImpl()
-}
+    override def update(currentBoard: Board[BaseCell]): Board[BaseCell] = {
+      @tailrec
+      def updateBoard(cells: Seq[UpdateCell], board: Board[UpdateCell]): Board[UpdateCell] = {
+        Seq(
+          cells.filter(_.isInstanceOf[GeneratorCell]).toSeq.sorted,
+          cells.filter(_.isInstanceOf[RotatorCell]).toSeq.sorted,
+          cells.filter(_.isInstanceOf[MoverCell]).toSeq.sorted
+        ).flatten match {
+          case h :: t if (!h.updated) => {
+            val newBoard = nextState(board, h)
+            updateBoard(newBoard.toSeq, newBoard)
+          }
+          case h :: t => updateBoard(t, board) // ignore already updated cells
+          case _      => board
+        }
+      }
+      val originalBoard: Board[UpdateCell] =
+        currentBoard.zipWithIndex
+          .map((c, i) =>
+            c match {
+              case BaseMoverCell(p, o)     => UpdateMoverCell(p, o, i, false)
+              case BaseGeneratorCell(p, o) => UpdateGeneratorCell(p, o, i, false)
+              case BaseRotatorCell(p, r)   => UpdateRotatorCell(p, r, i, false)
+              case BaseBlockCell(p, d)     => UpdateBlockCell(p, d, i, false)
+              case BaseEnemyCell(p)        => UpdateEnemyCell(p, i, false)
+              case BaseWallCell(p)         => UpdateWallCell(p, i, false)
+            }
+          )
 
-/* An utility object for prolog serialization and deserialization */
-private object PrologParser {
-
-  /* Returns a Prolog cell(id, cellType, x, y) given its Scala cell */
-  def serializeCell(cell: UpdateCell): Term = {
-    val cellType: String = cell match {
-      case _: UpdateWallCell  => "wall"
-      case _: UpdateEnemyCell => "enemy"
-      case m: UpdateMoverCell => "mover_" + m.orientation.name
-      case b: UpdateBlockCell =>
-        "block" + (b.push match {
-          case Push.Horizontal => "_hor"
-          case Push.Vertical   => "_ver"
-          case Push.Both       => ""
+      updateBoard(originalBoard.toSeq, originalBoard)
+        .map(_ match {
+          case UpdateRotatorCell(p, r, _, _)   => BaseRotatorCell(p, r)
+          case UpdateGeneratorCell(p, o, _, _) => BaseGeneratorCell(p, o)
+          case UpdateEnemyCell(p, _, _)        => BaseEnemyCell(p)
+          case UpdateMoverCell(p, o, _, _)     => BaseMoverCell(p, o)
+          case UpdateBlockCell(p, d, _, _)     => BaseBlockCell(p, d)
+          case UpdateWallCell(p, _, _)         => BaseWallCell(p)
         })
-      case g: UpdateGeneratorCell => "generator_" + g.orientation.name
-      case r: UpdateRotatorCell   => "rotator_" + r.rotation.name
-    }
-    Term.createTerm("cell" + Seq(cell.id, cellType, cell.position.x, cell.position.y).mkString("(", ",", ")"))
-  }
-
-  /* Returns a Prolog term given its cell.
-
-     If the cell is a mover or a rotator, it returns mover/ratator_next_state[board, x, y, NB].
-     If the cell is a generator, it returns generator_next_state[board, maxId, x, y, NB] */
-  def createSerializedPredicate(board: Board[UpdateCell], maxId: Long, cell: UpdateCell): Term = {
-    var seq = Seq("[" + board.cells.map(serializeCell).mkString(",") + "]", cell.position.x, cell.position.y)
-    val action: String = cell match {
-      case m: UpdateMoverCell => "mover_" + m.orientation.name
-      case g: UpdateGeneratorCell =>
-        seq = seq :+ maxId.toString
-        "generator_" + g.orientation.name
-      case r: UpdateRotatorCell => "rotator_" + r.rotation.name
     }
 
-    seq = seq :+ "NB"
-
-    Term.createTerm(
-      action
-        + "_next_state"
-        + seq.mkString("(", ",", ")")
-    )
   }
-
-  /* Returns a Scala Board of fake cells given the Prolog Board */
-  def deserializeBoard(stringBoard: String): Board[UpdateCell] = {
-    val regex: Regex =
-      "cell\\(\\d+,(?:mover_right|mover_left|mover_top|mover_down|generator_right|generator_left|generator_top|generator_down|rotator_clockwise|rotator_counterclockwise|block|block_hor|block_ver|enemy|wall),\\d+,\\d+\\)".r
-    Board(
-      regex
-        .findAllMatchIn(stringBoard)
-        .map(_.toString)
-        .map(PrologParser.deserializeCell)
-        .toSet
-    )
+  private case class DummyRulesEngine() extends RulesEngine {
+    override def update(currentBoard: Board[BaseCell]): Board[BaseCell] = currentBoard
   }
-
-  /* Returns a Scala fake cell given its Prolog cell*/
-  def deserializeCell(stringCell: String): UpdateCell = {
-    val s"cell($id,$cellType,$stringX,$stringY)" = stringCell
-    val cellId = id.toInt
-    val position = Position(stringX.toInt, stringY.toInt)
-    val updated = false // default value, properly set in nextState()
-
-    cellType match {
-      case s"mover_$orientation" => UpdateMoverCell(position, Orientation.fromName(orientation).get, cellId, updated)
-      case "enemy"               => UpdateEnemyCell(position, cellId, updated)
-      case "wall"                => UpdateWallCell(position, cellId, updated)
-      case s"block$movement" =>
-        UpdateBlockCell(
-          position,
-          movement match {
-            case "_hor" => Push.Horizontal
-            case "_ver" => Push.Vertical
-            case _      => Push.Both
-          },
-          cellId,
-          updated
-        )
-      case s"generator_$orientation" =>
-        UpdateGeneratorCell(position, Orientation.fromName(orientation).get, cellId, updated)
-      case s"rotator_$rotation" => UpdateRotatorCell(position, Rotation.fromName(rotation).get, cellId, updated)
-    }
-  }
+  def apply(theory: String): RulesEngine = RulesEngineImpl(theory)
+  def apply(): RulesEngine = DummyRulesEngine()
 }

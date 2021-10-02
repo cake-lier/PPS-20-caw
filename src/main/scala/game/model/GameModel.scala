@@ -68,16 +68,24 @@ object GameModel {
 
   /* Default implementation of the GameModel trait. */
   private class GameModelImpl(
-    val state: GameState,
-    isSetupCompleted: Boolean,
-    levels: Seq[Level[BaseCell]],
-    initialBoard: Board[BaseCell],
-    currentBoard: Board[BaseCell]
+      rulesEngine: RulesEngine,
+      val state: GameState,
+      isSetupCompleted: Boolean,
+      levels: Seq[Level[BaseCell]],
+      initialBoard: Board[BaseCell],
+      currentBoard: Board[BaseCell]
   ) extends GameModel {
 
     /* Alternative constructor to be used by the "apply" factory method. */
-    def this(levels: Seq[Level[BaseCell]], initialLevel: Level[PlayableCell], initialIndex: Int, initialBoard: Board[BaseCell]) =
+    def this(
+        rulesEngine: RulesEngine,
+        levels: Seq[Level[BaseCell]],
+        initialLevel: Level[PlayableCell],
+        initialIndex: Int,
+        initialBoard: Board[BaseCell]
+    ) =
       this(
+        rulesEngine,
         GameState(
           initialLevel,
           initialLevel.copy(board = initialLevel.board.map(GameModelHelpers.resetPlayableCell(_))),
@@ -93,45 +101,9 @@ object GameModel {
       )
 
     override def update: GameModel = {
-      @tailrec
-      def update(cells: Seq[UpdateCell], board: Board[UpdateCell]): Board[UpdateCell] = {
-        Seq(
-          cells.filter(_.isInstanceOf[GeneratorCell]).toSeq.sorted,
-          cells.filter(_.isInstanceOf[RotatorCell]).toSeq.sorted,
-          cells.filter(_.isInstanceOf[MoverCell]).toSeq.sorted
-        ).flatten match {
-          case h :: t if (!h.updated) => {
-            val newBoard = RulesEngine().nextState(board, h)
-            update(newBoard.toSeq, newBoard)
-          }
-          case h :: t => update(t, board) // ignore already updated cells
-          case _      => board
-        }
-      }
-      val originalBoard: Board[UpdateCell] =
-        currentBoard
-          .zipWithIndex
-          .map((c, i) =>
-            c match {
-              case BaseMoverCell(p, o)     => UpdateMoverCell(p, o, i, false)
-              case BaseGeneratorCell(p, o) => UpdateGeneratorCell(p, o, i, false)
-              case BaseRotatorCell(p, r)   => UpdateRotatorCell(p, r, i, false)
-              case BaseBlockCell(p, d)     => UpdateBlockCell(p, d, i, false)
-              case BaseEnemyCell(p)        => UpdateEnemyCell(p, i, false)
-              case BaseWallCell(p)         => UpdateWallCell(p, i, false)
-            }
-          )
-      val updatedBoard: Board[BaseCell] =
-        update(originalBoard.toSeq, originalBoard)
-          .map(_ match {
-            case UpdateRotatorCell(p, r, _, _)   => BaseRotatorCell(p, r)
-            case UpdateGeneratorCell(p, o, _, _) => BaseGeneratorCell(p, o)
-            case UpdateEnemyCell(p, _, _)        => BaseEnemyCell(p)
-            case UpdateMoverCell(p, o, _, _)     => BaseMoverCell(p, o)
-            case UpdateBlockCell(p, d, _, _)     => BaseBlockCell(p, d)
-            case UpdateWallCell(p, _, _)         => BaseWallCell(p)
-          })
+      val updatedBoard: Board[BaseCell] = rulesEngine.update(currentBoard)
       GameModelImpl(
+        rulesEngine,
         state.copy(
           currentStateLevel = state.levelCurrentState.copy(board = updatedBoard.toPlayableCells(_ => false)),
           didEnemyDie = state.levelCurrentState.board.filter(_.isInstanceOf[EnemyCell]).size >
@@ -146,10 +118,12 @@ object GameModel {
     }
 
     override def nextLevel: GameModel =
-      if (state.hasNextLevel && state.isCurrentLevelCompleted) GameModel(levels, state.currentLevelIndex + 1) else this
+      if (state.hasNextLevel && state.isCurrentLevelCompleted) GameModel(rulesEngine, levels, state.currentLevelIndex + 1)
+      else this
 
     override def reset: GameModel =
       GameModelImpl(
+        rulesEngine,
         state.copy(
           currentStateLevel =
             state.levelInitialState.copy(board = state.levelInitialState.board.map(GameModelHelpers.resetPlayableCell(_))),
@@ -170,9 +144,9 @@ object GameModel {
           .map(c => currentBoard.filter(_.position != currentPosition) + c)
           .map(b =>
             GameModelImpl(
+              rulesEngine,
               state.copy(
-                initialStateLevel = state
-                  .levelCurrentState
+                initialStateLevel = state.levelCurrentState
                   .copy(board =
                     b.toPlayableCells(c =>
                       GameModelHelpers.isPositionInsidePlayableArea(c.position)(state.levelCurrentState.playableArea)
@@ -202,10 +176,9 @@ object GameModel {
     * @return
     *   a new [[GameModel]] instance
     */
-  def apply(levels: Seq[Level[BaseCell]], initialIndex: Int): GameModel = {
+  def apply(rulesEngine: RulesEngine, levels: Seq[Level[BaseCell]], initialIndex: Int): GameModel = {
     val boardWithCorners: Board[BaseCell] =
-      levels(initialIndex - 1)
-        .board
+      levels(initialIndex - 1).board
         .map(GameModelHelpers.changeBaseCellPosition(_)(c => (c.position.x + 1, c.position.y + 1))) ++
         Set(
           (0 to levels(initialIndex - 1).dimensions.width + 1).map(i => BaseWallCell((i, 0))),
@@ -220,6 +193,7 @@ object GameModel {
       levels(initialIndex - 1).playableArea.dimensions
     )
     GameModelImpl(
+      rulesEngine,
       levels,
       Level(
         (levels(initialIndex - 1).dimensions.width + 2, levels(initialIndex - 1).dimensions.height + 2),
@@ -239,5 +213,5 @@ object GameModel {
     * @return
     *   a new [[GameModel]] instance
     */
-  def apply(level: Level[BaseCell]): GameModel = GameModel(Seq(level), 1)
+  def apply(rulesEngine: RulesEngine, level: Level[BaseCell]): GameModel = GameModel(rulesEngine, Seq(level), 1)
 }
