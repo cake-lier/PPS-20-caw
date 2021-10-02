@@ -3,10 +3,12 @@ package editor.view
 
 import common.ViewComponent.AbstractViewComponent
 import common.*
-import common.model.{Level, Position}
+import common.model.{Level, PlayableArea, Position}
 import common.model.cell.*
 import editor.controller.{EditorController, ParentLevelEditorController}
 import editor.model.LevelBuilder
+
+import it.unibo.pps.caw.menu.MainMenuController
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.{FXML, FXMLLoader}
@@ -21,18 +23,54 @@ import scalafx.scene.control.Alert.AlertType
 
 import java.io.File
 
+/** The view that displays the editor.
+  *
+  * It is responsible of displaying the editor, with its controls and the current level being edited, and capturing the player
+  * inputs, relaying them to the [[EditorController]]. After the controller has processed the receiving input, the [[EditorView]]
+  * displays the current state of the edited level.
+  */
 trait EditorView extends ViewComponent[Pane] {
+
+  /** Draws the given [[LevelBuilder]].
+    * @param level
+    *   the [[LevelBuilder]] to be displayed
+    */
   def printLevel(level: LevelBuilder): Unit
 
+  /** Displays the given error message to the player.
+    * @param message
+    *   the error message to be displayed
+    */
   def showError(message: String): Unit
 }
 
+/** Updates the editor model when view is modified.
+  *
+  * Its methods are called when a [[PlayableArea]] is placed to the board or removed from it by the player and when a [[Cell]] is
+  * removed by the player.
+  */
 trait EditorUpdater {
-  def createPlayableArea(topRight: Position, downLeft: Position): Unit
+
+  /** Creates a new [[PlayableArea]], given its upper left [[Position]] and its lower right [[Position]].
+    */
+  def createPlayableArea(topLeft: Position, downRight: Position): Unit
+
+  /** Removes a [[Cell]] given its current [[Position]]. */
   def removeCell(position: Position): Unit
+
+  /** Removes the [[PlayableArea]]. */
   def removePlayableArea(): Unit
 }
 
+/** The abstract view displaying the [[EditorView]].
+  *
+  * @param scene
+  *   the ScalaFX [[Scene]] on which the [[EditorView]] will be drawn
+  * @param closeEditorButtonText
+  *   the text displayed in the close/back button
+  * @param audioPlayer
+  *   the [[AudioPlayer]] that will play the editor music
+  */
 abstract class AbstractEditorView(
   scene: Scene,
   closeEditorButtonText: String,
@@ -106,8 +144,8 @@ abstract class AbstractEditorView(
     }
   }
 
-  override def createPlayableArea(topRight: Position, downLeft: Position): Unit =
-    controller.setPlayableArea(topRight, (downLeft.x - topRight.x + 1, downLeft.y - topRight.y + 1))
+  override def createPlayableArea(topLeft: Position, downRight: Position): Unit =
+    controller.setPlayableArea(topLeft, (downRight.x - topLeft.x + 1, downRight.y - topLeft.y + 1))
 
   override def removeCell(position: Position): Unit = controller.removeCell(position)
 
@@ -188,7 +226,9 @@ abstract class AbstractEditorView(
   }
 }
 
+/** The companion object of the trait [[EditorView]]. */
 object EditorView {
+  /* Concrete implementation of an EditorView displaying an empty level. */
   private final class EmptyEditorViewImpl(
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,
@@ -200,6 +240,7 @@ object EditorView {
     override val controller: EditorController = EditorController(parentLevelEditorController, this, width, height)
   }
 
+  /* Concrete implementation of an EditorView displaying an existing level. */
   private final class LevelEditorViewImpl(
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,
@@ -214,6 +255,24 @@ object EditorView {
     )
   }
 
+  /** Returns a new instance of [[EditorView]]. It receives the [[ParentLevelEditorController]] so as to be able to correctly
+    * create and then use its [[EditorController]], the ScalaFX [[Scene]] where the [[EditorView]] will draw and display itself,
+    * the text that the upper left button will display, depending if the [[EditorView]] was called from the menu or as a its own
+    * application and the [[AudioPlayer]] to be used for playing sounds and music for the editor.
+    *
+    * @param parentLevelEditorController
+    *   the controller needed to build the [[EditorController]]
+    * @param scene
+    *   the ScalaFX [[Scene]] where the [[EditorView]] will be drawn and displayed
+    * @param closeEditorButtonText
+    *   the text of the upper left button
+    * @param audioPlayer
+    *   the [[AudioPlayer]] used to play the music and sounds for the editor
+    * @param level
+    *   the level that the [[EditorView]] will display
+    * @return
+    *   a new instance of [[EditorView]] displaying an existing level to be edited by the user
+    */
   def apply(
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,
@@ -229,6 +288,26 @@ object EditorView {
       level
     )
 
+  /** Returns a new instance of [[EditorView]]. It receives the [[ParentLevelEditorController]] so as to be able to correctly
+    * create and then use its [[EditorController]], the ScalaFX [[Scene]] where the [[EditorView]] will draw and display itself,
+    * the text that the upper left button will display, depending if the [[EditorView]] was called from the menu or as a its own
+    * application and the [[AudioPlayer]] to be used for playing sounds and music for the editor.
+    *
+    * @param parentLevelEditorController
+    *   the controller needed to build the [[EditorController]]
+    * @param scene
+    *   the ScalaFX [[Scene]] where the [[EditorView]] will be drawn and displayed
+    * @param closeEditorButtonText
+    *   the text of the upper left button
+    * @param audioPlayer
+    *   the [[AudioPlayer]] used to play the music and sounds for the editor
+    * @param boardWidth
+    *   the width of the new empty level
+    * @param boardHeight
+    *   the height of the new empty level
+    * @return
+    *   a new instance of [[EditorView]] displaying an new empty level with the given widht and height
+    */
   def apply(
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,

@@ -23,6 +23,22 @@ sealed trait EditorBoardView extends BoardView {
 /** Companion object of the [[EditorBoardView]] trait. */
 object EditorBoardView {
 
+  /** Returns a new instance of [[EditorBoardView]]. It receives the screen width and height, necessary to calculate the level
+    * dimensions; the [[LevelBuilder]] containing all the necessary information to draw the level; the [[ModelUpdater]] and the
+    * [[EditorUpdater]], necessary to notify view changes applied by the player to the model.
+    * @param screenWidth
+    *   the width of the user screen
+    * @param screenHeight
+    *   the height of the user screen
+    * @param level
+    *   the [[LevelBuilder]] displayed by the [[EditorBoardView]]
+    * @param model
+    *   the [[ModelUpdater]] of the [[EditorBoardView]]
+    * @param updater
+    *   the [[EditorUpdater]] of the [[EditorBoardView]]
+    * @return
+    *   a new instance of [[EditorBoardView]]
+    */
   def apply(
     screenWidth: Double,
     screenHeight: Double,
