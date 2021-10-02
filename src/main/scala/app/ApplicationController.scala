@@ -76,9 +76,9 @@ object ApplicationController {
       saveSettings(settings)
     }
 
-    override def startLevelEditor(width: Int, height: Int): Unit = view.showLevelEditor(width, height)
+    override def startEditor(width: Int, height: Int): Unit = view.showLevelEditor(width, height)
 
-    override def startLevelEditor(levelPath: String): Unit =
+    override def startEditor(levelPath: String): Unit =
       levelStorage
         .loadLevel(levelPath)
         .fold(_ => view.showError("An error has occured, could not load level"), view.showLevelEditor(_))

@@ -2,7 +2,7 @@ package it.unibo.pps.caw.editor.view
 
 import it.unibo.pps.caw.common.{FilePicker, ViewComponent}
 import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.editor.controller.{LevelEditorMenuController, ParentLevelEditorController, ParentLevelEditorMenuController}
+import it.unibo.pps.caw.editor.controller.{EditorMenuController, ParentLevelEditorController, ParentLevelEditorMenuController}
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
@@ -37,7 +37,7 @@ object LevelEditorMenuView {
 
     override val innerComponent: Pane = loader.load[GridPane]
 
-    private val controller: LevelEditorMenuController = LevelEditorMenuController(parentLevelEditorController)
+    private val controller: EditorMenuController = EditorMenuController(parentLevelEditorController)
     private val changeListener: TextField => ChangeListener[String] = textField =>
       (_, oldValue, newValue) => {
         if (newValue.matches("^([0-4])?([0-9])?$"))
@@ -51,9 +51,9 @@ object LevelEditorMenuView {
     height.textProperty().addListener(changeListener(height))
     backButton.setOnMouseClicked(_ => parentLevelEditorController.goBack())
     loadFile.setOnMouseClicked(_ =>
-      FilePicker.pickFile(scene).foreach(f => parentLevelEditorController.startLevelEditor(f.getPath))
+      FilePicker.pickFile(scene).foreach(f => parentLevelEditorController.startEditor(f.getPath))
     )
-    continue.setOnMouseClicked(_ => parentLevelEditorController.startLevelEditor(width.getText.toInt, height.getText.toInt))
+    continue.setOnMouseClicked(_ => parentLevelEditorController.startEditor(width.getText.toInt, height.getText.toInt))
   }
 
   def apply(

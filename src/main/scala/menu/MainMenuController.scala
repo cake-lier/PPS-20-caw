@@ -49,14 +49,14 @@ trait ParentMainMenuController {
     * @param height
     *   the height of the blank level
     */
-  def startLevelEditor(width: Int, height: Int): Unit
+  def startEditor(width: Int, height: Int): Unit
 
   /** Asks the parent controller to start the level editor with a level loaded from file.
     *
     * @param path
     *   the path to the level file
     */
-  def startLevelEditor(path: String): Unit
+  def startEditor(path: String): Unit
 
   /** Asks the parent controller to show the main menu initial page. */
   def showMainMenu(): Unit
@@ -110,9 +110,9 @@ object MainMenuController {
     override def saveVolumeSettings(musicVolume: Double, soundVolume: Double): Unit =
       parentController.saveVolumeSettings(musicVolume, soundVolume)
 
-    override def startLevelEditor(width: Int, height: Int): Unit = parentController.startLevelEditor(width, height)
+    override def startEditor(width: Int, height: Int): Unit = parentController.startEditor(width, height)
 
-    override def startLevelEditor(path: String): Unit = parentController.startLevelEditor(path)
+    override def startEditor(path: String): Unit = parentController.startEditor(path)
 
   }
 
