@@ -1,42 +1,64 @@
 package it.unibo.pps.caw
 package game.view
 
-import common.{AbstractBoardViewImpl, BoardView, CellView, ModelUpdater}
+import common.{AbstractBoardView, BoardView, CellView, ModelUpdater}
 import common.model.{Board, Level}
 import common.model.cell.PlayableCell
 
-/** The board displayed during the game. */
+/** The board displayed during the game.
+  *
+  * During the setup phase, the player can only move the cells drawn in the [[it.unibo.pps.caw.common.model.PlayableArea]] and
+  * arrange them as they please inside the playable area. It is not possible to drop cells outside of the playable area nor move
+  * cells placed outside of the playable area. After the player clicks play, the game phase starts and no cells is movable.
+  */
 trait GameBoardView extends BoardView {
 
-  /** Draws the board when the player is able to manipulate the cells.
+  /** Draws the [[PlayableCell]] received in input during the setup phase.
     * @param board
-    *   the [[Board]] containing the cells to be drawn in the board
+    *   the [[Board]] containing the [[PlayableCell]] to be drawn in the board
     */
   def drawSetupBoard(board: Board[PlayableCell]): Unit
 
-  /** Draws the board once the player hits play.
+  /** Draws the [[PlayableCell]] received in input during the game phase.
     * @param board
-    *   the [[Board]] containing the cells to be drawn in the board
+    *   the [[Board]] containing the [[PlayableCell]] to be drawn in the board
     */
   def drawGameBoard(board: Board[PlayableCell]): Unit
 }
 
-/** Companion object of the [[GameBoardView]] trait. */
+/** Companion object of the [[GameBoardView]] trait, containing its factory method. */
 object GameBoardView {
+
+  /** Returns a new instance of the [[GameBoardView]] trait. It receives the screen width and height, necessary to calculate the
+    * size of the board, the [[Level]] to be drawn and the [[ModelUpdater]], necessary to update the model after the player
+    * modifies the view.
+    *
+    * @param screenWidth
+    *   the width of the screen necessary to calculate the board width
+    * @param screenHeight
+    *   the height of the screen necessary to calculate the board height
+    * @param initialLevel
+    *   the [[Level]] to be drawn
+    * @param modelUpdater
+    *   the [[ModelUpdater]] necessary to update the model after view changes
+    * @return
+    *   a new instance of [[GameBoardView]]
+    */
   def apply(
     screenWidth: Double,
     screenHeight: Double,
     initialLevel: Level[PlayableCell],
-    model: ModelUpdater
+    modelUpdater: ModelUpdater
   ): GameBoardView =
-    GameBoardViewImpl(screenWidth, screenHeight, initialLevel, model)
+    GameBoardViewImpl(screenWidth, screenHeight, initialLevel, modelUpdater)
 
+  /* Extension of AbstractBoardView */
   private case class GameBoardViewImpl(
     screenWidth: Double,
     screenHeight: Double,
     initialLevel: Level[PlayableCell],
     modelUpdater: ModelUpdater
-  ) extends AbstractBoardViewImpl(
+  ) extends AbstractBoardView(
       screenWidth,
       screenHeight,
       initialLevel.dimensions.width,

@@ -1,52 +1,58 @@
 package it.unibo.pps.caw
 package common
 
-import common.ViewComponent.AbstractViewComponent
+import ViewComponent.AbstractViewComponent
 import common.{TileView, CellImage}
-import common.model.Position
+import model.Position
 import javafx.scene.image.ImageView
 import javafx.scene.layout.{ColumnConstraints, GridPane, RowConstraints}
 
 /** Updates the model when view is modified.
   *
-  * Its method is called after a [[CellView]] is moved by the user or when the user adds a new cell to the board.
+  * This trait is given to the [[BoardView]] constructor, as it is needed to propagate the view changes to the model. Its only
+  * method is called after the player moves an [[ImageView]] to a different position during the setup stage of the game or when
+  * the player adds a new [[ImageView]] to the board during the editing of a level.
   */
 trait ModelUpdater {
 
-  /** Updates the model with the cell linked to the [[cellImageView]]
+  /** Updates the model with the cell linked to the given [[ImageView]].
     * @param cellImageView
-    *   the original [[ImageView]] that was moved
+    *   the [[ImageView]] that was moved by the player
     * @param newPosition
-    *   the position where [[cellImageView]] was moved to
+    *   the position where the [[ImageView]] was moved to
     */
   def manageCell(cellImageView: ImageView, newPosition: Position): Unit
 }
 
+/** The view that displays the board of a [[model.Level]], that is a grid with a certain width and height that displays the
+  * structure a [[model.Level]].
+  */
 trait BoardView extends ViewComponent[GridPane]
 
-/** This view displays the board, whose concrete implementations are [[GameBoardView]] and [[EditorBoardView]].
+/** The abstract view that displays a [[Level]].
   *
-  * This abstract class provides methods to draw a generic board: it sets its size, adds the pavement, the playable area and the
-  * board cells. It receives in its constructor a [[ModelUpdater]], necessary to apply the drop handler
-  * [[ModelUpdater.manageCell]] after the view is modified by the user.
+  * This abstract implementation of the trait [[BoardView]] provides all the necessary methods to draw a generic board. A board is
+  * a grid with a size and a certain number of rows and columns; it has a pavement and potentially a playable area where the cells
+  * of a [[Level]] are placed and drawn. It receives in its constructor a [[ModelUpdater]], necessary to update the model after
+  * the view is modified by the player.
   *
   * @param screenWidth
-  *   the width of the screen
+  *   the width of the screen necessary to calculate the board width
   * @param screenHeight
-  *   the height of the screen
+  *   the height of the screen necessary to calculate the board height
   * @param levelWidth
-  *   the width of the level
+  *   the width of the level, that is the number of columns
   * @param levelHeight
-  *   the height of the level
-  * @param model
-  *   the [[ModelUpdater]]
+  *   the height of the level, that is the number of rows
+  * @param modelUpdater
+  *   the [[ModelUpdater]] necessary to update the model after view changes
   */
-abstract class AbstractBoardViewImpl(
+abstract class AbstractBoardView(
   screenWidth: Double,
   screenHeight: Double,
   levelWidth: Int,
   levelHeight: Int,
-  model: ModelUpdater
+  modelUpdater: ModelUpdater
 ) extends AbstractViewComponent[GridPane](fxmlFileName = "board.fxml")
   with BoardView {
   override val innerComponent: GridPane = loader.load[GridPane]
@@ -70,11 +76,11 @@ abstract class AbstractBoardViewImpl(
     innerComponent.getRowConstraints.add(rowConstraints)
   })
 
-  /** Places the board pavement. The board pavement can allow other [[ImageView]] to be dropped on top of it. By default, it's not
-    * possible to drop [[ImageView]] on the board pavement.
+  /** Places the board pavement. The board pavement can allow other [[ImageView]] to be dropped on top of it. By default, it is
+    * not possible to drop an [[ImageView]] on the board pavement.
     *
     * @param droppablePavement
-    *   if it's possible to drop [[ImageView]] on the board pavement
+    *   if it is possible to drop an [[ImageView]] on the board pavement
     */
   protected def drawPavement(droppablePavement: Boolean = false): Unit = {
     for {
@@ -82,51 +88,53 @@ abstract class AbstractBoardViewImpl(
       y <- 0 until levelHeight
     } do
       drawImageView(
-        TileView.apply(CellImage.DefaultTile.image, innerComponent, droppablePavement, model.manageCell).innerComponent,
+        TileView.apply(CellImage.DefaultTile.image, innerComponent, droppablePavement, modelUpdater.manageCell).innerComponent,
         x,
         y
       )
   }
 
   /** Places the playable area in the board. The playable area can allow other [[ImageView]] to be dropped on top of it. By
-    * default, it's possible to drop [[ImageView]] on the playable area.
+    * default, it is not possible to drop an [[ImageView]] on the playable area.
     *
     * @param positionX
-    *   the top-left x coordinate of the playable area
+    *   the upper left x coordinate of the playable area
     * @param positionY
-    *   the top-left y coordinate of the playable area
+    *   the upper left y coordinate of the playable area
     * @param playableAreaWidth
     *   the width of the playable area
     * @param playableAreaHeight
     *   the height of the playable area
     * @param droppablePlayableArea
-    *   if it's possible to drop [[ImageView]] on the playable area
+    *   if it is possible to drop [[ImageView]] on the playable area
     */
   protected def drawPlayableArea(
     positionX: Int,
     positionY: Int,
     playableAreaWidth: Int,
     playableAreaHeight: Int,
-    droppablePlayableArea: Boolean = true
+    droppablePlayableArea: Boolean = false
   ): Unit = {
     for {
       x <- 0 until playableAreaWidth
       y <- 0 until playableAreaHeight
     } do
       drawImageView(
-        TileView.apply(CellImage.PlayAreaTile.image, innerComponent, droppablePlayableArea, model.manageCell).innerComponent,
+        TileView
+          .apply(CellImage.PlayAreaTile.image, innerComponent, droppablePlayableArea, modelUpdater.manageCell)
+          .innerComponent,
         x + positionX,
         y + positionY
       )
   }
 
-  /** Adds a generic ImageView to the board.
+  /** Draws a generic [[ImageView]].
     * @param node
-    *   the [[ImageView]] to be added to the board
+    *   the [[ImageView]] to be drawn in the board
     * @param x
-    *   the x coordinate of the [[node]]
+    *   the x coordinate where the [[ImageView]] will be placed in the board
     * @param y
-    *   the y coordinate of the [[node]]
+    *   the y coordinate where the [[ImageView]] will be placed in the board
     */
   protected def drawImageView(node: ImageView, x: Int, y: Int): Unit = innerComponent.add(node, x, y)
 
