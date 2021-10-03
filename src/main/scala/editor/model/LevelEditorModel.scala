@@ -73,25 +73,7 @@ sealed trait LevelEditorModel {
 object LevelEditorModel {
 
   /* Implementation of LevelEditorModel. */
-  private case class LevelEditorModelImpl(builder: LevelBuilder) extends LevelEditorModel {
-    private val walls: Set[PlayableCell] = Set(
-      (0 to builder.dimensions.width + 1).map(i => PlayableWallCell((i, 0))(playable = false)),
-      (0 to builder.dimensions.width + 1).map(i => PlayableWallCell((i, builder.dimensions.height + 1))(playable = false)),
-      (1 to builder.dimensions.height).map(i => PlayableWallCell((0, i))(playable = false)),
-      (1 to builder.dimensions.height).map(i => PlayableWallCell((builder.dimensions.width + 1, i))(playable = false))
-    ).flatten
-
-    override val currentLevel: LevelBuilder =
-      builder
-        .playableArea
-        .map(p =>
-          LevelBuilder(
-            (builder.dimensions.width + 2, builder.dimensions.height + 2),
-            builder.board ++ walls,
-            PlayableArea(p.dimensions)((p.position.x + 1, p.position.y + 1))
-          )
-        )
-        .getOrElse(LevelBuilder((builder.dimensions.width + 2, builder.dimensions.height + 2), builder.board ++ walls))
+  private case class LevelEditorModelImpl(currentLevel: LevelBuilder) extends LevelEditorModel {
 
     override val builtLevel: Option[Level[BaseCell]] =
       currentLevel
@@ -104,7 +86,8 @@ object LevelEditorModel {
           )
         )
 
-    override def resetLevel: LevelEditorModel = LevelEditorModel(currentLevel.dimensions.width, currentLevel.dimensions.height)
+    override def resetLevel: LevelEditorModel =
+      LevelEditorModel(currentLevel.dimensions.width, currentLevel.dimensions.height)
 
     override def updateCellPosition(oldPosition: Position, newPosition: Position): LevelEditorModel =
       currentLevel
@@ -126,6 +109,25 @@ object LevelEditorModel {
     override def unsetPlayableArea: LevelEditorModel = LevelEditorModelImpl(currentLevel.copy(playableArea = None))
   }
 
+  private def addCornerWalls(levelBuilder: LevelBuilder): LevelBuilder = {
+    val walls: Set[PlayableCell] = Set(
+      (0 to levelBuilder.dimensions.width + 1).map(i => PlayableWallCell((i, 0))(playable = false)),
+      (0 to levelBuilder.dimensions.width + 1).map(i =>
+        PlayableWallCell((i, levelBuilder.dimensions.height + 1))(playable = false)
+      ),
+      (1 to levelBuilder.dimensions.height).map(i => PlayableWallCell((0, i))(playable = false)),
+      (1 to levelBuilder.dimensions.height).map(i => PlayableWallCell((levelBuilder.dimensions.width + 1, i))(playable = false))
+    ).flatten
+    levelBuilder
+      .playableArea
+      .map(p => LevelBuilder(PlayableArea(p.dimensions)((p.position.x + 1, p.position.y + 1))))
+      .getOrElse(LevelBuilder.apply: Dimensions => Board[PlayableCell] => LevelBuilder)(
+        (levelBuilder.dimensions.width + 2, levelBuilder.dimensions.height + 2)
+      )(
+        levelBuilder.board ++ walls
+      )
+  }
+
   /** Returns a new instance of [[LevelEditorModel]] when editing an already existing level.
     * @param level
     *   the existing level to be edited
@@ -134,10 +136,14 @@ object LevelEditorModel {
     */
   def apply(level: Level[BaseCell]): LevelEditorModel =
     LevelEditorModelImpl(
-      LevelBuilder(
-        level.dimensions,
-        level.board.map(_.toPlayableCell(_ => true)).map(_.changePositionProperty(p => (p.x + 1, p.y + 1))),
-        level.playableArea
+      addCornerWalls(
+        LevelBuilder(
+          level.playableArea
+        )(
+          level.dimensions
+        )(
+          level.board.map(_.toPlayableCell(_ => true)).map(_.changePositionProperty(p => (p.x + 1, p.y + 1)))
+        )
       )
     )
 
@@ -150,5 +156,5 @@ object LevelEditorModel {
     *   a new instance of [[LevelEditorModel]]
     */
   def apply(width: Int, height: Int): LevelEditorModel =
-    LevelEditorModelImpl(LevelBuilder((width, height), Board.empty[PlayableCell]))
+    LevelEditorModelImpl(addCornerWalls(LevelBuilder((width, height))(Board.empty[PlayableCell])))
 }

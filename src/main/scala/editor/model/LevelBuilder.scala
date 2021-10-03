@@ -39,7 +39,7 @@ object LevelBuilder {
     * @return
     *   a new instance of [[LevelBuilder]]
     */
-  def apply(dimensions: Dimensions, board: Board[PlayableCell], playableArea: PlayableArea): LevelBuilder =
+  def apply(playableArea: PlayableArea)(dimensions: Dimensions)(board: Board[PlayableCell]): LevelBuilder =
     LevelBuilderImpl(dimensions, board, Some(playableArea))
 
   /** Returns a new instance of [[LevelBuilder]] given its [[Dimensions]] and its [[Board]].
@@ -51,7 +51,7 @@ object LevelBuilder {
     * @return
     *   a new instance of [[LevelBuilder]]
     */
-  def apply(dimensions: Dimensions, board: Board[PlayableCell]): LevelBuilder = LevelBuilderImpl(dimensions, board, None)
+  def apply(dimensions: Dimensions)(board: Board[PlayableCell]): LevelBuilder = LevelBuilderImpl(dimensions, board, None)
 
   /** Contains the extensions methods for the [[LevelBuilder]] trait. */
   extension (builder: LevelBuilder) {
