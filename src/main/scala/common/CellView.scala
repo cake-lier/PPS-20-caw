@@ -28,12 +28,12 @@ object CellView {
 
     import CellImage._
     cell match {
-      case PlayableRotatorCell(_, rotation, _) =>
+      case PlayableRotatorCell(rotation, _, _) =>
         rotation match {
           case Rotation.Clockwise        => innerComponent.setImage(RotatorClockwise.image)
           case Rotation.Counterclockwise => innerComponent.setImage(RotatorCounterclockwise.image)
         }
-      case PlayableGeneratorCell(_, orientation, _) =>
+      case PlayableGeneratorCell(orientation, _, _) =>
         orientation match {
           case Orientation.Right => innerComponent.setImage(GeneratorRight.image)
           case Orientation.Down  => innerComponent.setImage(GeneratorDown.image)
@@ -41,14 +41,14 @@ object CellView {
           case Orientation.Top   => innerComponent.setImage(GeneratorTop.image)
         }
       case _: PlayableEnemyCell => innerComponent.setImage(Enemy.image)
-      case PlayableMoverCell(_, orientation, _) =>
+      case PlayableMoverCell(orientation, _, _) =>
         orientation match {
           case Orientation.Right => innerComponent.setImage(MoverRight.image)
           case Orientation.Down  => innerComponent.setImage(MoverDown.image)
           case Orientation.Left  => innerComponent.setImage(MoverLeft.image)
           case Orientation.Top   => innerComponent.setImage(MoverTop.image)
         }
-      case PlayableBlockCell(_, push, _) =>
+      case PlayableBlockCell(push, _, _) =>
         push match {
           case Push.Both       => innerComponent.setImage(Block.image)
           case Push.Vertical   => innerComponent.setImage(BlockVertical.image)

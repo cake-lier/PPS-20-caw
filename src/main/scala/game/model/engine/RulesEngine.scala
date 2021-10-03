@@ -25,7 +25,8 @@ object RulesEngine {
     private val engine: PrologEngine = PrologEngine(Clause(theory))
     def nextState(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = {
       val cellState: Map[Int, Boolean] =
-        board.cells
+        board
+          .cells
           .map(c => if (c.id == cell.id) (c.id, true) else (c.id, c.updated))
           .toMap
       val resBoard = PrologParser.deserializeBoard(
@@ -36,7 +37,8 @@ object RulesEngine {
       updateGloabalBoard(
         board,
         Board(
-          resBoard.cells
+          resBoard
+            .cells
             .map(_ match {
               case c if (c.id > cellState.keySet.max) => setUpdatedState(c, true) // new cell created by a generator
               case c                                  => setUpdatedState(c, cellState(c.id))
@@ -56,9 +58,9 @@ object RulesEngine {
     }
 
     private def updateGloabalBoard(
-        globalboard: Board[UpdateCell],
-        partialBoard: Board[UpdateCell],
-        cell: UpdateCell
+      globalboard: Board[UpdateCell],
+      partialBoard: Board[UpdateCell],
+      cell: UpdateCell
     ): Board[UpdateCell] =
       cell match {
         case UpdateGeneratorCell(position, orientation, _, _) =>
@@ -77,7 +79,8 @@ object RulesEngine {
           }
         case UpdateRotatorCell(position, _, _, _) =>
           Board[UpdateCell](
-            globalboard.cells
+            globalboard
+              .cells
               .filter(c =>
                 c.position != Position(position.x, position.y) && c.position != Position(position.x, position.y - 1) &&
                   c.position != Position(position.x, position.y + 1) &&
@@ -101,7 +104,8 @@ object RulesEngine {
         }
       case UpdateRotatorCell(position, _, _, _) =>
         Board[UpdateCell](
-          board.cells
+          board
+            .cells
             .filter(c =>
               c.position == Position(position.x, position.y - 1) ||
                 c.position == Position(position.x, position.y + 1) ||
@@ -129,13 +133,14 @@ object RulesEngine {
         }
       }
       val originalBoard: Board[UpdateCell] =
-        currentBoard.zipWithIndex
+        currentBoard
+          .zipWithIndex
           .map((c, i) =>
             c match {
-              case BaseMoverCell(p, o)     => UpdateMoverCell(p, o, i, false)
-              case BaseGeneratorCell(p, o) => UpdateGeneratorCell(p, o, i, false)
-              case BaseRotatorCell(p, r)   => UpdateRotatorCell(p, r, i, false)
-              case BaseBlockCell(p, d)     => UpdateBlockCell(p, d, i, false)
+              case BaseMoverCell(o, p)     => UpdateMoverCell(p, o, i, false)
+              case BaseGeneratorCell(o, p) => UpdateGeneratorCell(p, o, i, false)
+              case BaseRotatorCell(r, p)   => UpdateRotatorCell(p, r, i, false)
+              case BaseBlockCell(d, p)     => UpdateBlockCell(p, d, i, false)
               case BaseEnemyCell(p)        => UpdateEnemyCell(p, i, false)
               case BaseWallCell(p)         => UpdateWallCell(p, i, false)
             }
@@ -143,11 +148,11 @@ object RulesEngine {
 
       updateBoard(originalBoard.toSeq, originalBoard)
         .map(_ match {
-          case UpdateRotatorCell(p, r, _, _)   => BaseRotatorCell(p, r)
-          case UpdateGeneratorCell(p, o, _, _) => BaseGeneratorCell(p, o)
+          case UpdateRotatorCell(p, r, _, _)   => BaseRotatorCell(r)(p)
+          case UpdateGeneratorCell(p, o, _, _) => BaseGeneratorCell(o)(p)
           case UpdateEnemyCell(p, _, _)        => BaseEnemyCell(p)
-          case UpdateMoverCell(p, o, _, _)     => BaseMoverCell(p, o)
-          case UpdateBlockCell(p, d, _, _)     => BaseBlockCell(p, d)
+          case UpdateMoverCell(p, o, _, _)     => BaseMoverCell(o)(p)
+          case UpdateBlockCell(p, d, _, _)     => BaseBlockCell(d)(p)
           case UpdateWallCell(p, _, _)         => BaseWallCell(p)
         })
     }

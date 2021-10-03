@@ -3,7 +3,9 @@ package it.unibo.pps.caw.dsl.errors
 import it.unibo.pps.caw.dsl.entities.*
 import cats.data.ValidatedNel
 import cats.implicits.given
-import cats.syntax.apply.given
+import cats.syntax.apply
+import it.unibo.pps.caw.common.model.{Dimensions, Level, PlayableArea, Position}
+import it.unibo.pps.caw.common.model.cell.BaseCell
 
 /** Contains the method for checking the correctness of a [[BoardBuilder]] entity.
   *
@@ -28,11 +30,10 @@ object ErrorChecker {
 
     /* Checks whether the given PlayableArea is fully contained into the given Dimensions. */
     private def checkAreaInBounds(bounds: Dimensions, area: PlayableArea): ValidatedNel[BoardBuilderError, Unit] =
-      if (area.position.x + area.dimensions.width <= bounds.width && area.position.y + area.dimensions.height <= bounds.height) {
+      if (area.position.x + area.dimensions.width <= bounds.width && area.position.y + area.dimensions.height <= bounds.height)
         ().validNel
-      } else {
+      else
         BoardBuilderError.PlayableAreaNotInBounds.invalidNel
-      }
 
     /* Checks if there are no duplicate Position instances between the given Positions. */
     private def checkNonDuplicatePositions(positions: Seq[Position]): ValidatedNel[BoardBuilderError, Unit] = {
@@ -41,11 +42,10 @@ object ErrorChecker {
 
     /* Checks if the given Position is contained into the given Dimensions bounds. */
     private def checkPositionInBounds(position: Position, bounds: Dimensions): ValidatedNel[BoardBuilderError, Unit] =
-      if (position.x <= bounds.width && position.y <= bounds.height) {
+      if (position.x <= bounds.width && position.y <= bounds.height)
         ().validNel
-      } else {
+      else
         BoardBuilderError.CellOutsideBounds.invalidNel
-      }
 
     /* Checks whether the given Dimensions are set or not. */
     private def checkSetDimensions(dimensions: Option[Dimensions]): ValidatedNel[BoardBuilderError, Dimensions] =
@@ -92,7 +92,7 @@ object ErrorChecker {
     *   an [[scala.util.Either]] with the built [[Board]] if the check succeedes or with the first encountered
     *   [[BoardBuilderError]] if the check fails
     */
-  def checkBuilderData(builder: BoardBuilder): Either[Seq[BoardBuilderError], Board] = {
+  def checkBuilderData(builder: BoardBuilder): Either[Seq[BoardBuilderError], Level[BaseCell]] = {
     checkBoardDimensions(builder.dimensions)
       .andThen(d =>
         (
@@ -109,15 +109,15 @@ object ErrorChecker {
         ).mapN((a, _) => (d, a))
       )
       .map(t =>
-        Board(
+        Level(
           t._1,
-          t._2,
-          builder.moverCells,
-          builder.generatorCells,
-          builder.rotatorCells,
-          builder.blockCells,
-          builder.enemyCells,
-          builder.wallCells
+          builder.moverCells ++
+            builder.generatorCells ++
+            builder.rotatorCells ++
+            builder.blockCells ++
+            builder.enemyCells ++
+            builder.wallCells,
+          t._2
         )
       )
       .leftMap(_.toList)

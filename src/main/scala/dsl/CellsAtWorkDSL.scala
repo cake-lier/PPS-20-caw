@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.dsl.entities.{BoardBuilder, Dimensions, PlayableArea}
+import it.unibo.pps.caw.common.model.{Dimensions, PlayableArea}
+import it.unibo.pps.caw.dsl.entities.BoardBuilder
 import it.unibo.pps.caw.dsl.words.{AtWord, WithDimensionsWord}
 
 import scala.collection.mutable.ListBuffer
@@ -34,7 +35,7 @@ object CellsAtWorkDSL extends CellsAdders with BoardDisplayers {
     *   the list of operations to which add this specific operation
     */
   def withDimensions(width: Int, height: Int)(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit =
-    ops += (_.copy(dimensions = Some(Dimensions(width, height))))
+    ops += (_.copy(dimensions = Some((width, height))))
 
   /** Allows to specify the properties of the [[PlayableArea]] of the [[Board]] currently being defined. It returns a
     * [[WithDimensionsWord]] which can then be used by the user for specifying the [[Dimensions]] and the [[Position]] of the

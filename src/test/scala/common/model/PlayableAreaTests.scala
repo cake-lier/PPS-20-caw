@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.dsl.entities
+package it.unibo.pps.caw.common.model
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers

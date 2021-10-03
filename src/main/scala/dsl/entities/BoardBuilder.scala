@@ -1,5 +1,8 @@
 package it.unibo.pps.caw.dsl.entities
 
+import it.unibo.pps.caw.common.model.{Dimensions, PlayableArea}
+import it.unibo.pps.caw.common.model.cell.*
+
 /** A data structure to be used for collecting data useful for the creation of a new [[Board]] instance.
   *
   * This trait does not represent the final product of the "board creation" process, but rather an accumulator of data useful to
@@ -15,22 +18,22 @@ trait BoardBuilder {
   val playableArea: Option[PlayableArea]
 
   /** Returns the mover cells that have to be placed on the new [[Board]]. */
-  val moverCells: Set[OrientableCell]
+  val moverCells: Set[BaseMoverCell]
 
   /** Returns the generator cells that have to be placed on the new [[Board]]. */
-  val generatorCells: Set[OrientableCell]
+  val generatorCells: Set[BaseGeneratorCell]
 
   /** Returns the rotator cells that have to be placed on the new [[Board]]. */
-  val rotatorCells: Set[RotatableCell]
+  val rotatorCells: Set[BaseRotatorCell]
 
   /** Returns the block cells that have to be placed on the new [[Board]]. */
-  val blockCells: Set[PushableCell]
+  val blockCells: Set[BaseBlockCell]
 
   /** Returns the enemy cells that have to be placed on the new [[Board]]. */
-  val enemyCells: Set[Cell]
+  val enemyCells: Set[BaseEnemyCell]
 
   /** Returns the wall cells that have to be placed on the new [[Board]]. */
-  val wallCells: Set[Cell]
+  val wallCells: Set[BaseWallCell]
 }
 
 /** Companion object of the [[BoardBuilder]] trait, containing its factory methods. */
@@ -38,14 +41,14 @@ object BoardBuilder {
 
   /* Default implementation of the BoardBuilder trait. */
   private case class BoardBuilderImpl(
-      dimensions: Option[Dimensions],
-      playableArea: Option[PlayableArea],
-      moverCells: Set[OrientableCell],
-      generatorCells: Set[OrientableCell],
-      rotatorCells: Set[RotatableCell],
-      blockCells: Set[PushableCell],
-      enemyCells: Set[Cell],
-      wallCells: Set[Cell]
+    dimensions: Option[Dimensions],
+    playableArea: Option[PlayableArea],
+    moverCells: Set[BaseMoverCell],
+    generatorCells: Set[BaseGeneratorCell],
+    rotatorCells: Set[BaseRotatorCell],
+    blockCells: Set[BaseBlockCell],
+    enemyCells: Set[BaseEnemyCell],
+    wallCells: Set[BaseWallCell]
   ) extends BoardBuilder
 
   /** Returns a new instance of the [[BoardBuilder]] trait.
@@ -70,14 +73,14 @@ object BoardBuilder {
     *   a new instance of the [[BoardBuilder]] trait
     */
   def apply(
-      dimensions: Option[Dimensions] = None,
-      playableArea: Option[PlayableArea] = None,
-      moverCells: Set[OrientableCell] = Set.empty,
-      generatorCells: Set[OrientableCell] = Set.empty,
-      rotatorCells: Set[RotatableCell] = Set.empty,
-      blockCells: Set[PushableCell] = Set.empty,
-      enemyCells: Set[Cell] = Set.empty,
-      wallCells: Set[Cell] = Set.empty
+    dimensions: Option[Dimensions] = None,
+    playableArea: Option[PlayableArea] = None,
+    moverCells: Set[BaseMoverCell] = Set.empty,
+    generatorCells: Set[BaseGeneratorCell] = Set.empty,
+    rotatorCells: Set[BaseRotatorCell] = Set.empty,
+    blockCells: Set[BaseBlockCell] = Set.empty,
+    enemyCells: Set[BaseEnemyCell] = Set.empty,
+    wallCells: Set[BaseWallCell] = Set.empty
   ): BoardBuilder = BoardBuilderImpl(
     dimensions,
     playableArea,
@@ -118,14 +121,14 @@ object BoardBuilder {
       *   a new instance of the [[BoardBuilder]] trait
       */
     def copy(
-        dimensions: Option[Dimensions] = builder.dimensions,
-        playableArea: Option[PlayableArea] = builder.playableArea,
-        moverCells: Set[OrientableCell] = builder.moverCells,
-        generatorCells: Set[OrientableCell] = builder.generatorCells,
-        rotatorCells: Set[RotatableCell] = builder.rotatorCells,
-        blockCells: Set[PushableCell] = builder.blockCells,
-        enemyCells: Set[Cell] = builder.enemyCells,
-        wallCells: Set[Cell] = builder.wallCells
+      dimensions: Option[Dimensions] = builder.dimensions,
+      playableArea: Option[PlayableArea] = builder.playableArea,
+      moverCells: Set[BaseMoverCell] = builder.moverCells,
+      generatorCells: Set[BaseGeneratorCell] = builder.generatorCells,
+      rotatorCells: Set[BaseRotatorCell] = builder.rotatorCells,
+      blockCells: Set[BaseBlockCell] = builder.blockCells,
+      enemyCells: Set[BaseEnemyCell] = builder.enemyCells,
+      wallCells: Set[BaseWallCell] = builder.wallCells
     ): BoardBuilder = apply(
       dimensions,
       playableArea,

@@ -11,32 +11,30 @@ import org.scalatest.{BeforeAndAfterAll, Suite}
 class SerializerTest extends AnyFunSpec with Matchers with BeforeAndAfterAll { this: Suite =>
   val levelParser = LevelParser(FileStorage())
   val oneCellLevel: Level[BaseCell] =
-    Level(Dimensions(20, 20), Board(BaseEnemyCell((5, 5))), PlayableArea((0, 0), (3, 3)))
+    Level(Dimensions(20, 20), Board(BaseEnemyCell((5, 5))), PlayableArea((3, 3))((0, 0)))
   val allCellsLevel: Level[BaseCell] = Level(
     Dimensions(20, 20),
     Board(
       BaseWallCell((1, 1)),
       BaseEnemyCell((2, 2)),
-      BaseRotatorCell((3, 3), Rotation.Counterclockwise),
-      BaseRotatorCell((3, 3), Rotation.Clockwise),
-      BaseGeneratorCell((4, 4), Orientation.Right),
-      BaseGeneratorCell((4, 4), Orientation.Left),
-      BaseGeneratorCell((4, 4), Orientation.Top),
-      BaseGeneratorCell((4, 4), Orientation.Down),
-      BaseMoverCell((5, 5), Orientation.Right),
-      BaseMoverCell((5, 5), Orientation.Left),
-      BaseMoverCell((5, 5), Orientation.Top),
-      BaseMoverCell((5, 5), Orientation.Down),
-      BaseBlockCell((6, 6), Push.Both),
-      BaseBlockCell((6, 6), Push.Vertical),
-      BaseBlockCell((6, 6), Push.Horizontal)
+      BaseRotatorCell(Rotation.Counterclockwise)((3, 3)),
+      BaseRotatorCell(Rotation.Clockwise)((3, 3)),
+      BaseGeneratorCell(Orientation.Right)((4, 4)),
+      BaseGeneratorCell(Orientation.Left)((4, 4)),
+      BaseGeneratorCell(Orientation.Top)((4, 4)),
+      BaseGeneratorCell(Orientation.Down)((4, 4)),
+      BaseMoverCell(Orientation.Right)((5, 5)),
+      BaseMoverCell(Orientation.Left)((5, 5)),
+      BaseMoverCell(Orientation.Top)((5, 5)),
+      BaseMoverCell(Orientation.Down)((5, 5)),
+      BaseBlockCell(Push.Both)((6, 6)),
+      BaseBlockCell(Push.Vertical)((6, 6)),
+      BaseBlockCell(Push.Horizontal)((6, 6))
     ),
-    PlayableArea((0, 0), (3, 3))
+    PlayableArea((3, 3))((0, 0))
   )
 
-  override def afterAll(): Unit = {
-    Vertx.vertx().close()
-  }
+  override def afterAll(): Unit = Vertx.vertx().close()
 
   describe("Serializer") {
     describe("With single cell") {
@@ -51,9 +49,5 @@ class SerializerTest extends AnyFunSpec with Matchers with BeforeAndAfterAll { t
     }
   }
 
-  private def validate(level: Level[BaseCell]): Unit =
-    for {
-      s <- levelParser.serializeLevel(level)
-      r <- levelParser.deserializeLevel(s)
-    } yield r
+  private def validate(level: Level[BaseCell]): Unit = levelParser.deserializeLevel(levelParser.serializeLevel(level))
 }

@@ -12,27 +12,27 @@ sealed trait BaseRotatorCell extends RotatorCell with BaseCell
 object BaseRotatorCell {
 
   /* Default implementation of the BaseRotatorCell trait. */
-  private case class BaseRotatorCellImpl(position: Position, rotation: Rotation) extends BaseRotatorCell
+  private case class BaseRotatorCellImpl(rotation: Rotation, position: Position) extends BaseRotatorCell
 
-  /** Returns a new instance of the [[BaseRotatorCell]] trait given its [[Position]] and its [[Rotation]].
+  /** Returns a new instance of the [[BaseRotatorCell]] trait given its [[Rotation]] and its [[Position]].
     *
-    * @param position
-    *   the [[Position]] of the [[BaseRotatorCell]] to create
     * @param rotation
     *   the [[Rotation]] of the [[BaseRotatorCell]] to create
+    * @param position
+    *   the [[Position]] of the [[BaseRotatorCell]] to create
     * @return
     *   a new [[BaseRotatorCell]] instance
     */
-  def apply(position: Position, rotation: Rotation): BaseRotatorCell = BaseRotatorCellImpl(position, rotation)
+  def apply(rotation: Rotation)(position: Position): BaseRotatorCell = BaseRotatorCellImpl(rotation, position)
 
-  /** Extracts the [[Position]] and [[Rotation]] properties from the given instance of [[BaseRotatorCell]].
+  /** Extracts the [[Rotation]] and [[Position]] properties from the given instance of [[BaseRotatorCell]].
     *
     * @param cell
     *   the [[BaseRotatorCell]] from which extracting the properties
     * @return
     *   a tuple containing the [[Position]] and [[Rotation]] properties
     */
-  def unapply(cell: BaseRotatorCell): (Position, Rotation) = (cell.position, cell.rotation)
+  def unapply(cell: BaseRotatorCell): (Rotation, Position) = (cell.rotation, cell.position)
 }
 
 /** A [[GeneratorCell]] which is also a [[BaseCell]]. */
@@ -42,27 +42,27 @@ sealed trait BaseGeneratorCell extends GeneratorCell with BaseCell
 object BaseGeneratorCell {
 
   /* Default implementation of the BaseGeneratorCell trait. */
-  private case class BaseGeneratorCellImpl(position: Position, orientation: Orientation) extends BaseGeneratorCell
+  private case class BaseGeneratorCellImpl(orientation: Orientation, position: Position) extends BaseGeneratorCell
 
-  /** Returns a new instance of the [[BaseGeneratorCell]] trait given its [[Position]] and its [[Orientation]].
+  /** Returns a new instance of the [[BaseGeneratorCell]] trait given its [[Orientation]] and its [[Position]].
     *
-    * @param position
-    *   the [[Position]] of the [[BaseGeneratorCell]] to create
     * @param orientation
     *   the [[Orientation]] of the [[BaseGeneratorCell]] to create
+    * @param position
+    *   the [[Position]] of the [[BaseGeneratorCell]] to create
     * @return
     *   a new [[BaseGeneratorCell]] instance
     */
-  def apply(position: Position, orientation: Orientation): BaseGeneratorCell = BaseGeneratorCellImpl(position, orientation)
+  def apply(orientation: Orientation)(position: Position): BaseGeneratorCell = BaseGeneratorCellImpl(orientation, position)
 
-  /** Extracts the [[Position]] and [[Orientation]] properties from the given instance of [[BaseGeneratorCell]].
+  /** Extracts the [[Orientation]] and [[Position]] properties from the given instance of [[BaseGeneratorCell]].
     *
     * @param cell
     *   the [[BaseGeneratorCell]] from which extracting the properties
     * @return
-    *   a tuple containing the [[Position]] and [[Orientation]] properties
+    *   a tuple containing the [[Orientation]] and [[Position]] properties
     */
-  def unapply(cell: BaseGeneratorCell): (Position, Orientation) = (cell.position, cell.orientation)
+  def unapply(cell: BaseGeneratorCell): (Orientation, Position) = (cell.orientation, cell.position)
 }
 
 /** An [[EnemyCell]] which is also a [[BaseCell]]. */
@@ -100,27 +100,27 @@ sealed trait BaseMoverCell extends MoverCell with BaseCell
 object BaseMoverCell {
 
   /* Default implementation of the BaseMoverCell trait. */
-  private case class BaseMoverCellImpl(position: Position, orientation: Orientation) extends BaseMoverCell
+  private case class BaseMoverCellImpl(orientation: Orientation, position: Position) extends BaseMoverCell
 
-  /** Returns a new instance of the [[BaseMoverCell]] trait given its [[Position]] and its [[Orientation]].
+  /** Returns a new instance of the [[BaseMoverCell]] trait given its [[Orientation]] and its [[Position]].
     *
-    * @param position
-    *   the [[Position]] of the [[BaseMoverCell]] to create
     * @param orientation
     *   the [[Orientation]] of the [[BaseMoverCell]] to create
+    * @param position
+    *   the [[Position]] of the [[BaseMoverCell]] to create
     * @return
     *   a new [[BaseMoverCell]] instance
     */
-  def apply(position: Position, orientation: Orientation): BaseMoverCell = BaseMoverCellImpl(position, orientation)
+  def apply(orientation: Orientation)(position: Position): BaseMoverCell = BaseMoverCellImpl(orientation, position)
 
-  /** Extracts the [[Position]] and [[Orientation]] properties from the given instance of [[BaseMoverCell]].
+  /** Extracts the [[Orientation]] and [[Position]] properties from the given instance of [[BaseMoverCell]].
     *
     * @param cell
     *   the [[BaseMoverCell]] from which extracting the properties
     * @return
-    *   a tuple containing the [[Position]] and [[Orientation]] properties
+    *   a tuple containing the [[Orientation]] and [[Position]] properties
     */
-  def unapply(cell: BaseMoverCell): (Position, Orientation) = (cell.position, cell.orientation)
+  def unapply(cell: BaseMoverCell): (Orientation, Position) = (cell.orientation, cell.position)
 }
 
 /** A [[BlockCell]] which is also a [[BaseCell]]. */
@@ -130,27 +130,27 @@ sealed trait BaseBlockCell extends BlockCell with BaseCell
 object BaseBlockCell {
 
   /* Default implementation of the BaseBlockCell trait. */
-  private case class BaseBlockCellImpl(position: Position, push: Push) extends BaseBlockCell
+  private case class BaseBlockCellImpl(push: Push, position: Position) extends BaseBlockCell
 
-  /** Returns a new instance of the [[BaseBlockCell]] trait given its [[Position]] and its [[Push]] direction.
+  /** Returns a new instance of the [[BaseBlockCell]] trait given its [[Push]] direction and its [[Position]].
     *
-    * @param position
-    *   the [[Position]] of the [[BaseBlockCell]] to create
     * @param push
     *   the [[Push]] direction of the [[BaseBlockCell]] to create
+    * @param position
+    *   the [[Position]] of the [[BaseBlockCell]] to create
     * @return
     *   a new [[BaseBlockCell]] instance
     */
-  def apply(position: Position, push: Push): BaseBlockCell = BaseBlockCellImpl(position, push)
+  def apply(push: Push)(position: Position): BaseBlockCell = BaseBlockCellImpl(push, position)
 
   /** Extracts the [[Position]] and the [[Push]] direction properties from the given instance of [[BaseBlockCell]].
     *
     * @param cell
     *   the [[BaseBlockCell]] from which extracting the properties
     * @return
-    *   a tuple containing the [[Position]] and the [[Push]] direction properties
+    *   a tuple containing the [[Push]] direction and the [[Position]] properties
     */
-  def unapply(cell: BaseBlockCell): (Position, Push) = (cell.position, cell.push)
+  def unapply(cell: BaseBlockCell): (Push, Position) = (cell.push, cell.position)
 }
 
 /** A [[WallCell]] which is also a [[BaseCell]]. */

@@ -34,7 +34,6 @@ object DSLEditorMain extends JFXApp3 {
     StageResizer.resize(stage)
     val editorScene: Scene = Scene(stage.width.value, stage.height.value)
     stage.scene = editorScene
-
     val fileStorage = FileStorage()
     val levelManager = LevelStorage(fileStorage, LevelParser(fileStorage))
     levelManager
@@ -44,6 +43,7 @@ object DSLEditorMain extends JFXApp3 {
         l => {
           editorScene.root.value = EditorView(
             new ParentLevelEditorController {
+              
               override def closeEditor(): Unit = sys.exit()
 
               override def saveLevel(path: String, level: Level[BaseCell]): Unit = levelManager.saveLevel(path, level)

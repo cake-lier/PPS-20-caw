@@ -19,156 +19,156 @@ class RulesEngineTest extends AnyFunSpec with Matchers {
   }.get)
   private val maxId: Long = 4
   private val moverRightBoard: Board[BaseCell] = Board(
-    BaseMoverCell((0, 0), Orientation.Right),
-    BaseBlockCell((1, 0), Push.Horizontal),
-    BaseBlockCell((10, 0), Push.Both)
+    BaseMoverCell(Orientation.Right)((0, 0)),
+    BaseBlockCell(Push.Horizontal)((1, 0)),
+    BaseBlockCell(Push.Both)((10, 0))
   )
   private val moverLeftBoard: Board[BaseCell] = Board(
-    BaseMoverCell((10, 0), Orientation.Left),
-    BaseBlockCell((9, 0), Push.Horizontal),
-    BaseBlockCell((0, 0), Push.Both)
+    BaseMoverCell(Orientation.Left)((10, 0)),
+    BaseBlockCell(Push.Horizontal)((9, 0)),
+    BaseBlockCell(Push.Both)((0, 0))
   )
   private val moverTopBoard: Board[BaseCell] = Board(
-    BaseMoverCell((0, 2), Orientation.Top),
-    BaseBlockCell((0, 1), Push.Vertical),
-    BaseBlockCell((0, 10), Push.Both)
+    BaseMoverCell(Orientation.Top)((0, 2)),
+    BaseBlockCell(Push.Vertical)((0, 1)),
+    BaseBlockCell(Push.Both)((0, 10))
   )
   private val moverDownBoard: Board[BaseCell] = Board(
-    BaseMoverCell((0, 9), Orientation.Down),
-    BaseBlockCell((0, 10), Push.Vertical),
-    BaseBlockCell((0, 0), Push.Both)
+    BaseMoverCell(Orientation.Down)((0, 9)),
+    BaseBlockCell(Push.Vertical)((0, 10)),
+    BaseBlockCell(Push.Both)((0, 0))
   )
   private val rotatorLeftBoard: Board[BaseCell] = Board(
-    BaseRotatorCell((1, 1), Rotation.Counterclockwise),
-    BaseBlockCell((1, 0), Push.Horizontal),
-    BaseBlockCell((1, 2), Push.Horizontal),
-    BaseBlockCell((2, 1), Push.Horizontal),
-    BaseBlockCell((0, 1), Push.Horizontal)
+    BaseRotatorCell(Rotation.Counterclockwise)((1, 1)),
+    BaseBlockCell(Push.Horizontal)((1, 0)),
+    BaseBlockCell(Push.Horizontal)((1, 2)),
+    BaseBlockCell(Push.Horizontal)((2, 1)),
+    BaseBlockCell(Push.Horizontal)((0, 1))
   )
   private val rotatorRightBoard: Board[BaseCell] = Board(
-    BaseRotatorCell((1, 1), Rotation.Clockwise),
-    BaseBlockCell((1, 0), Push.Horizontal),
-    BaseBlockCell((1, 2), Push.Horizontal),
-    BaseBlockCell((2, 1), Push.Horizontal),
-    BaseBlockCell((0, 1), Push.Horizontal)
+    BaseRotatorCell(Rotation.Clockwise)((1, 1)),
+    BaseBlockCell(Push.Horizontal)((1, 0)),
+    BaseBlockCell(Push.Horizontal)((1, 2)),
+    BaseBlockCell(Push.Horizontal)((2, 1)),
+    BaseBlockCell(Push.Horizontal)((0, 1))
   )
   private val generatorRightBoard: Board[BaseCell] = Board(
-    BaseBlockCell((0, 0), Push.Horizontal),
-    BaseGeneratorCell((1, 0), Orientation.Right),
-    BaseBlockCell((10, 0), Push.Both)
+    BaseBlockCell(Push.Horizontal)((0, 0)),
+    BaseGeneratorCell(Orientation.Right)((1, 0)),
+    BaseBlockCell(Push.Both)((10, 0))
   )
   private val generatorLeftBoard: Board[BaseCell] = Board(
-    BaseBlockCell((10, 0), Push.Horizontal),
-    BaseGeneratorCell((9, 0), Orientation.Left),
-    BaseBlockCell((0, 0), Push.Both)
+    BaseBlockCell(Push.Horizontal)((10, 0)),
+    BaseGeneratorCell(Orientation.Left)((9, 0)),
+    BaseBlockCell(Push.Both)((0, 0))
   )
   private val generatorTopBoard: Board[BaseCell] = Board(
-    BaseBlockCell((0, 3), Push.Vertical),
-    BaseGeneratorCell((0, 2), Orientation.Top),
-    BaseBlockCell((0, 10), Push.Both)
+    BaseBlockCell(Push.Vertical)((0, 3)),
+    BaseGeneratorCell(Orientation.Top)((0, 2)),
+    BaseBlockCell(Push.Both)((0, 10))
   )
   private val generatorDownBoard: Board[BaseCell] = Board(
-    BaseBlockCell((0, 9), Push.Vertical),
-    BaseGeneratorCell((0, 10), Orientation.Down),
-    BaseBlockCell((0, 0), Push.Both)
+    BaseBlockCell(Push.Vertical)((0, 9)),
+    BaseGeneratorCell(Orientation.Down)((0, 10)),
+    BaseBlockCell(Push.Both)((0, 0))
   )
 
   describe("Game Engine") {
     describe("when mover right cell is used") {
       it("should  the game") {
         rulesEngine.update(moverRightBoard) shouldBe Board(
-          BaseMoverCell((1, 0), Orientation.Right),
-          BaseBlockCell((2, 0), Push.Horizontal),
-          BaseBlockCell((10, 0), Push.Both)
+          BaseMoverCell(Orientation.Right)((1, 0)),
+          BaseBlockCell(Push.Horizontal)((2, 0)),
+          BaseBlockCell(Push.Both)((10, 0))
         )
       }
     }
     describe("when mover left cell is used") {
       it("should  the game") {
         rulesEngine.update(moverLeftBoard) shouldBe Board(
-          BaseMoverCell((9, 0), Orientation.Left),
-          BaseBlockCell((8, 0), Push.Horizontal),
-          BaseBlockCell((0, 0), Push.Both)
+          BaseMoverCell(Orientation.Left)((9, 0)),
+          BaseBlockCell(Push.Horizontal)((8, 0)),
+          BaseBlockCell(Push.Both)((0, 0))
         )
       }
     }
     describe("when mover top cell is used") {
       it("should  the game") {
         rulesEngine.update(moverTopBoard) shouldBe Board(
-          BaseMoverCell((0, 1), Orientation.Top),
-          BaseBlockCell((0, 0), Push.Vertical),
-          BaseBlockCell((0, 10), Push.Both)
+          BaseMoverCell(Orientation.Top)((0, 1)),
+          BaseBlockCell(Push.Vertical)((0, 0)),
+          BaseBlockCell(Push.Both)((0, 10))
         )
       }
     }
     describe("when mover down cell is used") {
       it("should  the game") {
         rulesEngine.update(moverDownBoard) shouldBe Board(
-          BaseMoverCell((0, 10), Orientation.Down),
-          BaseBlockCell((0, 11), Push.Vertical),
-          BaseBlockCell((0, 0), Push.Both)
+          BaseMoverCell(Orientation.Down)((0, 10)),
+          BaseBlockCell(Push.Vertical)((0, 11)),
+          BaseBlockCell(Push.Both)((0, 0))
         )
       }
     }
     describe("when generator right cell is used") {
       it("should  the game") {
         rulesEngine.update(generatorRightBoard) shouldBe Board(
-          BaseBlockCell((2, 0), Push.Horizontal),
-          BaseBlockCell((0, 0), Push.Horizontal),
-          BaseGeneratorCell((1, 0), Orientation.Right),
-          BaseBlockCell((10, 0), Push.Both)
+          BaseBlockCell(Push.Horizontal)((2, 0)),
+          BaseBlockCell(Push.Horizontal)((0, 0)),
+          BaseGeneratorCell(Orientation.Right)((1, 0)),
+          BaseBlockCell(Push.Both)((10, 0))
         )
       }
     }
     describe("when generator left cell is used") {
       it("should  the game") {
         rulesEngine.update(generatorLeftBoard) shouldBe Board(
-          BaseBlockCell((8, 0), Push.Horizontal),
-          BaseBlockCell((10, 0), Push.Horizontal),
-          BaseGeneratorCell((9, 0), Orientation.Left),
-          BaseBlockCell((0, 0), Push.Both)
+          BaseBlockCell(Push.Horizontal)((8, 0)),
+          BaseBlockCell(Push.Horizontal)((10, 0)),
+          BaseGeneratorCell(Orientation.Left)((9, 0)),
+          BaseBlockCell(Push.Both)((0, 0))
         )
       }
     }
     describe("when generator top cell is used") {
       it("should  the game") {
         rulesEngine.update(generatorTopBoard) shouldBe Board(
-          BaseBlockCell((0, 1), Push.Vertical),
-          BaseBlockCell((0, 3), Push.Vertical),
-          BaseGeneratorCell((0, 2), Orientation.Top),
-          BaseBlockCell((0, 10), Push.Both)
+          BaseBlockCell(Push.Vertical)((0, 1)),
+          BaseBlockCell(Push.Vertical)((0, 3)),
+          BaseGeneratorCell(Orientation.Top)((0, 2)),
+          BaseBlockCell(Push.Both)((0, 10))
         )
       }
     }
     describe("when generator down cell is used") {
       it("should  the game") {
         rulesEngine.update(generatorDownBoard) shouldBe Board(
-          BaseBlockCell((0, 11), Push.Vertical),
-          BaseBlockCell((0, 9), Push.Vertical),
-          BaseGeneratorCell((0, 10), Orientation.Down),
-          BaseBlockCell((0, 0), Push.Both)
+          BaseBlockCell(Push.Vertical)((0, 11)),
+          BaseBlockCell(Push.Vertical)((0, 9)),
+          BaseGeneratorCell(Orientation.Down)((0, 10)),
+          BaseBlockCell(Push.Both)((0, 0))
         )
       }
     }
     describe("when rotator left cell is used") {
       it("should  the game") {
         rulesEngine.update(rotatorLeftBoard) shouldBe Board(
-          BaseBlockCell((1, 0), Push.Vertical),
-          BaseBlockCell((0, 1), Push.Vertical),
-          BaseRotatorCell((1, 1), Rotation.Counterclockwise),
-          BaseBlockCell((2, 1), Push.Vertical),
-          BaseBlockCell((1, 2), Push.Vertical)
+          BaseBlockCell(Push.Vertical)((1, 0)),
+          BaseBlockCell(Push.Vertical)((0, 1)),
+          BaseRotatorCell(Rotation.Counterclockwise)((1, 1)),
+          BaseBlockCell(Push.Vertical)((2, 1)),
+          BaseBlockCell(Push.Vertical)((1, 2))
         )
       }
     }
     describe("when rotator right cell is used") {
       it("should  the game") {
         rulesEngine.update(rotatorRightBoard) shouldBe Board(
-          BaseBlockCell((0, 1), Push.Vertical),
-          BaseBlockCell((1, 0), Push.Vertical),
-          BaseBlockCell((2, 1), Push.Vertical),
-          BaseBlockCell((1, 2), Push.Vertical),
-          BaseRotatorCell((1, 1), Rotation.Clockwise)
+          BaseBlockCell(Push.Vertical)((0, 1)),
+          BaseBlockCell(Push.Vertical)((1, 0)),
+          BaseBlockCell(Push.Vertical)((2, 1)),
+          BaseBlockCell(Push.Vertical)((1, 2)),
+          BaseRotatorCell(Rotation.Clockwise)((1, 1))
         )
       }
     }

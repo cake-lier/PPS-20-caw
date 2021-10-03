@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.dsl.entities.{Orientation, Push, Rotation}
+import it.unibo.pps.caw.common.model.cell.{Orientation, Push, Rotation}
 
 /** Contains all words for specifying properties of [[it.unibo.pps.caw.dsl.entities.Cell]].
   *

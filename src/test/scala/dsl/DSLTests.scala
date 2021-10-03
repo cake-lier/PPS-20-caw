@@ -1,9 +1,21 @@
 package it.unibo.pps.caw.dsl
 
+import it.unibo.pps.caw.common.model.{Dimensions, Level, PlayableArea, Position}
+import it.unibo.pps.caw.common.model.cell.{
+  BaseBlockCell,
+  BaseCell,
+  BaseEnemyCell,
+  BaseGeneratorCell,
+  BaseMoverCell,
+  BaseRotatorCell,
+  BaseWallCell,
+  Orientation,
+  Push
+}
+import it.unibo.pps.caw.common.{FileStorage, LevelParser, LevelStorage}
 import it.unibo.pps.caw.dsl.entities.*
 import it.unibo.pps.caw.dsl.CellsAtWorkDSL.*
 import it.unibo.pps.caw.dsl.errors.BoardBuilderError
-import it.unibo.pps.caw.dsl.BoardSerializer
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -16,16 +28,18 @@ class DSLTests extends AnyFunSpec with Matchers {
   private val playableAreaPosition: Position = Position(0, 0)
   private val playableArea: PlayableArea = PlayableArea(playableAreaDimensions)(playableAreaPosition)
   private val moverOrientation: OrientationWord = right
-  private val mover: OrientableCell = OrientableCell(moverOrientation.orientation)(Position(1, 2))
+  private val mover: BaseMoverCell = BaseMoverCell(moverOrientation.orientation)(Position(1, 2))
   private val generatorOrientation: OrientationWord = left
-  private val generator: OrientableCell = OrientableCell(generatorOrientation.orientation)(Position(3, 4))
+  private val generator: BaseGeneratorCell = BaseGeneratorCell(generatorOrientation.orientation)(Position(3, 4))
   private val rotatorRotation: RotationWord = clockwise
-  private val rotator: RotatableCell = RotatableCell(rotatorRotation.rotation)(Position(5, 6))
+  private val rotator: BaseRotatorCell = BaseRotatorCell(rotatorRotation.rotation)(Position(5, 6))
   private val blockPush: PushWord = vertically
-  private val block: PushableCell = PushableCell(blockPush.push)(Position(7, 8))
-  private val enemy: Cell = Cell(Position(9, 10))
-  private val wall: Cell = Cell(Position(11, 12))
+  private val block: BaseBlockCell = BaseBlockCell(blockPush.push)(Position(7, 8))
+  private val enemy: BaseEnemyCell = BaseEnemyCell(Position(9, 10))
+  private val wall: BaseWallCell = BaseWallCell(Position(11, 12))
   private val cellsArea: Dimensions = Dimensions(2, 2)
+  private val fileStorage: FileStorage = FileStorage()
+  private val levelParser: LevelParser = LevelParser(fileStorage)
 
   describe("The DSL") {
     describe("when asked to print a correctly constructed board") {
@@ -34,16 +48,11 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withOut(out) {
           buildBoardWithDSL()
         }
-        out.toString shouldBe BoardSerializer.serialize(
-          Board(
+        out.toString shouldBe levelParser.serializeLevel(
+          Level(
             boardDimensions,
-            playableArea,
-            Set(mover),
-            Set(generator),
-            Set(rotator),
-            Set(block),
-            Set(enemy),
-            Set(wall)
+            Set(mover, generator, rotator, block, enemy, wall),
+            playableArea
           )
         )
       }
@@ -79,16 +88,16 @@ class DSLTests extends AnyFunSpec with Matchers {
             printIt
           }
         }
-        out.toString shouldBe BoardSerializer.serialize(
-          Board(
+        out.toString shouldBe levelParser.serializeLevel(
+          Level(
             boardDimensions,
-            playableArea,
-            duplicateCells(OrientableCell(mover.orientation), mover.position),
-            duplicateCells(OrientableCell(generator.orientation), generator.position),
-            duplicateCells(RotatableCell(rotator.rotation), rotator.position),
-            duplicateCells(PushableCell(block.push), block.position),
-            duplicateCells(Cell.apply, enemy.position),
-            duplicateCells(Cell.apply, wall.position)
+            duplicateCells(BaseMoverCell(mover.orientation), mover.position) ++
+              duplicateCells(BaseGeneratorCell(generator.orientation), generator.position) ++
+              duplicateCells(BaseRotatorCell(rotator.rotation), rotator.position) ++
+              duplicateCells(BaseBlockCell(block.push), block.position) ++
+              duplicateCells(BaseEnemyCell.apply, enemy.position) ++
+              duplicateCells(BaseWallCell.apply, wall.position),
+            playableArea
           )
         )
       }
@@ -159,7 +168,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         val position: Position = Position(10, 10)
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
-          buildBoardWithDSL(mover = OrientableCell(Orientation.Right)(position), enemy = Cell(position))
+          buildBoardWithDSL(mover = BaseMoverCell(Orientation.Right)(position), enemy = BaseEnemyCell(position))
         }
         err.toString shouldBe BoardBuilderError.SamePositionForDifferentCells.message
       }
@@ -169,7 +178,7 @@ class DSLTests extends AnyFunSpec with Matchers {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
-          buildBoardWithDSL(generator = OrientableCell(Orientation.Left)(Position(0, -5)))
+          buildBoardWithDSL(generator = BaseGeneratorCell(Orientation.Left)(Position(0, -5)))
         }
         err.toString shouldBe BoardBuilderError.NegativePosition.message
       }
@@ -179,7 +188,7 @@ class DSLTests extends AnyFunSpec with Matchers {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
-          buildBoardWithDSL(block = PushableCell(Push.Vertical)(Position(50, 50)))
+          buildBoardWithDSL(block = BaseBlockCell(Push.Vertical)(Position(50, 50)))
         }
         err.toString shouldBe BoardBuilderError.CellOutsideBounds.message
       }
@@ -217,7 +226,7 @@ class DSLTests extends AnyFunSpec with Matchers {
   }
 
   /* Duplicates a given cell given a function for building it and the needed properties. */
-  private def duplicateCells[A <: Cell](builder: Position => A, position: Position): Set[A] =
+  private def duplicateCells[A <: BaseCell](builder: Position => A, position: Position): Set[A] =
     Set.from(for {
       x <- 0 until cellsArea.width
       y <- 0 until cellsArea.height
@@ -227,12 +236,12 @@ class DSLTests extends AnyFunSpec with Matchers {
   private def buildBoardWithDSL(
     boardDimensions: Option[Dimensions] = Some(boardDimensions),
     playableArea: Option[PlayableArea] = Some(playableArea),
-    mover: OrientableCell = mover,
-    generator: OrientableCell = generator,
-    rotator: RotatableCell = rotator,
-    block: PushableCell = block,
-    enemy: Cell = enemy,
-    wall: Cell = wall
+    mover: BaseMoverCell = mover,
+    generator: BaseGeneratorCell = generator,
+    rotator: BaseRotatorCell = rotator,
+    block: BaseBlockCell = block,
+    enemy: BaseEnemyCell = enemy,
+    wall: BaseWallCell = wall
   ): Unit = {
     board {
       boardDimensions.foreach(d => withDimensions(d.width, d.height))

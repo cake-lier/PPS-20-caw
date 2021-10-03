@@ -29,12 +29,12 @@ object GameModelHelpers {
     *   the same [[PlayableCell]] with its [[PlayableCell.playable]] property reset to <code>false</code>
     */
   def resetPlayableCell(cell: PlayableCell): PlayableCell = cell match {
-    case PlayableRotatorCell(p, r, _)   => PlayableRotatorCell(p, r, playable = false)
-    case PlayableGeneratorCell(p, o, _) => PlayableGeneratorCell(p, o, playable = false)
-    case PlayableEnemyCell(p, _)        => PlayableEnemyCell(p, playable = false)
-    case PlayableMoverCell(p, o, _)     => PlayableMoverCell(p, o, playable = false)
-    case PlayableBlockCell(p, d, _)     => PlayableBlockCell(p, d, playable = false)
-    case PlayableWallCell(p, _)         => PlayableWallCell(p, playable = false)
+    case PlayableRotatorCell(r, p, _)   => PlayableRotatorCell(r)(p)(playable = false)
+    case PlayableGeneratorCell(o, p, _) => PlayableGeneratorCell(o)(p)(playable = false)
+    case PlayableEnemyCell(p, _)        => PlayableEnemyCell(p)(playable = false)
+    case PlayableMoverCell(o, p, _)     => PlayableMoverCell(o)(p)(playable = false)
+    case PlayableBlockCell(d, p, _)     => PlayableBlockCell(d)(p)(playable = false)
+    case PlayableWallCell(p, _)         => PlayableWallCell(p)(playable = false)
   }
 
   /** Changes the [[BaseCell.position]] property of the given [[BaseCell]] with the result of the given function. The function may
@@ -50,10 +50,10 @@ object GameModelHelpers {
   def changeBaseCellPosition(cell: BaseCell)(getPosition: BaseCell => Position): BaseCell = cell match {
     case _: BaseWallCell         => BaseWallCell(getPosition(cell))
     case _: BaseEnemyCell        => BaseEnemyCell(getPosition(cell))
-    case BaseRotatorCell(_, r)   => BaseRotatorCell(getPosition(cell), r)
-    case BaseGeneratorCell(_, o) => BaseGeneratorCell(getPosition(cell), o)
-    case BaseMoverCell(_, o)     => BaseMoverCell(getPosition(cell), o)
-    case BaseBlockCell(_, p)     => BaseBlockCell(getPosition(cell), p)
+    case BaseRotatorCell(r, _)   => BaseRotatorCell(r)(getPosition(cell))
+    case BaseGeneratorCell(o, _) => BaseGeneratorCell(o)(getPosition(cell))
+    case BaseMoverCell(o, _)     => BaseMoverCell(o)(getPosition(cell))
+    case BaseBlockCell(p, _)     => BaseBlockCell(p)(getPosition(cell))
   }
 
   /** Returns whether or not a [[it.unibo.pps.caw.common.model.Level]] is completed given its [[Board]]. This is the only

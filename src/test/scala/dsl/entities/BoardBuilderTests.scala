@@ -1,5 +1,17 @@
 package it.unibo.pps.caw.dsl.entities
 
+import it.unibo.pps.caw.common.model.{Dimensions, PlayableArea, Position}
+import it.unibo.pps.caw.common.model.cell.{
+  BaseBlockCell,
+  BaseEnemyCell,
+  BaseGeneratorCell,
+  BaseMoverCell,
+  BaseRotatorCell,
+  BaseWallCell,
+  Orientation,
+  Push,
+  Rotation
+}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -40,7 +52,7 @@ class BoardBuilderTests extends AnyFunSpec with Matchers {
 
     describe("when a mover cell is added") {
       it("should contain the added mover cell") {
-        val moverCell: OrientableCell = OrientableCell(Orientation.Right)(position)
+        val moverCell: BaseMoverCell = BaseMoverCell(Orientation.Right)(position)
         val board: BoardBuilder = BoardBuilder(moverCells = Set(moverCell))
         board.moverCells should contain(moverCell)
       }
@@ -48,7 +60,7 @@ class BoardBuilderTests extends AnyFunSpec with Matchers {
 
     describe("when a generator cell is added") {
       it("should contain the added generator cell") {
-        val generatorCell: OrientableCell = OrientableCell(Orientation.Right)(position)
+        val generatorCell: BaseGeneratorCell = BaseGeneratorCell(Orientation.Right)(position)
         val board: BoardBuilder = BoardBuilder(generatorCells = Set(generatorCell))
         board.generatorCells should contain(generatorCell)
       }
@@ -56,7 +68,7 @@ class BoardBuilderTests extends AnyFunSpec with Matchers {
 
     describe("when a rotator cell is added") {
       it("should contain the added rotator cell") {
-        val rotatorCell: RotatableCell = RotatableCell(Rotation.Clockwise)(position)
+        val rotatorCell: BaseRotatorCell = BaseRotatorCell(Rotation.Clockwise)(position)
         val board: BoardBuilder = BoardBuilder(rotatorCells = Set(rotatorCell))
         board.rotatorCells should contain(rotatorCell)
       }
@@ -64,8 +76,7 @@ class BoardBuilderTests extends AnyFunSpec with Matchers {
 
     describe("when a block cell is added") {
       it("should contain the added block cell") {
-        val blockCell: PushableCell =
-          PushableCell(Push.Vertical)(position)
+        val blockCell: BaseBlockCell = BaseBlockCell(Push.Vertical)(position)
         val board: BoardBuilder = BoardBuilder(blockCells = Set(blockCell))
         board.blockCells should contain(blockCell)
       }
@@ -73,7 +84,7 @@ class BoardBuilderTests extends AnyFunSpec with Matchers {
 
     describe("when a enemy cell is added") {
       it("should contain the added enemy cell") {
-        val enemyCell: Cell = Cell(position)
+        val enemyCell: BaseEnemyCell = BaseEnemyCell(position)
         val board: BoardBuilder = BoardBuilder(enemyCells = Set(enemyCell))
         board.enemyCells should contain(enemyCell)
       }
@@ -81,7 +92,7 @@ class BoardBuilderTests extends AnyFunSpec with Matchers {
 
     describe("when a wall cell is added") {
       it("should contain the added wall cell") {
-        val wallCell: Cell = Cell(position)
+        val wallCell: BaseWallCell = BaseWallCell(position)
         val board: BoardBuilder = BoardBuilder(wallCells = Set(wallCell))
         board.wallCells should contain(wallCell)
       }
@@ -89,7 +100,8 @@ class BoardBuilderTests extends AnyFunSpec with Matchers {
 
     describe("when created by copy constructor") {
       it("should have the same properties of the cloned board") {
-        val board: BoardBuilder = BoardBuilder(dimensions = Some(dimensions), playableArea = Some(PlayableArea(dimensions)(position)))
+        val board: BoardBuilder =
+          BoardBuilder(dimensions = Some(dimensions), playableArea = Some(PlayableArea(dimensions)(position)))
         val newBoard: BoardBuilder = board.copy()
         newBoard shouldBe board
       }

@@ -14,11 +14,11 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private val playableAreaPosition = Position(0, 0)
   private val emptyLevel = LevelBuilder(width, height, Board.empty)
   private val enemy1 = BaseEnemyCell((1, 1))
-  private val playableEnemy1 = PlayableEnemyCell((1, 1), true)
+  private val playableEnemy1 = PlayableEnemyCell((1, 1))(true)
   private val enemy2 = BaseEnemyCell((2, 2))
-  private val playableEnemy2 = PlayableEnemyCell((2, 2), true)
+  private val playableEnemy2 = PlayableEnemyCell((2, 2))(true)
   private val enemy3 = BaseEnemyCell((3, 3))
-  private val playableEnemy3 = PlayableEnemyCell((3, 3), true)
+  private val playableEnemy3 = PlayableEnemyCell((3, 3))(true)
 
   describe("LevelEditorModel") {
     describe("when new") {
@@ -69,7 +69,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
           width,
           height,
           Board.empty,
-          PlayableArea(playableAreaPosition, (playableAreaWidth, playableAreaHeight))
+          PlayableArea((playableAreaWidth, playableAreaHeight))(playableAreaPosition)
         )
       }
     }

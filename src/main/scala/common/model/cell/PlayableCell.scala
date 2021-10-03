@@ -16,6 +16,44 @@ sealed trait PlayableCell extends Cell {
   val playable: Boolean
 }
 
+/** Companion object of the [[PlayableCell]] trait, containing utility methods. */
+object PlayableCell {
+
+  /** Contains extension methods for a [[BaseCell]]. */
+  extension (cell: BaseCell) {
+
+    /** Converts a [[BaseCell]] to a [[PlayableCell]] given the function for getting the value of the [[PlayableCell.playable]]
+      * property given the [[BaseCell]] currently being converted to a [[PlayableCell]].
+      *
+      * @param isPlayable
+      *   the function for getting the value of the [[PlayableCell.playable]] property to assign to the [[BaseCell]] currently
+      *   being converted to a [[PlayableCell]]
+      * @return
+      *   a new [[PlayableCell]] with the same properties of the original [[BaseCell]]
+      */
+    def toPlayableCell(isPlayable: BaseCell => Boolean): PlayableCell = cell match {
+      case BaseRotatorCell(r, p)   => PlayableRotatorCell(r)(p)(isPlayable(cell))
+      case BaseGeneratorCell(o, p) => PlayableGeneratorCell(o)(p)(isPlayable(cell))
+      case BaseEnemyCell(p)        => PlayableEnemyCell(p)(isPlayable(cell))
+      case BaseMoverCell(o, p)     => PlayableMoverCell(o)(p)(isPlayable(cell))
+      case BaseBlockCell(d, p)     => PlayableBlockCell(d)(p)(isPlayable(cell))
+      case BaseWallCell(p)         => PlayableWallCell(p)(isPlayable(cell))
+    }
+  }
+
+  extension (cell: PlayableCell) {
+
+    def toBaseCell: BaseCell = cell match {
+      case PlayableRotatorCell(r, p, _)   => BaseRotatorCell(r)(p)
+      case PlayableGeneratorCell(o, p, _) => BaseGeneratorCell(o)(p)
+      case PlayableEnemyCell(p, _)        => BaseEnemyCell(p)
+      case PlayableMoverCell(o, p, _)     => BaseMoverCell(o)(p)
+      case PlayableBlockCell(d, p, _)     => BaseBlockCell(d)(p)
+      case PlayableWallCell(p, _)         => BaseWallCell(p)
+    }
+  }
+}
+
 /** A [[RotatorCell]] which is also a [[PlayableCell]]. */
 sealed trait PlayableRotatorCell extends RotatorCell with PlayableCell
 
@@ -23,32 +61,32 @@ sealed trait PlayableRotatorCell extends RotatorCell with PlayableCell
 object PlayableRotatorCell {
 
   /* Default implementation of the PlayableRotatorCell trait. */
-  private case class PlayableRotatorCellImpl(position: Position, rotation: Rotation, playable: Boolean)
+  private case class PlayableRotatorCellImpl(rotation: Rotation, position: Position, playable: Boolean)
     extends PlayableRotatorCell
 
-  /** Returns a new instance of the [[PlayableRotatorCell]] trait given its [[Position]], its [[Rotation]] and if it is playable
+  /** Returns a new instance of the [[PlayableRotatorCell]] trait given its [[Rotation]], its [[Position]] and if it is playable
     * or not.
     *
-    * @param position
-    *   the [[Position]] of the [[PlayableRotatorCell]] to create
     * @param rotation
     *   the [[Rotation]] of the [[PlayableRotatorCell]] to create
+    * @param position
+    *   the [[Position]] of the [[PlayableRotatorCell]] to create
     * @param playable
     *   if the [[PlayableRotatorCell]] is playable or not
     * @return
     *   a new [[PlayableRotatorCell]] instance
     */
-  def apply(position: Position, rotation: Rotation, playable: Boolean): PlayableRotatorCell =
-    PlayableRotatorCellImpl(position, rotation, playable)
+  def apply(rotation: Rotation)(position: Position)(playable: Boolean): PlayableRotatorCell =
+    PlayableRotatorCellImpl(rotation, position, playable)
 
-  /** Extracts the [[Position]], [[Rotation]] and "playable" properties from the given instance of [[PlayableRotatorCell]].
+  /** Extracts the [[Rotation]], [[Position]] and "playable" properties from the given instance of [[PlayableRotatorCell]].
     *
     * @param cell
     *   the [[PlayableRotatorCell]] from which extracting the properties
     * @return
-    *   a tuple containing the [[Position]], [[Rotation]] and "playable" properties
+    *   a tuple containing the [[Rotation]], [[Position]] and "playable" properties
     */
-  def unapply(cell: PlayableRotatorCell): (Position, Rotation, Boolean) = (cell.position, cell.rotation, cell.playable)
+  def unapply(cell: PlayableRotatorCell): (Rotation, Position, Boolean) = (cell.rotation, cell.position, cell.playable)
 }
 
 /** A [[GeneratorCell]] which is also a [[PlayableCell]]. */
@@ -58,32 +96,32 @@ sealed trait PlayableGeneratorCell extends GeneratorCell with PlayableCell
 object PlayableGeneratorCell {
 
   /* Default implementation of the PlayableGeneratorCell trait. */
-  private case class PlayableGeneratorCellImpl(position: Position, orientation: Orientation, playable: Boolean)
+  private case class PlayableGeneratorCellImpl(orientation: Orientation, position: Position, playable: Boolean)
     extends PlayableGeneratorCell
 
-  /** Returns a new instance of the [[PlayableGeneratorCell]] trait given its [[Position]], its [[Orientation]] and if it is
+  /** Returns a new instance of the [[PlayableGeneratorCell]] trait given its [[Orientation]], its [[Position]] and if it is
     * playable or not.
     *
-    * @param position
-    *   the [[Position]] of the [[PlayableGeneratorCell]] to create
     * @param orientation
     *   the [[Orientation]] of the [[PlayableGeneratorCell]] to create
+    * @param position
+    *   the [[Position]] of the [[PlayableGeneratorCell]] to create
     * @param playable
     *   if the [[PlayableGeneratorCell]] is playable or not
     * @return
     *   a new [[PlayableGeneratorCell]] instance
     */
-  def apply(position: Position, orientation: Orientation, playable: Boolean): PlayableGeneratorCell =
-    PlayableGeneratorCellImpl(position, orientation, playable)
+  def apply(orientation: Orientation)(position: Position)(playable: Boolean): PlayableGeneratorCell =
+    PlayableGeneratorCellImpl(orientation, position, playable)
 
-  /** Extracts the [[Position]], [[Orientation]] and "playable" properties from the given instance of [[PlayableGeneratorCell]].
+  /** Extracts the [[Orientation]], [[Position]] and "playable" properties from the given instance of [[PlayableGeneratorCell]].
     *
     * @param cell
     *   the [[PlayableGeneratorCell]] from which extracting the properties
     * @return
-    *   a tuple containing the [[Position]], [[Orientation]] and "playable" properties
+    *   a tuple containing the [[Orientation]], [[Position]] and "playable" properties
     */
-  def unapply(cell: PlayableGeneratorCell): (Position, Orientation, Boolean) = (cell.position, cell.orientation, cell.playable)
+  def unapply(cell: PlayableGeneratorCell): (Orientation, Position, Boolean) = (cell.orientation, cell.position, cell.playable)
 }
 
 /** An [[EnemyCell]] which is also a [[PlayableCell]]. */
@@ -104,7 +142,7 @@ object PlayableEnemyCell {
     * @return
     *   a new [[PlayableEnemyCell]] instance
     */
-  def apply(position: Position, playable: Boolean): PlayableEnemyCell = PlayableEnemyCellImpl(position, playable)
+  def apply(position: Position)(playable: Boolean): PlayableEnemyCell = PlayableEnemyCellImpl(position, playable)
 
   /** Extracts the [[Position]] and "playable" properties from the given instance of [[PlayableEnemyCell]].
     *
@@ -123,32 +161,32 @@ sealed trait PlayableMoverCell extends MoverCell with PlayableCell
 object PlayableMoverCell {
 
   /* Default implementation of the PlayableMoverCell trait. */
-  private case class PlayableMoverCellImpl(position: Position, orientation: Orientation, playable: Boolean)
+  private case class PlayableMoverCellImpl(orientation: Orientation, position: Position, playable: Boolean)
     extends PlayableMoverCell
 
-  /** Returns a new instance of the [[PlayableMoverCell]] trait given its [[Position]], its [[Orientation]] and if it is playable
+  /** Returns a new instance of the [[PlayableMoverCell]] trait given its [[Orientation]], its [[Position]] and if it is playable
     * or not.
     *
-    * @param position
-    *   the [[Position]] of the [[PlayableMoverCell]] to create
     * @param orientation
     *   the [[Orientation]] of the [[PlayableMoverCell]] to create
+    * @param position
+    *   the [[Position]] of the [[PlayableMoverCell]] to create
     * @param playable
     *   if the [[PlayableMoverCell]] is playable or not
     * @return
     *   a new [[PlayableMoverCell]] instance
     */
-  def apply(position: Position, orientation: Orientation, playable: Boolean): PlayableMoverCell =
-    PlayableMoverCellImpl(position, orientation, playable)
+  def apply(orientation: Orientation)(position: Position)(playable: Boolean): PlayableMoverCell =
+    PlayableMoverCellImpl(orientation, position, playable)
 
-  /** Extracts the [[Position]], [[Orientation]] and "playable" properties from the given instance of [[PlayableMoverCell]].
+  /** Extracts the [[Orientation]], [[Position]] and "playable" properties from the given instance of [[PlayableMoverCell]].
     *
     * @param cell
     *   the [[PlayableMoverCell]] from which extracting the properties
     * @return
-    *   a tuple containing the [[Position]], [[Orientation]] and "playable" properties
+    *   a tuple containing the [[Orientation]], [[Position]] and "playable" properties
     */
-  def unapply(cell: PlayableMoverCell): (Position, Orientation, Boolean) = (cell.position, cell.orientation, cell.playable)
+  def unapply(cell: PlayableMoverCell): (Orientation, Position, Boolean) = (cell.orientation, cell.position, cell.playable)
 }
 
 /** A [[BlockCell]] which is also a [[PlayableCell]]. */
@@ -158,31 +196,31 @@ sealed trait PlayableBlockCell extends BlockCell with PlayableCell
 object PlayableBlockCell {
 
   /* Default implementation of the PlayableBlockCell trait. */
-  private case class PlayableBlockCellImpl(position: Position, push: Push, playable: Boolean) extends PlayableBlockCell
+  private case class PlayableBlockCellImpl(push: Push, position: Position, playable: Boolean) extends PlayableBlockCell
 
-  /** Returns a new instance of the [[PlayableBlockCell]] trait given its [[Position]], its [[Push]] direction and if it is
+  /** Returns a new instance of the [[PlayableBlockCell]] trait given its [[Push]] direction, its [[Position]] and if it is
     * playable or not.
     *
-    * @param position
-    *   the [[Position]] of the [[PlayableBlockCell]] to create
     * @param push
     *   the [[Push]] direction of the [[PlayableBlockCell]] to create
+    * @param position
+    *   the [[Position]] of the [[PlayableBlockCell]] to create
     * @param playable
     *   if the [[PlayableBlockCell]] is playable or not
     * @return
     *   a new [[PlayableBlockCell]] instance
     */
-  def apply(position: Position, push: Push, playable: Boolean): PlayableBlockCell =
-    PlayableBlockCellImpl(position, push, playable)
+  def apply(push: Push)(position: Position)(playable: Boolean): PlayableBlockCell =
+    PlayableBlockCellImpl(push, position, playable)
 
-  /** Extracts the [[Position]], [[Push]] direction and "playable" properties from the given instance of [[PlayableBlockCell]].
+  /** Extracts the [[Push]] direction, [[Position]] and "playable" properties from the given instance of [[PlayableBlockCell]].
     *
     * @param cell
     *   the [[PlayableBlockCell]] from which extracting the properties
     * @return
-    *   a tuple containing the [[Position]], [[Push]] direction and "playable" properties
+    *   a tuple containing the [[Push]] direction, [[Position]] and "playable" properties
     */
-  def unapply(cell: PlayableBlockCell): (Position, Push, Boolean) = (cell.position, cell.push, cell.playable)
+  def unapply(cell: PlayableBlockCell): (Push, Position, Boolean) = (cell.push, cell.position, cell.playable)
 }
 
 /** A [[WallCell]] which is also a [[PlayableCell]]. */
@@ -203,7 +241,7 @@ object PlayableWallCell {
     * @return
     *   a new [[PlayableWallCell]] instance
     */
-  def apply(position: Position, playable: Boolean): PlayableWallCell = PlayableWallCellImpl(position, playable)
+  def apply(position: Position)(playable: Boolean): PlayableWallCell = PlayableWallCellImpl(position, playable)
 
   /** Extracts the [[Position]] and "playable" properties from the given instance of [[PlayableWallCell]].
     *

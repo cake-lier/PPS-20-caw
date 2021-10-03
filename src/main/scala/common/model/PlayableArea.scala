@@ -23,16 +23,16 @@ trait PlayableArea {
 object PlayableArea {
 
   /* Default implementation of the PlayableArea trait. */
-  private case class PlayableAreaImpl(position: Position, dimensions: Dimensions) extends PlayableArea
+  private case class PlayableAreaImpl(dimensions: Dimensions, position: Position) extends PlayableArea
 
   /** Returns a new instance of the [[PlayableArea]] trait given its [[Dimensions]] and the [[Position]] of its upper left corner.
     *
-    * @param position
-    *   the [[Position]] of the upper left corner of the created [[PlayableArea]]
     * @param dimensions
     *   the [[Dimensions]] of the created [[PlayableArea]]
+    * @param position
+    *   the [[Position]] of the upper left corner of the created [[PlayableArea]]
     * @return
     *   a new [[PlayableArea]] instance
     */
-  def apply(position: Position, dimensions: Dimensions): PlayableArea = PlayableAreaImpl(position, dimensions)
+  def apply(dimensions: Dimensions)(position: Position): PlayableArea = PlayableAreaImpl(dimensions, position)
 }

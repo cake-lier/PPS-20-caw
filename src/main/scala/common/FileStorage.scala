@@ -6,8 +6,9 @@ import java.nio.file.{Files, OpenOption, Paths}
 
 /** Represents the storage of files to disk: it allows to load project resources or external files. */
 trait FileStorage {
-  /** Loads a resource from disk. It needs the path to the resource and returns a [[Try]] with the content of the file
-    * in a string if the loading was successful, an exception otherwise.
+
+  /** Loads a resource from disk. It needs the path to the resource and returns a [[Try]] with the content of the file in a string
+    * if the loading was successful, an exception otherwise.
     *
     * @param path
     *   the path to the resource file to load
@@ -16,8 +17,8 @@ trait FileStorage {
     */
   def loadResource(path: String): Try[String]
 
-  /** Loads a file from disk. It needs the absolute path to the file and returns a [[Try]] with the content of the file
-    * in a string if the loading was successful, an exception otherwise.
+  /** Loads a file from disk. It needs the absolute path to the file and returns a [[Try]] with the content of the file in a
+    * string if the loading was successful, an exception otherwise.
     *
     * @param path
     *   the path to the file to load
@@ -26,8 +27,8 @@ trait FileStorage {
     */
   def loadFile(path: String): Try[String]
 
-  /** Writes a file to disk. It needs the absolute path to the file and returns an exception if it occurs.
-    * If the file does not exist, it is created. If the file already exists, it gets overwritten.
+  /** Writes a file to disk. It needs the absolute path to the file and returns an exception if it occurs. If the file does not
+    * exist, it is created. If the file already exists, it gets overwritten.
     *
     * @param path
     *   the path to the file to be written
@@ -38,8 +39,8 @@ trait FileStorage {
     */
   def writeFile(path: String, body: String): Try[Unit]
 
-  /** Writes a file to disk, with [[OpenOption]]. It needs the absolute path to the file and returns an exception if it occurs.
-    * If the file does not exist, it is created. If the file already exists, it gets overwritten.
+  /** Writes a file to disk, with [[OpenOption]]. It needs the absolute path to the file and returns an exception if it occurs. If
+    * the file does not exist, it is created. If the file already exists, it gets overwritten.
     *
     * @param path
     *   the path to the file to be written
@@ -66,5 +67,5 @@ object FileStorage {
       Try(Files.writeString(Paths.get(path), body, options: _*))
   }
 
-  def apply():FileStorage = FileStorageImpl()
+  def apply(): FileStorage = FileStorageImpl()
 }

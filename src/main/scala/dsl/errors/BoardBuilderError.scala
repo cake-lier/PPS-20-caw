@@ -7,7 +7,7 @@ package it.unibo.pps.caw.dsl.errors
   */
 enum BoardBuilderError(val message: String) {
 
-  /** The error which arises when an entity has negative [[it.unibo.pps.caw.dsl.entities.Dimensions]]. */
+  /** The error which arises when an entity has negative [[it.unibo.pps.common.model.Dimensions]]. */
   case NegativeDimensions extends BoardBuilderError("The dimensions given to an entity were negative")
 
   /** The error which arises when an entity has negative [[it.unibo.pps.caw.dsl.entities.Position]] coordinates. */
@@ -28,8 +28,8 @@ enum BoardBuilderError(val message: String) {
     */
   case CellOutsideBounds extends BoardBuilderError("A cell was placed outside the level bounds")
 
-  /** The error which arises when the [[it.unibo.pps.caw.dsl.entities.Dimensions]] of the [[it.unibo.pps.caw.dsl.entities.Board]]
-    * have been left unset.
+  /** The error which arises when the [[it.unibo.pps.common.model.Dimensions]] of the [[it.unibo.pps.caw.dsl.entities.Board]] have
+    * been left unset.
     */
   case DimensionsUnset extends BoardBuilderError("The dimensions were not set")
 

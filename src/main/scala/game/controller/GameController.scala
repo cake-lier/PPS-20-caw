@@ -87,8 +87,8 @@ object GameController {
 
   /* Abstract implementation of the GameController trait for factorizing common behaviors. */
   private abstract class AbstractGameController(
-      parentController: ParentGameController,
-      view: GameView
+    parentController: ParentGameController,
+    view: GameView
   ) extends GameController {
     protected val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
     protected var updatesHandler: Option[ScheduledFuture[?]] = None
@@ -153,17 +153,17 @@ object GameController {
 
   /* Extension of the AbstractGameController class for playing a generic level. */
   private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level[BaseCell])
-      extends AbstractGameController(parentController, view) {
+    extends AbstractGameController(parentController, view) {
 
     override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine, initialLevel)
   }
 
   /* Extension of the AbstractGameController class for playing the default levels. */
   private class DefaultGameController(
-      parentController: ParentDefaultGameController,
-      view: GameView,
-      levels: Seq[Level[BaseCell]],
-      initialIndex: Int
+    parentController: ParentDefaultGameController,
+    view: GameView,
+    levels: Seq[Level[BaseCell]],
+    initialIndex: Int
   ) extends AbstractGameController(parentController, view) {
 
     override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine, levels, initialIndex)
@@ -211,10 +211,10 @@ object GameController {
     *   a new [[GameController]] instance
     */
   def apply(
-      parentController: ParentDefaultGameController,
-      view: GameView,
-      levels: Seq[Level[BaseCell]],
-      levelIndex: Int
+    parentController: ParentDefaultGameController,
+    view: GameView,
+    levels: Seq[Level[BaseCell]],
+    levelIndex: Int
   ): GameController =
     DefaultGameController(parentController, view, levels, levelIndex)
 }

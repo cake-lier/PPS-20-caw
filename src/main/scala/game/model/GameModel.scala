@@ -3,6 +3,7 @@ package it.unibo.pps.caw.game.model
 import it.unibo.pps.caw.common.model.{Board, Level, PlayableArea, Position}
 import it.unibo.pps.caw.common.model.Board.*
 import it.unibo.pps.caw.common.model.cell.*
+import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
 import it.unibo.pps.caw.game.model.engine.RulesEngine
 
 import scala.annotation.tailrec
@@ -68,21 +69,21 @@ object GameModel {
 
   /* Default implementation of the GameModel trait. */
   private class GameModelImpl(
-      rulesEngine: RulesEngine,
-      val state: GameState,
-      isSetupCompleted: Boolean,
-      levels: Seq[Level[BaseCell]],
-      initialBoard: Board[BaseCell],
-      currentBoard: Board[BaseCell]
+    rulesEngine: RulesEngine,
+    val state: GameState,
+    isSetupCompleted: Boolean,
+    levels: Seq[Level[BaseCell]],
+    initialBoard: Board[BaseCell],
+    currentBoard: Board[BaseCell]
   ) extends GameModel {
 
     /* Alternative constructor to be used by the "apply" factory method. */
     def this(
-        rulesEngine: RulesEngine,
-        levels: Seq[Level[BaseCell]],
-        initialLevel: Level[PlayableCell],
-        initialIndex: Int,
-        initialBoard: Board[BaseCell]
+      rulesEngine: RulesEngine,
+      levels: Seq[Level[BaseCell]],
+      initialLevel: Level[PlayableCell],
+      initialIndex: Int,
+      initialBoard: Board[BaseCell]
     ) =
       this(
         rulesEngine,
@@ -105,7 +106,7 @@ object GameModel {
       GameModelImpl(
         rulesEngine,
         state.copy(
-          currentStateLevel = state.levelCurrentState.copy(board = updatedBoard.toPlayableCells(_ => false)),
+          currentStateLevel = state.levelCurrentState.copy(board = updatedBoard.map(_.toPlayableCell(_ => false))),
           didEnemyDie = state.levelCurrentState.board.filter(_.isInstanceOf[EnemyCell]).size >
             updatedBoard.filter(_.isInstanceOf[EnemyCell]).size,
           isCurrentLevelCompleted = GameModelHelpers.isLevelCompleted(updatedBoard)
@@ -146,13 +147,16 @@ object GameModel {
             GameModelImpl(
               rulesEngine,
               state.copy(
-                initialStateLevel = state.levelCurrentState
+                initialStateLevel = state
+                  .levelCurrentState
                   .copy(board =
-                    b.toPlayableCells(c =>
-                      GameModelHelpers.isPositionInsidePlayableArea(c.position)(state.levelCurrentState.playableArea)
+                    b.map(
+                      _.toPlayableCell(c =>
+                        GameModelHelpers.isPositionInsidePlayableArea(c.position)(state.levelCurrentState.playableArea)
+                      )
                     )
                   ),
-                currentStateLevel = state.levelCurrentState.copy(board = b.toPlayableCells(_ => false))
+                currentStateLevel = state.levelCurrentState.copy(board = b.map(_.toPlayableCell(_ => false)))
               ),
               isSetupCompleted = false,
               levels,
@@ -178,7 +182,8 @@ object GameModel {
     */
   def apply(rulesEngine: RulesEngine, levels: Seq[Level[BaseCell]], initialIndex: Int): GameModel = {
     val boardWithCorners: Board[BaseCell] =
-      levels(initialIndex - 1).board
+      levels(initialIndex - 1)
+        .board
         .map(GameModelHelpers.changeBaseCellPosition(_)(c => (c.position.x + 1, c.position.y + 1))) ++
         Set(
           (0 to levels(initialIndex - 1).dimensions.width + 1).map(i => BaseWallCell((i, 0))),
@@ -188,16 +193,17 @@ object GameModel {
           (1 to levels(initialIndex - 1).dimensions.height)
             .map(i => BaseWallCell(levels(initialIndex - 1).dimensions.width + 1, i))
         ).flatten
-    val playableAreaWithCorners: PlayableArea = PlayableArea(
-      (levels(initialIndex - 1).playableArea.position.x + 1, levels(initialIndex - 1).playableArea.position.y + 1),
-      levels(initialIndex - 1).playableArea.dimensions
+    val playableAreaWithCorners: PlayableArea = PlayableArea(levels(initialIndex - 1).playableArea.dimensions)(
+      (levels(initialIndex - 1).playableArea.position.x + 1, levels(initialIndex - 1).playableArea.position.y + 1)
     )
     GameModelImpl(
       rulesEngine,
       levels,
       Level(
         (levels(initialIndex - 1).dimensions.width + 2, levels(initialIndex - 1).dimensions.height + 2),
-        boardWithCorners.toPlayableCells(c => GameModelHelpers.isPositionInsidePlayableArea(c.position)(playableAreaWithCorners)),
+        boardWithCorners.map(
+          _.toPlayableCell(c => GameModelHelpers.isPositionInsidePlayableArea(c.position)(playableAreaWithCorners))
+        ),
         playableAreaWithCorners
       ),
       initialIndex,

@@ -1,16 +1,17 @@
-package it.unibo.pps.caw.model
+package it.unibo.pps.caw.common
 
-import it.unibo.pps.caw.common.model.{Board, Level, PlayableArea}
+import it.unibo.pps.caw.common.model.*
 import it.unibo.pps.caw.common.model.cell.{Orientation, PlayableGeneratorCell, PlayableMoverCell}
-import it.unibo.pps.caw.common.{FileStorage, LevelParser}
-import it.unibo.pps.caw.game.model.*
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
+
 import scala.util.{Failure, Success}
 
 class DeserializerTest extends AnyFunSpec with Matchers {
-  val fileStorage = FileStorage()
-  val levelParser = LevelParser(fileStorage)
+  val fileStorage: FileStorage = FileStorage()
+  val levelParser: LevelParser = LevelParser(fileStorage)
+
   describe("A JSON") {
     describe("when empty") {
       it("should produce IllegalArgumentException") {
@@ -38,17 +39,23 @@ class DeserializerTest extends AnyFunSpec with Matchers {
     }
     describe("when with correct json") {
       it("should produce a LevelBuilder") {
-        val jsonLevel = fileStorage.loadResource("test_level.json").get
-        levelParser.deserializeLevel(jsonLevel).getOrElse(None) shouldBe Level(
-          (50, 60),
-          Board(
-            PlayableMoverCell((1, 2), Orientation.Right, true),
-            PlayableMoverCell((0, 0), Orientation.Top, false),
-            PlayableGeneratorCell((1, 2), Orientation.Right, true),
-            PlayableGeneratorCell((0, 0), Orientation.Top, false)
-          ),
-          PlayableArea((1, 2), (20, 30))
-        )
+        val jsonLevel: String = fileStorage.loadResource("test_level.json").get
+        levelParser.deserializeLevel(jsonLevel) match {
+          case Success(l) =>
+            l shouldBe Level(
+              (50, 60),
+              Board(
+                Set(
+                  PlayableMoverCell(Orientation.Right)((1, 2))(true),
+                  PlayableMoverCell(Orientation.Top)((0, 0))(false),
+                  PlayableGeneratorCell(Orientation.Right)((1, 2))(true),
+                  PlayableGeneratorCell(Orientation.Top)((0, 0))(false)
+                )
+              ),
+              PlayableArea((20, 30))((1, 2))
+            )
+          case _ => fail()
+        }
       }
     }
   }

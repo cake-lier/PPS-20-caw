@@ -3,6 +3,7 @@ package it.unibo.pps.caw.editor.model
 import it.unibo.pps.caw.common.model.{Board, Dimensions, PlayableArea, Position}
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.*
+import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
 
 /** The model of the editor, containing all its business logic.
   *
@@ -70,16 +71,6 @@ sealed trait LevelEditorModel {
 /** The companion object of the trait [[LevelEditorModel]]. */
 object LevelEditorModel {
 
-  /* Converts the given BaseCell to a PlayableCell. */
-  private def createPlayableFromBase(cell: BaseCell): PlayableCell = cell match {
-    case BaseRotatorCell(p, r)   => PlayableRotatorCell(p, r, true)
-    case BaseGeneratorCell(p, o) => PlayableGeneratorCell(p, o, true)
-    case BaseEnemyCell(p)        => PlayableEnemyCell(p, true)
-    case BaseMoverCell(p, o)     => PlayableMoverCell(p, o, true)
-    case BaseBlockCell(p, d)     => PlayableBlockCell(p, d, true)
-    case BaseWallCell(p)         => PlayableWallCell(p, true)
-  }
-
   /* Implementation of LevelEditorModel. */
   private case class LevelEditorModelImpl(currentLevel: LevelBuilder) extends LevelEditorModel {
 
@@ -91,15 +82,7 @@ object LevelEditorModel {
             Dimensions(currentLevel.width, currentLevel.height),
             currentLevel
               .board
-              .cells
-              .map {
-                case PlayableRotatorCell(p, r, _) => BaseRotatorCell(p, r)
-                case PlayableGeneratorCell(p, o, _) => BaseGeneratorCell(p, o)
-                case PlayableEnemyCell(p, _) => BaseEnemyCell(p)
-                case PlayableMoverCell(p, o, _) => BaseMoverCell(p, o)
-                case PlayableBlockCell(p, d, _) => BaseBlockCell(p, d)
-                case PlayableWallCell(p, _) => BaseWallCell(p)
-              },
+              .map(_.toBaseCell),
             _
           )
         )
@@ -112,26 +95,26 @@ object LevelEditorModel {
         .cells
         .find(_.position == oldPosition)
         .map {
-          case PlayableWallCell(_, playable) => PlayableWallCell(newPosition, playable)
-          case PlayableEnemyCell(_, playable) => PlayableEnemyCell(newPosition, playable)
-          case PlayableRotatorCell(_, rotationDirection, playable) =>
-            PlayableRotatorCell(newPosition, rotationDirection, playable)
-          case PlayableGeneratorCell(_, orientation, playable) => PlayableGeneratorCell(newPosition, orientation, playable)
-          case PlayableMoverCell(_, orientation, playable) => PlayableMoverCell(newPosition, orientation, playable)
-          case PlayableBlockCell(_, push, playable) => PlayableBlockCell(newPosition, push, playable)
+          case PlayableWallCell(_, playable)  => PlayableWallCell(newPosition)(playable)
+          case PlayableEnemyCell(_, playable) => PlayableEnemyCell(newPosition)(playable)
+          case PlayableRotatorCell(rotationDirection, _, playable) =>
+            PlayableRotatorCell(rotationDirection)(newPosition)(playable)
+          case PlayableGeneratorCell(orientation, _, playable) => PlayableGeneratorCell(orientation)(newPosition)(playable)
+          case PlayableMoverCell(orientation, _, playable)     => PlayableMoverCell(orientation)(newPosition)(playable)
+          case PlayableBlockCell(push, _, playable)            => PlayableBlockCell(push)(newPosition)(playable)
         }
         .get
-      LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board.cells.filter(_.position != oldPosition) + updatedCell))
+      LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board.filter(_.position != oldPosition) + updatedCell))
     }
 
     override def setCell(cell: BaseCell): LevelEditorModel =
-      LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board.cells + createPlayableFromBase(cell)))
+      LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board + cell.toPlayableCell(_ => true)))
 
     override def unsetCell(position: Position): LevelEditorModel =
-      LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board.cells.filter(_.position != position)))
+      LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board.filter(_.position != position)))
 
     override def setPlayableArea(position: Position, dimensions: Dimensions): LevelEditorModel =
-      LevelEditorModelImpl(currentLevel.copy(playableArea = Some(PlayableArea(position, dimensions))))
+      LevelEditorModelImpl(currentLevel.copy(playableArea = Some(PlayableArea(dimensions)(position))))
 
     override def unsetPlayableArea: LevelEditorModel = LevelEditorModelImpl(currentLevel.copy(playableArea = None))
   }
@@ -147,7 +130,7 @@ object LevelEditorModel {
       LevelBuilder(
         level.dimensions.width,
         level.dimensions.height,
-        Board(level.board.cells.map(createPlayableFromBase)),
+        level.board.map(_.toPlayableCell(_ => true)),
         level.playableArea
       )
     )

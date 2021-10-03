@@ -54,31 +54,6 @@ object Board {
     */
   def empty[A <: Cell]: Board[A] = BoardImpl(Set.empty)
 
-  /** Contains extension methods for a [[Board]] of the [[BaseCell]] type. */
-  extension (board: Board[BaseCell]) {
-
-    /** Converts a [[Board]] of [[BaseCell]] to a [[PlayableCell]] one given the function for getting the value of the
-      * [[PlayableCell.playable]] property given the [[BaseCell]] currently being converted to a [[PlayableCell]].
-      *
-      * @param isPlayable
-      *   the function for getting the value of the [[PlayableCell.playable]] property to assign to the [[BaseCell]] currently
-      *   being converted to a [[PlayableCell]]
-      * @return
-      *   a new [[Board]] with the same [[BaseCell]] as before but converted to [[PlayableCell]]
-      */
-    def toPlayableCells(isPlayable: BaseCell => Boolean): Board[PlayableCell] =
-      board.map(c =>
-        c match {
-          case BaseRotatorCell(p, r)   => PlayableRotatorCell(p, r, isPlayable(c))
-          case BaseGeneratorCell(p, o) => PlayableGeneratorCell(p, o, isPlayable(c))
-          case BaseEnemyCell(p)        => PlayableEnemyCell(p, isPlayable(c))
-          case BaseMoverCell(p, o)     => PlayableMoverCell(p, o, isPlayable(c))
-          case BaseBlockCell(p, d)     => PlayableBlockCell(p, d, isPlayable(c))
-          case BaseWallCell(p)         => PlayableWallCell(p, isPlayable(c))
-        }
-      )
-  }
-
   /** Converts a [[Set]] into a [[Board]] by wrapping it into a new one. */
   given fromSetToBoard[A <: Cell]: Conversion[Set[A], Board[A]] = Board(_)
 
