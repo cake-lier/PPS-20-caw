@@ -7,65 +7,65 @@ import it.unibo.pps.caw.common.model.cell.PlayableCell
   *
   * It provides the necessary functionalities to build and modify a level while this is continously edited by the user.
   */
-trait LevelBuilder extends Dimensions {
+trait LevelBuilder {
 
-  /** The set of [[Cell]] of the level. */
-  def board: Board[PlayableCell]
+  /** Returns the [[Dimensions]] of this [[LevelBuilder]]. */
+  val dimensions: Dimensions
 
-  /** The [[PlayableArea]] of the level. */
-  def playableArea: Option[PlayableArea]
+  /** Returns the [[Board]] of this [[LevelBuilder]]. */
+  val board: Board[PlayableCell]
+
+  /** Returns the [[PlayableArea]] of this [[LevelBuilder]]. */
+  val playableArea: Option[PlayableArea]
 }
 
 /** The companion object of the trait [[LevelBuilder]]. */
 object LevelBuilder {
   /* The case class implementaiton of LevelBuilder*/
-  private case class LevelBuilderImpl(width: Int, height: Int, board: Board[PlayableCell], playableArea: Option[PlayableArea])
+  private case class LevelBuilderImpl(dimensions: Dimensions, board: Board[PlayableCell], playableArea: Option[PlayableArea])
     extends LevelBuilder
 
-  /** Returns a new instance of [[LevelBuilder]] given the width, the height, its cells and playable area.
-    * @param width
-    *   the width of the level
-    * @param height
-    *   the height of the level
+  /** Returns a new instance of [[LevelBuilder]] given its [[Dimensions]], its [[Board]] and its [[PlayableArea]].
+    *
+    * @param dimensions
+    *   the [[Dimensions]] of the [[LevelBuilder]] to create
     * @param board
-    *   the cells of the level
+    *   the [[Board]] of the [[LevelBuilder]] to create
     * @param playableArea
-    *   the playable area of the level
+    *   the [[PlayableArea]] of the [[LevelBuilder]] to create
     */
-  def apply(width: Int, height: Int, board: Board[PlayableCell], playableArea: PlayableArea): LevelBuilder =
-    LevelBuilderImpl(width, height, board, Some(playableArea))
+  def apply(dimensions: Dimensions, board: Board[PlayableCell], playableArea: PlayableArea): LevelBuilder =
+    LevelBuilderImpl(dimensions, board, Some(playableArea))
 
-  /** Returns a new instance of [[LevelBuilder]] given the width, the height and its cell.
-    * @param width
-    *   the width of the level
-    * @param height
-    *   the height of the level
+  /** Returns a new instance of [[LevelBuilder]] given its [[Dimensions]] and its [[Board]].
+    *
+    * @param dimensions
+    *   the [[Dimensions]] of the [[LevelBuilder]] to create
     * @param board
-    *   the cells of the level
+    *   the [[Board]] of the [[LevelBuilder]] to create
     */
-  def apply(width: Int, height: Int, board: Board[PlayableCell]): LevelBuilder =
-    LevelBuilderImpl(width, height, board, None)
+  def apply(dimensions: Dimensions, board: Board[PlayableCell]): LevelBuilder = LevelBuilderImpl(dimensions, board, None)
 
-  extension (l: LevelBuilder) {
+  /** Contains the extensions methods for the [[LevelBuilder]] trait. */
+  extension (builder: LevelBuilder) {
 
     /** An extension method that returns a new [[LevelBuilder]] whose characteristics are all or in part copied from the current
       * [[LevelBuilder]]. By default, the new [[LevelBuilder]] is a perfect copy of the current [[LevelBuilder]].
       *
-      * @param width
-      *   the width of the level
-      * @param height
-      *   the height of the level
+      * @param dimensions
+      *   the [[Dimensions]] of the [[LevelBuilder]] to create
       * @param board
-      *   the cells of the level
+      *   the [[Board]] of the [[LevelBuilder]] to create
       * @param playableArea
-      *   the playable area of the level
+      *   the [[PlayableArea]] of the [[LevelBuilder]] to create
+      * @return
+      *   a new instance of [[LevelBuilder]] copied from this one
       */
     def copy(
-      width: Int = l.width,
-      height: Int = l.height,
-      board: Board[PlayableCell] = l.board,
-      playableArea: Option[PlayableArea] = l.playableArea
+      dimensions: Dimensions = builder.dimensions,
+      board: Board[PlayableCell] = builder.board,
+      playableArea: Option[PlayableArea] = builder.playableArea
     ): LevelBuilder =
-      LevelBuilderImpl(width, height, board, playableArea)
+      LevelBuilderImpl(dimensions, board, playableArea)
   }
 }

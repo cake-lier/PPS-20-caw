@@ -1,24 +1,22 @@
 package it.unibo.pps.caw.editor
 
-import it.unibo.pps.caw.common.model.{Board, PlayableArea, Position}
+import it.unibo.pps.caw.common.model.{Board, Dimensions, PlayableArea, Position}
 import it.unibo.pps.caw.common.model.cell.{BaseEnemyCell, PlayableEnemyCell}
 import it.unibo.pps.caw.editor.model.{LevelBuilder, LevelEditorModel}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 class LevelEditorModelTest extends AnyFunSpec with Matchers {
-  private val width = 20
-  private val height = 20
-  private val playableAreaWidth = 5
-  private val playableAreaHeight = 5
-  private val playableAreaPosition = Position(0, 0)
-  private val emptyLevel = LevelBuilder(width, height, Board.empty)
-  private val enemy1 = BaseEnemyCell((1, 1))
-  private val playableEnemy1 = PlayableEnemyCell((1, 1))(true)
-  private val enemy2 = BaseEnemyCell((2, 2))
-  private val playableEnemy2 = PlayableEnemyCell((2, 2))(true)
-  private val enemy3 = BaseEnemyCell((3, 3))
-  private val playableEnemy3 = PlayableEnemyCell((3, 3))(true)
+  private val dimensions: Dimensions = (20, 20)
+  private val playableAreaDimensions: Dimensions = (5, 5)
+  private val playableAreaPosition: Position = (0, 0)
+  private val emptyLevel: LevelBuilder = LevelBuilder(dimensions, Board.empty)
+  private val enemy1: BaseEnemyCell = BaseEnemyCell((1, 1))
+  private val playableEnemy1: PlayableEnemyCell = PlayableEnemyCell((1, 1))(true)
+  private val enemy2: BaseEnemyCell = BaseEnemyCell((2, 2))
+  private val playableEnemy2: PlayableEnemyCell = PlayableEnemyCell((2, 2))(true)
+  private val enemy3: BaseEnemyCell = BaseEnemyCell((3, 3))
+  private val playableEnemy3: PlayableEnemyCell = PlayableEnemyCell((3, 3))(true)
 
   describe("LevelEditorModel") {
     describe("when new") {
@@ -39,7 +37,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
         createLevelEditorModel.setCell(enemy1) should not equals createLevelEditorModel
       }
       it("should update the LevelBuilder") {
-        createLevelEditorModel.setCell(enemy1).currentLevel shouldBe LevelBuilder(width, height, Board(playableEnemy1))
+        createLevelEditorModel.setCell(enemy1).currentLevel shouldBe LevelBuilder(dimensions, Board(playableEnemy1))
       }
     }
     describe("when a cell is removed") {
@@ -54,23 +52,18 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
           .setCell(enemy2)
           .setCell(enemy3)
           .unsetCell(enemy1.position)
-          .currentLevel shouldBe LevelBuilder(width, height, Board(playableEnemy2, playableEnemy3))
+          .currentLevel shouldBe LevelBuilder(dimensions, Board(playableEnemy2, playableEnemy3))
       }
     }
     describe("when a PlayableArea is set") {
       it("should return another instance of itself") {
         createLevelEditorModel
-          .setPlayableArea(playableAreaPosition, (playableAreaWidth, playableAreaHeight)) should not equals createLevelEditorModel
+          .setPlayableArea(playableAreaPosition, playableAreaDimensions) should not equals createLevelEditorModel
       }
       it("should update the LevelBuilder") {
         createLevelEditorModel
-          .setPlayableArea(playableAreaPosition, (playableAreaWidth, playableAreaHeight))
-          .currentLevel shouldBe LevelBuilder(
-          width,
-          height,
-          Board.empty,
-          PlayableArea((playableAreaWidth, playableAreaHeight))(playableAreaPosition)
-        )
+          .setPlayableArea(playableAreaPosition, playableAreaDimensions)
+          .currentLevel shouldBe LevelBuilder(dimensions, Board.empty, PlayableArea(playableAreaDimensions)(playableAreaPosition))
       }
     }
     describe("when a PlayableArea is removed") {
@@ -78,9 +71,9 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
         createLevelEditorModel.unsetPlayableArea should not equals createLevelEditorModel
       }
       it("should update the LevelBuilder") {
-        createLevelEditorModel.unsetPlayableArea.currentLevel shouldBe LevelBuilder(width, height, Board.empty)
+        createLevelEditorModel.unsetPlayableArea.currentLevel shouldBe LevelBuilder(dimensions, Board.empty)
       }
     }
   }
-  private def createLevelEditorModel = LevelEditorModel(width, height)
+  private def createLevelEditorModel = LevelEditorModel(dimensions.width, dimensions.height)
 }

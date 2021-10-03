@@ -1,15 +1,11 @@
 package it.unibo.pps.caw.game.model.engine
 
-import alice.tuprolog.{Prolog, Struct, Term, Theory}
-import com.google.gson.{Gson, JsonArray}
-import it.unibo.pps.caw.common.model._
-import it.unibo.pps.caw.game.model._
-import it.unibo.pps.caw.common.model.cell.{BaseCell, *}
+import it.unibo.pps.caw.common.model.*
+import it.unibo.pps.caw.common.model.cell.*
+import it.unibo.pps.caw.game.model.*
+import it.unibo.pps.caw.game.model.UpdateCell.toUpdateCell
 
 import scala.annotation.tailrec
-import scala.io.Source
-import scala.util.Using
-import scala.util.matching.Regex
 
 /** Engine of game rules */
 sealed trait RulesEngine {
@@ -23,41 +19,25 @@ object RulesEngine {
 
   private class RulesEngineImpl(theory: String) extends RulesEngine {
     private val engine: PrologEngine = PrologEngine(Clause(theory))
-    def nextState(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = {
-      val cellState: Map[Int, Boolean] =
-        board
-          .cells
-          .map(c => if (c.id == cell.id) (c.id, true) else (c.id, c.updated))
-          .toMap
+
+    private def nextState(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = {
+      val cellState: Map[Int, Boolean] = board.map(c => if (c.id == cell.id) (c.id, true) else (c.id, c.updated)).toMap
       val resBoard = PrologParser.deserializeBoard(
         engine
           .solve(Goal(PrologParser.createSerializedPredicate(getPartialBoard(board, cell), cellState.keySet.max + 1, cell)))
           .getLastTerm
       )
-      updateGloabalBoard(
+      updateGlobalBoard(
         board,
-        Board(
-          resBoard
-            .cells
-            .map(_ match {
-              case c if (c.id > cellState.keySet.max) => setUpdatedState(c, true) // new cell created by a generator
-              case c                                  => setUpdatedState(c, cellState(c.id))
-            })
-        ),
+        resBoard.map(_ match {
+          case c if (c.id > cellState.keySet.max) => c.changeUpdatedProperty(updated = true) // new cell created by a generator
+          case c                                  => c.changeUpdatedProperty(cellState(c.id))
+        }),
         cell
       )
     }
 
-    private def setUpdatedState(cell: UpdateCell, updated: Boolean): UpdateCell = cell match {
-      case UpdateRotatorCell(p, r, i, _)   => UpdateRotatorCell(p, r, i, updated)
-      case UpdateGeneratorCell(p, o, i, _) => UpdateGeneratorCell(p, o, i, updated)
-      case UpdateEnemyCell(p, i, _)        => UpdateEnemyCell(p, i, updated)
-      case UpdateMoverCell(p, o, i, _)     => UpdateMoverCell(p, o, i, updated)
-      case UpdateBlockCell(p, d, i, _)     => UpdateBlockCell(p, d, i, updated)
-      case UpdateWallCell(p, i, _)         => UpdateWallCell(p, i, updated)
-    }
-
-    private def updateGloabalBoard(
+    private def updateGlobalBoard(
       globalboard: Board[UpdateCell],
       partialBoard: Board[UpdateCell],
       cell: UpdateCell
@@ -132,35 +112,17 @@ object RulesEngine {
           case _      => board
         }
       }
-      val originalBoard: Board[UpdateCell] =
-        currentBoard
-          .zipWithIndex
-          .map((c, i) =>
-            c match {
-              case BaseMoverCell(o, p)     => UpdateMoverCell(p, o, i, false)
-              case BaseGeneratorCell(o, p) => UpdateGeneratorCell(p, o, i, false)
-              case BaseRotatorCell(r, p)   => UpdateRotatorCell(p, r, i, false)
-              case BaseBlockCell(d, p)     => UpdateBlockCell(p, d, i, false)
-              case BaseEnemyCell(p)        => UpdateEnemyCell(p, i, false)
-              case BaseWallCell(p)         => UpdateWallCell(p, i, false)
-            }
-          )
-
-      updateBoard(originalBoard.toSeq, originalBoard)
-        .map(_ match {
-          case UpdateRotatorCell(p, r, _, _)   => BaseRotatorCell(r)(p)
-          case UpdateGeneratorCell(p, o, _, _) => BaseGeneratorCell(o)(p)
-          case UpdateEnemyCell(p, _, _)        => BaseEnemyCell(p)
-          case UpdateMoverCell(p, o, _, _)     => BaseMoverCell(o)(p)
-          case UpdateBlockCell(p, d, _, _)     => BaseBlockCell(d)(p)
-          case UpdateWallCell(p, _, _)         => BaseWallCell(p)
-        })
+      val originalBoard: Board[UpdateCell] = currentBoard.zipWithIndex.map((c, i) => c.toUpdateCell(i, false))
+      updateBoard(originalBoard.toSeq, originalBoard).map(_.toBaseCell)
     }
-
   }
+
   private case class DummyRulesEngine() extends RulesEngine {
+
     override def update(currentBoard: Board[BaseCell]): Board[BaseCell] = currentBoard
   }
+
   def apply(theory: String): RulesEngine = RulesEngineImpl(theory)
+
   def apply(): RulesEngine = DummyRulesEngine()
 }

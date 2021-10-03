@@ -21,6 +21,63 @@ sealed trait UpdateCell extends Cell {
   val updated: Boolean
 }
 
+/** Companion object of the [[UpdateCell]] trait, containing utility methods. */
+object UpdateCell {
+
+  /** Contains extensions methods for the [[BaseCell]] trait when used with the [[UpdateCell]] trait. */
+  extension (cell: BaseCell) {
+
+    /** Converts a [[BaseCell]] to an [[UpdateCell]] given the values of the [[UpdateCell.id]] and the [[UpdateCell.updated]]
+      * properties.
+      *
+      * @param id
+      *   the value to be set to the [[UpdateCell.id]] property
+      * @param updated
+      *   the value to be set to the [[UpdateCell.updated]] property
+      * @return
+      *   a new [[UpdateCell]] with the same properties of this [[BaseCell]] and the given values for the added properties
+      */
+    def toUpdateCell(id: Int, updated: Boolean): UpdateCell = cell match {
+      case BaseMoverCell(o, p)     => UpdateMoverCell(p, o, id, false)
+      case BaseGeneratorCell(o, p) => UpdateGeneratorCell(p, o, id, updated)
+      case BaseRotatorCell(r, p)   => UpdateRotatorCell(p, r, id, updated)
+      case BaseBlockCell(d, p)     => UpdateBlockCell(p, d, id, updated)
+      case BaseEnemyCell(p)        => UpdateEnemyCell(p, id, updated)
+      case BaseWallCell(p)         => UpdateWallCell(p, id, updated)
+    }
+  }
+
+  /** Contains extension methods to the [[UpdateCell]] trait. */
+  extension (cell: UpdateCell) {
+
+    /** Changes the [[UpdateCell.updated]] property of this [[UpdateCell]] to the given value.
+      *
+      * @param updated
+      *   the value to which the [[UpdateCell.updated]] property is to be set
+      * @return
+      *   this [[UpdateCell]] with its [[UpdateCell.updated]] property set to the given value
+      */
+    def changeUpdatedProperty(updated: Boolean): UpdateCell = cell match {
+      case UpdateRotatorCell(p, r, i, _)   => UpdateRotatorCell(p, r, i, updated)
+      case UpdateGeneratorCell(p, o, i, _) => UpdateGeneratorCell(p, o, i, updated)
+      case UpdateEnemyCell(p, i, _)        => UpdateEnemyCell(p, i, updated)
+      case UpdateMoverCell(p, o, i, _)     => UpdateMoverCell(p, o, i, updated)
+      case UpdateBlockCell(p, d, i, _)     => UpdateBlockCell(p, d, i, updated)
+      case UpdateWallCell(p, i, _)         => UpdateWallCell(p, i, updated)
+    }
+
+    /** Returns this [[UpdateCell]] converted to its equivalent [[BaseCell]]. */
+    def toBaseCell: BaseCell = cell match {
+      case UpdateRotatorCell(p, r, _, _)   => BaseRotatorCell(r)(p)
+      case UpdateGeneratorCell(p, o, _, _) => BaseGeneratorCell(o)(p)
+      case UpdateEnemyCell(p, _, _)        => BaseEnemyCell(p)
+      case UpdateMoverCell(p, o, _, _)     => BaseMoverCell(o)(p)
+      case UpdateBlockCell(p, d, _, _)     => BaseBlockCell(d)(p)
+      case UpdateWallCell(p, _, _)         => BaseWallCell(p)
+    }
+  }
+}
+
 /** A [[RotatorCell]] which is also an [[UpdateCell]]. */
 sealed trait UpdateRotatorCell extends RotatorCell with UpdateCell
 
@@ -73,7 +130,7 @@ object UpdateRotatorCell {
       * @param updated
       *   whether or not the [[UpdateRotatorCell]] to create has already been updated
       * @return
-      *   a new [[UpdateRotatorCell]] instance copied from the given one
+      *   a new [[UpdateRotatorCell]] instance copied from this one
       */
     def copy(
       position: Position = cell.position,
@@ -138,7 +195,7 @@ object UpdateGeneratorCell {
       * @param updated
       *   whether or not the [[UpdateGeneratorCell]] to create has already been updated
       * @return
-      *   a new [[UpdateGeneratorCell]] instance copied from the given one
+      *   a new [[UpdateGeneratorCell]] instance copied from this one
       */
     def copy(
       position: Position = cell.position,
@@ -196,7 +253,7 @@ object UpdateEnemyCell {
       * @param updated
       *   whether or not the [[UpdateEnemyCell]] to create has already been updated
       * @return
-      *   a new [[UpdateEnemyCell]] instance copied from the given one
+      *   a new [[UpdateEnemyCell]] instance copied from this one
       */
     def copy(
       position: Position = cell.position,
@@ -259,7 +316,7 @@ object UpdateMoverCell {
       * @param updated
       *   whether or not the [[UpdateMoverCell]] to create has already been updated
       * @return
-      *   a new [[UpdateMoverCell]] instance copied from the given one
+      *   a new [[UpdateMoverCell]] instance copied from this one
       */
     def copy(
       position: Position = cell.position,
@@ -321,7 +378,7 @@ object UpdateBlockCell {
       * @param updated
       *   whether or not the [[UpdateBlockCell]] to create has already been updated
       * @return
-      *   a new [[UpdateBlockCell]] instance copied from the given one
+      *   a new [[UpdateBlockCell]] instance copied from this one
       */
     def copy(
       position: Position = cell.position,
@@ -378,7 +435,7 @@ object UpdateWallCell {
       * @param updated
       *   whether or not the [[UpdateWallCell]] to create has already been updated
       * @return
-      *   a new [[UpdateWallCell]] instance copied from the given one
+      *   a new [[UpdateWallCell]] instance copied from this one
       */
     def copy(
       position: Position = cell.position,

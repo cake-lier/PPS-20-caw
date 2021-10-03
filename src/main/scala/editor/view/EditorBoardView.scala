@@ -54,7 +54,13 @@ object EditorBoardView {
     initialLevel: LevelBuilder,
     modelUpdater: ModelUpdater,
     updater: EditorUpdater
-  ) extends AbstractBoardViewImpl(screenWidth, screenHeight, initialLevel.width, initialLevel.height, modelUpdater)
+  ) extends AbstractBoardViewImpl(
+      screenWidth,
+      screenHeight,
+      initialLevel.dimensions.width,
+      initialLevel.dimensions.height,
+      modelUpdater
+    )
     with EditorBoardView {
     private var startPosition = Position(0, 0)
     private var endPosition = Position(0, 0)

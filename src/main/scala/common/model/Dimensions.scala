@@ -33,5 +33,5 @@ object Dimensions {
   def apply(width: Int, height: Int): Dimensions = DimensionsImpl(width, height)
 
   /** Converts a tuple of two integers into a [[Dimensions]]. */
-  given Conversion[Tuple2[Int, Int], Dimensions] = t => Dimensions(t._1, t._2)
+  given Conversion[(Int, Int), Dimensions] = t => Dimensions(t._1, t._2)
 }

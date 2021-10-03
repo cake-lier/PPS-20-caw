@@ -5,8 +5,10 @@ import it.unibo.pps.caw.common.model.Position
 /** A base cell, with no added properties with respect to the original [[Cell]] type. */
 sealed trait BaseCell extends Cell
 
+/** Companion object to the [[BaseCell]] trait, containing utility methods. */
 object BaseCell {
 
+  /** Contains all extensions methods for the [[BaseCell]] trait. */
   extension (cell: BaseCell) {
 
     /** Changes the [[BaseCell.position]] property of this [[BaseCell]] with the result of the given function. The function may

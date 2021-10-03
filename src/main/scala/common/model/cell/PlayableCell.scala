@@ -19,7 +19,7 @@ sealed trait PlayableCell extends Cell {
 /** Companion object of the [[PlayableCell]] trait, containing utility methods. */
 object PlayableCell {
 
-  /** Contains extension methods for a [[BaseCell]]. */
+  /** Contains extension methods for the [[BaseCell]] trait when used with [[PlayableCell]]. */
   extension (cell: BaseCell) {
 
     /** Converts a [[BaseCell]] to a [[PlayableCell]] given the function for getting the value of the [[PlayableCell.playable]]
@@ -29,7 +29,7 @@ object PlayableCell {
       *   the function for getting the value of the [[PlayableCell.playable]] property to assign to the [[BaseCell]] currently
       *   being converted to a [[PlayableCell]]
       * @return
-      *   a new [[PlayableCell]] with the same properties of the original [[BaseCell]]
+      *   a new [[PlayableCell]] with the same properties of this [[BaseCell]] and the given values for the added properties
       */
     def toPlayableCell(isPlayable: BaseCell => Boolean): PlayableCell = cell match {
       case BaseRotatorCell(r, p)   => PlayableRotatorCell(r)(p)(isPlayable(cell))
@@ -41,15 +41,16 @@ object PlayableCell {
     }
   }
 
+  /** Contains all extension methods for the [[PlayableCell]] trait. */
   extension (cell: PlayableCell) {
 
     /** Changes the [[PlayableCell.playable]] property of this [[PlayableCell]] to the given value.
-    *
-    * @param playable
-    *   the value to which the [[PlayableCell.playable]] property is to be set
-    * @return
-    *   this [[PlayableCell]] with its [[PlayableCell.playable]] property set to the given value
-    */
+      *
+      * @param playable
+      *   the value to which the [[PlayableCell.playable]] property is to be set
+      * @return
+      *   this [[PlayableCell]] with its [[PlayableCell.playable]] property set to the given value
+      */
     def changePlayableProperty(playable: Boolean): PlayableCell = cell match {
       case PlayableRotatorCell(r, p, _)   => PlayableRotatorCell(r)(p)(playable)
       case PlayableGeneratorCell(o, p, _) => PlayableGeneratorCell(o)(p)(playable)
@@ -58,7 +59,15 @@ object PlayableCell {
       case PlayableBlockCell(d, p, _)     => PlayableBlockCell(d)(p)(playable)
       case PlayableWallCell(p, _)         => PlayableWallCell(p)(playable)
     }
-    
+
+    /** Changes the [[PlayableCell.position]] property of this [[PlayableCell]] with the result of the given function. The
+      * function may depend on the [[PlayableCell]] on which the property is going to be changed.
+      *
+      * @param getPosition
+      *   the function used for getting the [[Position]] to set to this [[PlayableCell]]
+      * @return
+      *   this [[PlayableCell]] with its [[Position]] changed according to the result of the given function
+      */
     def changePositionProperty(getPosition: Position => Position): PlayableCell = cell match {
       case PlayableRotatorCell(r, p, i)   => PlayableRotatorCell(r)(getPosition(p))(i)
       case PlayableGeneratorCell(o, p, i) => PlayableGeneratorCell(o)(getPosition(p))(i)
@@ -68,6 +77,7 @@ object PlayableCell {
       case PlayableWallCell(p, i)         => PlayableWallCell(getPosition(p))(i)
     }
 
+    /** Returns this [[PlayableCell]] converted to its equivalent [[BaseCell]]. */
     def toBaseCell: BaseCell = cell match {
       case PlayableRotatorCell(r, p, _)   => BaseRotatorCell(r)(p)
       case PlayableGeneratorCell(o, p, _) => BaseGeneratorCell(o)(p)

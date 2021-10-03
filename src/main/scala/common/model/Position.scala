@@ -37,5 +37,5 @@ object Position {
   def apply(x: Int, y: Int): Position = PositionImpl(x, y)
 
   /** Converts a tuple of two integers into a [[Position]]. */
-  given Conversion[Tuple2[Int, Int], Position] = t => Position(t._1, t._2)
+  given Conversion[(Int, Int), Position] = t => Position(t._1, t._2)
 }

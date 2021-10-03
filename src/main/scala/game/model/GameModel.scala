@@ -6,8 +6,6 @@ import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
 import it.unibo.pps.caw.game.model.engine.RulesEngine
 
-import scala.annotation.tailrec
-
 /** The model of the game, the component containing all its business logic.
   *
   * The model component contains all the logic of the game, deciding how the current state of the game should evolve given the
@@ -129,12 +127,12 @@ object GameModel {
 
     override def update: GameModel = {
       val updatedBoard: Board[BaseCell] = rulesEngine.update(currentBoard)
+      val enemiesInBoard: Board[? <: Cell] => Int = _.filter(_.isInstanceOf[EnemyCell]).size
       GameModelImpl(
         rulesEngine,
         state.copy(
           currentStateLevel = state.levelCurrentState.copy(board = updatedBoard.map(_.toPlayableCell(_ => false))),
-          didEnemyDie = state.levelCurrentState.board.filter(_.isInstanceOf[EnemyCell]).size >
-            updatedBoard.filter(_.isInstanceOf[EnemyCell]).size,
+          didEnemyDie = enemiesInBoard(state.levelCurrentState.board) > enemiesInBoard(updatedBoard),
           isCurrentLevelCompleted = isLevelCompleted(updatedBoard)
         ),
         isSetupCompleted = true,
@@ -145,8 +143,10 @@ object GameModel {
     }
 
     override def nextLevel: GameModel =
-      if (state.hasNextLevel && state.isCurrentLevelCompleted) GameModel(rulesEngine, levels, state.currentLevelIndex + 1)
-      else this
+      if (state.hasNextLevel && state.isCurrentLevelCompleted)
+        GameModel(rulesEngine, levels, state.currentLevelIndex + 1)
+      else
+        this
 
     override def reset: GameModel =
       GameModelImpl(
@@ -176,9 +176,7 @@ object GameModel {
                 initialStateLevel = state
                   .levelCurrentState
                   .copy(board =
-                    b.map(
-                      _.toPlayableCell(c => isPositionInsidePlayableArea(c.position)(state.levelCurrentState.playableArea))
-                    )
+                    b.map(_.toPlayableCell(c => isPositionInsidePlayableArea(c.position)(state.levelCurrentState.playableArea)))
                   ),
                 currentStateLevel = state.levelCurrentState.copy(board = b.map(_.toPlayableCell(_ => false)))
               ),
