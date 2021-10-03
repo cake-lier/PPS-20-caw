@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.editor.view
 
-import it.unibo.pps.caw.common.{AbstractBoardViewImpl, BoardView, CellImage, CellView, DraggableImageView, ModelUpdater}
+import it.unibo.pps.caw.common.{AbstractBoardView, BoardView, CellImage, CellView, DraggableImageView, ModelUpdater}
 import it.unibo.pps.caw.common.model.{Board, Position}
 import it.unibo.pps.caw.common.model.cell.PlayableCell
 import it.unibo.pps.caw.editor.model.LevelBuilder
@@ -10,12 +10,17 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
 
-/** The board displayed in the editor. */
+/** The board displayed in the editor.
+  *
+  * In the editor, the player can modify the level board as they please: they can select and deselect the
+  * [[it.unibo.pps.caw.common.model.PlayableArea]] and add, move and remove cells both inside and outside the
+  * [[it.unibo.pps.caw.common.model.PlayableArea]].
+  */
 sealed trait EditorBoardView extends BoardView {
 
-  /** Draws the level editor board.
+  /** Draws the [[PlayableCell]] received in input.
     * @param board
-    *   the [[Board]] containing the cells to be drawn in the [[EditorBoardView]]
+    *   the [[Board]] containing the [[PlayableCell]] to be drawn
     */
   def drawBoard(board: Board[PlayableCell]): Unit
 }
@@ -23,19 +28,19 @@ sealed trait EditorBoardView extends BoardView {
 /** Companion object of the [[EditorBoardView]] trait. */
 object EditorBoardView {
 
-  /** Returns a new instance of [[EditorBoardView]]. It receives the screen width and height, necessary to calculate the level
-    * dimensions; the [[LevelBuilder]] containing all the necessary information to draw the level; the [[ModelUpdater]] and the
-    * [[EditorUpdater]], necessary to notify view changes applied by the player to the model.
+  /** Returns a new instance of [[EditorBoardView]]. It receives the screen width and height, necessary to calculate the size of
+    * the board, the [[LevelBuilder]] containing all the necessary information to draw the level, the [[ModelUpdater]] and the
+    * [[EditorUpdater]], necessary to update the model after the player modifies the view.
     * @param screenWidth
-    *   the width of the user screen
+    *   the width of the screen necessary to calculate the board width
     * @param screenHeight
-    *   the height of the user screen
+    *   the height of the screen necessary to calculate the board width
     * @param level
-    *   the [[LevelBuilder]] displayed by the [[EditorBoardView]]
+    *   the [[LevelBuilder]] to be drawn
     * @param model
-    *   the [[ModelUpdater]] of the [[EditorBoardView]]
+    *   the [[ModelUpdater]] necessary to update the model after view changes
     * @param updater
-    *   the [[EditorUpdater]] of the [[EditorBoardView]]
+    *   the [[EditorUpdater]] necessary to update the model after view changes
     * @return
     *   a new instance of [[EditorBoardView]]
     */
@@ -48,13 +53,14 @@ object EditorBoardView {
   ): EditorBoardView =
     EditorBoardViewImpl(screenWidth, screenHeight, level, model, updater)
 
+  /* Extension of AbstractBoardView */
   private case class EditorBoardViewImpl(
     screenWidth: Double,
     screenHeight: Double,
     initialLevel: LevelBuilder,
     modelUpdater: ModelUpdater,
     updater: EditorUpdater
-  ) extends AbstractBoardViewImpl(screenWidth, screenHeight, initialLevel.width, initialLevel.height, modelUpdater)
+  ) extends AbstractBoardView(screenWidth, screenHeight, initialLevel.width, initialLevel.height, modelUpdater)
     with EditorBoardView {
     private var startPosition = Position(0, 0)
     private var endPosition = Position(0, 0)
@@ -82,11 +88,11 @@ object EditorBoardView {
 
     /** Adds an [[ImageView]] to the editor board, that is a view that can be removed if it was added by the user.
       * @param node
-      *   the [[ImageView]] to be added to the board
+      *   the [[ImageView]] to be drawn to the board
       * @param x
-      *   the x coordinate of the [[node]]
+      *   the x coordinate where the [[ImageView]] will be placed in the board
       * @param y
-      *   the y coordinate of the [[node]]
+      *   the y coordinate where the [[ImageView]] will be placed in the board
       */
     override protected def drawImageView(node: ImageView, x: Int, y: Int): Unit = {
       node.getImage match {
@@ -149,7 +155,7 @@ object EditorBoardView {
       })
     }
 
-    /* Filters the ImageView of this GridPane with the given predicate and applys a handler. */
+    /* Filters the ImageView of this GridPane with the given predicate and applies a handler. */
     private def applyHandler(predicate: Node => Boolean, handler: Node => Unit): Unit = {
       innerComponent
         .getChildren
@@ -158,7 +164,7 @@ object EditorBoardView {
         .forEach(handler(_))
     }
 
-    /* Applys a handler. */
+    /* Applies a handler. */
     private def applyHandler(handler: Node => Unit): Unit = {
       applyHandler(_ => true, handler)
     }
