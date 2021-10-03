@@ -67,6 +67,32 @@ sealed trait GameModel {
 /** Companion object for trait [[GameModel]], containing its factory methods. */
 object GameModel {
 
+  /** Returns whether or not the given [[Position]] is inside the given [[PlayableArea]].
+    *
+    * @param position
+    *   the [[Position]] to be checked
+    * @param playableArea
+    *   the [[PlayableArea]] in which the [[Position]] could be contained
+    * @return
+    *   whether or not the given [[Position]] is inside the given [[PlayableArea]]
+    */
+  private def isPositionInsidePlayableArea(position: Position)(playableArea: PlayableArea): Boolean =
+    position.x >= playableArea.position.x &&
+      position.x <= (playableArea.position.x + playableArea.dimensions.width) &&
+      position.y >= playableArea.position.y &&
+      position.y <= (playableArea.position.y + playableArea.dimensions.height)
+
+  /** Returns whether or not a [[it.unibo.pps.caw.common.model.Level]] is completed given its [[Board]]. This is the only
+    * necessary element for evaluating it because a level is considered completed when no [[EnemyCell]] are present on the board.
+    *
+    * @param board
+    *   the [[Board]] of the [[it.unibo.pps.caw.common.model.Level]] to be used for evaluating if the level has been completed or
+    *   not
+    * @return
+    *   whether or not a [[it.unibo.pps.caw.common.model.Level]] is completed
+    */
+  private def isLevelCompleted(board: Board[? <: Cell]): Boolean = board.filter(_.isInstanceOf[EnemyCell]).size == 0
+
   /* Default implementation of the GameModel trait. */
   private class GameModelImpl(
     rulesEngine: RulesEngine,
@@ -89,11 +115,11 @@ object GameModel {
         rulesEngine,
         GameState(
           initialLevel,
-          initialLevel.copy(board = initialLevel.board.map(GameModelHelpers.resetPlayableCell(_))),
+          initialLevel.copy(board = initialLevel.board.map(_.changePlayableProperty(playable = false))),
           initialIndex,
           initialIndex + 1 <= levels.length,
           didEnemyDie = false,
-          GameModelHelpers.isLevelCompleted(initialBoard)
+          isLevelCompleted(initialBoard)
         ),
         isSetupCompleted = false,
         levels,
@@ -109,7 +135,7 @@ object GameModel {
           currentStateLevel = state.levelCurrentState.copy(board = updatedBoard.map(_.toPlayableCell(_ => false))),
           didEnemyDie = state.levelCurrentState.board.filter(_.isInstanceOf[EnemyCell]).size >
             updatedBoard.filter(_.isInstanceOf[EnemyCell]).size,
-          isCurrentLevelCompleted = GameModelHelpers.isLevelCompleted(updatedBoard)
+          isCurrentLevelCompleted = isLevelCompleted(updatedBoard)
         ),
         isSetupCompleted = true,
         levels,
@@ -127,9 +153,9 @@ object GameModel {
         rulesEngine,
         state.copy(
           currentStateLevel =
-            state.levelInitialState.copy(board = state.levelInitialState.board.map(GameModelHelpers.resetPlayableCell(_))),
+            state.levelInitialState.copy(board = state.levelInitialState.board.map(_.changePlayableProperty(playable = false))),
           didEnemyDie = false,
-          isCurrentLevelCompleted = GameModelHelpers.isLevelCompleted(state.levelInitialState.board)
+          isCurrentLevelCompleted = isLevelCompleted(state.levelInitialState.board)
         ),
         isSetupCompleted = false,
         levels,
@@ -141,7 +167,7 @@ object GameModel {
       if (!isSetupCompleted)
         currentBoard
           .find(_.position == currentPosition)
-          .map(GameModelHelpers.changeBaseCellPosition(_)(_ => nextPosition))
+          .map(_.changePositionProperty(_ => nextPosition))
           .map(c => currentBoard.filter(_.position != currentPosition) + c)
           .map(b =>
             GameModelImpl(
@@ -151,9 +177,7 @@ object GameModel {
                   .levelCurrentState
                   .copy(board =
                     b.map(
-                      _.toPlayableCell(c =>
-                        GameModelHelpers.isPositionInsidePlayableArea(c.position)(state.levelCurrentState.playableArea)
-                      )
+                      _.toPlayableCell(c => isPositionInsidePlayableArea(c.position)(state.levelCurrentState.playableArea))
                     )
                   ),
                 currentStateLevel = state.levelCurrentState.copy(board = b.map(_.toPlayableCell(_ => false)))
@@ -184,7 +208,7 @@ object GameModel {
     val boardWithCorners: Board[BaseCell] =
       levels(initialIndex - 1)
         .board
-        .map(GameModelHelpers.changeBaseCellPosition(_)(c => (c.position.x + 1, c.position.y + 1))) ++
+        .map(_.changePositionProperty(c => (c.position.x + 1, c.position.y + 1))) ++
         Set(
           (0 to levels(initialIndex - 1).dimensions.width + 1).map(i => BaseWallCell((i, 0))),
           (0 to levels(initialIndex - 1).dimensions.width + 1)
@@ -202,7 +226,7 @@ object GameModel {
       Level(
         (levels(initialIndex - 1).dimensions.width + 2, levels(initialIndex - 1).dimensions.height + 2),
         boardWithCorners.map(
-          _.toPlayableCell(c => GameModelHelpers.isPositionInsidePlayableArea(c.position)(playableAreaWithCorners))
+          _.toPlayableCell(c => isPositionInsidePlayableArea(c.position)(playableAreaWithCorners))
         ),
         playableAreaWithCorners
       ),

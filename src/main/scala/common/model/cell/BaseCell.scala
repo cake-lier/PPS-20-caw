@@ -5,6 +5,29 @@ import it.unibo.pps.caw.common.model.Position
 /** A base cell, with no added properties with respect to the original [[Cell]] type. */
 sealed trait BaseCell extends Cell
 
+object BaseCell {
+
+  extension (cell: BaseCell) {
+
+    /** Changes the [[BaseCell.position]] property of this [[BaseCell]] with the result of the given function. The function may
+      * depend on the [[BaseCell]] on which the property is going to be changed.
+      *
+      * @param getPosition
+      *   the function used for getting the [[Position]] to set to this [[BaseCell]]
+      * @return
+      *   this [[BaseCell]] with its [[Position]] changed according to the result of the given function
+      */
+    def changePositionProperty(getPosition: BaseCell => Position): BaseCell = cell match {
+      case _: BaseWallCell         => BaseWallCell(getPosition(cell))
+      case _: BaseEnemyCell        => BaseEnemyCell(getPosition(cell))
+      case BaseRotatorCell(r, _)   => BaseRotatorCell(r)(getPosition(cell))
+      case BaseGeneratorCell(o, _) => BaseGeneratorCell(o)(getPosition(cell))
+      case BaseMoverCell(o, _)     => BaseMoverCell(o)(getPosition(cell))
+      case BaseBlockCell(p, _)     => BaseBlockCell(p)(getPosition(cell))
+    }
+  }
+}
+
 /** A [[RotatorCell]] which is also a [[BaseCell]]. */
 sealed trait BaseRotatorCell extends RotatorCell with BaseCell
 

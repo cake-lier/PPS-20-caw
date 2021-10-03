@@ -74,18 +74,22 @@ object LevelEditorModel {
   /* Implementation of LevelEditorModel. */
   private case class LevelEditorModelImpl(currentLevel: LevelBuilder) extends LevelEditorModel {
 
-    override val builtLevel: Option[Level[BaseCell]] =
+    override val builtLevel: Option[Level[BaseCell]] = {
       currentLevel
         .playableArea
-        .map(
+        .map(a =>
           Level(
-            Dimensions(currentLevel.width, currentLevel.height),
+            Dimensions(currentLevel.width - 2, currentLevel.height - 2),
             currentLevel
               .board
+              .cells
+              .filter(_.playable)
+              .map(_.changePositionProperty(p => (p.x - 1, p.y - 1)))
               .map(_.toBaseCell),
-            _
+            PlayableArea(a.dimensions)((a.position.x - 1, a.position.y - 1))
           )
         )
+    }
 
     override def resetLevel: LevelEditorModel = LevelEditorModel(currentLevel.width, currentLevel.height)
 
@@ -94,15 +98,7 @@ object LevelEditorModel {
         .board
         .cells
         .find(_.position == oldPosition)
-        .map {
-          case PlayableWallCell(_, playable)  => PlayableWallCell(newPosition)(playable)
-          case PlayableEnemyCell(_, playable) => PlayableEnemyCell(newPosition)(playable)
-          case PlayableRotatorCell(rotationDirection, _, playable) =>
-            PlayableRotatorCell(rotationDirection)(newPosition)(playable)
-          case PlayableGeneratorCell(orientation, _, playable) => PlayableGeneratorCell(orientation)(newPosition)(playable)
-          case PlayableMoverCell(orientation, _, playable)     => PlayableMoverCell(orientation)(newPosition)(playable)
-          case PlayableBlockCell(push, _, playable)            => PlayableBlockCell(push)(newPosition)(playable)
-        }
+        .map(_.changePositionProperty(_ => newPosition))
         .get
       LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board.filter(_.position != oldPosition) + updatedCell))
     }
@@ -119,6 +115,27 @@ object LevelEditorModel {
     override def unsetPlayableArea: LevelEditorModel = LevelEditorModelImpl(currentLevel.copy(playableArea = None))
   }
 
+  private def apply(levelBuilder: LevelBuilder): LevelEditorModel =
+    val walls: Set[PlayableCell] = Set(
+      (0 to levelBuilder.width + 1).map(i => PlayableWallCell((i, 0))(false)),
+      (0 to levelBuilder.width + 1).map(i => PlayableWallCell((i, levelBuilder.height + 1))(false)),
+      (1 to levelBuilder.height).map(i => PlayableWallCell((0, i))(false)),
+      (1 to levelBuilder.height).map(i => PlayableWallCell((levelBuilder.width + 1, i))(false))
+    ).flatten
+    LevelEditorModelImpl(
+      levelBuilder
+        .playableArea
+        .map(p =>
+          LevelBuilder(
+            levelBuilder.width + 2,
+            levelBuilder.height + 2,
+            levelBuilder.board ++ walls,
+            PlayableArea(p.dimensions)((p.position.x + 1, p.position.y + 1))
+          )
+        )
+        .getOrElse(LevelBuilder(levelBuilder.width + 2, levelBuilder.height + 2, levelBuilder.board ++ walls))
+    )
+
   /** Returns a new instance of [[LevelEditorModel]] when editing an already existing level.
     * @param level
     *   the existing level to be edited
@@ -130,7 +147,7 @@ object LevelEditorModel {
       LevelBuilder(
         level.dimensions.width,
         level.dimensions.height,
-        level.board.map(_.toPlayableCell(_ => true)),
+        level.board.map(_.toPlayableCell(_ => true)).map(_.changePositionProperty(p => (p.x + 1, p.y + 1))),
         level.playableArea
       )
     )
@@ -144,5 +161,5 @@ object LevelEditorModel {
     *   a new instance of [[LevelEditorModel]]
     */
   def apply(width: Int, height: Int): LevelEditorModel =
-    LevelEditorModelImpl(LevelBuilder(width, height, Board.empty[PlayableCell]))
+    LevelEditorModel(LevelBuilder(width, height, Board.empty[PlayableCell]))
 }
