@@ -9,7 +9,8 @@ import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
   *
   * The model contains the logic of the editor, providing the necessary functionalities to modify the current edited level given
   * the player inputs. A level is made of a playable area and cells: the player is able to select and deselect the playable area;
-  * they can add a game cell in whichever position they want, move it from a position to another or remove it.
+  * they can add a game cell in whichever position they want, move it from a position to another or remove it. It must be
+  * constructed through its companion object.
   */
 sealed trait LevelEditorModel {
 
@@ -68,16 +69,16 @@ sealed trait LevelEditorModel {
   def unsetPlayableArea: LevelEditorModel
 }
 
-/** The companion object of the trait [[LevelEditorModel]]. */
+/** The companion object of the trait [[LevelEditorModel]], containing its factory methods. */
 object LevelEditorModel {
 
   /* Implementation of LevelEditorModel. */
   private case class LevelEditorModelImpl(builder: LevelBuilder) extends LevelEditorModel {
     private val walls: Set[PlayableCell] = Set(
-      (0 to builder.dimensions.width + 1).map(i => PlayableWallCell((i, 0))(false)),
-      (0 to builder.dimensions.width + 1).map(i => PlayableWallCell((i, builder.dimensions.height + 1))(false)),
-      (1 to builder.dimensions.height).map(i => PlayableWallCell((0, i))(false)),
-      (1 to builder.dimensions.height).map(i => PlayableWallCell((builder.dimensions.width + 1, i))(false))
+      (0 to builder.dimensions.width + 1).map(i => PlayableWallCell((i, 0))(playable = false)),
+      (0 to builder.dimensions.width + 1).map(i => PlayableWallCell((i, builder.dimensions.height + 1))(playable = false)),
+      (1 to builder.dimensions.height).map(i => PlayableWallCell((0, i))(playable = false)),
+      (1 to builder.dimensions.height).map(i => PlayableWallCell((builder.dimensions.width + 1, i))(playable = false))
     ).flatten
 
     override val currentLevel: LevelBuilder =

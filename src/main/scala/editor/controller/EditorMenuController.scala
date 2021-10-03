@@ -9,7 +9,7 @@ import java.io.File
   */
 trait ParentLevelEditorMenuController {
 
-  /** Asks the parent controller to go back to exit the menu. */
+  /** Asks the parent controller to exit the menu. */
   def goBack(): Unit
 
   /** Asks the parent controller to show the editor with an empty level of a given width and height.
@@ -29,7 +29,8 @@ trait ParentLevelEditorMenuController {
 
 /** The controller that manages the editor menu.
   *
-  * This controller provides the necessary functionalities of the editor menu.
+  * This controller provides the necessary functionalities of the editor menu. It must be constructed through its companion
+  * object.
   */
 sealed trait EditorMenuController {
 
@@ -48,7 +49,7 @@ sealed trait EditorMenuController {
   def startLevelEditor(path: String): Unit
 }
 
-/** The companion object of the trait [[EditorMenuController]]. */
+/** The companion object of the trait [[EditorMenuController]], containing its factory method. */
 object EditorMenuController {
   /* Implementation of EditorMenuController. */
   private case class LevelEditorMenuControllerImpl(parentLevelEditorMenuController: ParentLevelEditorMenuController)
@@ -62,6 +63,8 @@ object EditorMenuController {
     *
     * @param parentLevelEditorMenuController
     *   the parent controller of [[EditorMenuController]]
+    * @return
+    *   a new instance of [[EditorMenuController]]
     */
   def apply(parentLevelEditorMenuController: ParentLevelEditorMenuController): EditorMenuController =
     LevelEditorMenuControllerImpl(parentLevelEditorMenuController)

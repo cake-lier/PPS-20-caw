@@ -1,14 +1,14 @@
 package it.unibo.pps.caw
 package editor.view
 
-import common.ViewComponent.AbstractViewComponent
 import common.*
-import common.model.{Level, PlayableArea, Position}
+import common.ViewComponent.AbstractViewComponent
 import common.model.cell.*
+import common.model.{Level, PlayableArea, Position}
 import editor.controller.{EditorController, ParentLevelEditorController}
 import editor.model.LevelBuilder
+import menu.MainMenuController
 
-import it.unibo.pps.caw.menu.MainMenuController
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.{FXML, FXMLLoader}
@@ -27,7 +27,7 @@ import java.io.File
   *
   * It is responsible of displaying the editor, with its controls and the current level being edited, and capturing the player
   * inputs, relaying them to the [[EditorController]]. After the controller has processed the receiving input, the [[EditorView]]
-  * displays the current state of the edited level.
+  * displays the current state of the edited level. It must be constructed through its companion object.
   */
 trait EditorView extends ViewComponent[Pane] {
 
@@ -35,7 +35,7 @@ trait EditorView extends ViewComponent[Pane] {
     * @param level
     *   the [[LevelBuilder]] to be displayed
     */
-  def printLevel(level: LevelBuilder): Unit
+  def drawLevel(level: LevelBuilder): Unit
 
   /** Displays the given error message to the player.
     * @param message
@@ -107,8 +107,9 @@ abstract class AbstractEditorView(
   private val rulesPage = FXMLLoader.load[GridPane](ClassLoader.getSystemResource("fxml/editor_rules.fxml"))
   private var boardView: Option[EditorBoardView] = None
   private var sprites: Map[DraggableImageView, Image] = setButtonImages()
+  private val controller: EditorController = createController()
 
-  protected val controller: EditorController
+  protected def createController(): EditorController
 
   audioPlayer.play(Track.EditorMusic)
   backButton.setText(closeEditorButtonText)
@@ -119,15 +120,18 @@ abstract class AbstractEditorView(
   resetAll.setOnMouseClicked(_ => controller.resetLevel())
   rotateCellsButton.setOnMouseClicked(_ => rotateButtons())
 
-  override def printLevel(level: LevelBuilder): Unit = Platform.runLater(() => {
-    val newBoardView: EditorBoardView = EditorBoardView(scene.getWidth, scene.getHeight, level, this, this)
-
-    boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
-    GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
-    GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
-    GridPane.setMargin(newBoardView.innerComponent, new Insets(25, 0, 25, 0))
-    innerComponent.add(newBoardView.innerComponent, 2, 3, 11, 1)
-    boardView = Some(newBoardView)
+  override def drawLevel(level: LevelBuilder): Unit = Platform.runLater(() => {
+    boardView match {
+      case Some(_) => boardView.get.drawBoard(level)
+      case None =>
+        val newBoardView: EditorBoardView = EditorBoardView(scene.getWidth, scene.getHeight, level, this, this)
+        boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
+        GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
+        GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
+        GridPane.setMargin(newBoardView.innerComponent, new Insets(25, 0, 25, 0))
+        innerComponent.add(newBoardView.innerComponent, 2, 3, 11, 1)
+        boardView = Some(newBoardView)
+    }
   })
 
   override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.Error, message).showAndWait())
@@ -226,7 +230,7 @@ abstract class AbstractEditorView(
   }
 }
 
-/** The companion object of the trait [[EditorView]]. */
+/** The companion object of the trait [[EditorView]], containing its factory methods. */
 object EditorView {
   /* Concrete implementation of an EditorView displaying an empty level. */
   private final class EmptyEditorViewImpl(
@@ -237,7 +241,8 @@ object EditorView {
     width: Int,
     height: Int
   ) extends AbstractEditorView(scene, closeEditorButtonText, audioPlayer) {
-    override val controller: EditorController = EditorController(parentLevelEditorController, this, width, height)
+    override protected def createController(): EditorController =
+      EditorController(parentLevelEditorController, this, width, height)
   }
 
   /* Concrete implementation of an EditorView displaying an existing level. */
@@ -248,7 +253,7 @@ object EditorView {
     audioPlayer: AudioPlayer,
     level: Level[BaseCell]
   ) extends AbstractEditorView(scene, closeEditorButtonText, audioPlayer) {
-    override protected val controller: EditorController = EditorController(
+    override protected def createController(): EditorController = EditorController(
       parentLevelEditorController,
       this,
       level

@@ -15,9 +15,16 @@ import scalafx.stage.FileChooser
 
 import java.util.function.UnaryOperator
 
+/** The view of the editor menu.
+  *
+  * It is responsible of displaying the editor menu, with all its controls. It must be constructed through its companion object.
+  */
 trait LevelEditorMenuView extends ViewComponent[Pane]
 
+/** The companion object of the trait [[LevelEditorMenuView]], containing its factory method. */
 object LevelEditorMenuView {
+
+  /* Implementation of the LevelEditorMenuView. */
   private final class LevelEditorMenuViewImpl(
     parentLevelEditorController: ParentLevelEditorMenuController,
     scene: Scene,
@@ -50,12 +57,21 @@ object LevelEditorMenuView {
     width.textProperty().addListener(changeListener(width))
     height.textProperty().addListener(changeListener(height))
     backButton.setOnMouseClicked(_ => parentLevelEditorController.goBack())
-    loadFile.setOnMouseClicked(_ =>
-      FilePicker.pickFile(scene).foreach(f => parentLevelEditorController.startEditor(f.getPath))
-    )
+    loadFile.setOnMouseClicked(_ => FilePicker.pickFile(scene).foreach(f => parentLevelEditorController.startEditor(f.getPath)))
     continue.setOnMouseClicked(_ => parentLevelEditorController.startEditor(width.getText.toInt, height.getText.toInt))
   }
 
+  /** Returns a new instance of [[LevelEditorMenuView]]. It receives the [[ParentLevelEditorMenuController]] so as to be able to
+    * correctly create and then use its [[EditorMenuController]], the ScalaFX [[Scene]] where the [[EditorView]] will draw and
+    * display itself, the text that the upper left button will display depending if the [[EditorView]] was called from the menu or
+    * as a its own application.
+    * @param parentLevelEditorController
+    *   the controller needed to build the [[EditorMenuController]]
+    * @param scene
+    *   the ScalaFX [[Scene]] where the [[LevelEditorMenuView]] will be drawn and displayed
+    * @param closeEditorButtonText
+    *   the text of the upper left button
+    */
   def apply(
     parentLevelEditorController: ParentLevelEditorMenuController,
     scene: Scene,

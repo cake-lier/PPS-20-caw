@@ -1,9 +1,10 @@
-package it.unibo.pps.caw.editor.view
+package it.unibo.pps.caw
+package editor.view
 
-import it.unibo.pps.caw.common.{AbstractBoardView, BoardView, CellImage, CellView, DraggableImageView, ModelUpdater}
-import it.unibo.pps.caw.common.model.{Board, Position}
-import it.unibo.pps.caw.common.model.cell.PlayableCell
-import it.unibo.pps.caw.editor.model.LevelBuilder
+import common.model.cell.PlayableCell
+import common.model.{Board, Position}
+import common.*
+import editor.model.LevelBuilder
 import javafx.scene.Node
 import javafx.scene.effect.Glow
 import javafx.scene.image.ImageView
@@ -14,18 +15,18 @@ import javafx.scene.layout.GridPane
   *
   * In the editor, the player can modify the level board as they please: they can select and deselect the
   * [[it.unibo.pps.caw.common.model.PlayableArea]] and add, move and remove cells both inside and outside the
-  * [[it.unibo.pps.caw.common.model.PlayableArea]].
+  * [[it.unibo.pps.caw.common.model.PlayableArea]]. It must be constructed through its companion object.
   */
 sealed trait EditorBoardView extends BoardView {
 
-  /** Draws the [[PlayableCell]] received in input.
-    * @param board
-    *   the [[Board]] containing the [[PlayableCell]] to be drawn
+  /** Draws the [[LevelBuilder]] received in input.
+    * @param level
+    *   the [[LevelBuilder]] to be drawn
     */
-  def drawBoard(board: Board[PlayableCell]): Unit
+  def drawBoard(level: LevelBuilder): Unit
 }
 
-/** Companion object of the [[EditorBoardView]] trait. */
+/** Companion object of the [[EditorBoardView]] trait, containing its factory method. */
 object EditorBoardView {
 
   /** Returns a new instance of [[EditorBoardView]]. It receives the screen width and height, necessary to calculate the size of
@@ -71,17 +72,18 @@ object EditorBoardView {
     private var startPosition = Position(0, 0)
     private var endPosition = Position(0, 0)
 
-    drawBoard(initialLevel.board)
+    drawBoard(initialLevel)
 
-    override def drawBoard(board: Board[PlayableCell]): Unit = {
+    override def drawBoard(level: LevelBuilder): Unit = {
       clearComponents()
       drawPavement(droppablePavement = true)
-      initialLevel.playableArea match {
+      level.playableArea match {
         case Some(p) =>
           drawPlayableArea(p.position.x, p.position.y, p.dimensions.width, p.dimensions.height, droppablePlayableArea = true)
         case None => applyHandler(n => enablePlayableAreaSelection(n.asInstanceOf[ImageView]))
       }
-      board
+      level
+        .board
         .cells
         .foreach(c =>
           drawImageView(
@@ -138,7 +140,7 @@ object EditorBoardView {
         e.consume()
       })
 
-      imageView.setOnMouseDragEntered(e => {
+      imageView.setOnMouseDragEntered(_ => {
         glow.setLevel(0.3)
         applyHandler(
           n =>
@@ -149,7 +151,7 @@ object EditorBoardView {
         )
       })
 
-      imageView.setOnMouseDragExited(e => {
+      imageView.setOnMouseDragExited(_ => {
         glow.setLevel(0)
         applyHandler(
           n =>

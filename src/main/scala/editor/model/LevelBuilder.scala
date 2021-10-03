@@ -5,7 +5,8 @@ import it.unibo.pps.caw.common.model.cell.PlayableCell
 
 /** The level builder used by the editor.
   *
-  * It provides the necessary functionalities to build and modify a level while this is continously edited by the user.
+  * It provides the necessary functionalities to build, modify and retrieve a level and its structure while this is continously
+  * edited by the user. It must be constructed through its companion object.
   */
 trait LevelBuilder {
 
@@ -19,7 +20,7 @@ trait LevelBuilder {
   val playableArea: Option[PlayableArea]
 }
 
-/** The companion object of the trait [[LevelBuilder]]. */
+/** The companion object of the trait [[LevelBuilder]], containing its factory methods. */
 object LevelBuilder {
   /* The case class implementaiton of LevelBuilder*/
   private case class LevelBuilderImpl(dimensions: Dimensions, board: Board[PlayableCell], playableArea: Option[PlayableArea])
@@ -33,6 +34,10 @@ object LevelBuilder {
     *   the [[Board]] of the [[LevelBuilder]] to create
     * @param playableArea
     *   the [[PlayableArea]] of the [[LevelBuilder]] to create
+    * @param playableArea
+    *   the [[PlayableArea]] of the level
+    * @return
+    *   a new instance of [[LevelBuilder]]
     */
   def apply(dimensions: Dimensions, board: Board[PlayableCell], playableArea: PlayableArea): LevelBuilder =
     LevelBuilderImpl(dimensions, board, Some(playableArea))
@@ -43,6 +48,8 @@ object LevelBuilder {
     *   the [[Dimensions]] of the [[LevelBuilder]] to create
     * @param board
     *   the [[Board]] of the [[LevelBuilder]] to create
+    * @return
+    *   a new instance of [[LevelBuilder]]
     */
   def apply(dimensions: Dimensions, board: Board[PlayableCell]): LevelBuilder = LevelBuilderImpl(dimensions, board, None)
 
