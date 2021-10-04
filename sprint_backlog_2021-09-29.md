@@ -129,25 +129,25 @@ Rifinire tutto il codice realizzato, effettuando refactoring e migliorando la do
             <td>Creazione di un model unico per l'intero progetto</td>
             <td>Matteo Castellucci</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Adattare il DSL perché usi il model comune</td>
             <td>Matteo Castellucci</td>
             <td>5</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>5</td>
+            <td>5</td>
+            <td>5</td>
+            <td>4</td>
+            <td>2</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Creare classe LevelParser</td>
@@ -177,13 +177,13 @@ Rifinire tutto il codice realizzato, effettuando refactoring e migliorando la do
             <td>Migliorare documentazione package game</td>
             <td>Matteo Castellucci</td>
             <td>1</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
     </tbody>
 </table>
