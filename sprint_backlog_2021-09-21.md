@@ -168,3 +168,4 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
 </table>
 
 #### Sprint result:
+L'obiettivo di questo sprint è stato raggiunto: oltre al gioco completo è disponibile un level editor con cui il giocatore può creare i propri livelli in maniera interattiva. Inoltre, ora, sia il level editor che il gioco possono essere invocati direttamente dal DSL così che il giocatore possa sfruttarli per giocare o modificare i propri livelli dopo averli definiti tramite il DSL. Infine, sono state presi in considerazione miglioramenti alla UX come la possibilità di far persistere le impostazioni che l'utente ha dato al gioco, nonché i livelli che ha già giocato. Il codice è stato ripulito, è stata aggiunta molta documentazione assente e eliminati dei bug non catturati dai test creati, ma l'introduzione dell'editor richiede un refactoring più profondo del codice.
