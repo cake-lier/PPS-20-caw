@@ -45,8 +45,8 @@ object DSLGameMain extends JFXApp3 {
         l => {
           gameScene.root.value = GameView(
             new ParentGameController {
+              override def getFileStorage(): FileStorage = fileStorage
 
-              /** Asks the parent controller to go back to the previous state of the application. */
               override def closeGame(): Unit = sys.exit()
             },
             AudioPlayer(),

@@ -47,9 +47,9 @@ object FileStorage {
 
   private class FileStorageImpl() extends FileStorage {
 
-    def loadResource(path: String): Try[String] = Using(Source.fromResource(path))(_.getLines.mkString)
+    def loadResource(path: String): Try[String] = Using(Source.fromResource(path))(_.getLines.mkString(" "))
 
-    def loadFile(path: String): Try[String] = Using(Source.fromFile(path))(_.getLines.mkString)
+    def loadFile(path: String): Try[String] = Using(Source.fromFile(path))(_.getLines.mkString(" "))
 
     def writeFile(path: String, body: String, options: OpenOption*): Try[Unit] =
       Try(Files.writeString(Paths.get(path), body, options: _*))

@@ -1,5 +1,6 @@
 package it.unibo.pps.caw.game.controller
 
+import it.unibo.pps.caw.common.FileStorage
 import it.unibo.pps.caw.common.model.{Level, Position}
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.game.model.GameModel
@@ -17,6 +18,9 @@ import scala.util.Using
   * contexts with multiple parent controllers.
   */
 trait ParentGameController {
+
+  /** Asks the parent controller to provide its instance of [[FileStorage]]. */
+  def getFileStorage(): FileStorage
 
   /** Asks the parent controller to go back to the previous state of the application. */
   def closeGame(): Unit
@@ -141,14 +145,15 @@ object GameController {
     override def moveCell(oldPosition: Position)(newPosition: Position): Unit =
       model = model.moveCell(oldPosition)(newPosition)
 
-    private def createRulesEngine(): RulesEngine = {
-      Using(Source.fromResource("cellmachine.pl")) { _.getLines.mkString(" ") }
+    private def createRulesEngine(): RulesEngine =
+      parentController
+        .getFileStorage()
+        .loadResource("cellmachine.pl")
         .map(RulesEngine(_))
         .getOrElse({
           view.showError("Impossible to load rules file")
           RulesEngine()
         })
-    }
   }
 
   /* Extension of the AbstractGameController class for playing a generic level. */

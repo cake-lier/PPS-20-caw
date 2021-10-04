@@ -37,6 +37,8 @@ object ApplicationController {
     private var _settings: Settings = settingsStorage.load().getOrElse(settingsStorage.defaultSettings)
     private val futures: Set[Future[Try[Unit]]] = ConcurrentHashMap.newKeySet[Future[Try[Unit]]]().asScala
 
+    override def getFileStorage(): FileStorage = fileStorage
+
     override def closeGame(): Unit = view.showMainMenu()
 
     override def addSolvedLevel(index: Int): Unit = {
