@@ -33,6 +33,7 @@ trait LevelStorage {
   def saveLevel(path: String, level: Level[BaseCell]): Try[Unit]
 }
 
+/** Companion object to the [[LevelStorage]] trait */
 object LevelStorage {
 
   private class LevelStorageImpl(fileStorage: FileStorage, levelParser: LevelParser) extends LevelStorage {

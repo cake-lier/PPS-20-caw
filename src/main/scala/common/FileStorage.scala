@@ -34,25 +34,15 @@ trait FileStorage {
     *   the path to the file to be written
     * @param body
     *   the content of the file to be written
-    * @return
-    *   a [[Try]] with a [[java.io.IOException]] if it occurs
-    */
-  def writeFile(path: String, body: String): Try[Unit]
-
-  /** Writes a file to disk, with [[OpenOption]]. It needs the absolute path to the file and returns an exception if it occurs. If
-    * the file does not exist, it is created. If the file already exists, it gets overwritten.
-    *
-    * @param path
-    *   the path to the file to be written
-    * @param body
-    *   the content of the file to be written
     * @param options
+    *   the [[OpenOption]] for file writing
     * @return
     *   an exception if it occurs during IO operations
     */
   def writeFile(path: String, body: String, options: OpenOption*): Try[Unit]
 }
 
+/** Companion object to the [[FileStorage]] trait */
 object FileStorage {
 
   private class FileStorageImpl() extends FileStorage {
@@ -60,8 +50,6 @@ object FileStorage {
     def loadResource(path: String): Try[String] = Using(Source.fromResource(path))(_.getLines.mkString)
 
     def loadFile(path: String): Try[String] = Using(Source.fromFile(path))(_.getLines.mkString)
-
-    def writeFile(path: String, body: String): Try[Unit] = Try(Files.writeString(Paths.get(path), body))
 
     def writeFile(path: String, body: String, options: OpenOption*): Try[Unit] =
       Try(Files.writeString(Paths.get(path), body, options: _*))

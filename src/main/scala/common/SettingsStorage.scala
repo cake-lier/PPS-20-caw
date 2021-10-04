@@ -49,7 +49,7 @@ object SettingsStorage {
   private class SettingsStorageImpl(fileStorage: FileStorage) extends SettingsStorage {
     val defaultSettings = Settings(0.3, 0.7, Set())
     private val defaultSettingsJson = Json.toJson(defaultSettings)(Json.writes[Settings])
-    private val filePath = System.getProperty("user.home") + File.separator + ".settings.json"
+    private val filePath = System.getProperty("user.home") + File.separator + ".settings_caw.json"
 
     override def load(): Try[Settings] = {
       fileStorage.loadFile(filePath) match {

@@ -34,6 +34,7 @@ trait LevelParser {
 
 }
 
+/** Companion object to the [[LevelParser]] trait */
 object LevelParser {
 
   private class LevelParserImpl(fileStorage: FileStorage) extends LevelParser {

@@ -33,8 +33,8 @@ object ApplicationController {
     private val fileStorage = FileStorage()
     private val levelParser = LevelParser(fileStorage)
     private val levelStorage = LevelStorage(fileStorage, levelParser)
-    private val settingsManager = SettingsStorage(fileStorage)
-    private var _settings: Settings = settingsManager.load().getOrElse(settingsManager.defaultSettings)
+    private val settingsStorage = SettingsStorage(fileStorage)
+    private var _settings: Settings = settingsStorage.load().getOrElse(settingsStorage.defaultSettings)
     private val futures: Set[Future[Try[Unit]]] = ConcurrentHashMap.newKeySet[Future[Try[Unit]]]().asScala
 
     override def closeGame(): Unit = view.showMainMenu()
@@ -65,7 +65,7 @@ object ApplicationController {
 
     private def saveSettings(s: Settings): Unit = {
       val future: Future[Try[Unit]] = Future(
-        settingsManager.save(settings).recover(_ => view.showError("An error has occured, could not save settings"))
+        settingsStorage.save(settings).recover(_ => view.showError("An error has occured, could not save settings"))
       )
       futures.add(future)
       future.onComplete(_ => futures.remove(future))
