@@ -76,8 +76,7 @@ object LevelEditorModel {
   private case class LevelEditorModelImpl(currentLevel: LevelBuilder) extends LevelEditorModel {
 
     override val builtLevel: Option[Level[BaseCell]] =
-      currentLevel
-        .playableArea
+      currentLevel.playableArea
         .map(a =>
           Level(
             Dimensions(currentLevel.dimensions.width - 2, currentLevel.dimensions.height - 2),
@@ -87,11 +86,11 @@ object LevelEditorModel {
         )
 
     override def resetLevel: LevelEditorModel =
-      LevelEditorModel(currentLevel.dimensions.width, currentLevel.dimensions.height)
+      //-2 because addCornerWalls adds 2 in each dimension
+      LevelEditorModel(currentLevel.dimensions.width - 2, currentLevel.dimensions.height - 2)
 
     override def updateCellPosition(oldPosition: Position, newPosition: Position): LevelEditorModel =
-      currentLevel
-        .board
+      currentLevel.board
         .find(_.position == oldPosition)
         .map(_.changePositionProperty(_ => newPosition))
         .map(c => LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board.filter(_.position != oldPosition) + c)))
@@ -118,8 +117,7 @@ object LevelEditorModel {
       (1 to levelBuilder.dimensions.height).map(i => PlayableWallCell((0, i))(playable = false)),
       (1 to levelBuilder.dimensions.height).map(i => PlayableWallCell((levelBuilder.dimensions.width + 1, i))(playable = false))
     ).flatten
-    levelBuilder
-      .playableArea
+    levelBuilder.playableArea
       .map(p => LevelBuilder(PlayableArea(p.dimensions)((p.position.x + 1, p.position.y + 1))))
       .getOrElse(LevelBuilder.apply: Dimensions => Board[PlayableCell] => LevelBuilder)(
         (levelBuilder.dimensions.width + 2, levelBuilder.dimensions.height + 2)
