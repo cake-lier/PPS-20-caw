@@ -21,13 +21,13 @@ Rifinire tutto il codice realizzato, effettuando refactoring e migliorando la do
             <td>Spostare l'implementazione di ParentEditorMainMenuController da ApplicationController a MainMenuController</td>
             <td>Elena Rughi</td>
             <td>2</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>2</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Refactoring di BoardView</td>
@@ -153,25 +153,25 @@ Rifinire tutto il codice realizzato, effettuando refactoring e migliorando la do
             <td>Creare classe LevelParser</td>
             <td>Elena Rughi</td>
             <td>2</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>2</td>
+            <td>2</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Creare classi FileStorage e LevelStorage</td>
             <td>Elena Rughi</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>3</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Migliorare documentazione package game</td>
