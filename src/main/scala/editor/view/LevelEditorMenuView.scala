@@ -1,7 +1,8 @@
 package it.unibo.pps.caw.editor.view
 
-import it.unibo.pps.caw.common.{FilePicker, ViewComponent}
-import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.FilePicker
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.view.ViewComponent
 import it.unibo.pps.caw.editor.controller.{EditorMenuController, ParentLevelEditorController, ParentLevelEditorMenuController}
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener

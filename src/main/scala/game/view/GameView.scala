@@ -1,9 +1,10 @@
 package it.unibo.pps.caw.game.view
 
-import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{AudioPlayer, ModelUpdater, Track, ViewComponent}
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.model.{Board, Level, Position}
 import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
+import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
+import it.unibo.pps.caw.common.view.{ModelUpdater, ViewComponent}
 import it.unibo.pps.caw.game.controller.{GameController, ParentDefaultGameController, ParentGameController}
 import javafx.application.Platform
 import javafx.event.EventHandler

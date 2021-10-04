@@ -2,10 +2,10 @@ package it.unibo.pps.caw.common
 
 import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea, Position}
 import it.unibo.pps.caw.common.model.cell.*
-
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
+import it.unibo.pps.caw.common.storage.FileStorage
 import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString, JsValue, Json}
 
 import scala.util.Try
@@ -173,5 +173,6 @@ object LevelParser {
 
   }
 
+  /** Returns a new instance of the [[LevelParser]] trait. */
   def apply(fileStorage: FileStorage): LevelParser = LevelParserImpl(fileStorage)
 }

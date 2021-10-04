@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw.common.view
+
 import javafx.scene.image.Image
 
 /** The images used to draw a board. */

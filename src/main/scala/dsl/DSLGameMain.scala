@@ -2,10 +2,13 @@ package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.game.controller.ParentGameController
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.common.{AudioPlayer, FileStorage, LevelParser, LevelStorage, StageResizer}
+import it.unibo.pps.caw.common.LevelParser
 import it.unibo.pps.caw.menu.MainMenuView
-import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
+import it.unibo.pps.caw.common.view.StageResizer
+import it.unibo.pps.caw.common.view.sounds.AudioPlayer
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.Alert

@@ -1,8 +1,11 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.common.{AudioPlayer, FileStorage, LevelParser, LevelStorage, StageResizer}
+import it.unibo.pps.caw.common.LevelParser
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
+import it.unibo.pps.caw.common.view.StageResizer
+import it.unibo.pps.caw.common.view.sounds.AudioPlayer
 import it.unibo.pps.caw.editor.view.EditorView
 import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
 import it.unibo.pps.caw.editor.model.LevelBuilder
@@ -43,7 +46,7 @@ object DSLEditorMain extends JFXApp3 {
         l => {
           editorScene.root.value = EditorView(
             new ParentLevelEditorController {
-              
+
               override def closeEditor(): Unit = sys.exit()
 
               override def saveLevel(path: String, level: Level[BaseCell]): Unit = levelManager.saveLevel(path, level)

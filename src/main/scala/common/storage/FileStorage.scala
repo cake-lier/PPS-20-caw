@@ -1,8 +1,8 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw.common.storage
 
+import java.nio.file.{Files, OpenOption, Paths}
 import scala.io.Source
 import scala.util.{Try, Using}
-import java.nio.file.{Files, OpenOption, Paths}
 
 /** Represents the storage of files to disk: it allows to load project resources or external files. */
 trait FileStorage {
@@ -55,5 +55,6 @@ object FileStorage {
       Try(Files.writeString(Paths.get(path), body, options: _*))
   }
 
+  /** Returns a new instance of the [[FileStorage]] trait. */
   def apply(): FileStorage = FileStorageImpl()
 }

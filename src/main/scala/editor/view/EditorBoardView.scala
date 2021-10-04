@@ -5,6 +5,8 @@ import common.model.cell.PlayableCell
 import common.model.{Board, Position}
 import common.*
 import editor.model.LevelBuilder
+
+import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellImage, CellView, DraggableImageView, ModelUpdater}
 import javafx.scene.Node
 import javafx.scene.effect.Glow
 import javafx.scene.image.ImageView

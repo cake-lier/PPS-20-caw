@@ -3,7 +3,8 @@ package it.unibo.pps.caw.editor
 import io.vertx.core.Vertx
 import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea}
 import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.common.{FileStorage, LevelParser}
+import it.unibo.pps.caw.common.LevelParser
+import it.unibo.pps.caw.common.storage.FileStorage
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.{BeforeAndAfterAll, Suite}

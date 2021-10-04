@@ -1,14 +1,15 @@
 package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.menu.MainMenuView
-import javafx.application.Platform
-import scalafx.scene.control.Alert
 import it.unibo.pps.caw.editor.view.EditorView
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.common.{AudioPlayer, AudioType, StageResizer, ViewComponent}
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.BaseCell
+import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
+import it.unibo.pps.caw.common.view.{StageResizer, ViewComponent}
+import javafx.application.Platform
 import javafx.scene.layout.Pane
+import scalafx.scene.control.Alert
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
 

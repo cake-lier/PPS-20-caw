@@ -1,18 +1,9 @@
 package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.common.model.{Dimensions, Level, PlayableArea, Position}
-import it.unibo.pps.caw.common.model.cell.{
-  BaseBlockCell,
-  BaseCell,
-  BaseEnemyCell,
-  BaseGeneratorCell,
-  BaseMoverCell,
-  BaseRotatorCell,
-  BaseWallCell,
-  Orientation,
-  Push
-}
-import it.unibo.pps.caw.common.{FileStorage, LevelParser, LevelStorage}
+import it.unibo.pps.caw.common.model.cell.{BaseBlockCell, BaseCell, BaseEnemyCell, BaseGeneratorCell, BaseMoverCell, BaseRotatorCell, BaseWallCell, Orientation, Push}
+import it.unibo.pps.caw.common.LevelParser
+import it.unibo.pps.caw.common.storage.FileStorage
 import it.unibo.pps.caw.dsl.entities.*
 import it.unibo.pps.caw.dsl.CellsAtWorkDSL.*
 import it.unibo.pps.caw.dsl.errors.BoardBuilderError

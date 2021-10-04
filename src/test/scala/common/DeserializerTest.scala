@@ -2,7 +2,7 @@ package it.unibo.pps.caw.common
 
 import it.unibo.pps.caw.common.model.*
 import it.unibo.pps.caw.common.model.cell.{Orientation, PlayableGeneratorCell, PlayableMoverCell}
-
+import it.unibo.pps.caw.common.storage.FileStorage
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 

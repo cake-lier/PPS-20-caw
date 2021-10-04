@@ -1,9 +1,8 @@
-package it.unibo.pps.caw
-package common
+package it.unibo.pps.caw.common.view
 
-import ViewComponent.AbstractViewComponent
-import common.{TileView, CellImage}
-import model.Position
+import it.unibo.pps.caw.common.model.Position
+import it.unibo.pps.caw.common.*
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import javafx.scene.image.ImageView
 import javafx.scene.layout.{ColumnConstraints, GridPane, RowConstraints}
 

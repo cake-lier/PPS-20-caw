@@ -1,8 +1,8 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.common.Settings
 import it.unibo.pps.caw.editor.controller.ParentLevelEditorMenuController
 import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.storage.Settings
 
 /** The parent controller to the [[MainMenuController]].
   *

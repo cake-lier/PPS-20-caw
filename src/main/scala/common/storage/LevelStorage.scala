@@ -1,7 +1,7 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw.common.storage
 
 import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.editor.model.LevelBuilder as EditorLevel
+import it.unibo.pps.caw.common.LevelParser
 import it.unibo.pps.caw.common.model.cell.BaseCell
 
 import java.io.File
@@ -47,5 +47,6 @@ object LevelStorage {
       fileStorage.writeFile(path, levelParser.serializeLevel(level))
   }
 
+  /** Returns a new instance of the [[LevelStorage]] trait. */
   def apply(fileStorage: FileStorage, levelParser: LevelParser): LevelStorage = LevelStorageImpl(fileStorage, levelParser)
 }

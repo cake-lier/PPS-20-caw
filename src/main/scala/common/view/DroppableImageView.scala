@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw.common.view
 
 import it.unibo.pps.caw.common.model.Position
 import javafx.scene.image.ImageView

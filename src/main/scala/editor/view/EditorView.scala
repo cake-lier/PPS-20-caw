@@ -1,14 +1,14 @@
-package it.unibo.pps.caw
-package editor.view
+package it.unibo.pps.caw.editor.view
 
-import common.*
-import common.ViewComponent.AbstractViewComponent
-import common.model.cell.*
-import common.model.{Level, PlayableArea, Position}
-import editor.controller.{EditorController, ParentLevelEditorController}
-import editor.model.LevelBuilder
-import menu.MainMenuController
-
+import it.unibo.pps.caw.common.FilePicker
+import it.unibo.pps.caw.common.model.{Level, Position}
+import it.unibo.pps.caw.common.model.cell.*
+import it.unibo.pps.caw.common.view.CellImage.*
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
+import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView, ModelUpdater, ViewComponent}
+import it.unibo.pps.caw.editor.controller.{EditorController, ParentLevelEditorController}
+import it.unibo.pps.caw.editor.model.LevelBuilder
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.{FXML, FXMLLoader}

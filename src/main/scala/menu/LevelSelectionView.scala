@@ -1,8 +1,9 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{SoundButton, ViewComponent}
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.view.ViewComponent
+import it.unibo.pps.caw.common.view.sounds.SoundButton
 import javafx.fxml.FXML
 import javafx.scene.control.ScrollPane
 import javafx.scene.image.ImageView
@@ -13,8 +14,8 @@ import scalafx.scene.Scene
   *
   * This view component represents the "level selection" screen, which is part of the main menu. As such, its duty is to capture
   * all interactions with this specific part of the view and provide the expected functionalities such as allowing to choose the
-  * [[Level]] which starting the game with through the [[LevelSelectionController]]. It must be
-  * constructed through its companion object.
+  * [[Level]] which starting the game with through the [[LevelSelectionController]]. It must be constructed through its companion
+  * object.
   */
 trait LevelSelectionView extends ViewComponent[Pane]
 

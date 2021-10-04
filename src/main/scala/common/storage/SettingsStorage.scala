@@ -1,23 +1,12 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw.common.storage
 
 import play.api.libs.json.Json
 
 import java.io.{File, FileNotFoundException, FileWriter}
 import scala.util.{Failure, Success, Try, Using}
 
-/** Representation of game settings: the music volume, the SFX volume and the indexes of completed default levels.
-  *
-  * @param musicVolume
-  *   the volume of the music
-  * @param soundVolume
-  *   the volume of special effects
-  * @param solvedLevels
-  *   a set of indexes of the default levels already solved by the player
-  */
-case class Settings(musicVolume: Double, soundVolume: Double, solvedLevels: Set[Int])
-
-/** Represents storage for the game settings: it allows to load and save settings to a file so as to memorize the
-  * settings between game sessions.
+/** Represents storage for the game settings: it allows to load and save settings to a file so as to memorize the settings between
+  * game sessions.
   */
 trait SettingsStorage {
 
@@ -75,10 +64,6 @@ object SettingsStorage {
     }
   }
 
-  /** Returns a new instance of the [[SettingsStorage]] trait.
-    *
-    * @return
-    * a new [[SettingsStorage]] instance
-    */
+  /** Returns a new instance of the [[SettingsStorage]] trait. */
   def apply(fileStorage: FileStorage): SettingsStorage = SettingsStorageImpl(fileStorage)
 }

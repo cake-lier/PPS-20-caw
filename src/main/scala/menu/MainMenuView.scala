@@ -1,7 +1,9 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{AudioPlayer, FilePicker, SoundButton, Track, ViewComponent}
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.view.ViewComponent
+import it.unibo.pps.caw.common.FilePicker
+import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, SoundButton, Track}
 import it.unibo.pps.caw.editor.view.LevelEditorMenuView
 import javafx.fxml.FXML
 import javafx.scene.layout.{GridPane, Pane}

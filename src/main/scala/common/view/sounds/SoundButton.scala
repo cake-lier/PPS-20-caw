@@ -1,5 +1,5 @@
 package it.unibo.pps.caw
-package common
+package common.view.sounds
 
 import javafx.event.EventHandler
 import javafx.scene.control.Button

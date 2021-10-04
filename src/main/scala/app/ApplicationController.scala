@@ -6,9 +6,10 @@ import it.unibo.pps.caw.menu.ParentMainMenuController
 
 import scala.util.Try
 import cats.implicits.given
-import it.unibo.pps.caw.common.{LevelStorage, LevelParser, FileStorage, Settings, SettingsStorage}
+import it.unibo.pps.caw.common.LevelParser
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.BaseCell
+import it.unibo.pps.caw.common.storage.{FileStorage, Settings, SettingsStorage, LevelStorage}
 import play.api.libs.json.Json
 
 import concurrent.ExecutionContext.Implicits.global

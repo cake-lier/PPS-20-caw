@@ -2,7 +2,8 @@ package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.BaseCell
-import it.unibo.pps.caw.common.{FileStorage, LevelParser, LevelStorage}
+import it.unibo.pps.caw.common.LevelParser
+import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
 import it.unibo.pps.caw.dsl.entities.BoardBuilder
 
 import scala.collection.mutable.ListBuffer

@@ -1,8 +1,7 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw.common.view
 
 import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.common.{CellImage, ViewComponent, DraggableImageView}
-
+import it.unibo.pps.caw.common.view.{CellImage, CellView}
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
 
@@ -26,7 +25,7 @@ object CellView {
     innerComponent.fitWidthProperty().bind(gridPane.heightProperty().divide(gridPane.getRowConstraints.size()))
     innerComponent.setPreserveRatio(true)
 
-    import CellImage._
+    import CellImage.*
     cell match {
       case PlayableRotatorCell(rotation, _, _) =>
         rotation match {

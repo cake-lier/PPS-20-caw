@@ -1,8 +1,8 @@
 package it.unibo.pps.caw.game.controller
 
-import it.unibo.pps.caw.common.FileStorage
 import it.unibo.pps.caw.common.model.{Level, Position}
 import it.unibo.pps.caw.common.model.cell.BaseCell
+import it.unibo.pps.caw.common.storage.FileStorage
 import it.unibo.pps.caw.game.model.GameModel
 import it.unibo.pps.caw.game.model.engine.RulesEngine
 import it.unibo.pps.caw.game.view.GameView

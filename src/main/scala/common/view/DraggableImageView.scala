@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw.common.view
 
 import javafx.scene.image.ImageView
 import javafx.scene.input.{ClipboardContent, TransferMode}
