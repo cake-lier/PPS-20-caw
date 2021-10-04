@@ -70,9 +70,9 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>Creazione di un "EditorController"</td>
             <td>Lorenzo Gardini</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>1</td>
+            <td>0</td>
             <td></td>
             <td></td>
             <td></td>
@@ -82,25 +82,25 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>Creazione di un "EditorModel"</td>
             <td>Lorenzo Gardini</td>
             <td>8</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>6</td>
+            <td>6</td>
+            <td>4</td>
+            <td>4</td>
+            <td>2</td>
+            <td>1</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Serializzazione livelli creati dall'editor</td>
             <td>Lorenzo Gardini</td>
             <td>2</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td rowspan="2">Creazione di un'applicazione con il solo gioco e una con il solo editor per il DSL</td>
