@@ -49,9 +49,9 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>6</td>
             <td>6</td>
             <td>5</td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>4</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td rowspan="4">Aggiunta di un level editor nel gioco standalone</td>
@@ -73,10 +73,10 @@ Rifinire l'applicazione del gioco già realizzata, oltre ad aggiungere nuove mic
             <td>3</td>
             <td>1</td>
             <td>0</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Creazione di un "EditorModel"</td>
