@@ -11,13 +11,13 @@ drop_first([X | Xs], Y, [X | L]) :- X \= Y, drop_first(Xs, Y, L).
 % with the cell which coordinates and type are given as starting cell. For calculating this value, the predicate hence starts from
 % the initial cell and then recursively moves along the board from left to right on the same row of the previous cell. This means
 % that getting the next cell is equivalent to getting the one adjacent to the right to the previous one. Any given cell can move
-% to the right if it is one that can always move to the right, like an "enemy" or a "delete" cell, or if it is a cell that can
+% to the right if it is one that can always move to the right, like an "enemy" or a "deleter" cell, or if it is a cell that can
 % move to the right if it is adjacent to a cell that can move to the right, which is any cell except the "wall" and the "vertical
 % block" cells (which can never be moved in the right direction) and the "generator left" and the "mover left" cells (because they
 % move in a direction opposite to the right one). If no other cell is found while traversing the board as previously described, it
 % is assumed that an "empty" cell has been met, which can always be moved to the right. No ordering is required for the cells in
 % the board.
-last_index_right(_, T, X, _, X) :- (T = enemy; T = delete), !.
+last_index_right(_, T, X, _, X) :- (T = enemy; T = deleter), !.
 last_index_right(B, T, X, Y, EX) :- T \= wall,
                                     T \= block_ver,
                                     T \= mover_left,
@@ -32,12 +32,12 @@ last_index_right(B, T, X, Y, EX) :- T \= wall,
 % this predicate will yield an incorrect result. The checks are left to the invoker of this predicate. Any cell in the board that
 % has coordinates which are not conforming to the ones previously specified are ignored and copied in the result as is. If the
 % last cell met while moving them is an "enemy" cell, the cell is removed as is removed the one previous to the "enemy" cell.
-% If the last cell met while moving them is a "delete" cell, the one previous to it is removed. No ordering is required for the
+% If the last cell met while moving them is a "deleter" cell, the one previous to it is removed. No ordering is required for the
 % cells in the board.
 move_right([], _, _, _, _, []).
 move_right([cell(_, enemy, EX, Y) | Cs], B, SX, EX, Y, NB) :- move_right(Cs, B, SX, EX, Y, NB), !.
 move_right([cell(I, T, X, Y) | Cs], B, SX, EX, Y1, [cell(I, T, X, Y) | NCs]) :- ((T = generator_right, X =:= SX, Y =:= Y1);
-                                                                                 T = delete;
+                                                                                 T = deleter;
                                                                                  X < SX;
                                                                                  X > EX;
                                                                                  Y =\= Y1),
@@ -47,7 +47,7 @@ move_right([cell(_, _, X, Y) | Cs], B, SX, EX, Y, NB) :- X >= SX,
                                                          X < EX,
                                                          X1 is X + 1,
                                                          member(cell(_, T, X1, Y), B),
-                                                         (T = enemy; T = delete),
+                                                         (T = enemy; T = deleter),
                                                          move_right(Cs, B, SX, EX, Y, NB),
                                                          !.
 move_right([cell(I, T, X, Y) | Cs], B, SX, EX, Y, [cell(I, T, X1, Y)| NCs]) :- X >= SX,
@@ -61,7 +61,7 @@ move_right([cell(I, T, X, Y) | Cs], B, SX, EX, Y, [cell(I, T, X1, Y)| NCs]) :- X
 % cells which could be pushed by the "mover right" cell are deemed to be really movable to the right by one position, the cells
 % are then moved. If no action can be performed, the input board is given as output. Any cell in the board that is not affected by
 % this rule is ignored and copied in the result as is. If the last cell which can be moved is an "enemy" cell, the cell is
-% removed as is removed the one previous to the "enemy" cell. If the last cell which can be moved them is a "delete" cell, the one
+% removed as is removed the one previous to the "enemy" cell. If the last cell which can be moved them is a "deleter" cell, the one
 % previous to it is removed. If the coordinates does not point to a "mover right" cell, the predicate simply evaluates to "no".
 % No ordering is required for the cells in the board and the "empty" cells must not be represented.
 mover_right_next_state(B, X, Y, NB) :- member(cell(_, mover_right, X, Y), B),
@@ -76,13 +76,13 @@ mover_right_next_state(B, _, _, B).
 % with the cell which coordinates and type are given as starting cell. For calculating this value, the predicate hence starts from
 % the initial cell and then recursively moves along the board from right to left on the same row of the previous cell. This means
 % that getting the next cell is equivalent to getting the one adjacent to the left to the previous one. Any given cell can move
-% to the left if it is one that can always move to the left, like an "enemy" or a "delete" cell, or if it is a cell that can move
+% to the left if it is one that can always move to the left, like an "enemy" or a "deleter" cell, or if it is a cell that can move
 % to the left if it is adjacent to a cell that can move to the left, which is any cell except the "wall" and the "vertical block"
 % cells (which can never be moved in the left direction) and the "generator right" and the "mover right" cells (because they move
 % in a direction opposite to the left one). If no other cell is found while traversing the board as previously described, it is
 % assumed that an "empty" cell has been met, which can always be moved to the left. No ordering is required for the cells in the
 % board.
-last_index_left(_, T, X, _, X) :- (T = enemy; T = delete), !.
+last_index_left(_, T, X, _, X) :- (T = enemy; T = deleter), !.
 last_index_left(B, T, X, Y, EX) :- T \= wall,
                                    T \= block_ver,
                                    T \= mover_right,
@@ -97,12 +97,12 @@ last_index_left(B, T, X, Y, EX) :- T \= wall,
 % this predicate will yield an incorrect result. The checks are left to the invoker of this predicate. Any cell in the board that
 % has coordinates which are not conforming to the ones previously specified are ignored and copied in the result as is. If the
 % last cell met while moving them is an "enemy" cell, the cell is removed as is removed the one previous to the "enemy" cell.
-% If the last cell met while moving them is a "delete" cell, the one previous to it is removed. No ordering is required for the
+% If the last cell met while moving them is a "deleter" cell, the one previous to it is removed. No ordering is required for the
 % cells in the board.
 move_left([], _, _, _, _, []).
 move_left([cell(_, enemy, EX, Y) | Cs], B, SX, EX, Y, NB) :- move_left(Cs, B, SX, EX, Y, NB), !.
 move_left([cell(I, T, X, Y) | Cs], B, SX, EX, Y1, [cell(I, T, X, Y) | NCs]) :- ((T = generator_left, X =:= SX, Y =:= Y1);
-                                                                                T = delete;
+                                                                                T = deleter;
                                                                                 X > SX;
                                                                                 X < EX;
                                                                                 Y =\= Y1),
@@ -112,7 +112,7 @@ move_left([cell(_, _, X, Y) | Cs], B, SX, EX, Y, NB) :- X =< SX,
                                                         X > EX,
                                                         X1 is X - 1,
                                                         member(cell(_, T, X1, Y), B),
-                                                        (T = enemy; T = delete),
+                                                        (T = enemy; T = deleter),
                                                         move_left(Cs, B, SX, EX, Y, NB),
                                                         !.
 move_left([cell(I, T, X, Y) | Cs], B, SX, EX, Y, [cell(I, T, X1, Y)| NCs]) :- X =< SX,
@@ -126,7 +126,7 @@ move_left([cell(I, T, X, Y) | Cs], B, SX, EX, Y, [cell(I, T, X1, Y)| NCs]) :- X 
 % cells which could be pushed by the "mover left" cell are deemed to be really movable to the left by one position, the cells
 % are then moved. If no action can be performed, the input board is given as output. Any cell in the board that is not affected by
 % this rule is ignored and copied in the result as is. If the last cell which can be moved is an "enemy" cell, the cell is
-% removed as is removed the one previous to the "enemy" cell. If the last cell which can be moved is a "delete" cell, the one
+% removed as is removed the one previous to the "enemy" cell. If the last cell which can be moved is a "deleter" cell, the one
 % previous to it is removed. If the coordinates does not point to a "mover left" cell, the predicate simply evaluates to "no".
 % No ordering is required for the cells in the board and the "empty" cells must not be represented.
 mover_left_next_state(B, X, Y, NB) :- member(cell(_, mover_left, X, Y), B),
@@ -141,13 +141,13 @@ mover_left_next_state(B, _, _, B).
 % with the cell which coordinates and type are given as starting cell. For calculating this value, the predicate hence starts from
 % the initial cell and then recursively moves along the board from top to bottom on the same column of the previous cell. This
 % means that getting the next cell is equivalent to getting the one adjacent to the bottom of the previous one. Any given cell can
-% move to the bottom if it is one that can always move to the bottom, like an "enemy" or a "delete" cell, or if it is a cell that
+% move to the bottom if it is one that can always move to the bottom, like an "enemy" or a "deleter" cell, or if it is a cell that
 % can move to the bottom if it is adjacent to a cell that can move to the bottom, which is any cell except the "wall" and the
 % "horizontal block" cells (which can never be moved in the bottom direction) and the "generator top" and the "mover top" cells
 % (because they move in a direction opposite to the bottom one). If no other cell is found while traversing the board as
 % previously described, it is assumed that an "empty" cell has been met, which can always be moved to the bottom. No ordering is
 % required for the cells in the board.
-last_index_down(_, T, _, Y, Y) :- (T = enemy; T = delete), !.
+last_index_down(_, T, _, Y, Y) :- (T = enemy; T = deleter), !.
 last_index_down(B, T, X, Y, EY) :- T \= wall,
                                    T \= block_hor,
                                    T \= mover_top,
@@ -162,13 +162,13 @@ last_index_down(B, T, X, Y, EY) :- T \= wall,
 % this predicate will yield an incorrect result. The checks are left to the invoker of this predicate. Any cell in the board that
 % has coordinates which are not conforming to the ones previously specified are ignored and copied in the result as is. If the
 % last cell met while moving them is an "enemy" cell, the cell is removed as is removed the one previous to the "enemy" cell. If
-% the last cell met while moving them is a "delete" cell, the one previous to it is is removed. No ordering is required for the
+% the last cell met while moving them is a "deleter" cell, the one previous to it is is removed. No ordering is required for the
 % cells in the board.
 move_down([], _, _, _, _, []).
 
 move_down([cell(_, enemy, X, EY) | Cs], B, SY, EY, X, NB) :- move_down(Cs, B, SY, EY, X, NB), !.
 move_down([cell(I, T, X, Y) | Cs], B, SY, EY, X1, [cell(I, T, X, Y) | NCs]) :- ((T = generator_down, Y =:= SY, X =:= X1);
-                                                                                T = delete;
+                                                                                T = deleter;
                                                                                 Y < SY;
                                                                                 Y > EY;
                                                                                 X =\= X1),
@@ -178,7 +178,7 @@ move_down([cell(_, _, X, Y) | Cs], B, SY, EY, X, NB) :- Y >= SY,
                                                         Y < EY,
                                                         Y1 is Y + 1,
                                                         member(cell(_, T, X, Y1), B),
-                                                        (T = enemy; T = delete),
+                                                        (T = enemy; T = deleter),
                                                         move_down(Cs, B, SY, EY, X, NB),
                                                         !.
 move_down([cell(I, T, X, Y) | Cs], B, SY, EY, X, [cell(I, T, X, Y1)| NCs]) :- Y >= SY,
@@ -192,7 +192,7 @@ move_down([cell(I, T, X, Y) | Cs], B, SY, EY, X, [cell(I, T, X, Y1)| NCs]) :- Y 
 % cells which could be pushed by the "mover down" cell are deemed to be really movable to the bottom by one position, the cells
 % are then moved. If no action can be performed, the input board is given as output. Any cell in the board that is not affected by
 % this rule is ignored and copied in the result as is. If the last cell which can be moved is an "enemy" cell, the cell is
-% removed as is removed the one previous to the "enemy" cell. If the last cell which can be moved is a "delete" cell, the one
+% removed as is removed the one previous to the "enemy" cell. If the last cell which can be moved is a "deleter" cell, the one
 % previous to it is is removed. If the coordinates does not point to a "mover down" cell, the predicate simply evaluates to "no".
 % No ordering is required for the cells in the board and the "empty" cells must not be represented.
 mover_down_next_state(B, X, Y, NB) :- member(cell(_,mover_down, X, Y), B),
@@ -207,13 +207,13 @@ mover_down_next_state(B, _, _, B).
 % with the cell which coordinates and type are given as starting cell. For calculating this value, the predicate hence starts from
 % the initial cell and then recursively moves along the board from bottom to top on the same column of the previous cell. This
 % means that getting the next cell is equivalent to getting the one adjacent on the top of the previous one. Any given cell can
-% move to the top if it is one that can always move to the top, like an "enemy" or a "delete" cell, or if it is a cell that can
+% move to the top if it is one that can always move to the top, like an "enemy" or a "deleter" cell, or if it is a cell that can
 % move to the top if it is adjacent to a cell that can move to the top, which is any cell except the "wall" and the "horizontal
 % block" cells (which can never be moved in the top direction) and the "generator down" and the "mover down" cells (because they
 % move in a direction opposite to the top one). If no other cell is found while traversing the board as previously described, it
 % is assumed that an "empty" cell has been met, which can always be moved to the top. No ordering is required for the cells in the
 % board.
-last_index_top(_, T, _, Y, Y) :- (T = enemy; T = delete), !.
+last_index_top(_, T, _, Y, Y) :- (T = enemy; T = deleter), !.
 last_index_top(B, T, X, Y, EY) :-  T \= wall,
                                    T \= block_hor,
                                    T \= mover_down,
@@ -228,12 +228,12 @@ last_index_top(B, T, X, Y, EY) :-  T \= wall,
 % this predicate will yield an incorrect result. The checks are left to the invoker of this predicate. Any cell in the board that
 % has coordinates which are not conforming to the ones previously specified are ignored and copied in the result as is. If the
 % last cell met while moving them is an "enemy" cell, the cell is removed as is removed the one previous to the "enemy" cell.
-% If the last cell met while moving them is a "delete" cell, the one previous to it is removed. No ordering is required for the
+% If the last cell met while moving them is a "deleter" cell, the one previous to it is removed. No ordering is required for the
 % cells in the board.
 move_top([], _, _, _, _, []).
 move_top([cell(_, enemy, X, EY) | Cs], B, SY, EY, X, NB) :- move_top(Cs, B, SY, EY, X, NB), !.
 move_top([cell(I, T, X, Y) | Cs], B, SY, EY, X1, [cell(I, T, X, Y) | NCs]) :- ((T = generator_top, Y =:= SY, X =:= X1);
-                                                                               T = delete;
+                                                                               T = deleter;
                                                                                Y > SY;
                                                                                Y < EY;
                                                                                X =\= X1),
@@ -243,7 +243,7 @@ move_top([cell(_, _, X, Y) | Cs], B, SY, EY, X, NB) :- Y =< SY,
                                                        Y > EY,
                                                        Y1 is Y - 1,
                                                        member(cell(_, T, X, Y1), B),
-                                                       (T = enemy; T = delete),
+                                                       (T = enemy; T = deleter),
                                                        move_top(Cs, B, SY, EY, X, NB),
                                                        !.
 move_top([cell(I, T, X, Y) | Cs], B, SY, EY, X, [cell(I, T, X, Y1)| NCs]) :- Y =< SY,
@@ -257,7 +257,7 @@ move_top([cell(I, T, X, Y) | Cs], B, SY, EY, X, [cell(I, T, X, Y1)| NCs]) :- Y =
 % cells which could be pushed by the "mover top" cell are deemed to be really movable to the top by one position, the cells
 % are then moved. If no action can be performed, the input board is given as output. Any cell in the board that is not affected by
 % this rule is ignored and copied in the result as is. If the last cell which can be moved is an "enemy" cell, the cell is
-% removed as is removed the one previous to the "enemy" cell. If the last cell which can be moved is a "delete" cell, the one
+% removed as is removed the one previous to the "enemy" cell. If the last cell which can be moved is a "deleter" cell, the one
 % previous to it is removed. If the coordinates does not point to a "mover right" cell, the predicate simply evaluates to "no". No
 % ordering is required for the cells in the board and the "empty" cells must not be represented.
 mover_top_next_state(B, X, Y, NB) :- member(cell(_, mover_top, X, Y), B),
@@ -353,7 +353,7 @@ generate_right(B, T, X, EX, Y, M, [cell(M, T, X1, Y) | NB]) :- X1 is X + 1, move
 % Allows to update the state of a board and obtain its next state applying the rule for the "generator right" cell behavior.
 % If a cell is adjacent to the left of the "generator right" which coordinates are given and the cells which could be pushed by
 % the generation are deemed to be really movable to the right by one position, the generation is then attempted. However, if the
-% adjacent cell is an "enemy" cell, the board is left unchanged. If the adjacent cell is a "delete" cell, it is generated
+% adjacent cell is an "enemy" cell, the board is left unchanged. If the adjacent cell is a "deleter" cell, it is generated
 % removing the first of the cells to the right of the generator. If no action can be performed, the input board is given as
 % output. Any cell in the board that is not affected by this rule is ignored and copied in the result as is. If the coordinates
 % does not point to a "generator right" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the
@@ -362,9 +362,9 @@ generator_right_next_state(B, X, Y, _, B) :- member(cell(_, generator_right, X, 
                                              X1 is X - 1,
                                              member(cell(_, enemy, X1, Y), B),
                                              !.
-generator_right_next_state(B, X, Y, M, [cell(M, delete, X2, Y) | NB]) :- member(cell(_, generator_right, X, Y), B),
+generator_right_next_state(B, X, Y, M, [cell(M, deleter, X2, Y) | NB]) :- member(cell(_, generator_right, X, Y), B),
                                                                          X1 is X - 1,
-                                                                         member(cell(_, delete, X1, Y), B),
+                                                                         member(cell(_, deleter, X1, Y), B),
                                                                          X2 is X + 1,
                                                                          drop_first(B, cell(_, _, X2, Y), NB), 
                                                                          !.
@@ -395,7 +395,7 @@ generate_left(B, T, X, EX, Y, M, [cell(M, T, X1, Y) | NB]) :- X1 is X - 1, move_
 % Allows to update the state of a board and obtain its next state applying the rule for the "generator left" cell behavior.
 % If a cell is adjacent to the right of the "generator left" which coordinates are given and the cells which could be pushed by
 % the generation are deemed to be really movable to the left by one position, the generation is then attempted. However, if the
-% adjacent cell is an enemy cell, the board is left unchanged. If the adjacent cell is a "delete" cell, it is generated
+% adjacent cell is an enemy cell, the board is left unchanged. If the adjacent cell is a "deleter" cell, it is generated
 % removing the first of the cells to the left of the generator. If no action can be performed, the input board is given as output.
 % Any cell in the board that is not affected by this rule is ignored and copied in the result as is.  If the coordinates does not
 % point to a "generator left" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the board and
@@ -404,9 +404,9 @@ generator_left_next_state(B, X, Y, M, B) :- member(cell(_, generator_left, X, Y)
                                             X1 is X + 1,
                                             member(cell(_, enemy, X1, Y), B),
                                             !.
-generator_left_next_state(B, X, Y, M, [cell(M, delete, X2, Y) | NB]) :- member(cell(_, generator_left, X, Y), B),
+generator_left_next_state(B, X, Y, M, [cell(M, deleter, X2, Y) | NB]) :- member(cell(_, generator_left, X, Y), B),
                                                                         X1 is X + 1,
-                                                                        member(cell(_, delete, X1, Y), B),
+                                                                        member(cell(_, deleter, X1, Y), B),
                                                                         X2 is X - 1,
                                                                         drop_first(B, cell(_, _, X2, Y), NB),
                                                                         !.
@@ -437,7 +437,7 @@ generate_down(B, T, Y, EY, X, M, [cell(M, T, X, Y1) | NB]) :-  Y1 is Y + 1, move
 % Allows to update the state of a board and obtain its next state applying the rule for the "generator down" cell behavior.
 % If a cell is adjacent above the "generator down" which coordinates are given and the cells which could be pushed by the
 % generation are deemed to be really movable below by one position, the generation is then attempted. However, if the
-% adjacent cell is an enemy cell, the board is unchanged. If the adjacent cell is a "delete" cell, it is generated
+% adjacent cell is an enemy cell, the board is unchanged. If the adjacent cell is a "deleter" cell, it is generated
 % removing the first of the cells below the generator. If no action can be performed, the input board is given as output. Any cell
 % in the board that is not affected by this rule is ignored and copied in the result as is. If the coordinates does not point to a
 % "generator down" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the board and the empty
@@ -446,9 +446,9 @@ generator_down_next_state(B, X, Y, M, B) :- member(cell(_, generator_down, X, Y)
                                             Y1 is Y - 1,
                                             member(cell(_, enemy, X, Y1), B),
                                             !.
-generator_down_next_state(B, X, Y, M, [cell(M, delete, X, Y2) | NB]) :- member(cell(_, generator_down, X, Y), B),
+generator_down_next_state(B, X, Y, M, [cell(M, deleter, X, Y2) | NB]) :- member(cell(_, generator_down, X, Y), B),
                                                                         Y1 is Y - 1,
-                                                                        member(cell(_, delete, X, Y1), B),
+                                                                        member(cell(_, deleter, X, Y1), B),
                                                                         Y2 is Y + 1,
                                                                         drop_first(B, cell(_, _, X, Y2), NB),
                                                                         !.
@@ -479,7 +479,7 @@ generate_top(B, T, Y, EY, X, M, [cell(M, T, X, Y1) | NB]) :-  Y1 is Y - 1, move_
 % Allows to update the state of a board and obtain its next state applying the rule for the "generator top" cell behavior.
 % If a cell is adjacent below the "generator top" which coordinates are given and the cells which could be pushed by the
 % generation are deemed to be really movable above by one position, the generation is then attempted. However, if the
-% adjacent cell is an enemy cell, the board is unchanged. If the adjacent cell is a "delete" cell, it is generated
+% adjacent cell is an enemy cell, the board is unchanged. If the adjacent cell is a "deleter" cell, it is generated
 % removing the first of the cells above the generator. If no action can be performed, the input board is given as output. Any cell
 % in the board that is not affected by this rule is ignored and copied in the result as is. If the coordinates does not point to a
 % "generator top" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the board and the empty
@@ -488,9 +488,9 @@ generator_top_next_state(B, X, Y, M, B) :- member(cell(_, generator_top, X, Y), 
                                            Y1 is Y + 1,
                                            member(cell(_, enemy, X, Y1), B),
                                            !.
-generator_top_next_state(B, X, Y, M, [cell(M, delete, X, Y2) | NB]) :- member(cell(_, generator_top, X, Y), B),
+generator_top_next_state(B, X, Y, M, [cell(M, deleter, X, Y2) | NB]) :- member(cell(_, generator_top, X, Y), B),
                                                                        Y1 is Y + 1,
-                                                                       member(cell(_, delete, X, Y1), B),
+                                                                       member(cell(_, deleter, X, Y1), B),
                                                                        Y2 is Y - 1,
                                                                        drop_first(B, cell(_, _, X, Y2), NB),
                                                                        !.

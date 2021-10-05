@@ -14,41 +14,38 @@ private object PrologParser {
   /* Returns a Prolog cell(id, cellType, x, y) given its Scala cell */
   def serializeCell(cell: UpdateCell): String = {
     val cellType: String = cell match {
-      case _: UpdateWallCell  => "wall"
-      case _: UpdateEnemyCell => "enemy"
-      case m: UpdateMoverCell => "mover_" + m.orientation.name
-      case b: UpdateBlockCell =>
-        "block" + (b.push match {
+      case _: UpdateWallCell           => "wall"
+      case _: UpdateEnemyCell          => "enemy"
+      case UpdateMoverCell(_, o, _, _) => "mover_" + o.name
+      case UpdateBlockCell(_, p, _, _) =>
+        "block" + (p match {
           case Push.Horizontal => "_hor"
           case Push.Vertical   => "_ver"
           case Push.Both       => ""
         })
-      case g: UpdateGeneratorCell => "generator_" + g.orientation.name
-      case r: UpdateRotatorCell   => "rotator_" + r.rotation.name
+      case UpdateGeneratorCell(_, o, _, _) => "generator_" + o.name
+      case UpdateRotatorCell(_, r, _, _)   => "rotator_" + r.name
+      case _: UpdateDeleterCell            => "deleter"
     }
     "cell" + Seq(cell.id, cellType, cell.position.x, cell.position.y).mkString("(", ",", ")")
   }
 
   /* Returns a Prolog term given its cell.
 
-     If the cell is a mover or a rotator, it returns mover/ratator_next_state[board, x, y, NB].
+     If the cell is a mover or a rotator, it returns mover/rotator_next_state[board, x, y, NB].
      If the cell is a generator, it returns generator_next_state[board, maxId, x, y, NB] */
-  def createSerializedPredicate(board: Board[UpdateCell], maxId: Long, cell: UpdateCell): String = {
-    var seq = Seq("[" + board.cells.map(serializeCell).mkString(",") + "]", cell.position.x, cell.position.y)
-    val action: String = cell match {
-      case m: UpdateMoverCell => "mover_" + m.orientation.name
-      case g: UpdateGeneratorCell =>
-        seq = seq :+ maxId.toString
-        "generator_" + g.orientation.name
-      case r: UpdateRotatorCell => "rotator_" + r.rotation.name
+  def createSerializedPredicate(board: Board[UpdateCell], maxId: Long, cell: UpdateCell): Option[String] = {
+    var seq = Seq(board.map(serializeCell).mkString("[", ",", "]"), cell.position.x, cell.position.y)
+    if (cell.isInstanceOf[UpdateGeneratorCell]) {
+      seq :+= maxId.toString
     }
-
-    seq = seq :+ "NB"
-
-    action
-      + "_next_state"
-      + seq.mkString("(", ",", ")")
-
+    seq :+= "NB"
+    (cell match {
+      case UpdateMoverCell(_, o, _, _) => Some("mover_" + o.name)
+      case UpdateGeneratorCell(_, o, _, _) => Some("generator_" + o.name)
+      case UpdateRotatorCell(_, r, _, _) => Some("rotator_" + r.name)
+      case _ => None
+    }).map(_ + "_next_state" + seq.mkString("(", ",", ")"))
   }
 
   /* Returns a Scala Board of fake cells given the Prolog Board */

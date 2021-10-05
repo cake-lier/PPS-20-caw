@@ -38,6 +38,7 @@ object PlayableCell {
       case BaseMoverCell(o, p)     => PlayableMoverCell(o)(p)(isPlayable(cell))
       case BaseBlockCell(d, p)     => PlayableBlockCell(d)(p)(isPlayable(cell))
       case BaseWallCell(p)         => PlayableWallCell(p)(isPlayable(cell))
+      case BaseDeleterCell(p)      => PlayableDeleterCell(p)(isPlayable(cell))
     }
   }
 
@@ -58,6 +59,7 @@ object PlayableCell {
       case PlayableMoverCell(o, p, _)     => PlayableMoverCell(o)(p)(playable)
       case PlayableBlockCell(d, p, _)     => PlayableBlockCell(d)(p)(playable)
       case PlayableWallCell(p, _)         => PlayableWallCell(p)(playable)
+      case PlayableDeleterCell(p, _)      => PlayableDeleterCell(p)(playable)
     }
 
     /** Changes the [[PlayableCell.position]] property of this [[PlayableCell]] with the result of the given function. The
@@ -75,6 +77,7 @@ object PlayableCell {
       case PlayableMoverCell(o, p, i)     => PlayableMoverCell(o)(getPosition(p))(i)
       case PlayableBlockCell(d, p, i)     => PlayableBlockCell(d)(getPosition(p))(i)
       case PlayableWallCell(p, i)         => PlayableWallCell(getPosition(p))(i)
+      case PlayableDeleterCell(p, i)      => PlayableDeleterCell(getPosition(p))(i)
     }
 
     /** Returns this [[PlayableCell]] converted to its equivalent [[BaseCell]]. */
@@ -85,6 +88,7 @@ object PlayableCell {
       case PlayableMoverCell(o, p, _)     => BaseMoverCell(o)(p)
       case PlayableBlockCell(d, p, _)     => BaseBlockCell(d)(p)
       case PlayableWallCell(p, _)         => BaseWallCell(p)
+      case PlayableDeleterCell(p, _)      => BaseDeleterCell(p)
     }
   }
 }
@@ -286,4 +290,34 @@ object PlayableWallCell {
     *   a tuple containing the [[Position]] and "playable" properties
     */
   def unapply(cell: PlayableWallCell): (Position, Boolean) = (cell.position, cell.playable)
+}
+
+/** A [[DeleterCell]] which is also a [[PlayableCell]]. */
+sealed trait PlayableDeleterCell extends DeleterCell with PlayableCell
+
+/** Companion object of the [[PlayableWallCell]] trait, containing its utility methods. */
+object PlayableDeleterCell {
+
+  /* Default implementation of the PlayableDeleterCell trait. */
+  private case class PlayableDeleterCellImpl(position: Position, playable: Boolean) extends PlayableDeleterCell
+
+  /** Returns a new instance of the [[PlayableDeleterCell]] trait given its [[Position]] and if it is playable or not.
+    *
+    * @param position
+    *   the [[Position]] of the [[PlayableDeleterCell]] to create
+    * @param playable
+    *   if the [[PlayableDeleterCell]] is playable or not
+    * @return
+    *   a new [[PlayableDeleterCell]] instance
+    */
+  def apply(position: Position)(playable: Boolean): PlayableDeleterCell = PlayableDeleterCellImpl(position, playable)
+
+  /** Extracts the [[Position]] and "playable" properties from the given instance of [[PlayableDeleterCell]].
+    *
+    * @param cell
+    *   the [[PlayableDeleterCell]] from which extracting the properties
+    * @return
+    *   a tuple containing the [[Position]] and "playable" properties
+    */
+  def unapply(cell: PlayableDeleterCell): (Position, Boolean) = (cell.position, cell.playable)
 }

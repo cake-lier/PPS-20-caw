@@ -44,6 +44,7 @@ object UpdateCell {
       case BaseBlockCell(d, p)     => UpdateBlockCell(p, d, id, updated)
       case BaseEnemyCell(p)        => UpdateEnemyCell(p, id, updated)
       case BaseWallCell(p)         => UpdateWallCell(p, id, updated)
+      case BaseDeleterCell(p)      => UpdateDeleterCell(p, id, updated)
     }
   }
 
@@ -64,6 +65,7 @@ object UpdateCell {
       case UpdateMoverCell(p, o, i, _)     => UpdateMoverCell(p, o, i, updated)
       case UpdateBlockCell(p, d, i, _)     => UpdateBlockCell(p, d, i, updated)
       case UpdateWallCell(p, i, _)         => UpdateWallCell(p, i, updated)
+      case UpdateDeleterCell(p, i, _)      => UpdateDeleterCell(p, i, updated)
     }
 
     /** Returns this [[UpdateCell]] converted to its equivalent [[BaseCell]]. */
@@ -74,6 +76,7 @@ object UpdateCell {
       case UpdateMoverCell(p, o, _, _)     => BaseMoverCell(o)(p)
       case UpdateBlockCell(p, d, _, _)     => BaseBlockCell(d)(p)
       case UpdateWallCell(p, _, _)         => BaseWallCell(p)
+      case UpdateDeleterCell(p, _, _)      => BaseDeleterCell(p)
     }
   }
 }
@@ -442,5 +445,61 @@ object UpdateWallCell {
       id: Int = cell.id,
       updated: Boolean = cell.updated
     ): UpdateWallCell = UpdateWallCellImpl(position, id, updated)
+  }
+}
+
+/** A [[DeleterCell]] which is also an [[UpdateCell]]. */
+sealed trait UpdateDeleterCell extends WallCell with UpdateCell
+
+/** Companion object to the [[UpdateDeleterCell]] trait, containing its utility methods. */
+object UpdateDeleterCell {
+
+  /* Default implementation of the UpdateWallCell trait. */
+  private case class UpdateDeleterCellImpl(position: Position, id: Int, updated: Boolean) extends UpdateDeleterCell
+
+  /** Returns a new instance of the [[UpdateDeleterCell]] trait given its [[Position]], its unique id and whether or not it has
+    * already been updated.
+    *
+    * @param position
+    *   the [[Position]] of the [[UpdateDeleterCell]] to create
+    * @param id
+    *   the unique id of the [[UpdateDeleterCell]] to create
+    * @param updated
+    *   whether or not the [[UpdateDeleterCell]] to create has already been updated
+    * @return
+    *   a new instance of [[UpdateDeleterCell]]
+    */
+  def apply(position: Position, id: Int, updated: Boolean): UpdateDeleterCell = UpdateDeleterCellImpl(position, id, updated)
+
+  /** Extracts the [[Position]], "id" and "updated" properties from the given instance of [[UpdateDeleterCell]].
+    *
+    * @param cell
+    *   the [[UpdateDeleterCell]] from which extracting the properties
+    * @return
+    *   a tuple containing the [[Position]], "id" and "updated" properties
+    */
+  def unapply(cell: UpdateDeleterCell): (Position, Int, Boolean) = (cell.position, cell.id, cell.updated)
+
+  /** Contains the extension methods of the [[UpdateDeleterCell]] trait. */
+  extension (cell: UpdateDeleterCell) {
+
+    /** Copy constructor of the [[UpdateDeleterCell]] trait which creates a new instance of [[UpdateDeleterCell]] copying the
+      * already created one and modifying its properties with the given values for its [[Position]], its unique id and for whether
+      * or not it has already been updated.
+      *
+      * @param position
+      *   the [[Position]] of the [[UpdateDeleterCell]] to create
+      * @param id
+      *   the unique id of the [[UpdateDeleterCell]] to create
+      * @param updated
+      *   whether or not the [[UpdateDeleterCell]] to create has already been updated
+      * @return
+      *   a new [[UpdateDeleterCell]] instance copied from this one
+      */
+    def copy(
+      position: Position = cell.position,
+      id: Int = cell.id,
+      updated: Boolean = cell.updated
+    ): UpdateDeleterCell = UpdateDeleterCellImpl(position, id, updated)
   }
 }

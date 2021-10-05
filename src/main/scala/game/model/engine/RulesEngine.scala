@@ -22,11 +22,11 @@ object RulesEngine {
 
     private def nextState(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = {
       val cellState: Map[Int, Boolean] = board.map(c => if (c.id == cell.id) (c.id, true) else (c.id, c.updated)).toMap
-      val resBoard = PrologParser.deserializeBoard(
-        engine
-          .solve(Goal(PrologParser.createSerializedPredicate(getPartialBoard(board, cell), cellState.keySet.max + 1, cell)))
-          .getLastTerm
-      )
+      val resBoard: Board[UpdateCell] =
+        PrologParser
+          .createSerializedPredicate(getPartialBoard(board, cell), cellState.keySet.max + 1, cell)
+          .map(p => PrologParser.deserializeBoard(engine.solve(Goal(p)).getLastTerm))
+          .getOrElse(board)
       updateGlobalBoard(
         board,
         resBoard.map(_ match {

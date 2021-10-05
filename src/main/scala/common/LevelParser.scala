@@ -166,6 +166,7 @@ object LevelParser {
             case _: BaseRotatorCell   => CellType.Rotator.name
             case _: BaseBlockCell     => CellType.Block.name
             case _: BaseGeneratorCell => CellType.Generator.name
+            case _: BaseDeleterCell   => CellType.Deleter.name
           })
           .map(t => t._1 -> JsArray(t._2.map(parseCell).toSeq))
           .toSeq
