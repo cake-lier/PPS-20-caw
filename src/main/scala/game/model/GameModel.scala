@@ -76,9 +76,9 @@ object GameModel {
     */
   private def isPositionInsidePlayableArea(position: Position)(playableArea: PlayableArea): Boolean =
     position.x >= playableArea.position.x &&
-      position.x <= (playableArea.position.x + playableArea.dimensions.width) &&
+      position.x < (playableArea.position.x + playableArea.dimensions.width) &&
       position.y >= playableArea.position.y &&
-      position.y <= (playableArea.position.y + playableArea.dimensions.height)
+      position.y < (playableArea.position.y + playableArea.dimensions.height)
 
   /** Returns whether or not a [[it.unibo.pps.caw.common.model.Level]] is completed given its [[Board]]. This is the only
     * necessary element for evaluating it because a level is considered completed when no [[EnemyCell]] are present on the board.
