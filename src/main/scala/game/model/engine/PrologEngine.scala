@@ -18,13 +18,14 @@ object Clause {
 }
 
 sealed trait Result {
-  val stringResult: String
+  /** [[Result]] as [[String]] */
+  val value: String
   def getLastTerm: String
 }
 object Result {
-  private case class ResultImpl(stringResult: String) extends Result {
+  private case class ResultImpl(value: String) extends Result {
     override def getLastTerm: String = {
-      val term = Term.createTerm(stringResult).asInstanceOf[Struct]
+      val term = Term.createTerm(value).asInstanceOf[Struct]
       term.getArg(term.getArity - 1).getTerm.toString
     }
   }
@@ -36,7 +37,6 @@ sealed trait Goal {
 }
 object Goal {
   private case class GoalImpl(stringGoal: String) extends Goal
-
   def apply(stringGoal: String): Goal = GoalImpl(stringGoal)
 }
 sealed trait PrologEngine {

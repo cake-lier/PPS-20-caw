@@ -1,8 +1,9 @@
 package it.unibo.pps.caw.model
 
 import it.unibo.pps.caw.common.model.Board
-import it.unibo.pps.caw.common.model.cell._
+import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.common.model.cell.{BaseCell, Orientation, Push, Rotation}
+import it.unibo.pps.caw.common.storage.FileStorage
 import it.unibo.pps.caw.game.model.*
 import it.unibo.pps.caw.game.model.engine.RulesEngine
 import org.scalatest.funspec.AnyFunSpec
@@ -13,10 +14,8 @@ import scala.util.Using
 
 /** Tests for [[RulesEngine]] */
 class RulesEngineTest extends AnyFunSpec with Matchers {
-
-  private val rulesEngine: RulesEngine = RulesEngine(Using(Source.fromResource("cellmachine.pl")) {
-    _.getLines.mkString(" ")
-  }.get)
+  private val fileStorage: FileStorage = FileStorage()
+  private val rulesEngine: RulesEngine = RulesEngine(fileStorage.loadResource("cellmachine.pl").get)
   private val maxId: Long = 4
   private val moverRightBoard: Board[BaseCell] = Board(
     BaseMoverCell(Orientation.Right)((0, 0)),

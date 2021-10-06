@@ -23,10 +23,10 @@ import org.scalatest.matchers.should.Matchers
 
 import scala.util.{Failure, Success}
 
-class LevelParserTest extends AnyFunSpec with Matchers with BeforeAndAfterAll {
-  val fileStorage: FileStorage = FileStorage()
-  val levelParser: LevelParser = LevelParser(fileStorage)
-  val allCellsLevel: Level[BaseCell] = Level(
+class LevelParserTest extends AnyFunSpec with Matchers {
+  private val fileStorage: FileStorage = FileStorage()
+  private val levelParser: LevelParser = LevelParser(fileStorage)
+  private val allCellsLevel: Level[BaseCell] = Level(
     Dimensions(4, 5),
     Board(
       BaseMoverCell(Orientation.Left)((2, 0)),
@@ -47,8 +47,6 @@ class LevelParserTest extends AnyFunSpec with Matchers with BeforeAndAfterAll {
     ),
     PlayableArea((1, 2))((3, 3))
   )
-
-  override def afterAll(): Unit = Vertx.vertx().close()
 
   describe("LevelParser") {
     describe("serializing all possible cells in game") {

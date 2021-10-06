@@ -19,7 +19,7 @@ class GameStateTest extends AnyFunSpec with Matchers {
   private val fileStorage: FileStorage = FileStorage()
   private val initialLevel: Level[PlayableCell] =
     fileStorage
-      .loadFile("level01.json")
+      .loadResource("level01.json")
       .flatMap(LevelParser(FileStorage()).deserializeLevel)
       .map(toPlayableLevel)
       .get
