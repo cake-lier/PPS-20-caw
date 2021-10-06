@@ -359,15 +359,15 @@ generate_right(B, T, X, EX, Y, M, [cell(M, T, X1, Y) | NB]) :- X1 is X + 1, move
 % does not point to a "generator right" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the
 % board and the empty cells must not be represented.
 generator_right_next_state(B, X, Y, _, B) :- member(cell(_, generator_right, X, Y), B),
-                                             X1 is X - 1,
-                                             member(cell(_, enemy, X1, Y), B),
+                                             ((X1 is X - 1, member(cell(_, enemy, X1, Y), B));
+                                              (X2 is X + 1, member(cell(_, deleter, X2, Y), B))),
                                              !.
 generator_right_next_state(B, X, Y, M, [cell(M, deleter, X2, Y) | NB]) :- member(cell(_, generator_right, X, Y), B),
-                                                                         X1 is X - 1,
-                                                                         member(cell(_, deleter, X1, Y), B),
-                                                                         X2 is X + 1,
-                                                                         drop_first(B, cell(_, _, X2, Y), NB), 
-                                                                         !.
+                                                                          X1 is X - 1,
+                                                                          member(cell(_, deleter, X1, Y), B),
+                                                                          X2 is X + 1,
+                                                                          drop_first(B, cell(_, _, X2, Y), NB),
+                                                                          !.
 generator_right_next_state(B, X, Y, M, NB) :- member(cell(_, generator_right, X, Y), B),
                                               X1 is X - 1,
                                               member(cell(_, T, X1, Y), B),
@@ -401,8 +401,8 @@ generate_left(B, T, X, EX, Y, M, [cell(M, T, X1, Y) | NB]) :- X1 is X - 1, move_
 % point to a "generator left" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the board and
 % the empty cells must not be represented.
 generator_left_next_state(B, X, Y, M, B) :- member(cell(_, generator_left, X, Y), B),
-                                            X1 is X + 1,
-                                            member(cell(_, enemy, X1, Y), B),
+                                            ((X1 is X + 1, member(cell(_, enemy, X1, Y), B));
+                                             (X2 is X - 1, member(cell(_, deleter, X2, Y), B))),
                                             !.
 generator_left_next_state(B, X, Y, M, [cell(M, deleter, X2, Y) | NB]) :- member(cell(_, generator_left, X, Y), B),
                                                                         X1 is X + 1,
@@ -443,8 +443,8 @@ generate_down(B, T, Y, EY, X, M, [cell(M, T, X, Y1) | NB]) :-  Y1 is Y + 1, move
 % "generator down" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the board and the empty
 % cells must not be represented.
 generator_down_next_state(B, X, Y, M, B) :- member(cell(_, generator_down, X, Y), B),
-                                            Y1 is Y - 1,
-                                            member(cell(_, enemy, X, Y1), B),
+                                            ((Y1 is Y - 1, member(cell(_, enemy, X, Y1), B));
+                                             (Y2 is Y + 1, member(cell(_, deleter, X, Y2), B))),
                                             !.
 generator_down_next_state(B, X, Y, M, [cell(M, deleter, X, Y2) | NB]) :- member(cell(_, generator_down, X, Y), B),
                                                                         Y1 is Y - 1,
@@ -485,8 +485,8 @@ generate_top(B, T, Y, EY, X, M, [cell(M, T, X, Y1) | NB]) :-  Y1 is Y - 1, move_
 % "generator top" cell, the predicate simply evaluates to "no". No ordering is required for the cells in the board and the empty
 % cells must not be represented.
 generator_top_next_state(B, X, Y, M, B) :- member(cell(_, generator_top, X, Y), B),
-                                           Y1 is Y + 1,
-                                           member(cell(_, enemy, X, Y1), B),
+                                           ((Y1 is Y + 1, member(cell(_, enemy, X, Y1), B));
+                                            (Y2 is Y - 1, member(cell(_, deleter, X, Y2), B))),
                                            !.
 generator_top_next_state(B, X, Y, M, [cell(M, deleter, X, Y2) | NB]) :- member(cell(_, generator_top, X, Y), B),
                                                                        Y1 is Y + 1,

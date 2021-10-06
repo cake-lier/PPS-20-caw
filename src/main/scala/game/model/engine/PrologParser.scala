@@ -41,17 +41,18 @@ private object PrologParser {
     }
     seq :+= "NB"
     (cell match {
-      case UpdateMoverCell(_, o, _, _) => Some("mover_" + o.name)
+      case UpdateMoverCell(_, o, _, _)     => Some("mover_" + o.name)
       case UpdateGeneratorCell(_, o, _, _) => Some("generator_" + o.name)
-      case UpdateRotatorCell(_, r, _, _) => Some("rotator_" + r.name)
-      case _ => None
+      case UpdateRotatorCell(_, r, _, _)   => Some("rotator_" + r.name)
+      case _                               => None
     }).map(_ + "_next_state" + seq.mkString("(", ",", ")"))
   }
 
   /* Returns a Scala Board of fake cells given the Prolog Board */
   def deserializeBoard(stringBoard: String): Board[UpdateCell] = {
     val regex: Regex =
-      "cell\\(\\d+,(?:mover_right|mover_left|mover_top|mover_down|generator_right|generator_left|generator_top|generator_down|rotator_clockwise|rotator_counterclockwise|block|block_hor|block_ver|enemy|wall),\\d+,\\d+\\)".r
+      ("cell\\(\\d+,(?:mover_right|mover_left|mover_top|mover_down|generator_right|generator_left|generator_top|generator_down" +
+        "|rotator_clockwise|rotator_counterclockwise|block|block_hor|block_ver|enemy|wall|deleter),\\d+,\\d+\\)").r
     Board(
       regex
         .findAllMatchIn(stringBoard)
@@ -64,9 +65,9 @@ private object PrologParser {
   /* Returns a Scala fake cell given its Prolog cell*/
   def deserializeCell(stringCell: String): UpdateCell = {
     val s"cell($id,$cellType,$stringX,$stringY)" = stringCell
-    val cellId = id.toInt
-    val position = Position(stringX.toInt, stringY.toInt)
-    val updated = false // default value, properly set in nextState()
+    val cellId: Int = id.toInt
+    val position: Position = Position(stringX.toInt, stringY.toInt)
+    val updated: Boolean = false // default value, properly set in nextState()
 
     cellType match {
       case s"mover_$orientation" => UpdateMoverCell(position, Orientation.fromName(orientation).get, cellId, updated)
@@ -86,6 +87,7 @@ private object PrologParser {
       case s"generator_$orientation" =>
         UpdateGeneratorCell(position, Orientation.fromName(orientation).get, cellId, updated)
       case s"rotator_$rotation" => UpdateRotatorCell(position, Rotation.fromName(rotation).get, cellId, updated)
+      case "deleter"            => UpdateDeleterCell(position, cellId, updated)
     }
   }
 }
