@@ -170,7 +170,6 @@ object LevelParser {
           .map(t => t._1 -> JsArray(t._2.map(parseCell).toSeq))
           .toSeq
       )
-
   }
 
   /** Returns a new instance of the [[LevelParser]] trait. */
