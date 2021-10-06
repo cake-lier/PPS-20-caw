@@ -16,17 +16,19 @@ import scala.util.Using
 
 /** Tests for class [[GameState]] */
 class GameStateTest extends AnyFunSpec with Matchers {
-  val initialLevel: Level[PlayableCell] =
-    Using(Source.fromResource("level01.json")) { _.getLines.mkString(" ") }
+  private val fileStorage: FileStorage = FileStorage()
+  private val initialLevel: Level[PlayableCell] =
+    fileStorage
+      .loadFile("level01.json")
       .flatMap(LevelParser(FileStorage()).deserializeLevel)
       .map(toPlayableLevel)
       .get
-  val currentLevel: Level[PlayableCell] = initialLevel
-  val currentLevelIndex: Int = 1
-  val hasNextLevel: Boolean = false
-  val didEnemyDie: Boolean = false
-  val isCurrentLevelCompleted: Boolean = false
-  val gameState: GameState =
+  private val currentLevel: Level[PlayableCell] = initialLevel
+  private val currentLevelIndex: Int = 1
+  private val hasNextLevel: Boolean = false
+  private val didEnemyDie: Boolean = false
+  private val isCurrentLevelCompleted: Boolean = false
+  private val gameState: GameState =
     GameState(initialLevel, currentLevel, currentLevelIndex, hasNextLevel, didEnemyDie, isCurrentLevelCompleted)
 
   describe("GameState") {

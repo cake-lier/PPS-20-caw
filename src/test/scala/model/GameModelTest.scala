@@ -15,7 +15,8 @@ import scala.util.Using
 /** Tests for class [[GameModel]] */
 class GameModelTest extends AnyFunSpec with Matchers {
   private val rulesEngine: RulesEngine = RulesEngine(loadFile("cellmachine.pl"))
-  private val levelParser: LevelParser = LevelParser(FileStorage())
+  private val fileStorage: FileStorage = FileStorage()
+  private val levelParser: LevelParser = LevelParser(fileStorage)
   private val level1: Level[BaseCell] = levelParser.deserializeLevel(loadFile("level01.json")).get
   private val level2: Level[BaseCell] = levelParser.deserializeLevel(loadFile("level02.json")).get
   private val gameModelSingleLevel: GameModel = GameModel(rulesEngine, level1)
@@ -147,9 +148,7 @@ class GameModelTest extends AnyFunSpec with Matchers {
       }
     }
   }
-  private def loadFile(path: String): String = Using(Source.fromResource(path)) {
-    _.getLines.mkString(" ")
-  }.get
+  private def loadFile(path: String): String = fileStorage.loadFile(path).get
 
   private def convertBoard(levelWithWallsDimensions: Dimensions, board: Board[BaseCell]): Board[PlayableCell] =
     val levelDimensions: Dimensions = (levelWithWallsDimensions.width - 2, levelWithWallsDimensions.height - 2)
