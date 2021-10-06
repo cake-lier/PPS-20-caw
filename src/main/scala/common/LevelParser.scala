@@ -113,7 +113,8 @@ object LevelParser {
                       case Some(o) => Some(BaseGeneratorCell(o)(position))
                       case _       => None
                     }
-                  case _ => None
+                  case Some(CellType.Deleter) => Some(BaseDeleterCell(position))
+                  case _                      => None
                 }
               )
               .filter(_.isDefined)
@@ -171,7 +172,6 @@ object LevelParser {
           .map(t => t._1 -> JsArray(t._2.map(parseCell).toSeq))
           .toSeq
       )
-
   }
 
   /** Returns a new instance of the [[LevelParser]] trait. */
