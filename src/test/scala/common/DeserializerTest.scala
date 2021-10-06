@@ -43,7 +43,7 @@ class DeserializerTest extends AnyFunSpec with Matchers {
         levelParser.deserializeLevel(jsonLevel) match {
           case Success(l) =>
             l shouldBe Level(
-              (50, 60),
+              (40, 50),
               Board(
                 Set(
                   PlayableMoverCell(Orientation.Right)((1, 2))(true),
