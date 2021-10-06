@@ -139,7 +139,7 @@ class GameModelTest extends AnyFunSpec with Matchers {
       }
       it("With multiple level, level completed, should load next level") {
         val level2WallDimensions = (level2.dimensions.width + 2, level2.dimensions.height + 2)
-        gameModelMultipleLevels.moveCell((2, 2))((4, 4)).update.update.update.nextLevel shouldBe Level(
+        gameModelMultipleLevels.moveCell((2, 2))((4, 4)).update.update.update.nextLevel.state.levelCurrentState shouldBe Level(
           level2WallDimensions,
           convertBoard(level2WallDimensions, level2.board),
           PlayableArea(level2.playableArea.dimensions)((level2.playableArea.position.x + 1, level2.playableArea.position.y + 1))
