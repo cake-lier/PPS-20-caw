@@ -61,7 +61,8 @@ object ErrorChecker {
 
     /* Checks whether or not the given PlayableArea is valid. */
     def checkPlayableArea(
-      playableArea: Option[PlayableArea],
+      playableArea: Option[PlayableArea]
+    )(
       boardDimensions: Dimensions
     ): ValidatedNel[BoardBuilderError, PlayableArea] =
       checkSetPlayableArea(playableArea).andThen(a =>
@@ -72,7 +73,7 @@ object ErrorChecker {
       )
 
     /* Checks whether or not the given cells Positions are valid. */
-    def checkCellPositions(positions: Seq[Position], boardDimensions: Dimensions): ValidatedNel[BoardBuilderError, Unit] =
+    def checkCellPositions(positions: Seq[Position])(boardDimensions: Dimensions): ValidatedNel[BoardBuilderError, Unit] =
       checkNonDuplicatePositions(positions)
         .product(positions.map(checkNonNegativePosition(_)).sequence_)
         .andThen(_ => positions.map(checkPositionInBounds(_, boardDimensions)).sequence_)
@@ -92,18 +93,22 @@ object ErrorChecker {
     *   an [[scala.util.Either]] with the built [[Board]] if the check succeedes or with the first encountered
     *   [[BoardBuilderError]] if the check fails
     */
-  def checkBuilderData(builder: BoardBuilder): Either[Seq[BoardBuilderError], Level[BaseCell]] = {
+  def checkBuilderData(builder: BoardBuilder): Either[Seq[BoardBuilderError], Level[BaseCell]] =
     checkBoardDimensions(builder.dimensions)
       .andThen(d =>
         (
-          checkPlayableArea(builder.playableArea, d),
+          checkPlayableArea(builder.playableArea)(d),
           checkCellPositions(
-            builder.moverCells.map(_.position).toSeq ++
-              builder.generatorCells.map(_.position) ++
-              builder.rotatorCells.map(_.position) ++
-              builder.blockCells.map(_.position) ++
-              builder.enemyCells.map(_.position) ++
+            Seq(
+              builder.moverCells.map(_.position),
+              builder.generatorCells.map(_.position),
+              builder.rotatorCells.map(_.position),
+              builder.blockCells.map(_.position),
+              builder.enemyCells.map(_.position),
               builder.wallCells.map(_.position),
+              builder.deleterCells.map(_.position)
+            ).flatten
+          )(
             d
           )
         ).mapN((a, _) => (d, a))
@@ -111,16 +116,18 @@ object ErrorChecker {
       .map(t =>
         Level(
           t._1,
-          builder.moverCells ++
-            builder.generatorCells ++
-            builder.rotatorCells ++
-            builder.blockCells ++
-            builder.enemyCells ++
+          Set(
+            builder.moverCells,
+            builder.generatorCells,
+            builder.rotatorCells,
+            builder.blockCells,
+            builder.enemyCells,
             builder.wallCells,
+            builder.deleterCells
+          ).flatten,
           t._2
         )
       )
       .leftMap(_.toList)
       .toEither
-  }
 }
