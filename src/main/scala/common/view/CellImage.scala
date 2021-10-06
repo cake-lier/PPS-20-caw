@@ -51,6 +51,9 @@ enum CellImage(imageName: String) {
   /** The image of the down generator. */
   case GeneratorDown extends CellImage("generator_down")
 
+  /** The image of the deleter. */
+  case Deleter extends CellImage("deleter")
+
   /** The image of the default tile. */
   case DefaultTile extends CellImage("default")
 

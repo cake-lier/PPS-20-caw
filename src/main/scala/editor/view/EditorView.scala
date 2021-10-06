@@ -100,6 +100,8 @@ abstract class AbstractEditorView(
   @FXML
   var wallCellView: DraggableImageView = _
   @FXML
+  var deleterCellView: DraggableImageView = _
+  @FXML
   var rotateCellsButton: Button = _
 
   override val innerComponent: GridPane = loader.load[GridPane]
@@ -128,8 +130,8 @@ abstract class AbstractEditorView(
         boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
         GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
         GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
-        GridPane.setMargin(newBoardView.innerComponent, new Insets(25, 0, 25, 0))
-        innerComponent.add(newBoardView.innerComponent, 2, 3, 11, 1)
+        GridPane.setMargin(newBoardView.innerComponent, Insets(25, 0, 25, 0))
+        innerComponent.add(newBoardView.innerComponent, 2, 3, 10, 1)
         boardView = Some(newBoardView)
     }
   })
@@ -162,7 +164,8 @@ abstract class AbstractEditorView(
       setGraphic(generateCellView, CellImage.GeneratorRight.image),
       setGraphic(moverCellView, CellImage.MoverRight.image),
       setGraphic(blockCellView, CellImage.Block.image),
-      setGraphic(rotateCellView, CellImage.RotatorClockwise.image)
+      setGraphic(rotateCellView, CellImage.RotatorClockwise.image),
+      setGraphic(deleterCellView, CellImage.Deleter.image)
     )
   }
 
@@ -182,6 +185,7 @@ abstract class AbstractEditorView(
     case CellImage.BlockVertical.image           => BaseBlockCell(Push.Vertical)(newPosition)
     case CellImage.Enemy.image                   => BaseEnemyCell(newPosition)
     case CellImage.Wall.image                    => BaseWallCell(newPosition)
+    case CellImage.Deleter.image                 => BaseDeleterCell(newPosition)
   }
 
   private def setGraphic(buttonCellImageView: DraggableImageView, image: Image): (DraggableImageView, Image) = {
