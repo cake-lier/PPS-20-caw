@@ -9,6 +9,7 @@ import common.model.cell.BaseCell
 import editor.view.EditorView
 import game.view.GameView
 import menu.MainMenuView
+import view.DummyAudioPlayer
 
 import javafx.application.Platform
 import javafx.scene.layout.Pane
@@ -43,7 +44,7 @@ object TestApplicationView {
   /* Default implementation of the ApplicationView trait. */
   private class ApplicationViewImpl(stage: Stage) extends ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
-    private val audioPlayer: AudioPlayer = AudioPlayer()
+    private val audioPlayer: AudioPlayer = DummyAudioPlayer()
     TestStageResizer.resize(stage)
     private val scene: Scene = Scene(stage.getWidth, stage.getHeight)
 
