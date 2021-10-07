@@ -88,7 +88,7 @@ object GameView {
     @FXML
     var playSimulationButton: Button = _
     @FXML
-    var backToLevelsButton: Button = _
+    var backToMenuButton: Button = _
     @FXML
     var nextButton: Button = _
     override val innerComponent: GridPane = loader.load[GridPane]
@@ -97,7 +97,7 @@ object GameView {
     audioPlayer.play(Track.GameMusic)
 
     private def resetButtons(): Unit = {
-      playSimulationButton.setText("Start")
+      playSimulationButton.setText("Play")
       playSimulationButton.setOnMouseClicked(startSimulationHandler)
       playSimulationButton.setDisable(false)
       stepSimulationButton.setDisable(false)
@@ -125,7 +125,7 @@ object GameView {
       resetButton.setVisible(true)
     })
     playSimulationButton.setOnMouseClicked(startSimulationHandler)
-    backToLevelsButton.setOnMouseClicked(_ => controller.closeGame())
+    backToMenuButton.setOnMouseClicked(_ => controller.closeGame())
     nextButton.setOnMouseClicked(_ => {
       controller.nextLevel()
       resetButton.setVisible(false)

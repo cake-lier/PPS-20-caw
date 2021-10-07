@@ -4,7 +4,7 @@ import javafx.scene.image.Image
 
 /** The images used to draw a board. */
 enum CellImage(imageName: String) {
-  val image: Image = Image("imgs/" + imageName + ".png")
+  val image: Image = Image(s"imgs/$imageName.png")
 
   /** The image of the enemy. */
   case Enemy extends CellImage("enemy")

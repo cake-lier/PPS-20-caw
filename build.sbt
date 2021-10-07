@@ -39,5 +39,8 @@ libraryDependencies ++= Seq(
   "com.typesafe.play" %% "play-json" % "2.10.0-RC5",
   "org.scalafx" %% "scalafx" % "16.0.0-R24",
   "io.vertx" % "vertx-json-schema" % "4.1.4",
-  "it.unibo.alice.tuprolog" % "tuprolog" % "3.3.0"
+  "it.unibo.alice.tuprolog" % "tuprolog" % "3.3.0",
+  "org.testfx" % "testfx-core" % "4.0.16-alpha" % Test,
+  "org.testfx" % "testfx-junit5" % "4.0.16-alpha" % Test,
+  "org.testfx" % "openjfx-monocle" % "jdk-12.0.1+2" % Test
 ) ++ Seq("base", "controls", "fxml", "graphics", "media").map(m => "org.openjfx" % s"javafx-$m" % "16" classifier osName)
