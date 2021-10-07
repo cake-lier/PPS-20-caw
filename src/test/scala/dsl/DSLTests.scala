@@ -1,10 +1,9 @@
 package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.common.model.{Dimensions, Level, PlayableArea, Position}
-import it.unibo.pps.caw.common.model.cell.{BaseBlockCell, BaseCell, BaseEnemyCell, BaseGeneratorCell, BaseMoverCell, BaseRotatorCell, BaseWallCell, Orientation, Push}
+import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.common.LevelParser
 import it.unibo.pps.caw.common.storage.FileStorage
-import it.unibo.pps.caw.dsl.entities.*
 import it.unibo.pps.caw.dsl.CellsAtWorkDSL.*
 import it.unibo.pps.caw.dsl.errors.BoardBuilderError
 import org.scalatest.funspec.AnyFunSpec
@@ -14,21 +13,22 @@ import java.io.ByteArrayOutputStream
 
 /** Tests for all the DSL operations, even when wrongly used. */
 class DSLTests extends AnyFunSpec with Matchers {
-  private val boardDimensions: Dimensions = Dimensions(30, 40)
-  private val playableAreaDimensions: Dimensions = Dimensions(10, 20)
-  private val playableAreaPosition: Position = Position(0, 0)
+  private val boardDimensions: Dimensions = (30, 40)
+  private val playableAreaDimensions: Dimensions = (10, 20)
+  private val playableAreaPosition: Position = (0, 0)
   private val playableArea: PlayableArea = PlayableArea(playableAreaDimensions)(playableAreaPosition)
   private val moverOrientation: OrientationWord = right
-  private val mover: BaseMoverCell = BaseMoverCell(moverOrientation.orientation)(Position(1, 2))
+  private val mover: BaseMoverCell = BaseMoverCell(moverOrientation.orientation)((1, 2))
   private val generatorOrientation: OrientationWord = left
-  private val generator: BaseGeneratorCell = BaseGeneratorCell(generatorOrientation.orientation)(Position(3, 4))
+  private val generator: BaseGeneratorCell = BaseGeneratorCell(generatorOrientation.orientation)((3, 4))
   private val rotatorRotation: RotationWord = clockwise
-  private val rotator: BaseRotatorCell = BaseRotatorCell(rotatorRotation.rotation)(Position(5, 6))
+  private val rotator: BaseRotatorCell = BaseRotatorCell(rotatorRotation.rotation)((5, 6))
   private val blockPush: PushWord = vertically
-  private val block: BaseBlockCell = BaseBlockCell(blockPush.push)(Position(7, 8))
-  private val enemy: BaseEnemyCell = BaseEnemyCell(Position(9, 10))
-  private val wall: BaseWallCell = BaseWallCell(Position(11, 12))
-  private val cellsArea: Dimensions = Dimensions(2, 2)
+  private val block: BaseBlockCell = BaseBlockCell(blockPush.push)((7, 8))
+  private val enemy: BaseEnemyCell = BaseEnemyCell((9, 10))
+  private val wall: BaseWallCell = BaseWallCell((11, 12))
+  private val deleter: BaseDeleterCell = BaseDeleterCell((13, 14))
+  private val cellsArea: Dimensions = (2, 2)
   private val fileStorage: FileStorage = FileStorage()
   private val levelParser: LevelParser = LevelParser(fileStorage)
 
@@ -42,7 +42,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         out.toString shouldBe levelParser.serializeLevel(
           Level(
             boardDimensions,
-            Set(mover, generator, rotator, block, enemy, wall),
+            Set(mover, generator, rotator, block, enemy, wall, deleter),
             playableArea
           )
         )
@@ -76,18 +76,22 @@ class DSLTests extends AnyFunSpec with Matchers {
               .at(block.position.x, block.position.y)
             hasEnemyCells inAnArea (cellsArea.width, cellsArea.height) at (enemy.position.x, enemy.position.y)
             hasWallCells inAnArea (cellsArea.width, cellsArea.height) at (wall.position.x, wall.position.y)
+            hasDeleterCells inAnArea (cellsArea.width, cellsArea.height) at (deleter.position.x, deleter.position.y)
             printIt
           }
         }
         out.toString shouldBe levelParser.serializeLevel(
           Level(
             boardDimensions,
-            duplicateCells(BaseMoverCell(mover.orientation), mover.position) ++
-              duplicateCells(BaseGeneratorCell(generator.orientation), generator.position) ++
-              duplicateCells(BaseRotatorCell(rotator.rotation), rotator.position) ++
-              duplicateCells(BaseBlockCell(block.push), block.position) ++
-              duplicateCells(BaseEnemyCell.apply, enemy.position) ++
+            Set(
+              duplicateCells(BaseMoverCell(mover.orientation), mover.position),
+              duplicateCells(BaseGeneratorCell(generator.orientation), generator.position),
+              duplicateCells(BaseRotatorCell(rotator.rotation), rotator.position),
+              duplicateCells(BaseBlockCell(block.push), block.position),
+              duplicateCells(BaseEnemyCell.apply, enemy.position),
               duplicateCells(BaseWallCell.apply, wall.position),
+              duplicateCells(BaseDeleterCell.apply, deleter.position)
+            ).flatten,
             playableArea
           )
         )
@@ -185,15 +189,14 @@ class DSLTests extends AnyFunSpec with Matchers {
       }
     }
 
-    import java.util.stream.Collectors
-    import java.io.{File, InputStreamReader, BufferedReader, InputStream}
     import java.nio.file.{Files, Paths}
     import scala.util.Using
+    import scala.io.Source
 
     describe("when asked to save a board to file") {
       it("should produce the correct file") {
         val fileName: String = "level.json"
-        val path: String = System.getProperty("user.home") + File.separator + fileName
+        val path: String = Paths.get(System.getProperty("user.home"), fileName).toString
         board {
           withDimensions(boardDimensions.width, boardDimensions.height)
           hasPlayableArea
@@ -205,12 +208,12 @@ class DSLTests extends AnyFunSpec with Matchers {
           hasBlockCell pushable (blockPush) at (block.position.x, block.position.y)
           hasEnemyCell at (enemy.position.x, enemy.position.y)
           hasWallCell at (wall.position.x, wall.position.y)
+          hasDeleterCell at (deleter.position.x, deleter.position.y)
           saveIt(path)
         }
-        // see https://github.com/openfaas/templates/issues/158
-        Using(new BufferedReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(fileName)))) { r =>
-          Files.readString(Paths.get(path)) shouldBe r.lines.collect(Collectors.joining(System.lineSeparator))
-        }
+        Using(Source.fromResource(fileName))(e =>
+          Using(Source.fromFile(path))(a => a.mkString shouldBe e.mkString).recover(_ => fail())
+        ).recover(_ => fail())
         Files.delete(Paths.get(path))
       }
     }
@@ -232,7 +235,8 @@ class DSLTests extends AnyFunSpec with Matchers {
     rotator: BaseRotatorCell = rotator,
     block: BaseBlockCell = block,
     enemy: BaseEnemyCell = enemy,
-    wall: BaseWallCell = wall
+    wall: BaseWallCell = wall,
+    deleter: BaseDeleterCell = deleter
   ): Unit = {
     board {
       boardDimensions.foreach(d => withDimensions(d.width, d.height))
@@ -245,6 +249,7 @@ class DSLTests extends AnyFunSpec with Matchers {
       hasBlockCell pushable blockPush at (block.position.x, block.position.y)
       hasEnemyCell at (enemy.position.x, enemy.position.y)
       hasWallCell at (wall.position.x, wall.position.y)
+      hasDeleterCell at (deleter.position.x, deleter.position.y)
       printIt
     }
   }
