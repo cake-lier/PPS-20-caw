@@ -31,7 +31,7 @@
     </rowConstraints>
     <SoundButton fx:id="playButton" disable="true" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Play"
                  GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-    <SoundButton fx:id="editorButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Level Editor"
+    <SoundButton fx:id="editorButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Level editor"
                  GridPane.columnIndex="1" GridPane.rowIndex="5"/>
     <SoundButton fx:id="loadButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Load a level"
                  GridPane.columnIndex="1" GridPane.rowIndex="7"/>
