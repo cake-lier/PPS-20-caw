@@ -54,7 +54,8 @@ object DSLGameMain extends JFXApp3 {
             },
             AudioPlayer(),
             l,
-            gameScene
+            gameScene,
+            backButtonText = "Close"
           )
         }
       )

@@ -66,16 +66,13 @@ trait EditorUpdater {
   *
   * @param scene
   *   the ScalaFX [[Scene]] on which the [[EditorView]] will be drawn
-  * @param closeEditorButtonText
+  * @param backButtonText
   *   the text displayed in the close/back button
   * @param audioPlayer
   *   the [[AudioPlayer]] that will play the editor music
   */
-abstract class AbstractEditorView(
-  scene: Scene,
-  closeEditorButtonText: String,
-  audioPlayer: AudioPlayer
-) extends AbstractViewComponent[Pane]("editor.fxml")
+abstract class AbstractEditorView(scene: Scene, backButtonText: String, audioPlayer: AudioPlayer)
+  extends AbstractViewComponent[Pane]("editor.fxml")
   with EditorView
   with ModelUpdater
   with EditorUpdater {
@@ -112,7 +109,7 @@ abstract class AbstractEditorView(
   protected def createController(): EditorController
 
   audioPlayer.play(Track.EditorMusic)
-  backButton.setText(closeEditorButtonText)
+  backButton.setText(backButtonText)
   backButton.setOnMouseClicked(_ => controller.closeEditor())
   saveButton.setOnMouseClicked(_ => FilePicker.saveFile(scene).foreach(f => controller.saveLevel(f.getPath)))
   rulesButton.setOnMouseClicked(_ => innerComponent.add(rulesPage, 0, 0, 15, 7))
@@ -236,11 +233,11 @@ object EditorView {
   private final class EmptyEditorViewImpl(
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,
-    closeEditorButtonText: String,
+    backButtonText: String,
     audioPlayer: AudioPlayer,
     width: Int,
     height: Int
-  ) extends AbstractEditorView(scene, closeEditorButtonText, audioPlayer) {
+  ) extends AbstractEditorView(scene, backButtonText, audioPlayer) {
     override protected def createController(): EditorController =
       EditorController(parentLevelEditorController, this, width, height)
   }
@@ -249,10 +246,10 @@ object EditorView {
   private final class LevelEditorViewImpl(
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,
-    closeEditorButtonText: String,
+    backButtonText: String,
     audioPlayer: AudioPlayer,
     level: Level[BaseCell]
-  ) extends AbstractEditorView(scene, closeEditorButtonText, audioPlayer) {
+  ) extends AbstractEditorView(scene, backButtonText, audioPlayer) {
     override protected def createController(): EditorController = EditorController(
       parentLevelEditorController,
       this,
@@ -269,7 +266,7 @@ object EditorView {
     *   the controller needed to build the [[EditorController]]
     * @param scene
     *   the ScalaFX [[Scene]] where the [[EditorView]] will be drawn and displayed
-    * @param closeEditorButtonText
+    * @param backButtonText
     *   the text of the upper left button
     * @param audioPlayer
     *   the [[AudioPlayer]] used to play the music and sounds for the editor
@@ -281,14 +278,14 @@ object EditorView {
   def apply(
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,
-    closeEditorButtonText: String,
+    backButtonText: String,
     audioPlayer: AudioPlayer,
     level: Level[BaseCell]
   ): EditorView =
     LevelEditorViewImpl(
       parentLevelEditorController,
       scene,
-      closeEditorButtonText,
+      backButtonText,
       audioPlayer,
       level
     )
@@ -302,7 +299,7 @@ object EditorView {
     *   the controller needed to build the [[EditorController]]
     * @param scene
     *   the ScalaFX [[Scene]] where the [[EditorView]] will be drawn and displayed
-    * @param closeEditorButtonText
+    * @param backButtonText
     *   the text of the upper left button
     * @param audioPlayer
     *   the [[AudioPlayer]] used to play the music and sounds for the editor
@@ -316,10 +313,10 @@ object EditorView {
   def apply(
     parentLevelEditorController: ParentLevelEditorController,
     scene: Scene,
-    closeEditorButtonText: String,
+    backButtonText: String,
     audioPlayer: AudioPlayer,
     boardWidth: Int,
     boardHeight: Int
   ): EditorView =
-    EmptyEditorViewImpl(parentLevelEditorController, scene, closeEditorButtonText, audioPlayer, boardWidth, boardHeight)
+    EmptyEditorViewImpl(parentLevelEditorController, scene, backButtonText, audioPlayer, boardWidth, boardHeight)
 }

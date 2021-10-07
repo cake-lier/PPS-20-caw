@@ -193,7 +193,7 @@ class GameTest extends AnyFunSpec with Matchers with BeforeAndAfterAll {
   describe("when the player clicks back") {
     it("should show the menu") {
       val backToMenuButton: Button = getButtonById("backToMenuButton")
-      backToMenuButton.getText shouldBe "Back"
+      backToMenuButton.getText shouldBe "Menu"
       backToMenuButton.isVisible shouldBe true
       backToMenuButton.isDisabled shouldBe false
       robot.clickOn(backToMenuButton)

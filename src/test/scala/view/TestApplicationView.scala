@@ -60,19 +60,19 @@ object TestApplicationView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: Level[BaseCell]) = show(GameView(controller, audioPlayer, level, scene))
+    override def showGame(level: Level[BaseCell]) = show(GameView(controller, audioPlayer, level, scene, backButtonText = "Menu"))
 
     override def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit =
-      show(GameView(controller, audioPlayer, levels, levelIndex, scene))
+      show(GameView(controller, audioPlayer, levels, levelIndex, scene, backButtonText = "Menu"))
 
     override def showMainMenu(): Unit =
       show(MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0))
 
     override def showLevelEditor(width: Int, height: Int): Unit =
-      show(EditorView(controller, scene, "Menu", audioPlayer, width, height))
+      show(EditorView(controller, scene, backButtonText = "Menu", audioPlayer, width, height))
 
     override def showLevelEditor(level: Level[BaseCell]): Unit =
-      show(EditorView(controller, scene, "Menu", audioPlayer, level))
+      show(EditorView(controller, scene, backButtonText = "Menu", audioPlayer, level))
 
     def show(view: ViewComponent[? <: Pane]): ViewComponent[? <: Pane] = {
       scene.root.value = view

@@ -52,7 +52,7 @@ object DSLEditorMain extends JFXApp3 {
               override def saveLevel(path: String, level: Level[BaseCell]): Unit = levelManager.saveLevel(path, level)
             },
             editorScene,
-            "Close",
+            backButtonText = "Close",
             AudioPlayer(),
             l
           )

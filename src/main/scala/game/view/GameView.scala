@@ -77,8 +77,12 @@ trait GameView extends ViewComponent[GridPane] {
 object GameView {
 
   /* Abstract implementation of the GameView trait for factorizing common behaviors. */
-  private abstract class AbstractGameView(parentController: ParentGameController, audioPlayer: AudioPlayer, scene: Scene)
-    extends AbstractViewComponent[GridPane]("game.fxml")
+  private abstract class AbstractGameView(
+    parentController: ParentGameController,
+    audioPlayer: AudioPlayer,
+    scene: Scene,
+    backButtonText: String
+  ) extends AbstractViewComponent[GridPane]("game.fxml")
     with GameView
     with ModelUpdater {
     @FXML
@@ -125,6 +129,7 @@ object GameView {
       resetButton.setVisible(true)
     })
     playSimulationButton.setOnMouseClicked(startSimulationHandler)
+    backToMenuButton.setText(backButtonText)
     backToMenuButton.setOnMouseClicked(_ => controller.closeGame())
     nextButton.setOnMouseClicked(_ => {
       controller.nextLevel()
@@ -191,8 +196,9 @@ object GameView {
     audioPlayer: AudioPlayer,
     levels: Seq[Level[BaseCell]],
     levelIndex: Int,
-    scene: Scene
-  ) extends AbstractGameView(parentController, audioPlayer, scene) {
+    scene: Scene,
+    backButtonText: String
+  ) extends AbstractGameView(parentController, audioPlayer, scene, backButtonText) {
 
     override protected def createController(): GameController = GameController(parentController, this, levels, levelIndex)
   }
@@ -202,8 +208,9 @@ object GameView {
     parentController: ParentGameController,
     audioPlayer: AudioPlayer,
     level: Level[BaseCell],
-    scene: Scene
-  ) extends AbstractGameView(parentController, audioPlayer, scene) {
+    scene: Scene,
+    backButtonText: String
+  ) extends AbstractGameView(parentController, audioPlayer, scene, backButtonText) {
 
     override protected def createController(): GameController = GameController(parentController, this, level)
   }
@@ -231,9 +238,10 @@ object GameView {
     audioPlayer: AudioPlayer,
     levels: Seq[Level[BaseCell]],
     levelIndex: Int,
-    scene: Scene
+    scene: Scene,
+    backButtonText: String
   ): GameView =
-    DefaultGameView(parentController, audioPlayer, levels, levelIndex, scene)
+    DefaultGameView(parentController, audioPlayer, levels, levelIndex, scene, backButtonText)
 
   /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentGameController]] so as to be able to complete the
     * construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
@@ -251,6 +259,12 @@ object GameView {
     * @return
     *   a new [[GameView]] instance
     */
-  def apply(parentController: ParentGameController, audioPlayer: AudioPlayer, level: Level[BaseCell], scene: Scene): GameView =
-    ExternalGameView(parentController, audioPlayer, level, scene)
+  def apply(
+    parentController: ParentGameController,
+    audioPlayer: AudioPlayer,
+    level: Level[BaseCell],
+    scene: Scene,
+    backButtonText: String
+  ): GameView =
+    ExternalGameView(parentController, audioPlayer, level, scene, backButtonText)
 }
