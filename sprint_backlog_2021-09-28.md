@@ -189,3 +189,4 @@ Rifinire tutto il codice realizzato, effettuando refactoring e migliorando la do
 </table>
 
 #### Sprint result:
+Il refactoring è stato completato, ora tutto il codice è stato documentato ed ha raggiunto gli standard di codice prefissati.
