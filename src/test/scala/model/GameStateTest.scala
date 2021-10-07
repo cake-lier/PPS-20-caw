@@ -50,6 +50,19 @@ class GameStateTest extends AnyFunSpec with Matchers {
     it("should return same isCurrentLevelCompleted") {
       gameState.isCurrentLevelCompleted shouldBe isCurrentLevelCompleted
     }
+    describe("when copy constructor is called") {
+      it("should create a copy except for the new value") {
+        gameState.copy(isCurrentLevelCompleted = true) shouldBe GameState(
+          gameState.levelInitialState,
+          gameState.levelCurrentState,
+          gameState.currentLevelIndex,
+          gameState.hasNextLevel,
+          gameState.didEnemyDie,
+          isCurrentLevelCompleted = true
+        )
+      }
+    }
+
   }
 
   private def toPlayableLevel(level: Level[BaseCell]) =

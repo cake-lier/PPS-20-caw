@@ -33,10 +33,11 @@ object Result {
 }
 
 sealed trait Goal {
-  val stringGoal: String
+  /** [[Goal]] as [[String]] */
+  val value: String
 }
 object Goal {
-  private case class GoalImpl(stringGoal: String) extends Goal
+  private case class GoalImpl(value: String) extends Goal
   def apply(stringGoal: String): Goal = GoalImpl(stringGoal)
 }
 sealed trait PrologEngine {
@@ -54,7 +55,7 @@ object PrologEngine {
       *   list of [[Clause]] state, the [[Theory]]
       */
     override def solve(goal: Goal): Result =
-      Result(engine.solve(Term.createTerm(goal.stringGoal)).getSolution.toString)
+      Result(engine.solve(Term.createTerm(goal.value)).getSolution.toString)
   }
 
   def apply(clause: Clause): PrologEngine = PrologEngineImpl(clause)

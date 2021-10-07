@@ -13,38 +13,6 @@ class PrologEngineTest extends AnyFunSpec with Matchers {
   private val goal: Goal = Goal("tuple(X)")
   private val invalidGoal: Goal = Goal("t(X)")
 
-  describe("Clause") {
-    describe("when created") {
-      it("doesn't change value") {
-        Clause("test(0).").value shouldBe "test(0)."
-      }
-    }
-  }
-
-  describe("Goal") {
-    describe("when created") {
-      it("doesn't change value") {
-        Clause("test(X)").value shouldBe "test(X)"
-      }
-    }
-  }
-
-  describe("Result") {
-    describe("when created") {
-      it("doesn't change value") {
-        Result("test(0)").value shouldBe "test(0)"
-      }
-      it("can retun only last term") {
-        Result("test(1,2)").getLastTerm shouldBe "2"
-      }
-      describe("when getLastTerm is called and the result is in invalid format") {
-        it("throw InvaliTermException") {
-          the[InvalidTermException] thrownBy Result("test()").getLastTerm
-        }
-      }
-    }
-  }
-
   describe("PrologEngine") {
     describe("when a bad written Clause is passed") {
       it("should throw InvalidTheoryException") {

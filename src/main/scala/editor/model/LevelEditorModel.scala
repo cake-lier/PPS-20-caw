@@ -91,6 +91,9 @@ object LevelEditorModel {
 
     override def updateCellPosition(oldPosition: Position, newPosition: Position): LevelEditorModel =
       currentLevel.board
+        .find(_.position == newPosition)
+        .map(c => Board(currentLevel.board - c))
+        .getOrElse(currentLevel.board)
         .find(_.position == oldPosition)
         .map(_.changePositionProperty(_ => newPosition))
         .map(c => LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board.filter(_.position != oldPosition) + c)))

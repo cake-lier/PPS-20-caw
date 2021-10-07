@@ -1,7 +1,7 @@
 package it.unibo.pps.caw.game.model
 
 import it.unibo.pps.caw.common.{FilePicker, LevelParser}
-import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea}
+import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea, Position}
 import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
 import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.common.storage.FileStorage
@@ -74,6 +74,34 @@ class GameModelTest extends AnyFunSpec with Matchers {
       it("With multiple levels, should create a new instance of itself") {
         gameModelMultipleLevels should not equals gameModelSingleLevel.moveCell((2, 2))((3, 3))
       }
+      describe("if position already used") {
+        it("With single levels, should return a new gameModel but the board is not updated") {
+          assume(gameModelSingleLevel.state.levelCurrentState.board.cells.find(_.position == Position(7, 4)).isDefined)
+          gameModelSingleLevel.moveCell((2, 2))((7, 4)).state.levelCurrentState shouldBe GameModel(
+            rulesEngine,
+            level1
+          ).state.levelCurrentState
+        }
+        it("With multiple levels, should do nothing") {
+          assume(gameModelMultipleLevels.state.levelCurrentState.board.cells.find(_.position == Position(7, 4)).isDefined)
+          gameModelMultipleLevels.moveCell((2, 2))((7, 4)).state.levelCurrentState shouldBe GameModel(
+            rulesEngine,
+            level1
+          ).state.levelCurrentState
+        }
+      }
+
+      describe("if there's no cell") {
+        it("With single levels, should do nothing") {
+          assume(gameModelSingleLevel.state.levelCurrentState.board.cells.find(_.position == (4, 4)).isEmpty)
+          gameModelSingleLevel.moveCell((4, 4))((3, 3)) shouldBe gameModelSingleLevel
+        }
+        it("With multiple levels, should do nothing") {
+          assume(gameModelMultipleLevels.state.levelCurrentState.board.cells.find(_.position == (4, 4)).isEmpty)
+          gameModelMultipleLevels.moveCell((4, 4))((3, 3)) shouldBe gameModelMultipleLevels
+        }
+      }
+
       it("With single level, should update the board with the same cell in the new position") {
         gameModelSingleLevel
           .moveCell((2, 2))((3, 3))
@@ -136,11 +164,14 @@ class GameModelTest extends AnyFunSpec with Matchers {
       }
       it("With single level, level completed, should return the same level and same GameModel") {
         val gameEnded = gameModelSingleLevel.moveCell((2, 2))((4, 4)).update.update.update
+        assume(gameEnded.state.isCurrentLevelCompleted)
         gameEnded.nextLevel shouldBe gameEnded
       }
       it("With multiple level, level completed, should load next level") {
         val level2WallDimensions = (level2.dimensions.width + 2, level2.dimensions.height + 2)
-        gameModelMultipleLevels.moveCell((2, 2))((4, 4)).update.update.update.nextLevel.state.levelCurrentState shouldBe Level(
+        val gameEnded = gameModelMultipleLevels.moveCell((2, 2))((4, 4)).update.update.update
+        assume(gameEnded.state.isCurrentLevelCompleted)
+        gameEnded.nextLevel.state.levelCurrentState shouldBe Level(
           level2WallDimensions,
           convertBoard(level2WallDimensions, level2.board),
           PlayableArea(level2.playableArea.dimensions)((level2.playableArea.position.x + 1, level2.playableArea.position.y + 1))
