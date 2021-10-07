@@ -9,9 +9,20 @@ scalacOptions ++= Seq("-language:implicitConversions")
 idePackagePrefix := Some("it.unibo.pps.caw")
 
 Compile / resourceGenerators += Def.task {
-  val theory: Seq[String] = IO.readLines((Compile / resourceDirectory).value / "cellmachine.pl")
   val outputFile: File = (Compile / resourceManaged).value / "cellmachine.pl"
-  IO.write(outputFile, theory.filterNot(_.startsWith("%")).mkString("\n"))
+  IO.write(
+    outputFile,
+    IO.readLines((Compile / resourceDirectory).value / "cellmachine.pl").filterNot(_.startsWith("%")).mkString("\n")
+  )
+  Seq(outputFile)
+}.taskValue
+
+Compile / resourceGenerators += Def.task {
+  val outputFile: File = (Compile / resourceManaged).value / "levels.json"
+  IO.write(
+    outputFile,
+    IO.listFiles((Compile / resourceDirectory).value / "levels").map(_.getName).map("\"" + _ + "\"").mkString("[\n", ",\n", "\n]")
+  )
   Seq(outputFile)
 }.taskValue
 

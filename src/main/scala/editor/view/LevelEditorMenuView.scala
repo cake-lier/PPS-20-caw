@@ -48,13 +48,16 @@ object LevelEditorMenuView {
     private val controller: EditorMenuController = EditorMenuController(parentLevelEditorController)
     private val changeListener: TextField => ChangeListener[String] = textField =>
       (_, oldValue, newValue) => {
-        if (newValue.matches("^([0-4])?([0-9])?$"))
-          continue.setDisable(width.getText.isEmpty || height.getText.isEmpty)
-        else textField.setText(oldValue)
+        if (newValue.matches("^([1-9]|[1-4][0-9]|50)?$"))
+          continue.setDisable(
+            (width.getText.isEmpty || width.getText.toInt < 2 || width.getText.toInt > 50) ||
+              (height.getText.isEmpty || height.getText.toInt < 2 || height.getText.toInt > 50)
+          )
+        else
+          textField.setText(oldValue)
       }
     backButton.setText(buttonMessage)
     continue.setDisable(true)
-    //TODO: change value for dimensions also in the schema
     width.textProperty().addListener(changeListener(width))
     height.textProperty().addListener(changeListener(height))
     backButton.setOnMouseClicked(_ => parentLevelEditorController.goBack())

@@ -1,10 +1,9 @@
-package it.unibo.pps.caw
-package editor.view
+package it.unibo.pps.caw.editor.view
 
-import common.model.cell.PlayableCell
-import common.model.{Board, Position}
-import common.*
-import editor.model.LevelBuilder
+import it.unibo.pps.caw.common.model.cell.PlayableCell
+import it.unibo.pps.caw.common.model.{Board, Position}
+import it.unibo.pps.caw.common.*
+import it.unibo.pps.caw.editor.model.LevelBuilder
 
 import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellImage, CellView, DraggableImageView, ModelUpdater}
 import javafx.scene.Node
@@ -82,18 +81,9 @@ object EditorBoardView {
       level.playableArea match {
         case Some(p) =>
           drawPlayableArea(p.position.x, p.position.y, p.dimensions.width, p.dimensions.height, droppablePlayableArea = true)
-        case None => applyHandler(n => enablePlayableAreaSelection(n.asInstanceOf[ImageView]))
+        case _ => applyHandler(n => enablePlayableAreaSelection(n.asInstanceOf[ImageView]))
       }
-      level
-        .board
-        .cells
-        .foreach(c =>
-          drawImageView(
-            CellView(c, innerComponent).innerComponent,
-            c.position.x,
-            c.position.y
-          )
-        )
+      level.board.foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
     }
 
     /** Adds an [[ImageView]] to the editor board, that is a view that can be removed if it was added by the user.
@@ -166,17 +156,14 @@ object EditorBoardView {
     }
 
     /* Filters the ImageView of this GridPane with the given predicate and applies a handler. */
-    private def applyHandler(predicate: Node => Boolean, handler: Node => Unit): Unit = {
+    private def applyHandler(predicate: Node => Boolean, handler: Node => Unit): Unit =
       innerComponent
         .getChildren
         .stream()
         .filter(predicate(_))
         .forEach(handler(_))
-    }
 
     /* Applies a handler. */
-    private def applyHandler(handler: Node => Unit): Unit = {
-      applyHandler(_ => true, handler)
-    }
+    private def applyHandler(handler: Node => Unit): Unit = applyHandler(_ => true, handler)
   }
 }

@@ -1,23 +1,8 @@
 package it.unibo.pps.caw.common
 
-import io.vertx.core.Vertx
 import it.unibo.pps.caw.common.model.*
-import it.unibo.pps.caw.common.model.cell.{
-  BaseBlockCell,
-  BaseCell,
-  BaseEnemyCell,
-  BaseGeneratorCell,
-  BaseMoverCell,
-  BaseRotatorCell,
-  BaseWallCell,
-  Orientation,
-  PlayableGeneratorCell,
-  PlayableMoverCell,
-  Push,
-  Rotation
-}
+import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.common.storage.FileStorage
-import org.scalatest.BeforeAndAfterAll
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -27,7 +12,7 @@ class LevelParserTest extends AnyFunSpec with Matchers {
   private val fileStorage: FileStorage = FileStorage()
   private val levelParser: LevelParser = LevelParser(fileStorage)
   private val allCellsLevel: Level[BaseCell] = Level(
-    Dimensions(4, 5),
+    (4, 5),
     Board(
       BaseMoverCell(Orientation.Left)((2, 0)),
       BaseBlockCell(Push.Vertical)((1, 3)),

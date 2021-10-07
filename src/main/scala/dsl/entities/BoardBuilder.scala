@@ -34,6 +34,9 @@ trait BoardBuilder {
 
   /** Returns the wall cells that have to be placed on the new [[Board]]. */
   val wallCells: Set[BaseWallCell]
+
+  /** Returns the deleter cells that have to be placed on the new [[Board]]. */
+  val deleterCells: Set[BaseDeleterCell]
 }
 
 /** Companion object of the [[BoardBuilder]] trait, containing its factory methods. */
@@ -48,7 +51,8 @@ object BoardBuilder {
     rotatorCells: Set[BaseRotatorCell],
     blockCells: Set[BaseBlockCell],
     enemyCells: Set[BaseEnemyCell],
-    wallCells: Set[BaseWallCell]
+    wallCells: Set[BaseWallCell],
+    deleterCells: Set[BaseDeleterCell]
   ) extends BoardBuilder
 
   /** Returns a new instance of the [[BoardBuilder]] trait.
@@ -69,6 +73,8 @@ object BoardBuilder {
     *   the enemy cells stored by this [[BoardBuilder]]
     * @param wallCells
     *   the wall cells stored by this [[BoardBuilder]]
+    * @param deleterCells
+    *   the deleter cells stored by this [[BoardBuilder]]
     * @return
     *   a new instance of the [[BoardBuilder]] trait
     */
@@ -80,7 +86,8 @@ object BoardBuilder {
     rotatorCells: Set[BaseRotatorCell] = Set.empty,
     blockCells: Set[BaseBlockCell] = Set.empty,
     enemyCells: Set[BaseEnemyCell] = Set.empty,
-    wallCells: Set[BaseWallCell] = Set.empty
+    wallCells: Set[BaseWallCell] = Set.empty,
+    deleterCells: Set[BaseDeleterCell] = Set.empty
   ): BoardBuilder = BoardBuilderImpl(
     dimensions,
     playableArea,
@@ -89,7 +96,8 @@ object BoardBuilder {
     rotatorCells,
     blockCells,
     enemyCells,
-    wallCells
+    wallCells,
+    deleterCells
   )
 
   /** Extensions methods for the [[BoardBuilder]] trait. */
@@ -117,6 +125,9 @@ object BoardBuilder {
       *   the enemy cells stored by this [[BoardBuilder]], which are the enemy cells stored in the original instance by default
       * @param wallCells
       *   the wall cells stored by this [[BoardBuilder]], which are the wall cells stored in the original instance by default
+      * @param deleterCells
+      *   the deleter cells stored by this [[BoardBuilder]], which are the deleter cells stored in the original instance by
+      *   default
       * @return
       *   a new instance of the [[BoardBuilder]] trait
       */
@@ -128,7 +139,8 @@ object BoardBuilder {
       rotatorCells: Set[BaseRotatorCell] = builder.rotatorCells,
       blockCells: Set[BaseBlockCell] = builder.blockCells,
       enemyCells: Set[BaseEnemyCell] = builder.enemyCells,
-      wallCells: Set[BaseWallCell] = builder.wallCells
+      wallCells: Set[BaseWallCell] = builder.wallCells,
+      deleterCells: Set[BaseDeleterCell] = builder.deleterCells
     ): BoardBuilder = apply(
       dimensions,
       playableArea,
@@ -137,7 +149,8 @@ object BoardBuilder {
       rotatorCells,
       blockCells,
       enemyCells,
-      wallCells
+      wallCells,
+      deleterCells
     )
   }
 }

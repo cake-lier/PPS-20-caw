@@ -71,8 +71,11 @@ trait EditorUpdater {
   * @param audioPlayer
   *   the [[AudioPlayer]] that will play the editor music
   */
-abstract class AbstractEditorView(scene: Scene, backButtonText: String, audioPlayer: AudioPlayer)
-  extends AbstractViewComponent[Pane]("editor.fxml")
+abstract class AbstractEditorView(
+  scene: Scene,
+  backButtonText: String,
+  audioPlayer: AudioPlayer
+) extends AbstractViewComponent[Pane]("editor.fxml")
   with EditorView
   with ModelUpdater
   with EditorUpdater {
@@ -96,6 +99,8 @@ abstract class AbstractEditorView(scene: Scene, backButtonText: String, audioPla
   var enemyCellView: DraggableImageView = _
   @FXML
   var wallCellView: DraggableImageView = _
+  @FXML
+  var deleterCellView: DraggableImageView = _
   @FXML
   var rotateCellsButton: Button = _
 
@@ -122,28 +127,22 @@ abstract class AbstractEditorView(scene: Scene, backButtonText: String, audioPla
       case Some(_) => boardView.get.drawBoard(level)
       case None =>
         val newBoardView: EditorBoardView = EditorBoardView(scene.getWidth, scene.getHeight, level, this, this)
-        boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
-        GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
-        GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
-        GridPane.setMargin(newBoardView.innerComponent, new Insets(25, 0, 25, 0))
-        innerComponent.add(newBoardView.innerComponent, 2, 3, 11, 1)
+        boardView.foreach(b => innerComponent.getChildren.remove(b))
+        GridPane.setValignment(newBoardView, VPos.CENTER)
+        GridPane.setHalignment(newBoardView, HPos.CENTER)
+        GridPane.setMargin(newBoardView, Insets(25, 0, 25, 0))
+        innerComponent.add(newBoardView, 2, 3, 10, 1)
         boardView = Some(newBoardView)
     }
   })
 
   override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.Error, message).showAndWait())
 
-  override def manageCell(cellImage: ImageView, newPosition: Position): Unit = {
-    val board = boardView.get.innerComponent
-    if (board.getChildren.contains(cellImage)) {
-      controller.updateCellPosition(
-        Position(GridPane.getColumnIndex(cellImage), GridPane.getRowIndex(cellImage)),
-        newPosition
-      )
-    } else {
+  override def manageCell(cellImage: ImageView, newPosition: Position): Unit =
+    if (boardView.get.getChildren.contains(cellImage))
+      controller.updateCellPosition(Position(GridPane.getColumnIndex(cellImage), GridPane.getRowIndex(cellImage)), newPosition)
+    else
       controller.setCell(getSetupCell(cellImage.getImage, newPosition))
-    }
-  }
 
   override def createPlayableArea(topLeft: Position, downRight: Position): Unit =
     controller.setPlayableArea(topLeft, (downRight.x - topLeft.x + 1, downRight.y - topLeft.y + 1))
@@ -152,16 +151,16 @@ abstract class AbstractEditorView(scene: Scene, backButtonText: String, audioPla
 
   override def removePlayableArea(): Unit = controller.removePlayableArea()
 
-  private def setButtonImages(): Map[DraggableImageView, Image] = {
+  private def setButtonImages(): Map[DraggableImageView, Image] =
     Map(
       setGraphic(enemyCellView, CellImage.Enemy.image),
       setGraphic(wallCellView, CellImage.Wall.image),
       setGraphic(generateCellView, CellImage.GeneratorRight.image),
       setGraphic(moverCellView, CellImage.MoverRight.image),
       setGraphic(blockCellView, CellImage.Block.image),
-      setGraphic(rotateCellView, CellImage.RotatorClockwise.image)
+      setGraphic(rotateCellView, CellImage.RotatorClockwise.image),
+      setGraphic(deleterCellView, CellImage.Deleter.image)
     )
-  }
 
   private def getSetupCell(image: Image, newPosition: Position): BaseCell = image match {
     case CellImage.GeneratorRight.image          => BaseGeneratorCell(Orientation.Right)(newPosition)
@@ -179,6 +178,7 @@ abstract class AbstractEditorView(scene: Scene, backButtonText: String, audioPla
     case CellImage.BlockVertical.image           => BaseBlockCell(Push.Vertical)(newPosition)
     case CellImage.Enemy.image                   => BaseEnemyCell(newPosition)
     case CellImage.Wall.image                    => BaseWallCell(newPosition)
+    case CellImage.Deleter.image                 => BaseDeleterCell(newPosition)
   }
 
   private def setGraphic(buttonCellImageView: DraggableImageView, image: Image): (DraggableImageView, Image) = {

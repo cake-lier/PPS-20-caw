@@ -4,7 +4,7 @@ import javafx.scene.image.Image
 
 /** The images used to draw a board. */
 enum CellImage(imageName: String) {
-  val image: Image = Image(s"imgs/$imageName.png")
+  val image: Image = Image("imgs/" + imageName + ".png")
 
   /** The image of the enemy. */
   case Enemy extends CellImage("enemy")
@@ -50,6 +50,9 @@ enum CellImage(imageName: String) {
 
   /** The image of the down generator. */
   case GeneratorDown extends CellImage("generator_down")
+
+  /** The image of the deleter. */
+  case Deleter extends CellImage("deleter")
 
   /** The image of the default tile. */
   case DefaultTile extends CellImage("default")

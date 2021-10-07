@@ -113,7 +113,8 @@ object LevelParser {
                       case Some(o) => Some(BaseGeneratorCell(o)(position))
                       case _       => None
                     }
-                  case _ => None
+                  case Some(CellType.Deleter) => Some(BaseDeleterCell(position))
+                  case _                      => None
                 }
               )
               .filter(_.isDefined)
@@ -166,6 +167,7 @@ object LevelParser {
             case _: BaseRotatorCell   => CellType.Rotator.name
             case _: BaseBlockCell     => CellType.Block.name
             case _: BaseGeneratorCell => CellType.Generator.name
+            case _: BaseDeleterCell   => CellType.Deleter.name
           })
           .map(t => t._1 -> JsArray(t._2.map(parseCell).toSeq))
           .toSeq

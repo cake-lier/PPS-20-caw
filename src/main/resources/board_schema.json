@@ -9,13 +9,13 @@
             "description": "The width of the board",
             "type": "integer",
             "minimum": 2,
-            "maximum": 100
+            "maximum": 50
         },
         "height": {
             "description": "The height of the board",
             "type": "integer",
             "minimum": 2,
-            "maximum": 100
+            "maximum": 50
         },
         "playableArea": {
             "description": "The area of the board in which the cells can be moved by the player",
@@ -25,25 +25,25 @@
                     "description": "The width of the playable area",
                     "type": "integer",
                     "minimum": 1,
-                    "maximum": 100
+                    "maximum": 50
                 },
                 "height": {
                     "description": "The height of the playable area",
                     "type": "integer",
                     "minimum": 1,
-                    "maximum": 100
+                    "maximum": 50
                 },
                 "x": {
                     "description": "The x coordinate of the upper left corner of the playable area",
                     "type": "integer",
                     "minimum": 0,
-                    "maximum": 99
+                    "maximum": 49
                 },
                 "y": {
                     "description": "The y coordinate of the upper left corner of the playable area",
                     "type": "integer",
                     "minimum": 0,
-                    "maximum": 99
+                    "maximum": 49
                 }
             },
             "additionalProperties": false,
@@ -67,13 +67,13 @@
                                 "description": "The x coordinate of the push cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             },
                             "y": {
                                 "description": "The y coordinate of the push cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             }
                         },
                         "additionalProperties": false,
@@ -95,13 +95,13 @@
                                 "description": "The x coordinate of the generate cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             },
                             "y": {
                                 "description": "The y coordinate of the generate cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             }
                         },
                         "additionalProperties": false,
@@ -123,13 +123,13 @@
                                 "description": "The x coordinate of the rotate cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             },
                             "y": {
                                 "description": "The y coordinate of the rotate cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             }
                         },
                         "additionalProperties": false,
@@ -151,13 +151,13 @@
                                 "description": "The x coordinate of the block cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             },
                             "y": {
                                 "description": "The y coordinate of the block cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             }
                         },
                         "additionalProperties": false,
@@ -175,13 +175,13 @@
                                 "description": "The x coordinate of the enemy cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             },
                             "y": {
                                 "description": "The y coordinate of the enemy cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             }
                         },
                         "additionalProperties": false,
@@ -199,13 +199,37 @@
                                 "description": "The x coordinate of the wall cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
                             },
                             "y": {
                                 "description": "The y coordinate of the wall cell",
                                 "type": "integer",
                                 "minimum": 0,
-                                "maximum": 99
+                                "maximum": 49
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [ "x", "y" ]
+                    },
+                    "uniqueItems": true
+                },
+                "deleter": {
+                    "description": "The deleter cells that are present on this board",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "x": {
+                                "description": "The x coordinate of the deleter cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            },
+                            "y": {
+                                "description": "The y coordinate of the deleter cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
                             }
                         },
                         "additionalProperties": false,

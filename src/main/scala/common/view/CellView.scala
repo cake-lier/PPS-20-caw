@@ -26,6 +26,7 @@ object CellView {
     innerComponent.setPreserveRatio(true)
 
     import CellImage.*
+
     cell match {
       case PlayableRotatorCell(rotation, _, _) =>
         rotation match {
@@ -53,7 +54,8 @@ object CellView {
           case Push.Vertical   => innerComponent.setImage(BlockVertical.image)
           case Push.Horizontal => innerComponent.setImage(BlockHorizontal.image)
         }
-      case _: PlayableWallCell => innerComponent.setImage(Wall.image)
+      case _: PlayableWallCell    => innerComponent.setImage(Wall.image)
+      case _: PlayableDeleterCell => innerComponent.setImage(Deleter.image)
     }
   }
 }

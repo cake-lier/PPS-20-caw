@@ -26,6 +26,7 @@ object BaseCell {
       case BaseGeneratorCell(o, _) => BaseGeneratorCell(o)(getPosition(cell))
       case BaseMoverCell(o, _)     => BaseMoverCell(o)(getPosition(cell))
       case BaseBlockCell(p, _)     => BaseBlockCell(p)(getPosition(cell))
+      case _: BaseDeleterCell      => BaseDeleterCell(getPosition(cell))
     }
   }
 }
@@ -204,4 +205,32 @@ object BaseWallCell {
     *   a tuple containing the [[Position]] property
     */
   def unapply(cell: BaseWallCell): Tuple1[Position] = Tuple1(cell.position)
+}
+
+/** A [[DeleterCell]] which is also a [[BaseCell]]. */
+sealed trait BaseDeleterCell extends DeleterCell with BaseCell
+
+/** Compation object of the [[BaseDeleterCell]] trait, containing its utility methods. */
+object BaseDeleterCell {
+
+  /* Default implementation of the BaseDeleterCell trait. */
+  private case class BaseDeleterCellImpl(position: Position) extends BaseDeleterCell
+
+  /** Returns a new instance of the [[BaseDeleterCell]] trait given its [[Position]].
+    *
+    * @param position
+    *   the [[Position]] of the [[BaseDeleterCell]] to create
+    * @return
+    *   a new [[BaseDeleterCell]] instance
+    */
+  def apply(position: Position): BaseDeleterCell = BaseDeleterCellImpl(position)
+
+  /** Extracts the [[Position]] property from the given instance of [[BaseDeleterCell]].
+    *
+    * @param cell
+    *   the [[BaseDeleterCell]] from which extracting the property
+    * @return
+    *   a tuple containing the [[Position]] property
+    */
+  def unapply(cell: BaseDeleterCell): Tuple1[Position] = Tuple1(cell.position)
 }

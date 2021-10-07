@@ -24,6 +24,9 @@ enum CellType(val name: String) {
 
   /** The generator cell type, the one associated to the [[GeneratorCell]]. */
   case Generator extends CellType("generator")
+  
+  /** The deleter cell type, the one associated to the [[DeleterCell]]. */
+  case Deleter extends CellType("deleter")
 }
 
 /** Companion object to the [[CellType]] enum, containing utility methods. */
