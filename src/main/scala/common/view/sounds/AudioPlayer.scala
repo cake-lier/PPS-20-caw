@@ -67,7 +67,7 @@ object AudioPlayer {
     }
 
     private def createPlayer(track: Track): MediaPlayer = {
-      val mediaPlayer = MediaPlayer(Media(ClassLoader.getSystemResource(track.filePath).toExternalForm))
+      val mediaPlayer = new MediaPlayer(new Media(getClass.getResource(track.filePath).toString))
       track.audioType match {
         case AudioType.Music => mediaPlayer.setCycleCount(MediaPlayer.Indefinite)
         case AudioType.Sound => {

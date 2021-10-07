@@ -22,5 +22,5 @@ enum Track(fileName: String, val audioType: AudioType) {
   case Victory extends Track("victory", AudioType.Sound)
 
   /** Returns the path of the file containg with this [[Track]]. */
-  val filePath: String = s"sounds/$fileName.mp3"
+  val filePath: String = s"/sounds/$fileName.mp3"
 }

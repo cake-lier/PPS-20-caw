@@ -44,3 +44,5 @@ libraryDependencies ++= Seq(
   "org.testfx" % "testfx-junit5" % "4.0.16-alpha" % Test,
   "org.testfx" % "openjfx-monocle" % "jdk-12.0.1+2" % Test
 ) ++ Seq("base", "controls", "fxml", "graphics", "media").map(m => "org.openjfx" % s"javafx-$m" % "16" classifier osName)
+
+Test / unmanagedResourceDirectories += (Compile / resourceDirectory).value
