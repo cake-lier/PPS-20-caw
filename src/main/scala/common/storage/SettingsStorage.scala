@@ -37,7 +37,7 @@ object SettingsStorage {
 
   private class SettingsStorageImpl(fileStorage: FileStorage) extends SettingsStorage {
     val defaultSettings = Settings(0.3, 0.7, Set())
-    private val defaultSettingsJson = Json.toJson(defaultSettings)(Json.writes[Settings])
+    private val defaultSettingsJson = Json.toJson(defaultSettings)
     private val filePath = System.getProperty("user.home") + File.separator + ".settings_caw.json"
 
     override def load(): Try[Settings] = {
@@ -59,7 +59,7 @@ object SettingsStorage {
     }
 
     override def save(settings: Settings): Try[Unit] = {
-      val jsonSettings = Json.toJson(settings)(Json.writes[Settings])
+      val jsonSettings = Json.toJson(settings)
       fileStorage.writeFile(filePath, jsonSettings.toString)
     }
   }
