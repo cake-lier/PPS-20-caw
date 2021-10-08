@@ -1,8 +1,7 @@
 package it.unibo.pps.caw.menu
 
 import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.view.ViewComponent
-import it.unibo.pps.caw.common.FilePicker
+import it.unibo.pps.caw.common.view.{FilePicker, ViewComponent}
 import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, SoundButton, Track}
 import it.unibo.pps.caw.editor.view.LevelEditorMenuView
 import javafx.fxml.FXML
@@ -73,7 +72,10 @@ object MainMenuView {
       playButton.setDisable(false)
       playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, controller))
     }
-    loadButton.setOnMouseClicked(_ => FilePicker.pickFile(scene).foreach(f => controller.startGame(f.getPath)))
+    
+    private val levelFilePicker: FilePicker = FilePicker.forLevelFile(scene)
+    
+    loadButton.setOnMouseClicked(_ => levelFilePicker.openFile().foreach(controller.startGame(_)))
     settingsButton.setOnMouseClicked(_ => scene.root.value = SettingsView(controller, audioPlayer, scene))
     editorButton.setOnMouseClicked(_ => scene.root.value = LevelEditorMenuView(controller, scene, "Menu"))
     exitButton.setOnMouseClicked(_ => controller.exit())

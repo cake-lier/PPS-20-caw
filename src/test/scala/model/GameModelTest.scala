@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.game.model
 
-import it.unibo.pps.caw.common.{FilePicker, LevelParser}
+import it.unibo.pps.caw.common.LevelParser
 import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea, Position}
 import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
 import it.unibo.pps.caw.common.model.cell.*

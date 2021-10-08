@@ -1,12 +1,11 @@
 package it.unibo.pps.caw.editor.view
 
-import it.unibo.pps.caw.common.FilePicker
 import it.unibo.pps.caw.common.model.{Level, Position}
 import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.common.view.CellImage.*
 import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
-import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView, ModelUpdater, ViewComponent}
+import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView, FilePicker, ModelUpdater, ViewComponent}
 import it.unibo.pps.caw.editor.controller.{EditorController, ParentLevelEditorController}
 import it.unibo.pps.caw.editor.model.LevelBuilder
 import javafx.application.Platform
@@ -116,7 +115,10 @@ abstract class AbstractEditorView(
   audioPlayer.play(Track.EditorMusic)
   backButton.setText(backButtonText)
   backButton.setOnMouseClicked(_ => controller.closeEditor())
-  saveButton.setOnMouseClicked(_ => FilePicker.saveFile(scene).foreach(f => controller.saveLevel(f.getPath)))
+  
+  private val levelFilePicker: FilePicker = FilePicker.forLevelFile(scene)
+  
+  saveButton.setOnMouseClicked(_ => levelFilePicker.saveFile().foreach(controller.saveLevel(_)))
   rulesButton.setOnMouseClicked(_ => innerComponent.add(rulesPage, 0, 0, 15, 7))
   rulesPage.setOnMouseClicked(_ => innerComponent.getChildren.remove(rulesPage))
   resetAll.setOnMouseClicked(_ => controller.resetLevel())

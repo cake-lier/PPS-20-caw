@@ -1,8 +1,7 @@
 package it.unibo.pps.caw.editor.view
 
-import it.unibo.pps.caw.common.FilePicker
 import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.view.ViewComponent
+import it.unibo.pps.caw.common.view.{FilePicker, ViewComponent}
 import it.unibo.pps.caw.editor.controller.{EditorMenuController, ParentLevelEditorController, ParentLevelEditorMenuController}
 import javafx.application.Platform
 import javafx.beans.value.ChangeListener
@@ -46,22 +45,25 @@ object LevelEditorMenuView {
     override val innerComponent: Pane = loader.load[GridPane]
 
     private val controller: EditorMenuController = EditorMenuController(parentLevelEditorController)
-    private val changeListener: TextField => ChangeListener[String] = textField =>
-      (_, oldValue, newValue) => {
-        if (newValue.matches("^([1-9]|[1-4][0-9]|50)?$"))
+    private val changeListener: TextField => ChangeListener[String] = f =>
+      (_, o, n) => {
+        if (n.matches("^([1-9]|[1-4][0-9]|50)?$"))
           continue.setDisable(
             (width.getText.isEmpty || width.getText.toInt < 2 || width.getText.toInt > 50) ||
               (height.getText.isEmpty || height.getText.toInt < 2 || height.getText.toInt > 50)
           )
         else
-          textField.setText(oldValue)
+          f.setText(o)
       }
     backButton.setText(buttonMessage)
     continue.setDisable(true)
     width.textProperty().addListener(changeListener(width))
     height.textProperty().addListener(changeListener(height))
     backButton.setOnMouseClicked(_ => parentLevelEditorController.goBack())
-    loadFile.setOnMouseClicked(_ => FilePicker.pickFile(scene).foreach(f => parentLevelEditorController.startEditor(f.getPath)))
+
+    private val levelFilePicker: FilePicker = FilePicker.forLevelFile(scene)
+
+    loadFile.setOnMouseClicked(_ => levelFilePicker.openFile().foreach(parentLevelEditorController.startEditor(_)))
     continue.setOnMouseClicked(_ => parentLevelEditorController.startEditor(width.getText.toInt, height.getText.toInt))
   }
 
