@@ -5,9 +5,8 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-
+<?import javafx.scene.control.Button?>
 <?import it.unibo.pps.caw.common.view.DraggableImageView?>
-<?import it.unibo.pps.caw.common.view.sounds.SoundButton?>
 
 <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="background" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
@@ -35,16 +34,16 @@
         <RowConstraints percentHeight="7.5" />
         <RowConstraints percentHeight="3.0" />
     </rowConstraints>
-    <SoundButton id="reset-all" fx:id="resetAll" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" text="Reset" GridPane.columnIndex="1" GridPane.rowIndex="5">
+    <Button id="reset-all" fx:id="resetAll" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" text="Reset" GridPane.columnIndex="1" GridPane.rowIndex="5">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
-    </SoundButton>
-    <SoundButton fx:id="rotateCellsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" text="Rotate" GridPane.columnIndex="2" GridPane.rowIndex="5">
+    </Button>
+    <Button fx:id="rotateCellsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" text="Rotate" GridPane.columnIndex="2" GridPane.rowIndex="5">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
-    </SoundButton>
+    </Button>
     <DraggableImageView id="mover-button" fx:id="moverCellView" styleClass="block-button" GridPane.columnIndex="4" GridPane.rowIndex="5" />
     <DraggableImageView id="generate-button" fx:id="generateCellView" styleClass="block-button" GridPane.columnIndex="5" GridPane.rowIndex="5" />
     <DraggableImageView id="rotate-button" fx:id="rotateCellView" styleClass="block-button" GridPane.columnIndex="6" GridPane.rowIndex="5" />
@@ -52,17 +51,17 @@
     <DraggableImageView id="enemy-button" fx:id="enemyCellView" styleClass="block-button" GridPane.columnIndex="8" GridPane.rowIndex="5" />
     <DraggableImageView id="wall-button" fx:id="wallCellView" styleClass="block-button" GridPane.columnIndex="9" GridPane.rowIndex="5" />
     <DraggableImageView id="deleter-button" fx:id="deleterCellView" styleClass="block-button" GridPane.columnIndex="10" GridPane.rowIndex="5" />
-    <SoundButton fx:id="backButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    <SoundButton fx:id="rulesButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="How to" GridPane.columnIndex="2" GridPane.rowIndex="1">
+    <Button fx:id="backButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <Button fx:id="rulesButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="How to" GridPane.columnIndex="2" GridPane.rowIndex="1">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
-    </SoundButton>
-    <SoundButton fx:id="saveButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Save" GridPane.columnIndex="12" GridPane.rowIndex="1">
+    </Button>
+    <Button fx:id="saveButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Save" GridPane.columnIndex="12" GridPane.rowIndex="1">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
-    </SoundButton>
+    </Button>
     <stylesheets>
         <URL value="@../css/main.css" />
         <URL value="@../css/editor.css" />

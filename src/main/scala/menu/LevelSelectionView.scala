@@ -3,9 +3,8 @@ package it.unibo.pps.caw.menu
 import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.view.ViewComponent
-import it.unibo.pps.caw.common.view.sounds.SoundButton
 import javafx.fxml.FXML
-import javafx.scene.control.ScrollPane
+import javafx.scene.control.{ScrollPane, Button}
 import javafx.scene.image.ImageView
 import javafx.scene.layout.{GridPane, Pane, RowConstraints}
 import scalafx.scene.Scene
@@ -41,7 +40,7 @@ object LevelSelectionView {
     extends AbstractViewComponent[Pane]("level_selection_page.fxml")
     with LevelSelectionView {
     @FXML
-    var backButton: SoundButton = _
+    var backButton: Button = _
     @FXML
     var buttonsPane: GridPane = _
     @FXML

@@ -1,12 +1,12 @@
 package it.unibo.pps.caw.menu
 
 import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType, SoundButton}
+import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
 import it.unibo.pps.caw.common.view.ViewComponent
 import javafx.fxml.FXML
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
-import javafx.scene.control.Slider
+import javafx.scene.control.{Slider, Button}
 
 /** The "settings" page on the main menu.
   *
@@ -44,7 +44,7 @@ object SettingsView {
     @FXML
     var effectsVolumeSlider: Slider = _
     @FXML
-    var backFromSettingsButton: SoundButton = _
+    var backFromSettingsButton: Button = _
 
     override val innerComponent: Pane = loader.load[GridPane]
 

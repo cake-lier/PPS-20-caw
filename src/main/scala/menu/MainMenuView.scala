@@ -2,10 +2,11 @@ package it.unibo.pps.caw.menu
 
 import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.view.{FilePicker, ViewComponent}
-import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, SoundButton, Track}
+import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
 import it.unibo.pps.caw.editor.view.LevelEditorMenuView
 import javafx.fxml.FXML
 import javafx.scene.layout.{GridPane, Pane}
+import javafx.scene.control.Button
 import scalafx.scene.Scene
 
 /** The view which displays the main menu of the application.
@@ -53,15 +54,15 @@ object MainMenuView {
   ) extends AbstractViewComponent[Pane]("main_menu_page.fxml")
     with MainMenuView {
     @FXML
-    var playButton: SoundButton = _
+    var playButton: Button = _
     @FXML
-    var editorButton: SoundButton = _
+    var editorButton: Button = _
     @FXML
-    var loadButton: SoundButton = _
+    var loadButton: Button = _
     @FXML
-    var settingsButton: SoundButton = _
+    var settingsButton: Button = _
     @FXML
-    var exitButton: SoundButton = _
+    var exitButton: Button = _
 
     override val innerComponent: Pane = loader.load[GridPane]
 
