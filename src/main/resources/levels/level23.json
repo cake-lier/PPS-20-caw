@@ -18,13 +18,13 @@
       "orientation" : "top"
     } ],
     "block" : [ {
-      "x" : 3,
-      "y" : 7,
+      "x" : 4,
+      "y" : 9,
       "push" : "both"
     } ],
     "rotator" : [ {
       "x" : 4,
-      "y" : 5,
+      "y" : 7,
       "rotation" : "clockwise"
     }, {
       "x" : 3,
@@ -48,6 +48,9 @@
       "x" : 7,
       "y" : 5
     }, {
+      "x" : 3,
+      "y" : 7
+    },{
       "x" : 4,
       "y" : 0
     }, {
