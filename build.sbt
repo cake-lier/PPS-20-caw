@@ -53,5 +53,6 @@ libraryDependencies ++= Seq(
   "it.unibo.alice.tuprolog" % "tuprolog" % "3.3.0",
   "org.testfx" % "testfx-core" % "4.0.16-alpha" % Test,
   "org.testfx" % "testfx-junit5" % "4.0.16-alpha" % Test,
-  "org.testfx" % "openjfx-monocle" % "jdk-12.0.1+2" % Test
+  "org.testfx" % "openjfx-monocle" % "jdk-12.0.1+2" % Test,
+  "org.junit.jupiter" % "junit-jupiter-api" % "5.8.0" % Test
 ) ++ Seq("base", "controls", "fxml", "graphics", "media").map(m => "org.openjfx" % s"javafx-$m" % "16" classifier osName)

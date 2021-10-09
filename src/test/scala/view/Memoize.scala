@@ -20,7 +20,7 @@ object ViewTestHelper {
   private val robot = new FxRobot()
   val getButtonById: String => Button = memoize(id => {
     robot
-      .lookup((b: Button) => b.getId.equals(id))
+      .lookup(_.getId == id)
       .queryButton()
   })
 

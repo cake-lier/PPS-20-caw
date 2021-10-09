@@ -1,64 +1,74 @@
 package it.unibo.pps.caw
 package view
 
-import javafx.fxml.FXMLLoader
 import javafx.scene.control.Button
 import javafx.stage.Stage
-import javafx.application.Platform
-import org.scalatest.{BeforeAndAfterAll, DoNotDiscover}
-import org.scalatest.funspec.AnyFunSpec
-import org.scalatest.matchers.should.Matchers
-import org.testfx.api.{FxRobot, FxToolkit}
-import org.testfx.util.WaitForAsyncUtils
+import org.junit.jupiter.api.TestInstance.Lifecycle
+import org.junit.jupiter.api.{Assertions, BeforeAll, Test, TestInstance}
+import org.junit.jupiter.api.extension.ExtendWith
+import org.testfx.api.FxRobot
+import org.testfx.assertions.api.Assertions as FxAssertions
+import org.testfx.framework.junit5.{ApplicationExtension, Start}
 
-@DoNotDiscover
-class MainMenuTest extends AnyFunSpec with Matchers with BeforeAndAfterAll {
+@ExtendWith(Array(classOf[ApplicationExtension]))
+@TestInstance(Lifecycle.PER_CLASS)
+/** Test for [[it.unibo.pps.caw.menu.MainMenuView]] */
+class MainMenuTest {
 
-  override def beforeAll(): Unit = {
+  @BeforeAll
+  def beforeAll(): Unit = {
     System.setProperty("testfx.robot", "glass")
     System.setProperty("testfx.headless", "true")
     System.setProperty("java.awt.headless", "true")
     System.setProperty("prism.order", "sw")
     System.setProperty("prism.text", "t2k")
-    FxToolkit.registerPrimaryStage()
-    FxToolkit.setupSceneRoot(() => FXMLLoader.load(getClass.getResource("/fxml/main_menu_page.fxml")))
-    WaitForAsyncUtils.waitForFxEvents()
-    FxToolkit.showStage()
   }
 
-  private val robot = FxRobot()
-
-  describe("The main menu view") {
-    import ViewTestHelper._
-    it("should have a play button") {
-      val playButton: Button = getButtonById("playButton")
-      playButton.getText() shouldBe "Play"
-      playButton.isDisabled() shouldBe true
-      robot.clickOn(playButton)
-    }
-    it("should have an editor button") {
-      val editorButton: Button = getButtonById("editorButton")
-      editorButton.getText() shouldBe "Level Editor"
-      editorButton.isDisabled() shouldBe false
-      robot.clickOn(editorButton)
-    }
-    it("should have a load level button") {
-      val loadButton: Button = getButtonById("loadButton")
-      loadButton.getText() shouldBe "Load a level"
-      loadButton.isDisabled() shouldBe false
-      robot.clickOn(loadButton)
-    }
-    it("should have a settings button") {
-      val settingsButton: Button = getButtonById("settingsButton")
-      settingsButton.getText() shouldBe "Settings"
-      settingsButton.isDisabled() shouldBe false
-      robot.clickOn(settingsButton)
-    }
-    it("should have an exit button") {
-      val exitButton: Button = getButtonById("exitButton")
-      exitButton.getText() shouldBe "Exit"
-      exitButton.isDisabled() shouldBe false
-      robot.clickOn(exitButton)
-    }
+  @Start
+  def start(stage: Stage): Unit = {
+    TestApplicationView(stage)
   }
+
+  import ViewTestHelper._
+
+  @Test
+  def testPlayButton(robot: FxRobot): Unit = {
+    val playButton: Button = getButtonById("playButton")
+    FxAssertions.assertThat(playButton).hasText("Play")
+    FxAssertions.assertThat(playButton).isVisible
+    FxAssertions.assertThat(playButton).isEnabled
+  }
+
+  @Test
+  def testEditorButton(robot: FxRobot): Unit = {
+    val editorButton: Button = getButtonById("editorButton")
+    FxAssertions.assertThat(editorButton).hasText("Level editor")
+    FxAssertions.assertThat(editorButton).isVisible
+    FxAssertions.assertThat(editorButton).isEnabled
+  }
+
+  @Test
+  def testLoadLevelButton(robot: FxRobot): Unit = {
+    val loadButton: Button = getButtonById("loadButton")
+    FxAssertions.assertThat(loadButton).hasText("Load a level")
+    FxAssertions.assertThat(loadButton).isVisible
+    FxAssertions.assertThat(loadButton).isEnabled
+  }
+
+  @Test
+  def testSettingsButton(robot: FxRobot): Unit = {
+    val settingsButton: Button = getButtonById("settingsButton")
+    FxAssertions.assertThat(settingsButton).hasText("Settings")
+    FxAssertions.assertThat(settingsButton).isVisible
+    FxAssertions.assertThat(settingsButton).isEnabled
+  }
+
+  @Test
+  def testExitButton(robot: FxRobot): Unit = {
+    val exitButton: Button = getButtonById("exitButton")
+    FxAssertions.assertThat(exitButton).hasText("Exit")
+    FxAssertions.assertThat(exitButton).isVisible
+    FxAssertions.assertThat(exitButton).isEnabled
+  }
+
 }
