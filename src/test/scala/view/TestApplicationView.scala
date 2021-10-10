@@ -1,15 +1,14 @@
-package it.unibo.pps.caw
-package view
+package it.unibo.pps.caw.view
 
-import app.{ApplicationController, ApplicationView}
-import common.view.ViewComponent
-import common.view.sounds.{AudioPlayer, AudioType}
-import common.model.Level
-import common.model.cell.BaseCell
-import editor.view.EditorView
-import game.view.GameView
-import menu.MainMenuView
-import view.DummyAudioPlayer
+import it.unibo.pps.caw.app.{ApplicationController, ApplicationView}
+import it.unibo.pps.caw.common.view.ViewComponent
+import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
+import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.model.cell.BaseCell
+import it.unibo.pps.caw.editor.view.EditorView
+import it.unibo.pps.caw.game.view.GameView
+import it.unibo.pps.caw.menu.MainMenuView
+import it.unibo.pps.caw.view.DummyAudioPlayer
 
 import javafx.application.Platform
 import javafx.scene.layout.Pane
@@ -19,33 +18,29 @@ import scalafx.scene.control.Alert
 import scalafx.scene.Scene
 
 object TestApplicationView {
-  object TestStageResizer {
-    def resize(stage: Stage): Unit = {
-      val heightRatio: Int = 9
-      val widthRatio: Int = 16
-      val screenBounds: Rectangle2D = Screen.getPrimary.getVisualBounds
-      stage.setX(screenBounds.getMinX)
-      stage.setY(screenBounds.getMinY)
-      stage.centerOnScreen()
-      val unitaryHeight: Double = screenBounds.getHeight / heightRatio
-      val unitaryWidth: Double = screenBounds.getWidth / widthRatio
-      if (screenBounds.getWidth < unitaryHeight * widthRatio) {
-        stage.setWidth(screenBounds.getWidth)
-        stage.setHeight(unitaryWidth * heightRatio)
-      } else if (screenBounds.getHeight < unitaryWidth * heightRatio) {
-        stage.setHeight(screenBounds.getHeight)
-        stage.setWidth(unitaryHeight * widthRatio)
-      } else {
-        stage.setHeight(screenBounds.getHeight)
-        stage.setWidth(screenBounds.getWidth)
-      }
-    }
-  }
-  /* Default implementation of the ApplicationView trait. */
-  private class ApplicationViewImpl(stage: Stage) extends ApplicationView {
+
+  /* Test implementation of the ApplicationView trait. */
+  private class TestApplicationViewImpl(stage: Stage) extends ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
     private val audioPlayer: AudioPlayer = DummyAudioPlayer()
-    TestStageResizer.resize(stage)
+    val heightRatio: Int = 9
+    val widthRatio: Int = 16
+    val screenBounds: Rectangle2D = Screen.getPrimary.getVisualBounds
+    stage.setX(screenBounds.getMinX)
+    stage.setY(screenBounds.getMinY)
+    stage.centerOnScreen()
+    val unitaryHeight: Double = screenBounds.getHeight / heightRatio
+    val unitaryWidth: Double = screenBounds.getWidth / widthRatio
+    if (screenBounds.getWidth < unitaryHeight * widthRatio) {
+      stage.setWidth(screenBounds.getWidth)
+      stage.setHeight(unitaryWidth * heightRatio)
+    } else if (screenBounds.getHeight < unitaryWidth * heightRatio) {
+      stage.setHeight(screenBounds.getHeight)
+      stage.setWidth(unitaryHeight * widthRatio)
+    } else {
+      stage.setHeight(screenBounds.getHeight)
+      stage.setWidth(screenBounds.getWidth)
+    }
     private val scene: Scene = Scene(stage.getWidth, stage.getHeight)
 
     stage.setResizable(false)
@@ -60,24 +55,21 @@ object TestApplicationView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: Level[BaseCell]) = show(GameView(controller, audioPlayer, level, scene, backButtonText = "Menu"))
+    override def showGame(level: Level[BaseCell]) = scene.root.value =
+      GameView(controller, audioPlayer, level, scene, backButtonText = "Menu")
 
     override def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit =
-      show(GameView(controller, audioPlayer, levels, levelIndex, scene, backButtonText = "Menu"))
+      scene.root.value = GameView(controller, audioPlayer, levels, levelIndex, scene, backButtonText = "Menu")
 
     override def showMainMenu(): Unit =
-      show(MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0))
+      scene.root.value = MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
 
     override def showLevelEditor(width: Int, height: Int): Unit =
-      show(EditorView(controller, scene, backButtonText = "Menu", audioPlayer, width, height))
+      scene.root.value = EditorView(controller, scene, backButtonText = "Menu", audioPlayer, width, height)
 
     override def showLevelEditor(level: Level[BaseCell]): Unit =
-      show(EditorView(controller, scene, backButtonText = "Menu", audioPlayer, level))
+      scene.root.value = EditorView(controller, scene, backButtonText = "Menu", audioPlayer, level)
 
-    def show(view: ViewComponent[? <: Pane]): ViewComponent[? <: Pane] = {
-      scene.root.value = view
-      view
-    }
   }
 
   /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX'state [[PrimaryStage]] for creating a view for
@@ -88,5 +80,5 @@ object TestApplicationView {
     * @return
     *   a new [[ApplicationView]] instance
     */
-  def apply(stage: Stage): ApplicationView = ApplicationViewImpl(stage)
+  def apply(stage: Stage): ApplicationView = TestApplicationViewImpl(stage)
 }
