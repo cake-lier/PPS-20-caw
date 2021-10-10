@@ -12,6 +12,9 @@ import javafx.scene.layout.Pane
 import scalafx.scene.control.Alert
 import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.scene.Scene
+import scalafx.scene.image.Image
+
+import scala.io.Source
 
 /** The view of the main application.
   *
@@ -81,6 +84,7 @@ object ApplicationView {
     stage.resizable = false
     stage.maximized = false
     stage.title = "Cells at Work"
+    stage.icons.add(Image(ClassLoader.getSystemResourceAsStream("imgs/app_icon.png")))
     scene.root.value = MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
     stage.scene = scene
     stage.show()
@@ -90,7 +94,9 @@ object ApplicationView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: Level[BaseCell]): Unit = show(GameView(controller, audioPlayer, level, scene, backButtonText = "Menu"))
+    override def showGame(level: Level[BaseCell]): Unit = show(
+      GameView(controller, audioPlayer, level, scene, backButtonText = "Menu")
+    )
 
     override def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit =
       show(GameView(controller, audioPlayer, levels, levelIndex, scene, backButtonText = "Menu"))
