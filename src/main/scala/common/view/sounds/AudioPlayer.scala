@@ -42,7 +42,7 @@ object AudioPlayer {
     private val musicPlayers: Map[Track, MediaPlayer] =
       Track.values.filter(_.audioType == AudioType.Music).map(t => t -> createPlayer(t)).toMap
     private var soundPlayers: Map[Track, Set[MediaPlayer]] = Map()
-    private var volumes: Map[AudioType, Double] = Map()
+    private var volumes: Map[AudioType, Double] = Map(AudioType.Sound -> 0.5, AudioType.Music -> 0.5)
 
     override def play(track: Track): Unit = track.audioType match {
       case AudioType.Music => {

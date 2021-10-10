@@ -36,7 +36,7 @@ trait SettingsStorage {
 object SettingsStorage {
 
   private class SettingsStorageImpl(fileStorage: FileStorage) extends SettingsStorage {
-    val defaultSettings = Settings(0.3, 0.7, Set())
+    val defaultSettings = Settings(0.5, 0.5, Set())
     private val defaultSettingsJson = Json.toJson(defaultSettings)
     private val filePath = System.getProperty("user.home") + File.separator + ".settings_caw.json"
 
