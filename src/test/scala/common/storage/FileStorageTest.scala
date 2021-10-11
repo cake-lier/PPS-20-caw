@@ -9,10 +9,9 @@ import java.time.LocalDateTime
 import scala.io.Source
 import scala.util.{Failure, Success, Using}
 
+/** Tests for the [[FileStorage]] trait. */
 class FileStorageTest extends AnyFunSpec with Matchers {
   private val fileStorage = FileStorage()
-  private val level01 =
-    "{   \"width\": 8,   \"height\": 5,   \"playableArea\": {     \"width\": 4,     \"height\": 5,     \"x\": 0,     \"y\": 0   },   \"cells\": {     \"mover\": [       {         \"orientation\": \"right\",         \"x\": 1,         \"y\": 1       }     ],     \"enemy\": [       {         \"x\": 6,         \"y\": 3       }     ]   } }"
 
   describe("FileStorage") {
     describe("when asked to load a resource") {
@@ -56,16 +55,9 @@ class FileStorageTest extends AnyFunSpec with Matchers {
         Using(Source.fromFile(path))(_.getLines.mkString).get shouldBe testString
         Files.deleteIfExists(Paths.get(path))
       }
-
-      describe("if the file path is not valid") {
-        it("should produce an InvalidPathException") {
-          val path = System.getProperty("user.home") + File.separator + "file/StorageTesting"
-          fileStorage.writeFile(path, "test") match {
-            case Failure(e: InvalidPathException) => succeed
-            case _                                => fail("Did not produce InvalidPathException")
-          }
-        }
-      }
     }
   }
+
+  private val level01 =
+    "{   \"width\": 8,   \"height\": 5,   \"playableArea\": {     \"width\": 4,     \"height\": 5,     \"x\": 0,     \"y\": 0   },   \"cells\": {     \"mover\": [       {         \"orientation\": \"right\",         \"x\": 1,         \"y\": 1       }     ],     \"enemy\": [       {         \"x\": 6,         \"y\": 3       }     ]   } }"
 }

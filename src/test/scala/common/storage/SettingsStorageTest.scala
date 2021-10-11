@@ -11,6 +11,7 @@ import java.nio.file.{Files, Paths}
 import scala.io.Source
 import scala.util.{Failure, Success, Using}
 
+/** Tests for the [[SettingsStorage]] trait. */
 class SettingsStorageTest extends AnyFunSpec with Matchers {
   private val fileStorage = FileStorage()
   private val settingsStorage = SettingsStorage(fileStorage)

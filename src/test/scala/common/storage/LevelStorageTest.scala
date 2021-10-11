@@ -11,6 +11,7 @@ import java.io.{File, FileNotFoundException}
 import scala.io.Source
 import scala.util.{Failure, Using}
 
+/** Tests for the [[LevelStorage]] trait. */
 class LevelStorageTest extends AnyFunSpec with Matchers {
   private val fileStorage = FileStorage()
   private val levelParser = LevelParser(fileStorage)
@@ -32,8 +33,6 @@ class LevelStorageTest extends AnyFunSpec with Matchers {
     ),
     PlayableArea((7, 5))((1, 1))
   )
-  private val levelSaveTarget =
-    "{  \"width\" : 10,  \"height\" : 8,  \"playableArea\" : {    \"width\" : 7,    \"height\" : 5,    \"x\" : 1,    \"y\" : 1  },  \"cells\" : {    \"mover\" : [ {      \"x\" : 3,      \"y\" : 2,      \"orientation\" : \"right\"    } ],    \"enemy\" : [ {      \"x\" : 4,      \"y\" : 3    } ],    \"wall\" : [ {      \"x\" : 1,      \"y\" : 1    } ]  }}"
 
   describe("LevelStorage") {
     describe("when asked to load a level") {
@@ -68,16 +67,10 @@ class LevelStorageTest extends AnyFunSpec with Matchers {
         Using(Source.fromFile(path))(_.getLines.mkString).get shouldBe levelSaveTarget
         Files.deleteIfExists(Paths.get(path))
       }
-      describe("if the file path is not valid") {
-        it("should produce an InvalidPathException") {
-          val path = System.getProperty("user.home") + File.separator + "level/StorageTesting"
-          levelStorage.saveLevel(path, levelSave) match {
-            case Failure(e: InvalidPathException) => succeed
-            case _                                => fail("Did not produce InvalidPathException")
-          }
-        }
-      }
     }
   }
+
+  private val levelSaveTarget =
+    "{  \"width\" : 10,  \"height\" : 8,  \"playableArea\" : {    \"width\" : 7,    \"height\" : 5,    \"x\" : 1,    \"y\" : 1  },  \"cells\" : {    \"mover\" : [ {      \"x\" : 3,      \"y\" : 2,      \"orientation\" : \"right\"    } ],    \"enemy\" : [ {      \"x\" : 4,      \"y\" : 3    } ],    \"wall\" : [ {      \"x\" : 1,      \"y\" : 1    } ]  }}"
 
 }
