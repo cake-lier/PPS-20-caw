@@ -2,6 +2,7 @@ package it.unibo.pps.caw.view
 
 import javafx.scene.control.Button
 import javafx.scene.image.{Image, ImageView}
+import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import org.junit.jupiter.api.{BeforeAll, TestInstance}
 import org.junit.jupiter.api.TestInstance.Lifecycle
@@ -25,8 +26,14 @@ abstract class ViewTest {
 
   protected def getButtonById(id: String)(robot: FxRobot): Button = robot.lookup(_.getId == id).queryButton()
 
-  protected def getImageViewByImage(image: Image)(robot: FxRobot): ImageView =
-    robot.lookup[ImageView](_.getImage == image).query()
+  protected def getImageViewByCoordinates(board: GridPane)(x: Int, y: Int)(robot: FxRobot): ImageView =
+    board
+      .getChildren
+      .stream()
+      .filter(n => GridPane.getColumnIndex(n) == x && GridPane.getRowIndex(n) == y)
+      .map(_.asInstanceOf[ImageView])
+      .findFirst()
+      .get()
 
   protected def testDefaultStateButton(buttonId: String, text: String)(robot: FxRobot): Unit = {
     val button: Button = getButtonById(buttonId)(robot)

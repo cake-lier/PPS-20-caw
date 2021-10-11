@@ -80,7 +80,7 @@ class GameTest extends ViewTest {
     clickOnPlayButton(robot)
     clickOnLevel(robot)
     // the game board should be present
-    // ...
+    val gameBoard: GridPane = getGameBoard(robot)
     // the play button should be present
     testDefaultStateButton(buttonId = "playSimulationButton", text = "Play")(robot)
     // the step button should be present
@@ -93,22 +93,37 @@ class GameTest extends ViewTest {
     testDefaultStateButton(buttonId = "backToMenuButton", text = "Menu")(robot)
   }
 
+  private def getGameBoard(robot: FxRobot): GridPane = {
+    val gameView: GridPane = robot.lookup[GridPane](_.isInstanceOf[GridPane]).query()
+    gameView
+      .getChildren
+      .stream()
+      .filter(n => GridPane.getColumnIndex(n) == 2 && GridPane.getRowIndex(n) == 3)
+      .map(_.asInstanceOf[GridPane])
+      .findFirst()
+      .get()
+  }
+
   @Test
   def testGameCellDragAndDropDuringSetupPhase(robot: FxRobot): Unit = {
     // during the setup phase
     clickOnPlayButton(robot)
     clickOnLevel(robot)
+    val gameBoard = getGameBoard(robot)
     // the mover cell can be dropped inside the playable area
-    val moverCell = getImageViewByImage(CellImage.MoverRight.image)(robot)
+    val moverCell = getImageViewByCoordinates(gameBoard)(2, 2)(robot)
     robot.drag(moverCell, MouseButton.PRIMARY).dropBy(0, stageHeight * 0.2).drop()
     // the mover cell cannot be dropped outside the playable area
     robot.drag(moverCell, MouseButton.PRIMARY).dropBy(stageWidth * 0.2, 0)
     // the enemy cell cannot be dragged
-    robot.drag(getImageViewByImage(CellImage.Enemy.image)(robot), MouseButton.PRIMARY).dropBy(0, -stageHeight * 0.2)
+    robot.drag(getImageViewByCoordinates(gameBoard)(7, 4)(robot), MouseButton.PRIMARY).dropBy(0, -stageHeight * 0.2)
   }
 
   private def moveMoverCell(robot: FxRobot): Unit =
-    robot.drag(getImageViewByImage(CellImage.MoverRight.image)(robot)).dropBy(0, stageHeight * 0.2).drop()
+    robot
+      .drag(getImageViewByCoordinates(getGameBoard(robot))(2, 2)(robot), MouseButton.PRIMARY)
+      .dropBy(0, stageHeight * 0.2)
+      .drop()
 
   private def clickOnPlaySimulationButton(robot: FxRobot): Unit = robot.clickOn(_.getId == "playSimulationButton")
 
@@ -117,16 +132,11 @@ class GameTest extends ViewTest {
     clickOnPlayButton(robot)
     clickOnLevel(robot)
     moveMoverCell(robot)
-    val moverCellBeforePlay: ImageView = getImageViewByImage(CellImage.MoverRight.image)(robot)
-    val moverCellPositionBeforePlay: Position =
-      Position(GridPane.getColumnIndex(moverCellBeforePlay), GridPane.getRowIndex(moverCellBeforePlay))
     clickOnPlaySimulationButton(robot) // Play
     clickOnPlaySimulationButton(robot) // Pause
-    val moverCellAfterPlay: ImageView = getImageViewByImage(CellImage.MoverRight.image)(robot)
-    val moverCellPositionAfterPlay: Position =
-      Position(GridPane.getColumnIndex(moverCellAfterPlay), GridPane.getRowIndex(moverCellAfterPlay))
-    // the mover cell should have moved
-    Assertions.assertNotEquals(moverCellPositionAfterPlay, moverCellPositionBeforePlay)
+    // after starting and pausing the simulation
+    // the mover cell should be found at coordinates (3,4)
+    getImageViewByCoordinates(getGameBoard(robot))(3, 4)(robot)
   }
 
   private def testDisabledButton(buttonId: String, text: String)(robot: FxRobot): Unit = {
@@ -174,8 +184,9 @@ class GameTest extends ViewTest {
     clickOnPlaySimulationButton(robot)
     clickOnPauseSimulationButton(robot)
     // no game cells should be movable
-    robot.drag(getImageViewByImage(CellImage.MoverRight.image)(robot)).dropBy(0, -stageHeight * 0.2)
-    robot.drag(getImageViewByImage(CellImage.Enemy.image)(robot)).dropBy(0, -stageHeight * 0.2)
+    val gameBoard = getGameBoard(robot)
+    robot.drag(getImageViewByCoordinates(gameBoard)(3, 4)(robot)).dropBy(0, -stageHeight * 0.2)
+    robot.drag(getImageViewByCoordinates(gameBoard)(7, 4)(robot)).dropBy(0, -stageHeight * 0.2)
   }
 
   private def clickOnResetSimulationButton(robot: FxRobot): Unit = robot.clickOn(_.getId == "resetButton")
@@ -185,16 +196,10 @@ class GameTest extends ViewTest {
     clickOnPlayButton(robot)
     clickOnLevel(robot)
     moveMoverCell(robot)
-    val moverCellBeforePlay: ImageView = getImageViewByImage(CellImage.MoverRight.image)(robot)
-    val moverCellPositionBeforePlay: Position =
-      Position(GridPane.getColumnIndex(moverCellBeforePlay), GridPane.getRowIndex(moverCellBeforePlay))
     clickOnPlaySimulationButton(robot)
     clickOnResetSimulationButton(robot)
-    val moverCellAfterReset: ImageView = getImageViewByImage(CellImage.MoverRight.image)(robot)
-    val moverCellPositionAfterReset: Position =
-      Position(GridPane.getColumnIndex(moverCellAfterReset), GridPane.getRowIndex(moverCellAfterReset))
-    // after reset, the mover cell position should be resetted
-    Assertions.assertEquals(moverCellPositionAfterReset, moverCellPositionBeforePlay)
+    // after reset, the mover cell should be found in the original position
+    getImageViewByCoordinates(getGameBoard(robot))(2, 4)(robot)
   }
 
   private def clickOnStepSimulationButton(robot: FxRobot): Unit = robot.clickOn(_.getId == "stepSimulationButton")
@@ -204,21 +209,17 @@ class GameTest extends ViewTest {
     clickOnPlayButton(robot)
     clickOnLevel(robot)
     moveMoverCell(robot)
-    val moverCellStep0: ImageView = getImageViewByImage(CellImage.MoverRight.image)(robot)
-    val moverCellPositionStep0: Position = Position(GridPane.getColumnIndex(moverCellStep0), GridPane.getRowIndex(moverCellStep0))
+    val gameBoard = getGameBoard(robot)
     // it should display the game simulation by 1 step
     clickOnStepSimulationButton(robot)
-    val moverCellStep1: ImageView = getImageViewByImage(CellImage.MoverRight.image)(robot)
-    val moverCellPositionStep1: Position = Position(GridPane.getColumnIndex(moverCellStep1), GridPane.getRowIndex(moverCellStep1))
-    Assertions.assertEquals(Position(moverCellPositionStep0.x + 1, moverCellPositionStep0.y), moverCellPositionStep1)
+    // after 1 step, the mover cell should be found at coordinate (3,4)
+    getImageViewByCoordinates(gameBoard)(3, 4)(robot)
     // it should display the game simulation by 2 step
     clickOnStepSimulationButton(robot)
-    val moverCellStep2: ImageView = getImageViewByImage(CellImage.MoverRight.image)(robot)
-    val moverCellPositionStep2: Position = Position(GridPane.getColumnIndex(moverCellStep2), GridPane.getRowIndex(moverCellStep2))
-    Assertions.assertEquals(Position(moverCellPositionStep0.x + 2, moverCellPositionStep0.y), moverCellPositionStep2)
-    // it should show the game simulation
-    clickOnPlaySimulationButton(robot)
-    // ...
+    // after 2 steps, the mover cell should be found at coordinate (4,4)
+    getImageViewByCoordinates(gameBoard)(4, 4)(robot)
+    // the play button should be clickable
+    testDefaultStateButton(buttonId = "playSimulationButton", text = "Play")(robot)
   }
 
   @Test
@@ -226,11 +227,11 @@ class GameTest extends ViewTest {
     clickOnPlayButton(robot)
     clickOnLevel(robot)
     moveMoverCell(robot)
-    clickOnPlaySimulationButton(robot)
-    WaitForAsyncUtils.sleep(5, TimeUnit.SECONDS)
+    (0 until 5).foreach(_ => clickOnStepSimulationButton(robot))
+    WaitForAsyncUtils.waitForFxEvents()
     // after simulation has ended
     // the play simulation button should be disabled
-    testDisabledButton(buttonId = "playSimulationButton", text = "Pause")(robot)
+    testDisabledButton(buttonId = "playSimulationButton", text = "Play")(robot)
     // the step simulation button should be disabled
     testDisabledButton(buttonId = "stepSimulationButton", text = "Step")(robot)
     // the next button should be visible
@@ -243,15 +244,17 @@ class GameTest extends ViewTest {
   def testNextButtonShouldShowNextLevel(robot: FxRobot): Unit = {
     clickOnPlayButton(robot)
     clickOnLevel(robot)
-    val boardLevel1: GridPane = robot.lookup(_.isInstanceOf[GridPane]).query[GridPane]()
+    val boardLevel1: GridPane = getGameBoard(robot)
     moveMoverCell(robot)
-    clickOnPlaySimulationButton(robot)
-    WaitForAsyncUtils.sleep(5, TimeUnit.SECONDS)
+    (0 until 5).foreach(_ => clickOnStepSimulationButton(robot))
+    WaitForAsyncUtils.waitForFxEvents()
     // after the simulation has ended
     // clicking the next button should show the next level
+    testDefaultStateButton(buttonId = "nextButton", text = "Next")(robot)
     clickOnNextButton(robot)
     // the board of level 2 should not equal the board of level 1
-    //...
+    val boardLevel2: GridPane = getGameBoard(robot)
+    Assertions.assertNotEquals(boardLevel2.getChildren, boardLevel1.getChildren)
   }
 
   private def clickOnBackToMenu(robot: FxRobot): Unit = robot.clickOn(_.getId == "backToMenuButton")
