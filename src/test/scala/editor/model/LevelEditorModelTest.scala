@@ -1,11 +1,12 @@
-package it.unibo.pps.caw.editor
+package it.unibo.pps.caw.editor.model
 
-import it.unibo.pps.caw.common.model.{Board, Dimensions, PlayableArea, Position}
 import it.unibo.pps.caw.common.model.cell.{BaseEnemyCell, PlayableCell, PlayableEnemyCell, PlayableWallCell}
-import it.unibo.pps.caw.editor.model.{LevelBuilder, LevelEditorModel}
+import it.unibo.pps.caw.common.model.{Board, Dimensions, PlayableArea, Position}
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
+/** Tests for the [[LevelEditorModel]] trait */
 class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private val dimensions: Dimensions = (20, 20)
   private val playableAreaDimensions: Dimensions = (5, 5)
@@ -86,8 +87,8 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
     }
   }
   private def createLevelWithWalls(
-      playableArea: Option[PlayableArea] = None,
-      cells: Set[PlayableCell] = Set.empty
+    playableArea: Option[PlayableArea] = None,
+    cells: Set[PlayableCell] = Set.empty
   ): LevelBuilder =
     val walls: Board[PlayableCell] = Set(
       (0 to dimensions.width + 1).map(i => PlayableWallCell((i, 0))(playable = false)),
