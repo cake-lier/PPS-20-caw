@@ -2,6 +2,7 @@ package it.unibo.pps.caw.view
 
 import javafx.stage.Stage
 import org.junit.jupiter.api.Test
+import org.scalatest.DoNotDiscover
 import org.testfx.api.{FxRobot, FxToolkit}
 import org.testfx.framework.junit5.{Start, Stop}
 
