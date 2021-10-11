@@ -23,7 +23,7 @@ class FileStorageTest extends AnyFunSpec with Matchers {
         it("should produce a FileNotFoundException") {
           fileStorage.loadResource("nonexistant") match {
             case Failure(e: FileNotFoundException) => succeed
-            case _                                 => fail()
+            case _                                 => fail("Did not produce FileNotFoundException")
           }
         }
       }
@@ -42,7 +42,7 @@ class FileStorageTest extends AnyFunSpec with Matchers {
           val path = System.getProperty("user.home") + File.separator + "nonexistant"
           fileStorage.loadFile(path) match {
             case Failure(e: FileNotFoundException) => succeed
-            case _                                 => fail()
+            case _                                 => fail("Did not produce FileNotFoundException")
           }
         }
       }
@@ -62,7 +62,7 @@ class FileStorageTest extends AnyFunSpec with Matchers {
           val path = System.getProperty("user.home") + "?" + "fileStorageTesting"
           fileStorage.writeFile(path, "test") match {
             case Failure(e: InvalidPathException) => succeed
-            case _                                => fail()
+            case _                                => fail("Did not produce InvalidPathException")
           }
         }
       }
