@@ -41,6 +41,7 @@ object TestApplicationView {
       stage.setHeight(screenBounds.getHeight)
       stage.setWidth(screenBounds.getWidth)
     }
+
     private val scene: Scene = Scene(stage.getWidth, stage.getHeight)
 
     stage.setResizable(false)
