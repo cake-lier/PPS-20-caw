@@ -10,25 +10,26 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
   private val position: Position = Position(1, 2)
   private val updatedPosition: Position = Position(2, 3)
   private def changePosition(p: Position): Position = (p.x + 1, p.y + 1)
+  private val playable: Boolean = true
 
   describe("An enemy cell") {
     describe("when first created") {
       it("should return the given position") {
-        val cell: PlayableEnemyCell = PlayableEnemyCell(position)(playable = true)
+        val cell: PlayableEnemyCell = PlayableEnemyCell(position)(playable)
         cell.position shouldBe position
-        cell.playable shouldBe true
+        cell.playable shouldBe playable
       }
     }
     describe("when asked to extract cell properties") {
       it("should return the correct properties") {
-        val cell: PlayableEnemyCell = PlayableEnemyCell(position)(playable = false)
-        PlayableEnemyCell.unapply(cell) shouldBe (position, false)
+        val cell: PlayableEnemyCell = PlayableEnemyCell(position)(playable)
+        PlayableEnemyCell.unapply(cell) shouldBe (position, playable)
       }
     }
     describe("when asked to change the position property") {
       it("should correctly update the position") {
-        val cell: PlayableEnemyCell = PlayableEnemyCell(position)(playable = true)
-        cell.changePositionProperty(changePosition) shouldBe PlayableEnemyCell(updatedPosition)(true)
+        val cell: PlayableEnemyCell = PlayableEnemyCell(position)(playable)
+        cell.changePositionProperty(changePosition) shouldBe PlayableEnemyCell(updatedPosition)(playable)
       }
     }
     describe("when asked to change the playable property") {
@@ -38,12 +39,12 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     }
     describe("when converted to its corresponding BaseCell") {
       it("should get converted correctly") {
-        PlayableEnemyCell(position)(true).toBaseCell shouldBe BaseEnemyCell(position)
+        PlayableEnemyCell(position)(playable).toBaseCell shouldBe BaseEnemyCell(position)
       }
     }
     describe("when converted from its corresponding BaseCell") {
       it("should get converted correctly") {
-        BaseEnemyCell(position).toPlayableCell(_ => false) shouldBe PlayableEnemyCell(position)(false)
+        BaseEnemyCell(position).toPlayableCell(_ => playable) shouldBe PlayableEnemyCell(position)(playable)
       }
     }
   }
@@ -51,21 +52,21 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
   describe("A wall cell") {
     describe("when first created") {
       it("should return the given position") {
-        val cell: PlayableWallCell = PlayableWallCell(position)(playable = true)
+        val cell: PlayableWallCell = PlayableWallCell(position)(playable)
         cell.position shouldBe position
-        cell.playable shouldBe true
+        cell.playable shouldBe playable
       }
     }
     describe("when asked to extract cell properties") {
       it("should return the correct properties") {
-        val cell: PlayableWallCell = PlayableWallCell(position)(playable = false)
-        PlayableWallCell.unapply(cell) shouldBe (position, false)
+        val cell: PlayableWallCell = PlayableWallCell(position)(playable)
+        PlayableWallCell.unapply(cell) shouldBe (position, playable)
       }
     }
     describe("when asked to change the position property") {
       it("should correctly update the position") {
-        val cell: PlayableWallCell = PlayableWallCell(position)(playable = true)
-        cell.changePositionProperty(changePosition) shouldBe PlayableWallCell(updatedPosition)(true)
+        val cell: PlayableWallCell = PlayableWallCell(position)(playable)
+        cell.changePositionProperty(changePosition) shouldBe PlayableWallCell(updatedPosition)(playable)
       }
     }
     describe("when asked to change the playable property") {
@@ -75,12 +76,12 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     }
     describe("when converted to its corresponding BaseCell") {
       it("should get converted correctly") {
-        PlayableWallCell(position)(true).toBaseCell shouldBe BaseWallCell(position)
+        PlayableWallCell(position)(playable).toBaseCell shouldBe BaseWallCell(position)
       }
     }
     describe("when converted from its corresponding BaseCell") {
       it("should get converted correctly") {
-        BaseWallCell(position).toPlayableCell(_ => false) shouldBe PlayableWallCell(position)(false)
+        BaseWallCell(position).toPlayableCell(_ => playable) shouldBe PlayableWallCell(position)(playable)
       }
     }
   }
@@ -89,24 +90,24 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     describe("when first created") {
       it("should return the given orientation and position") {
         val orientation: Orientation = Orientation.Right
-        val cell: PlayableMoverCell = PlayableMoverCell(orientation)(position)(playable = true)
+        val cell: PlayableMoverCell = PlayableMoverCell(orientation)(position)(playable)
         cell.position shouldBe position
         cell.orientation shouldBe orientation
-        cell.playable shouldBe true
+        cell.playable shouldBe playable
       }
     }
     describe("when asked to extract cell properties") {
       it("should return the correct properties") {
         val orientation: Orientation = Orientation.Right
-        val cell: PlayableMoverCell = PlayableMoverCell(orientation)(position)(playable = false)
-        PlayableMoverCell.unapply(cell) shouldBe (orientation, position, false)
+        val cell: PlayableMoverCell = PlayableMoverCell(orientation)(position)(playable)
+        PlayableMoverCell.unapply(cell) shouldBe (orientation, position, playable)
       }
     }
     describe("when asked to change the position property") {
       it("should correctly update the position") {
         val orientation: Orientation = Orientation.Right
-        val cell: PlayableMoverCell = PlayableMoverCell(orientation)(position)(playable = true)
-        cell.changePositionProperty(changePosition) shouldBe PlayableMoverCell(orientation)(updatedPosition)(true)
+        val cell: PlayableMoverCell = PlayableMoverCell(orientation)(position)(playable)
+        cell.changePositionProperty(changePosition) shouldBe PlayableMoverCell(orientation)(updatedPosition)(playable)
       }
     }
     describe("when asked to change the playable property") {
@@ -119,14 +120,14 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     describe("when converted to its corresponding BaseCell") {
       it("should get converted correctly") {
         val orientation: Orientation = Orientation.Right
-        PlayableMoverCell(orientation)(position)(true).toBaseCell shouldBe BaseMoverCell(orientation)(position)
+        PlayableMoverCell(orientation)(position)(playable).toBaseCell shouldBe BaseMoverCell(orientation)(position)
       }
     }
     describe("when converted from its corresponding BaseCell") {
       it("should get converted correctly") {
         val orientation: Orientation = Orientation.Right
-        BaseMoverCell(orientation)(position).toPlayableCell(_ => false) shouldBe
-          PlayableMoverCell(orientation)(position)(false)
+        BaseMoverCell(orientation)(position).toPlayableCell(_ => playable) shouldBe
+          PlayableMoverCell(orientation)(position)(playable)
       }
     }
   }
@@ -135,24 +136,24 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     describe("when first created") {
       it("should return the given orientation and position") {
         val orientation: Orientation = Orientation.Right
-        val cell: PlayableGeneratorCell = PlayableGeneratorCell(orientation)(position)(playable = true)
+        val cell: PlayableGeneratorCell = PlayableGeneratorCell(orientation)(position)(playable)
         cell.position shouldBe position
         cell.orientation shouldBe orientation
-        cell.playable shouldBe true
+        cell.playable shouldBe playable
       }
     }
     describe("when asked to extract cell properties") {
       it("should return the correct properties") {
         val orientation: Orientation = Orientation.Right
-        val cell: PlayableGeneratorCell = PlayableGeneratorCell(orientation)(position)(playable = false)
-        PlayableGeneratorCell.unapply(cell) shouldBe (orientation, position, false)
+        val cell: PlayableGeneratorCell = PlayableGeneratorCell(orientation)(position)(playable)
+        PlayableGeneratorCell.unapply(cell) shouldBe (orientation, position, playable)
       }
     }
     describe("when asked to change the position property") {
       it("should correctly update the position") {
         val orientation: Orientation = Orientation.Right
-        val cell: PlayableGeneratorCell = PlayableGeneratorCell(orientation)(position)(playable = true)
-        cell.changePositionProperty(changePosition) shouldBe PlayableGeneratorCell(orientation)(updatedPosition)(true)
+        val cell: PlayableGeneratorCell = PlayableGeneratorCell(orientation)(position)(playable)
+        cell.changePositionProperty(changePosition) shouldBe PlayableGeneratorCell(orientation)(updatedPosition)(playable)
       }
     }
     describe("when asked to change the playable property") {
@@ -165,14 +166,14 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     describe("when converted to its corresponding BaseCell") {
       it("should get converted correctly") {
         val orientation: Orientation = Orientation.Right
-        PlayableGeneratorCell(orientation)(position)(true).toBaseCell shouldBe BaseGeneratorCell(orientation)(position)
+        PlayableGeneratorCell(orientation)(position)(playable).toBaseCell shouldBe BaseGeneratorCell(orientation)(position)
       }
     }
     describe("when converted from its corresponding BaseCell") {
       it("should get converted correctly") {
         val orientation: Orientation = Orientation.Right
-        BaseGeneratorCell(orientation)(position).toPlayableCell(_ => false) shouldBe
-          PlayableGeneratorCell(orientation)(position)(false)
+        BaseGeneratorCell(orientation)(position).toPlayableCell(_ => playable) shouldBe
+          PlayableGeneratorCell(orientation)(position)(playable)
       }
     }
   }
@@ -181,24 +182,24 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     describe("when first created") {
       it("should return the given rotation and position") {
         val rotation: Rotation = Rotation.Clockwise
-        val cell: PlayableRotatorCell = PlayableRotatorCell(rotation)(position)(playable = true)
+        val cell: PlayableRotatorCell = PlayableRotatorCell(rotation)(position)(playable)
         cell.position shouldBe position
         cell.rotation shouldBe rotation
-        cell.playable shouldBe true
+        cell.playable shouldBe playable
       }
     }
     describe("when asked to extract cell properties") {
       it("should return the correct properties") {
         val rotation: Rotation = Rotation.Clockwise
-        val cell: PlayableRotatorCell = PlayableRotatorCell(rotation)(position)(playable = false)
-        PlayableRotatorCell.unapply(cell) shouldBe (rotation, position, false)
+        val cell: PlayableRotatorCell = PlayableRotatorCell(rotation)(position)(playable)
+        PlayableRotatorCell.unapply(cell) shouldBe (rotation, position, playable)
       }
     }
     describe("when asked to change the position property") {
       it("should correctly update the position") {
         val rotation: Rotation = Rotation.Clockwise
-        val cell: PlayableRotatorCell = PlayableRotatorCell(rotation)(position)(playable = true)
-        cell.changePositionProperty(changePosition) shouldBe PlayableRotatorCell(rotation)(updatedPosition)(true)
+        val cell: PlayableRotatorCell = PlayableRotatorCell(rotation)(position)(playable)
+        cell.changePositionProperty(changePosition) shouldBe PlayableRotatorCell(rotation)(updatedPosition)(playable)
       }
     }
     describe("when asked to change the playable property") {
@@ -211,14 +212,14 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     describe("when converted to its corresponding BaseCell") {
       it("should get converted correctly") {
         val rotation: Rotation = Rotation.Clockwise
-        PlayableRotatorCell(rotation)(position)(true).toBaseCell shouldBe BaseRotatorCell(rotation)(position)
+        PlayableRotatorCell(rotation)(position)(playable).toBaseCell shouldBe BaseRotatorCell(rotation)(position)
       }
     }
     describe("when converted from its corresponding BaseCell") {
       it("should get converted correctly") {
         val rotation: Rotation = Rotation.Clockwise
-        BaseRotatorCell(rotation)(position).toPlayableCell(_ => false) shouldBe
-          PlayableRotatorCell(rotation)(position)(false)
+        BaseRotatorCell(rotation)(position).toPlayableCell(_ => playable) shouldBe
+          PlayableRotatorCell(rotation)(position)(playable)
       }
     }
   }
@@ -227,24 +228,24 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     describe("when first created") {
       it("should return the given push and position") {
         val push: Push = Push.Vertical
-        val cell: PlayableBlockCell = PlayableBlockCell(push)(position)(playable = true)
+        val cell: PlayableBlockCell = PlayableBlockCell(push)(position)(playable)
         cell.position shouldBe position
         cell.push shouldBe push
-        cell.playable shouldBe true
+        cell.playable shouldBe playable
       }
     }
     describe("when asked to extract cell properties") {
       it("should return the correct properties") {
         val push: Push = Push.Vertical
-        val cell: PlayableBlockCell = PlayableBlockCell(push)(position)(playable = false)
-        PlayableBlockCell.unapply(cell) shouldBe (push, position, false)
+        val cell: PlayableBlockCell = PlayableBlockCell(push)(position)(playable)
+        PlayableBlockCell.unapply(cell) shouldBe (push, position, playable)
       }
     }
     describe("when asked to change the position property") {
       it("should correctly update the position") {
         val push: Push = Push.Vertical
-        val cell: PlayableBlockCell = PlayableBlockCell(push)(position)(playable = true)
-        cell.changePositionProperty(changePosition) shouldBe PlayableBlockCell(push)(updatedPosition)(true)
+        val cell: PlayableBlockCell = PlayableBlockCell(push)(position)(playable)
+        cell.changePositionProperty(changePosition) shouldBe PlayableBlockCell(push)(updatedPosition)(playable)
       }
     }
     describe("when asked to change the playable property") {
@@ -257,13 +258,13 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     describe("when converted to its corresponding BaseCell") {
       it("should get converted correctly") {
         val push: Push = Push.Vertical
-        PlayableBlockCell(push)(position)(true).toBaseCell shouldBe BaseBlockCell(push)(position)
+        PlayableBlockCell(push)(position)(playable).toBaseCell shouldBe BaseBlockCell(push)(position)
       }
     }
     describe("when converted from its corresponding BaseCell") {
       it("should get converted correctly") {
         val push: Push = Push.Vertical
-        BaseBlockCell(push)(position).toPlayableCell(_ => false) shouldBe PlayableBlockCell(push)(position)(false)
+        BaseBlockCell(push)(position).toPlayableCell(_ => playable) shouldBe PlayableBlockCell(push)(position)(playable)
       }
     }
   }
@@ -271,21 +272,21 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
   describe("A deleter cell") {
     describe("when first created") {
       it("should return the given position") {
-        val cell: PlayableDeleterCell = PlayableDeleterCell(position)(playable = true)
+        val cell: PlayableDeleterCell = PlayableDeleterCell(position)(playable)
         cell.position shouldBe position
-        cell.playable shouldBe true
+        cell.playable shouldBe playable
       }
     }
     describe("when asked to extract cell properties") {
       it("should return the correct properties") {
-        val cell: PlayableDeleterCell = PlayableDeleterCell(position)(playable = false)
-        PlayableDeleterCell.unapply(cell) shouldBe (position, false)
+        val cell: PlayableDeleterCell = PlayableDeleterCell(position)(playable)
+        PlayableDeleterCell.unapply(cell) shouldBe (position, playable)
       }
     }
     describe("when asked to change the position property") {
       it("should correctly update the position") {
-        val cell: PlayableDeleterCell = PlayableDeleterCell(position)(playable = true)
-        cell.changePositionProperty(changePosition) shouldBe PlayableDeleterCell(updatedPosition)(true)
+        val cell: PlayableDeleterCell = PlayableDeleterCell(position)(playable)
+        cell.changePositionProperty(changePosition) shouldBe PlayableDeleterCell(updatedPosition)(playable)
       }
     }
     describe("when asked to change the playable property") {
@@ -295,12 +296,12 @@ class PlayableCellTest extends AnyFunSpec with Matchers {
     }
     describe("when converted to its corresponding BaseCell") {
       it("should get converted correctly") {
-        PlayableDeleterCell(position)(true).toBaseCell shouldBe BaseDeleterCell(position)
+        PlayableDeleterCell(position)(playable).toBaseCell shouldBe BaseDeleterCell(position)
       }
     }
     describe("when converted from its corresponding BaseCell") {
       it("should get converted correctly") {
-        BaseDeleterCell(position).toPlayableCell(_ => false) shouldBe PlayableDeleterCell(position)(false)
+        BaseDeleterCell(position).toPlayableCell(_ => playable) shouldBe PlayableDeleterCell(position)(playable)
       }
     }
   }
