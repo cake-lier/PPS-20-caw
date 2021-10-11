@@ -1,5 +1,4 @@
-package it.unibo.pps.caw
-package common.storage
+package it.unibo.pps.caw.common.storage
 
 import com.fasterxml.jackson.core.JsonParseException
 import org.scalatest.funspec.AnyFunSpec
