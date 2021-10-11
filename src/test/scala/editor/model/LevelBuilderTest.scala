@@ -5,6 +5,7 @@ import it.unibo.pps.caw.common.model.{Board, Dimensions, PlayableArea, Position}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
+/** Tests for the [[LevelBuilder]] trait. */
 class LevelBuilderTest extends AnyFunSpec with Matchers {
   private val dimensions: Dimensions = Dimensions(10, 8)
   private val board: Board[PlayableCell] = Board(
