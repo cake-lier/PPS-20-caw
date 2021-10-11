@@ -70,7 +70,7 @@ class LevelStorageTest extends AnyFunSpec with Matchers {
       }
       describe("if the file path is not valid") {
         it("should produce an InvalidPathException") {
-          val path = System.getProperty("user.home") + "?" + "levelStorageTesting"
+          val path = System.getProperty("user.home") + File.separator + "level/StorageTesting"
           levelStorage.saveLevel(path, levelSave) match {
             case Failure(e: InvalidPathException) => succeed
             case _                                => fail("Did not produce InvalidPathException")

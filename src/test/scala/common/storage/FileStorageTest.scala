@@ -59,7 +59,7 @@ class FileStorageTest extends AnyFunSpec with Matchers {
 
       describe("if the file path is not valid") {
         it("should produce an InvalidPathException") {
-          val path = System.getProperty("user.home") + "?" + "fileStorageTesting"
+          val path = System.getProperty("user.home") + File.separator + "file/StorageTesting"
           fileStorage.writeFile(path, "test") match {
             case Failure(e: InvalidPathException) => succeed
             case _                                => fail("Did not produce InvalidPathException")
@@ -68,5 +68,4 @@ class FileStorageTest extends AnyFunSpec with Matchers {
       }
     }
   }
-
 }
