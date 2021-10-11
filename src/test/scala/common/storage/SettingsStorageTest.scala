@@ -30,10 +30,10 @@ class SettingsStorageTest extends AnyFunSpec with Matchers {
           Files.deleteIfExists(Paths.get(settingsFilePath))
           val defaultSettings = Settings(musicVolume = 0.5, soundVolume = 0.5, Set())
           settingsStorage.load() match {
-            case Success(settings: Settings)
-                if (settings == defaultSettings
-                  && Files.exists(Paths.get(settingsFilePath))) =>
-              succeed
+            case Success(settings: Settings) => {
+              settings shouldBe defaultSettings
+              File(settingsFilePath) should exist
+            }
             case _ => fail()
           }
         }
