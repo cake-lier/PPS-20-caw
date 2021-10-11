@@ -34,12 +34,10 @@ trait FileStorage {
     *   the path to the file to be written
     * @param body
     *   the content of the file to be written
-    * @param options
-    *   the [[OpenOption]] for file writing
     * @return
     *   an exception if it occurs during IO operations
     */
-  def writeFile(path: String, body: String, options: OpenOption*): Try[Unit]
+  def writeFile(path: String, body: String): Try[Unit]
 }
 
 /** Companion object to the [[FileStorage]] trait */
@@ -51,8 +49,8 @@ object FileStorage {
 
     def loadFile(path: String): Try[String] = Using(Source.fromFile(path))(_.getLines.mkString(" "))
 
-    def writeFile(path: String, body: String, options: OpenOption*): Try[Unit] =
-      Try(Files.writeString(Paths.get(path), body, options: _*))
+    def writeFile(path: String, body: String): Try[Unit] =
+      Try(Files.writeString(Paths.get(path), body))
   }
 
   /** Returns a new instance of the [[FileStorage]] trait. */

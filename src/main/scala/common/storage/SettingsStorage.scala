@@ -18,7 +18,7 @@ trait SettingsStorage {
     * The settings file is a .json that corresponds to the json representation of case class [[Settings]].
     *
     * @return
-    *   the requested [[Settings]] or an exception from file reading/writing
+    *   the requested [[Settings]] or an exception if it occurs during IO operations
     */
   def load(): Try[Settings]
 
@@ -42,13 +42,14 @@ object SettingsStorage {
 
     override def load(): Try[Settings] = {
       fileStorage.loadFile(filePath) match {
-        case Success(jsonString: String) => {
-          val json = Json.parse(jsonString)
-          val volumeMusic = (json \ "musicVolume").as[Double]
-          val volumeSFX = (json \ "soundVolume").as[Double]
-          val solvedLevels = (json \ "solvedLevels").as[Set[Int]]
-          Success(Settings(volumeMusic, volumeSFX, solvedLevels))
-        }
+        case Success(jsonString: String) =>
+          Try {
+            val json = Json.parse(jsonString)
+            val volumeMusic = (json \ "musicVolume").as[Double]
+            val volumeSFX = (json \ "soundVolume").as[Double]
+            val solvedLevels = (json \ "solvedLevels").as[Set[Int]]
+            Settings(volumeMusic, volumeSFX, solvedLevels)
+          }
         case Failure(e: FileNotFoundException) =>
           fileStorage.writeFile(filePath, defaultSettingsJson.toString) match {
             case Failure(e) => Failure(e)
