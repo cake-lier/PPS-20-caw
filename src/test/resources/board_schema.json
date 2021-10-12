@@ -1,0 +1,246 @@
+{
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "uuid:01548282-5443-4069-b8d3-8a6651d81211",
+    "title": "Board",
+    "description": "A board used in a level of the game",
+    "type": "object",
+    "properties": {
+        "width": {
+            "description": "The width of the board",
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 50
+        },
+        "height": {
+            "description": "The height of the board",
+            "type": "integer",
+            "minimum": 2,
+            "maximum": 50
+        },
+        "playableArea": {
+            "description": "The area of the board in which the cells can be moved by the player",
+            "type": "object",
+            "properties": {
+                "width": {
+                    "description": "The width of the playable area",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 50
+                },
+                "height": {
+                    "description": "The height of the playable area",
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 50
+                },
+                "x": {
+                    "description": "The x coordinate of the upper left corner of the playable area",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 49
+                },
+                "y": {
+                    "description": "The y coordinate of the upper left corner of the playable area",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 49
+                }
+            },
+            "additionalProperties": false,
+            "required": [ "width", "height", "x", "y" ]
+        },
+        "cells": {
+            "description": "The cells that are present on this board",
+            "type": "object",
+            "properties": {
+                "mover": {
+                    "description": "The push cells that are present on this board",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "orientation": {
+                                "description": "The orientation of the push cell",
+                                "enum": [ "right", "left", "top", "down" ]
+                            },
+                            "x": {
+                                "description": "The x coordinate of the push cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            },
+                            "y": {
+                                "description": "The y coordinate of the push cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [ "orientation", "x", "y" ]
+                    },
+                    "uniqueItems": true
+                },
+                "generator": {
+                    "description": "The generate cells that are present on this board",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "orientation": {
+                                "description": "The orientation of the generate cell",
+                                "enum": [ "right", "left", "top", "down" ]
+                            },
+                            "x": {
+                                "description": "The x coordinate of the generate cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            },
+                            "y": {
+                                "description": "The y coordinate of the generate cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [ "orientation", "x", "y" ]
+                    },
+                    "uniqueItems": true
+                },
+                "rotator": {
+                    "description": "The rotate cells that are present on this board",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "rotation": {
+                                "description": "The direction of the rotate cell",
+                                "enum": [ "clockwise", "counterclockwise" ]
+                            },
+                            "x": {
+                                "description": "The x coordinate of the rotate cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            },
+                            "y": {
+                                "description": "The y coordinate of the rotate cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [ "rotation", "x", "y" ]
+                    },
+                    "uniqueItems": true
+                },
+                "block": {
+                    "description": "The block cells that are present on this board",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "push": {
+                                "description": "The direction in which the block cell allows to be pushed",
+                                "enum": [ "horizontal", "vertical", "both" ]
+                            },
+                            "x": {
+                                "description": "The x coordinate of the block cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            },
+                            "y": {
+                                "description": "The y coordinate of the block cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [ "push", "x", "y" ]
+                    },
+                    "uniqueItems": true
+                },
+                "enemy": {
+                    "description": "The enemy cells that are present on this board",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "x": {
+                                "description": "The x coordinate of the enemy cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            },
+                            "y": {
+                                "description": "The y coordinate of the enemy cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [ "x", "y" ]
+                    },
+                    "uniqueItems": true
+                },
+                "wall": {
+                    "description": "The wall cells that are present on this board",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "x": {
+                                "description": "The x coordinate of the wall cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            },
+                            "y": {
+                                "description": "The y coordinate of the wall cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [ "x", "y" ]
+                    },
+                    "uniqueItems": true
+                },
+                "deleter": {
+                    "description": "The deleter cells that are present on this board",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "x": {
+                                "description": "The x coordinate of the deleter cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            },
+                            "y": {
+                                "description": "The y coordinate of the deleter cell",
+                                "type": "integer",
+                                "minimum": 0,
+                                "maximum": 49
+                            }
+                        },
+                        "additionalProperties": false,
+                        "required": [ "x", "y" ]
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false,
+    "required": [ "width", "height", "playableArea", "cells" ]
+}

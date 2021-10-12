@@ -1,7 +1,4 @@
-package it.unibo.pps.caw
-package model
-
-import game.model.{GameModel, GameState}
+package it.unibo.pps.caw.game.model
 
 import it.unibo.pps.caw.common.LevelParser
 import it.unibo.pps.caw.common.model.{Board, Level}

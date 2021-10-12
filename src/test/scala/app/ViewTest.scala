@@ -1,15 +1,16 @@
-package it.unibo.pps.caw.view
+package it.unibo.pps.caw
+package app
 
 import javafx.scene.control.Button
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.GridPane
 import javafx.stage.Stage
-import org.junit.jupiter.api.{BeforeAll, TestInstance}
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
+import org.junit.jupiter.api.{BeforeAll, TestInstance}
 import org.testfx.api.{FxRobot, FxToolkit}
-import org.testfx.framework.junit5.{ApplicationExtension, Start, Stop}
 import org.testfx.assertions.api.Assertions as FXAssertions
+import org.testfx.framework.junit5.{ApplicationExtension, Start, Stop}
 
 @TestInstance(Lifecycle.PER_CLASS)
 @ExtendWith(Array(classOf[ApplicationExtension]))
@@ -27,8 +28,7 @@ abstract class ViewTest {
   protected def getButtonById(id: String)(robot: FxRobot): Button = robot.lookup(_.getId == id).queryButton()
 
   protected def getImageViewByCoordinates(board: GridPane)(x: Int, y: Int)(robot: FxRobot): ImageView =
-    board
-      .getChildren
+    board.getChildren
       .stream()
       .filter(n => GridPane.getColumnIndex(n) == x && GridPane.getRowIndex(n) == y)
       .map(_.asInstanceOf[ImageView])
@@ -41,4 +41,15 @@ abstract class ViewTest {
     FXAssertions.assertThat(button).isEnabled
     FXAssertions.assertThat(button).hasText(text)
   }
+
+  protected def getImageViewByImage(image: Image)(robot: FxRobot): ImageView =
+    robot.lookup[ImageView](_.getImage == image).query()
+
+  protected def testDisabledButton(buttonId: String, text: String)(robot: FxRobot): Unit = {
+    val button: Button = getButtonById(id = buttonId)(robot)
+    FXAssertions.assertThat(button).isVisible
+    FXAssertions.assertThat(button).isDisabled
+    FXAssertions.assertThat(button).hasText(text)
+  }
+
 }

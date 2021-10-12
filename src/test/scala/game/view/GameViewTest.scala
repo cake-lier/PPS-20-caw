@@ -1,7 +1,11 @@
-package it.unibo.pps.caw.view
+package it.unibo.pps.caw
+package game.view
 
-import it.unibo.pps.caw.common.model.Position
-import it.unibo.pps.caw.common.view.*
+import common.model.Position
+import common.view.*
+
+import it.unibo.pps.caw.app
+import it.unibo.pps.caw.app.{TestApplicationView, ViewTest}
 import javafx.scene.control.Button
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
@@ -13,18 +17,18 @@ import org.testfx.assertions.api.Assertions as FxAssertions
 import org.testfx.framework.junit5.{Start, Stop}
 import org.testfx.util.WaitForAsyncUtils
 
-import scala.jdk.CollectionConverters.given
 import java.util.concurrent.TimeUnit
+import scala.jdk.CollectionConverters.given
 
 /** Test for [[it.unibo.pps.caw.menu.LevelSelectionView]] and [[it.unibo.pps.caw.game.view.GameView]] */
-class GameTest extends ViewTest {
+class GameViewTest extends ViewTest {
 
   protected var stageWidth: Double = 0.0
   protected var stageHeight: Double = 0.0
 
   @Start
   def start(stage: Stage): Unit = {
-    TestApplicationView(stage)
+    app.TestApplicationView(stage)
     stageWidth = stage.getWidth
     stageHeight = stage.getHeight
   }
@@ -95,8 +99,7 @@ class GameTest extends ViewTest {
 
   private def getGameBoard(robot: FxRobot): GridPane = {
     val gameView: GridPane = robot.lookup[GridPane](_.isInstanceOf[GridPane]).query()
-    gameView
-      .getChildren
+    gameView.getChildren
       .stream()
       .filter(n => GridPane.getColumnIndex(n) == 2 && GridPane.getRowIndex(n) == 3)
       .map(_.asInstanceOf[GridPane])
@@ -137,13 +140,6 @@ class GameTest extends ViewTest {
     // after starting and pausing the simulation
     // the mover cell should be found at coordinates (3,4)
     getImageViewByCoordinates(getGameBoard(robot))(3, 4)(robot)
-  }
-
-  private def testDisabledButton(buttonId: String, text: String)(robot: FxRobot): Unit = {
-    val button: Button = getButtonById(id = buttonId)(robot)
-    FxAssertions.assertThat(button).isVisible
-    FxAssertions.assertThat(button).isDisabled
-    FxAssertions.assertThat(button).hasText(text)
   }
 
   @Test

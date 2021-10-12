@@ -23,6 +23,7 @@ class LevelParserTest extends AnyFunSpec with Matchers {
       BaseMoverCell(Orientation.Down)((1, 0)),
       BaseGeneratorCell(Orientation.Left)((2, 1)),
       BaseWallCell((1, 4)),
+      BaseDeleterCell((2, 4)),
       BaseRotatorCell(Rotation.Counterclockwise)((1, 2)),
       BaseBlockCell(Push.Both)((0, 3)),
       BaseRotatorCell(Rotation.Clockwise)((0, 2)),

@@ -1,11 +1,10 @@
-package it.unibo.pps.caw
-package model
+package it.unibo.pps.caw.game.model.engine
 
 import alice.tuprolog.InvalidTermException
-import it.unibo.pps.caw.game.model.engine.Result
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
+/** Tests for class [[Result]] */
 class ResultTest extends AnyFunSpec with Matchers {
   describe("Result") {
     describe("when created") {

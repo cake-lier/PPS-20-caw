@@ -39,7 +39,7 @@
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
     </Button>
-    <Button fx:id="rotateCellsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" text="Rotate" GridPane.columnIndex="2" GridPane.rowIndex="5">
+    <Button id="rotate-cells-button" fx:id="rotateCellsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" styleClass="block-button" text="Rotate" GridPane.columnIndex="2" GridPane.rowIndex="5">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
@@ -51,13 +51,13 @@
     <DraggableImageView id="enemy-button" fx:id="enemyCellView" styleClass="block-button" GridPane.columnIndex="8" GridPane.rowIndex="5" />
     <DraggableImageView id="wall-button" fx:id="wallCellView" styleClass="block-button" GridPane.columnIndex="9" GridPane.rowIndex="5" />
     <DraggableImageView id="deleter-button" fx:id="deleterCellView" styleClass="block-button" GridPane.columnIndex="10" GridPane.rowIndex="5" />
-    <Button fx:id="backButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-    <Button fx:id="rulesButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="How to" GridPane.columnIndex="2" GridPane.rowIndex="1">
+    <Button id="back-button" fx:id="backButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+    <Button id="rules-button" fx:id="rulesButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="How to" GridPane.columnIndex="2" GridPane.rowIndex="1">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>
     </Button>
-    <Button fx:id="saveButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Save" GridPane.columnIndex="12" GridPane.rowIndex="1">
+    <Button id="save-button" fx:id="saveButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Save" GridPane.columnIndex="12" GridPane.rowIndex="1">
         <GridPane.margin>
             <Insets left="5.0" right="5.0" />
         </GridPane.margin>

@@ -71,13 +71,13 @@ trait EditorUpdater {
   *   the [[AudioPlayer]] that will play the editor music
   */
 abstract class AbstractEditorView(
-  scene: Scene,
-  backButtonText: String,
-  audioPlayer: AudioPlayer
+    scene: Scene,
+    backButtonText: String,
+    audioPlayer: AudioPlayer
 ) extends AbstractViewComponent[Pane]("editor.fxml")
-  with EditorView
-  with ModelUpdater
-  with EditorUpdater {
+    with EditorView
+    with ModelUpdater
+    with EditorUpdater {
   @FXML
   var backButton: Button = _
   @FXML
@@ -115,10 +115,10 @@ abstract class AbstractEditorView(
   audioPlayer.play(Track.EditorMusic)
   backButton.setText(backButtonText)
   backButton.setOnMouseClicked(_ => controller.closeEditor())
-  
+
   private val levelFilePicker: FilePicker = FilePicker.forLevelFile(scene)
-  
-  saveButton.setOnMouseClicked(_ => levelFilePicker.saveFile().foreach(controller.saveLevel(_)))
+
+  saveButton.setOnMouseClicked(_ => levelFilePicker.saveFile().foreach(controller.saveLevel))
   rulesButton.setOnMouseClicked(_ => innerComponent.add(rulesPage, 0, 0, 15, 7))
   rulesPage.setOnMouseClicked(_ => innerComponent.getChildren.remove(rulesPage))
   resetAll.setOnMouseClicked(_ => controller.resetLevel())
@@ -143,8 +143,8 @@ abstract class AbstractEditorView(
   override def manageCell(cellImage: ImageView, newPosition: Position): Unit =
     if (boardView.get.getChildren.contains(cellImage))
       controller.updateCellPosition(Position(GridPane.getColumnIndex(cellImage), GridPane.getRowIndex(cellImage)), newPosition)
-    else
-      controller.setCell(getSetupCell(cellImage.getImage, newPosition))
+//    else
+//      controller.setCell(getSetupCell(cellImage.getImage, newPosition))
 
   override def createPlayableArea(topLeft: Position, downRight: Position): Unit =
     controller.setPlayableArea(topLeft, (downRight.x - topLeft.x + 1, downRight.y - topLeft.y + 1))
@@ -233,12 +233,12 @@ abstract class AbstractEditorView(
 object EditorView {
   /* Concrete implementation of an EditorView displaying an empty level. */
   private final class EmptyEditorViewImpl(
-    parentLevelEditorController: ParentLevelEditorController,
-    scene: Scene,
-    backButtonText: String,
-    audioPlayer: AudioPlayer,
-    width: Int,
-    height: Int
+      parentLevelEditorController: ParentLevelEditorController,
+      scene: Scene,
+      backButtonText: String,
+      audioPlayer: AudioPlayer,
+      width: Int,
+      height: Int
   ) extends AbstractEditorView(scene, backButtonText, audioPlayer) {
     override protected def createController(): EditorController =
       EditorController(parentLevelEditorController, this, width, height)
@@ -246,11 +246,11 @@ object EditorView {
 
   /* Concrete implementation of an EditorView displaying an existing level. */
   private final class LevelEditorViewImpl(
-    parentLevelEditorController: ParentLevelEditorController,
-    scene: Scene,
-    backButtonText: String,
-    audioPlayer: AudioPlayer,
-    level: Level[BaseCell]
+      parentLevelEditorController: ParentLevelEditorController,
+      scene: Scene,
+      backButtonText: String,
+      audioPlayer: AudioPlayer,
+      level: Level[BaseCell]
   ) extends AbstractEditorView(scene, backButtonText, audioPlayer) {
     override protected def createController(): EditorController = EditorController(
       parentLevelEditorController,
@@ -278,11 +278,11 @@ object EditorView {
     *   a new instance of [[EditorView]] displaying an existing level to be edited by the user
     */
   def apply(
-    parentLevelEditorController: ParentLevelEditorController,
-    scene: Scene,
-    backButtonText: String,
-    audioPlayer: AudioPlayer,
-    level: Level[BaseCell]
+      parentLevelEditorController: ParentLevelEditorController,
+      scene: Scene,
+      backButtonText: String,
+      audioPlayer: AudioPlayer,
+      level: Level[BaseCell]
   ): EditorView =
     LevelEditorViewImpl(
       parentLevelEditorController,
@@ -313,12 +313,12 @@ object EditorView {
     *   a new instance of [[EditorView]] displaying an new empty level with the given widht and height
     */
   def apply(
-    parentLevelEditorController: ParentLevelEditorController,
-    scene: Scene,
-    backButtonText: String,
-    audioPlayer: AudioPlayer,
-    boardWidth: Int,
-    boardHeight: Int
+      parentLevelEditorController: ParentLevelEditorController,
+      scene: Scene,
+      backButtonText: String,
+      audioPlayer: AudioPlayer,
+      boardWidth: Int,
+      boardHeight: Int
   ): EditorView =
     EmptyEditorViewImpl(parentLevelEditorController, scene, backButtonText, audioPlayer, boardWidth, boardHeight)
 }

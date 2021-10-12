@@ -90,14 +90,15 @@ object LevelEditorModel {
       LevelEditorModel(currentLevel.dimensions.width - 2, currentLevel.dimensions.height - 2)
 
     override def updateCellPosition(oldPosition: Position, newPosition: Position): LevelEditorModel =
-      currentLevel.board
-        .find(_.position == newPosition)
-        .map(c => Board(currentLevel.board - c))
-        .getOrElse(currentLevel.board)
-        .find(_.position == oldPosition)
-        .map(_.changePositionProperty(_ => newPosition))
-        .map(c => LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board.filter(_.position != oldPosition) + c)))
-        .getOrElse(this)
+      (currentLevel.board.find(_.position == newPosition), currentLevel.board.find(_.position == oldPosition)) match {
+        case (None, Some(c)) =>
+          LevelEditorModelImpl(
+            currentLevel.copy(
+              board = currentLevel.board.filter(_.position != oldPosition) + c.changePositionProperty(_ => newPosition)
+            )
+          )
+        case _ => this
+      }
 
     override def setCell(cell: BaseCell): LevelEditorModel =
       LevelEditorModelImpl(currentLevel.copy(board = currentLevel.board + cell.toPlayableCell(_ => true)))

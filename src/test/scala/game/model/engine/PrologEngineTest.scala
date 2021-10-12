@@ -1,5 +1,5 @@
 package it.unibo.pps.caw
-package model
+package game.model.engine
 
 import game.model.engine.*
 
