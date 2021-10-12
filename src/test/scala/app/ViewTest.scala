@@ -10,7 +10,6 @@ import org.junit.jupiter.api.{BeforeAll, TestInstance}
 import org.testfx.api.FxRobot
 import org.testfx.assertions.api.Assertions as FXAssertions
 import org.testfx.framework.junit5.ApplicationExtension
-
 import scala.jdk.CollectionConverters.given
 
 @TestInstance(Lifecycle.PER_CLASS)
