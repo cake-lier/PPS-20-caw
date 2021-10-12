@@ -6,8 +6,7 @@ import it.unibo.pps.caw.game.model.GameModel
 import com.sun.javafx.scene.input.DragboardHelper.DragboardAccessor
 import it.unibo.pps.caw
 import it.unibo.pps.caw.app
-import it.unibo.pps.caw.app.ViewTest
-import it.unibo.pps.caw.view.TestApplicationView
+import it.unibo.pps.caw.app.{TestApplicationView, ViewTest}
 import javafx.scene.Node
 import javafx.scene.control.{Button, Slider, TextField}
 import javafx.scene.image.{Image, ImageView}
@@ -17,6 +16,7 @@ import javafx.stage.Stage
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.{Assertions, BeforeAll, Test, TestInstance}
+import org.scalatest.DoNotDiscover
 import org.testfx.api.{FxRobot, FxToolkit}
 import org.testfx.assertions.api.Assertions as FxAssertions
 import org.testfx.framework.junit5.{ApplicationExtension, Start, Stop}
@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit
 import scala.annotation.tailrec
 import scala.jdk.CollectionConverters
 
+@DoNotDiscover
 /** Tests for class [[EditorView]] and [[LevelEditorMenuView]] */
 class EditorViewTest extends ViewTest {
 
