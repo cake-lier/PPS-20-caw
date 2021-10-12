@@ -4,10 +4,8 @@ import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView}
 import it.unibo.pps.caw.editor.view.{EditorView, LevelEditorMenuView}
 import it.unibo.pps.caw.game.model.GameModel
 import com.sun.javafx.scene.input.DragboardHelper.DragboardAccessor
-import it.unibo.pps.caw
-import it.unibo.pps.caw.app
 import it.unibo.pps.caw.app.ViewTest
-import it.unibo.pps.caw.view.TestApplicationView
+import it.unibo.pps.caw.app.TestApplicationView
 import javafx.scene.Node
 import javafx.scene.control.{Button, Slider, TextField}
 import javafx.scene.image.{Image, ImageView}
@@ -16,8 +14,7 @@ import javafx.scene.layout.GridPane
 import javafx.stage.Stage
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.{Assertions, BeforeAll, Order, Test, TestInstance, TestMethodOrder}
-import org.junit.jupiter.api.MethodOrderer.OrderAnnotation
+import org.junit.jupiter.api.{Assertions, BeforeAll, Test, TestInstance}
 import org.testfx.api.{FxRobot, FxToolkit}
 import org.testfx.assertions.api.Assertions as FxAssertions
 import org.testfx.framework.junit5.{ApplicationExtension, Start, Stop}
@@ -29,7 +26,6 @@ import scala.annotation.tailrec
 import scala.jdk.CollectionConverters.given
 
 /** Tests for class [[EditorView]] and [[LevelEditorMenuView]] */
-@TestMethodOrder(classOf[OrderAnnotation])
 class EditorViewTest extends ViewTest {
 
   protected var stageWidth: Double = 0.0

@@ -1,13 +1,14 @@
-package it.unibo.pps.caw.view
+package it.unibo.pps.caw.app
 
 import it.unibo.pps.caw.app.{ApplicationController, ApplicationView}
+import it.unibo.pps.caw.app.DummyAudioPlayer
 import it.unibo.pps.caw.common.view.ViewComponent
 import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.editor.view.EditorView
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.menu.{DummyAudioPlayer, MainMenuView}
+import it.unibo.pps.caw.menu.MainMenuView
 import javafx.application.Platform
 import javafx.scene.layout.Pane
 import javafx.stage.{Screen, Stage}

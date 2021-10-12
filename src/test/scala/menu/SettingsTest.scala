@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.view.TestApplicationView
+import it.unibo.pps.caw.app.TestApplicationView
 import javafx.stage.Stage
 import org.junit.jupiter.api.Test
 import org.testfx.api.{FxRobot, FxToolkit}
