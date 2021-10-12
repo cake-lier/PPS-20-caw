@@ -29,14 +29,7 @@ class GameModelTest extends AnyFunSpec with Matchers {
           gameModelSingleLevel.state.levelCurrentState.dimensions,
           Board(
             gameModelSingleLevel.state.levelInitialState.board.cells
-              .map(_ match {
-                case PlayableRotatorCell(r, p, _)   => PlayableRotatorCell(r)(p)(false)
-                case PlayableGeneratorCell(o, p, _) => PlayableGeneratorCell(o)(p)(false)
-                case PlayableEnemyCell(p, _)        => PlayableEnemyCell(p)(false)
-                case PlayableMoverCell(o, p, _)     => PlayableMoverCell(o)(p)(false)
-                case PlayableBlockCell(d, p, _)     => PlayableBlockCell(d)(p)(false)
-                case PlayableWallCell(p, _)         => PlayableWallCell(p)(false)
-              })
+              .map(toUnmovableCell)
           ),
           gameModelSingleLevel.state.levelCurrentState.playableArea
         )
@@ -46,14 +39,7 @@ class GameModelTest extends AnyFunSpec with Matchers {
           gameModelMultipleLevels.state.levelCurrentState.dimensions,
           Board(
             gameModelMultipleLevels.state.levelInitialState.board.cells
-              .map(_ match {
-                case PlayableRotatorCell(r, p, _)   => PlayableRotatorCell(r)(p)(false)
-                case PlayableGeneratorCell(o, p, _) => PlayableGeneratorCell(o)(p)(false)
-                case PlayableEnemyCell(p, _)        => PlayableEnemyCell(p)(false)
-                case PlayableMoverCell(o, p, _)     => PlayableMoverCell(o)(p)(false)
-                case PlayableBlockCell(d, p, _)     => PlayableBlockCell(d)(p)(false)
-                case PlayableWallCell(p, _)         => PlayableWallCell(p)(false)
-              })
+              .map(toUnmovableCell)
           ),
           gameModelMultipleLevels.state.levelCurrentState.playableArea
         )
@@ -180,6 +166,16 @@ class GameModelTest extends AnyFunSpec with Matchers {
     }
   }
   private def loadFile(path: String): String = this.fileStorage.loadResource(path).get
+
+  private def toUnmovableCell(cell: PlayableCell): PlayableCell = cell match {
+    case PlayableRotatorCell(r, p, _)   => PlayableRotatorCell(r)(p)(false)
+    case PlayableGeneratorCell(o, p, _) => PlayableGeneratorCell(o)(p)(false)
+    case PlayableEnemyCell(p, _)        => PlayableEnemyCell(p)(false)
+    case PlayableMoverCell(o, p, _)     => PlayableMoverCell(o)(p)(false)
+    case PlayableBlockCell(d, p, _)     => PlayableBlockCell(d)(p)(false)
+    case PlayableWallCell(p, _)         => PlayableWallCell(p)(false)
+    case PlayableDeleterCell(p, _)      => PlayableDeleterCell(p)(false)
+  }
 
   private def convertBoard(levelWithWallsDimensions: Dimensions, board: Board[BaseCell]): Board[PlayableCell] =
     val levelDimensions: Dimensions = (levelWithWallsDimensions.width - 2, levelWithWallsDimensions.height - 2)
