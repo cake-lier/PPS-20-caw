@@ -1,10 +1,6 @@
-package it.unibo.pps.caw
-package menu
+package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw
-import it.unibo.pps.caw.app
-import it.unibo.pps.caw.app.TestApplicationView
-import it.unibo.pps.caw.game.view
+import it.unibo.pps.caw.view.TestApplicationView
 import javafx.stage.Stage
 import org.junit.jupiter.api.Test
 import org.testfx.api.{FxRobot, FxToolkit}
@@ -20,7 +16,7 @@ class SettingsTest extends AbstractSettingsTest {
     if (settings.toFile.exists()) {
       Files.delete(settings)
     }
-    app.TestApplicationView(stage)
+    TestApplicationView(stage)
   }
 
   @Stop

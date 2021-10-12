@@ -27,7 +27,7 @@ object LevelButton {
     override val innerComponent: Button = loader.load[Button]
 
     innerComponent.setText(number.toString)
-    innerComponent.setOnMouseClicked(_ => controller.startGame(number))
+    innerComponent.setOnAction(_ => controller.startGame(number))
 
     if (controller.solvedLevels.contains(number)) {
       innerComponent.getStyleClass.add("completed")

@@ -6,7 +6,8 @@ import it.unibo.pps.caw.game.model.GameModel
 import com.sun.javafx.scene.input.DragboardHelper.DragboardAccessor
 import it.unibo.pps.caw
 import it.unibo.pps.caw.app
-import it.unibo.pps.caw.app.{TestApplicationView, ViewTest}
+import it.unibo.pps.caw.app.ViewTest
+import it.unibo.pps.caw.view.TestApplicationView
 import javafx.scene.Node
 import javafx.scene.control.{Button, Slider, TextField}
 import javafx.scene.image.{Image, ImageView}
@@ -34,7 +35,7 @@ class EditorViewTest extends ViewTest {
 
   @Start
   def start(stage: Stage): Unit = {
-    app.TestApplicationView(stage)
+    TestApplicationView(stage)
     stageWidth = stage.getWidth
     stageHeight = stage.getHeight
   }

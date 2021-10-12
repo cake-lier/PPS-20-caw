@@ -1,13 +1,12 @@
-package it.unibo.pps.caw
-package editor.model
+package it.unibo.pps.caw.editor.model
 
-import common.model.cell.{BaseEnemyCell, PlayableCell, PlayableEnemyCell, PlayableWallCell}
-import common.model.{Board, Dimensions, PlayableArea, Position}
-import editor.model.{LevelBuilder, LevelEditorModel}
+import it.unibo.pps.caw.common.model.cell.{BaseEnemyCell, PlayableCell, PlayableEnemyCell, PlayableWallCell}
+import it.unibo.pps.caw.common.model.{Board, Dimensions, PlayableArea, Position}
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
+/** Tests for the [[LevelEditorModel]] trait */
 class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private val dimensions: Dimensions = (20, 20)
   private val playableAreaDimensions: Dimensions = (5, 5)

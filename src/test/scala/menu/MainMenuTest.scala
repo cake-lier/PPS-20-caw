@@ -1,11 +1,9 @@
-package it.unibo.pps.caw
-package menu
+package it.unibo.pps.caw.view
 
-import it.unibo.pps.caw
-import it.unibo.pps.caw.app
-import it.unibo.pps.caw.app.{TestApplicationView, ViewTest}
+import it.unibo.pps.caw.app.ViewTest
 import javafx.stage.Stage
 import org.junit.jupiter.api.Test
+import org.scalatest.DoNotDiscover
 import org.testfx.api.{FxRobot, FxToolkit}
 import org.testfx.framework.junit5.{Start, Stop}
 
@@ -13,7 +11,7 @@ import org.testfx.framework.junit5.{Start, Stop}
 class MainMenuTest extends ViewTest {
 
   @Start
-  def start(stage: Stage): Unit = app.TestApplicationView(stage)
+  def start(stage: Stage): Unit = TestApplicationView(stage)
 
   @Stop
   def stop(): Unit = FxToolkit.hideStage()

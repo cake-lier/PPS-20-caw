@@ -1,18 +1,19 @@
-package it.unibo.pps.caw
-package app
+package it.unibo.pps.caw.view
 
-import common.model.Level
-import common.model.cell.BaseCell
-import common.view.sounds.{AudioPlayer, AudioType}
-import editor.view.EditorView
-import game.view.GameView
-import menu.{DummyAudioPlayer, MainMenuView}
-
+import it.unibo.pps.caw.app.{ApplicationController, ApplicationView}
+import it.unibo.pps.caw.common.view.ViewComponent
+import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
+import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.model.cell.BaseCell
+import it.unibo.pps.caw.editor.view.EditorView
+import it.unibo.pps.caw.game.view.GameView
+import it.unibo.pps.caw.menu.{DummyAudioPlayer, MainMenuView}
 import javafx.application.Platform
-import javafx.geometry.Rectangle2D
+import javafx.scene.layout.Pane
 import javafx.stage.{Screen, Stage}
-import scalafx.scene.Scene
+import javafx.geometry.Rectangle2D
 import scalafx.scene.control.Alert
+import scalafx.scene.Scene
 
 object TestApplicationView {
 
@@ -38,6 +39,7 @@ object TestApplicationView {
       stage.setHeight(screenBounds.getHeight)
       stage.setWidth(screenBounds.getWidth)
     }
+
     private val scene: Scene = Scene(stage.getWidth, stage.getHeight)
 
     stage.setResizable(false)
