@@ -1,10 +1,9 @@
-package it.unibo.pps.caw
-package menu
+package it.unibo.pps.caw.menu
 
 import it.unibo.pps.caw
 import it.unibo.pps.caw.app
-import it.unibo.pps.caw.app.TestApplicationView
 import it.unibo.pps.caw.game.view
+import it.unibo.pps.caw.view.TestApplicationView
 import javafx.stage.Stage
 import org.junit.jupiter.api.*
 import org.testfx.api.{FxRobot, FxToolkit}
@@ -24,7 +23,7 @@ class SettingsPersistenceTest extends AbstractSettingsTest {
   }
 
   @Start
-  def start(stage: Stage): Unit = app.TestApplicationView(stage)
+  def start(stage: Stage): Unit = TestApplicationView(stage)
 
   @Stop
   def stop(): Unit = FxToolkit.hideStage()

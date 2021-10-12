@@ -70,4 +70,13 @@ class CellsTests extends AnyFunSpec with Matchers {
       }
     }
   }
+
+  describe("A deleter cell") {
+    describe("when first created") {
+      it("should return the given position") {
+        val cell: BaseDeleterCell = BaseDeleterCell(position)
+        cell.position shouldBe position
+      }
+    }
+  }
 }
