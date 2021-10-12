@@ -6,13 +6,13 @@ import javafx.scene.control.Button
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
+import javafx.scene.Scene
 import javafx.stage.Stage
 import org.junit.jupiter.api.{Assertions, Test}
 import org.testfx.api.{FxRobot, FxToolkit}
 import org.testfx.assertions.api.Assertions as FxAssertions
 import org.testfx.framework.junit5.{Start, Stop}
 import org.testfx.robot.Motion
-import org.testfx.service.query.PointQuery
 import org.testfx.util.WaitForAsyncUtils
 
 import scala.jdk.CollectionConverters.given
@@ -74,11 +74,7 @@ class GameTest extends ViewTest {
 //    FxAssertions.assertThat(button).isEnabled
 //  }
 
-  private def clickOnLevel(robot: FxRobot): Unit = {
-    val button: Button = robot.lookup[Button](_.getText.matches("^1$")).queryButton()
-    button.fire()
-    WaitForAsyncUtils.waitForFxEvents()
-  }
+  private def clickOnLevel(robot: FxRobot): Unit = robot.clickOn[Button](_.getText == "1")
 
 //  @Test
 //  def testGameViewHasAllControls(robot: FxRobot): Unit = {
@@ -115,29 +111,19 @@ class GameTest extends ViewTest {
     clickOnPlayButton(robot)
     WaitForAsyncUtils.waitForFxEvents()
     clickOnLevel(robot)
-    val gameBoard = getGameBoard(robot)
-    val test: ImageView = gameBoard
-      .getChildren
-      .stream()
-      .map(_.asInstanceOf[ImageView])
-      .filter(n => {
-        println(n.getImage.getUrl + " " + Position(GridPane.getColumnIndex(n), GridPane.getRowIndex(n)))
-        n.getImage.getUrl == CellImage.MoverRight.image.getUrl
-      })
-      .findAny()
-      .get()
+    val gameBoard: GridPane = getGameBoard(robot)
     // the mover cell can be dropped inside the playable area
-    val moverCell = getImageViewByCoordinates(gameBoard)(2, 2)(CellImage.MoverRight.image)(robot)
+    val moverCell: ImageView = getImageViewByCoordinates(gameBoard)(2, 2)(robot)
     robot.drag(moverCell, MouseButton.PRIMARY).dropBy(0, stageHeight * 0.2).drop()
-    getImageViewByCoordinates(gameBoard)(2, 4)(CellImage.MoverRight.image)(robot)
+    getImageViewByCoordinates(gameBoard)(2, 4)(robot)
     // the mover cell cannot be dropped outside the playable area
     robot.drag(moverCell, MouseButton.PRIMARY).dropBy(stageWidth * 0.2, 0)
-    getImageViewByCoordinates(gameBoard)(2, 4)(CellImage.MoverRight.image)(robot)
+    getImageViewByCoordinates(gameBoard)(2, 4)(robot)
     // the enemy cell cannot be dragged
     robot
-      .drag(getImageViewByCoordinates(gameBoard)(7, 4)(CellImage.Enemy.image)(robot), MouseButton.PRIMARY)
+      .drag(getImageViewByCoordinates(gameBoard)(7, 4)(robot), MouseButton.PRIMARY)
       .dropBy(0, -stageHeight * 0.2)
-    getImageViewByCoordinates(gameBoard)(7, 4)(CellImage.Enemy.image)(robot)
+    getImageViewByCoordinates(gameBoard)(7, 4)(robot)
   }
 
 //  private def moveMoverCell(robot: FxRobot): Unit =

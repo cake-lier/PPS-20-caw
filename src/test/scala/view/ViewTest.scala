@@ -27,12 +27,12 @@ abstract class ViewTest {
 
   protected def getButtonById(id: String)(robot: FxRobot): Button = robot.lookup(_.getId == id).queryButton()
 
-  protected def getImageViewByCoordinates(board: GridPane)(x: Int, y: Int)(image: Image)(robot: FxRobot): ImageView =
+  protected def getImageViewByCoordinates(board: GridPane)(x: Int, y: Int)(robot: FxRobot): ImageView =
     board
       .getChildren
       .asScala
       .map(_.asInstanceOf[ImageView])
-      .find(n => GridPane.getColumnIndex(n) == x && GridPane.getRowIndex(n) == y && n.getImage == image)
+      .find(n => GridPane.getColumnIndex(n) == x && GridPane.getRowIndex(n) == y)
       .get
 
   protected def testDefaultStateButton(buttonId: String, text: String)(robot: FxRobot): Unit = {

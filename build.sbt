@@ -17,15 +17,6 @@ Compile / resourceGenerators += Def.task {
   Seq(outputFile)
 }.taskValue
 
-Compile / resourceGenerators += Def.task {
-  val outputFile: File = (Compile / resourceManaged).value / "levels.json"
-  IO.write(
-    outputFile,
-    IO.listFiles((Compile / resourceDirectory).value / "levels").map(_.getName).map("\"" + _ + "\"").mkString("[\n", ",\n", "\n]")
-  )
-  Seq(outputFile)
-}.taskValue
-
 Compile / excludeFilter := "*.pl"
 
 assembly / mainClass := Some("it.unibo.pps.caw.app.Main")
