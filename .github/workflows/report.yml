@@ -1,0 +1,33 @@
+name: Report generation
+
+on:
+  push:
+    branches:
+    - "main"
+    paths: 
+    - "report/**"
+    
+jobs:
+  convert_via_pandoc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Create file list
+        id: files_list
+        run: |
+          cd report
+          echo "::set-output name=files::$(printf 'report/%s ' *.md)"
+      - uses: docker://pandoc/latex:2.9
+        with:
+          args: >-
+            -f markdown
+            -t pdf
+            -o report/report.pdf
+            --toc
+            --standalone
+            ${{ steps.files_list.outputs.files }}
+            report/metadata.yml
+      - uses: actions/upload-artifact@master
+        with:
+          name: report
+          path: report/report.pdf
