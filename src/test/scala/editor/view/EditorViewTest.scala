@@ -45,6 +45,24 @@ class EditorViewTest extends ViewTest {
     FxToolkit.hideStage()
   }
 
+  private def checkEmptyBoard(robot: FxRobot): Unit =
+    getBoard(robot).getChildren.asScala
+      .filter(_.isInstanceOf[ImageView])
+      .map(_.asInstanceOf[ImageView])
+      .find(i =>
+        i.getImage.getUrl != CellImage.DefaultTile.image.getUrl &&
+          i.getImage.getUrl != CellImage.Wall.image.getUrl
+      ) match {
+      case Some(_) => fail
+      case _       =>
+    }
+
+  @Test
+  def testEmptyBoard(robot: FxRobot): Unit = {
+    enterEmptyLevelEditor(robot)
+    checkEmptyBoard(robot)
+  }
+
   @Test
   def testEditorMenuHasAllControls(robot: FxRobot): Unit = {
     clickOnLevelEditorButton(robot)
@@ -225,13 +243,7 @@ class EditorViewTest extends ViewTest {
     dragAndDrop("mover")((3, 3))(robot)
     WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS)
     robot.rightClickOn()
-    getImageViews((3, 3))(robot).find(i =>
-      i.getImage.getUrl != CellImage.DefaultTile.image.getUrl &&
-        i.getImage.getUrl != CellImage.Wall.image.getUrl
-    ) match {
-      case Some(_) => fail
-      case _       =>
-    }
+    checkEmptyBoard(robot)
   }
 
   @Test
@@ -245,8 +257,6 @@ class EditorViewTest extends ViewTest {
     }
     for (x <- 1 to maxX; y <- 1 to maxY)
       yield getImageViews((x, y))(robot)
-        .filter(_.isInstanceOf[ImageView])
-        .map(_.asInstanceOf[ImageView])
         .find(_.getImage.getUrl == CellImage.PlayAreaTile.image.getUrl) match {
         case None => fail()
         case _    =>
@@ -258,14 +268,7 @@ class EditorViewTest extends ViewTest {
   def testDeleteDrawPlayableArea(robot: FxRobot): Unit = {
     testDrawPlayableArea(robot)
     robot.rightClickOn()
-    getBoard(robot).getChildren.asScala
-      .find(n =>
-        n.isInstanceOf[ImageView] &&
-          n.asInstanceOf[ImageView].getImage.getUrl == CellImage.PlayAreaTile.image.getUrl
-      ) match {
-      case Some(_) => fail
-      case _       =>
-    }
+    checkEmptyBoard(robot)
     WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS)
   }
 
