@@ -3,4 +3,4 @@
 <?import javafx.scene.layout.*?>
 
 
-<GridPane alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/game.css" xmlns="http://javafx.com/javafx/11.0.2"/>
+<GridPane id="board" alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" stylesheets="@../css/game.css" xmlns="http://javafx.com/javafx/11.0.2"/>
