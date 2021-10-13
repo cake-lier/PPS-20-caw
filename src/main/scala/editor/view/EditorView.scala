@@ -143,8 +143,8 @@ abstract class AbstractEditorView(
   override def manageCell(cellImage: ImageView, newPosition: Position): Unit =
     if (boardView.get.getChildren.contains(cellImage))
       controller.updateCellPosition(Position(GridPane.getColumnIndex(cellImage), GridPane.getRowIndex(cellImage)), newPosition)
-//    else
-//      controller.setCell(getSetupCell(cellImage.getImage, newPosition))
+    else
+      controller.setCell(getSetupCell(cellImage.getImage, newPosition))
 
   override def createPlayableArea(topLeft: Position, downRight: Position): Unit =
     controller.setPlayableArea(topLeft, (downRight.x - topLeft.x + 1, downRight.y - topLeft.y + 1))

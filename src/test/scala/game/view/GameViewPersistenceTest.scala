@@ -80,7 +80,7 @@ class GameViewPersistenceTest extends ViewTest {
   private def clickOnLevel(robot: FxRobot): Unit = robot.clickOn[Button](_.getText == "1")
 
   private def moveMoverCell(robot: FxRobot): Unit =
-    val gameBoard = getGameBoard(robot)
+    val gameBoard = getBoard(robot)
     robot
       .drag(getImageView(gameBoard)(CellImage.MoverRight.image), MouseButton.PRIMARY)
       .dropTo(getDropTile(gameBoard)(2, 4))

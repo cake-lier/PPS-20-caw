@@ -12,6 +12,7 @@ import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
 import javafx.stage.Stage
+import org.junit.jupiter.api.Assertions.{assertEquals, fail}
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.{Assertions, BeforeAll, Test, TestInstance}
@@ -221,50 +222,86 @@ class EditorViewTest extends ViewTest {
   @Test
   def testDeleteCell(robot: FxRobot): Unit = {
     enterEmptyLevelEditor(robot)
-    robot
-      .drag(getImageViewByImage(CellImage.MoverRight.image)(robot), MouseButton.PRIMARY)
-      .dropBy(stageHeight * 0.1, -stageHeight * 0.2)
+    dragAndDrop("mover")((3, 3))(robot)
     WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS)
     robot.rightClickOn()
+    getImageViews((3, 3))(robot).find(i =>
+      i.getImage.getUrl != CellImage.DefaultTile.image.getUrl &&
+        i.getImage.getUrl != CellImage.Wall.image.getUrl
+    ) match {
+      case Some(_) => fail
+      case _       =>
+    }
   }
 
   @Test
   def testDrawPlayableArea(robot: FxRobot): Unit = {
+    val maxX = 3
+    val maxY = 3
     enterEmptyLevelEditor(robot)
-    robot
-      .drag(stageWidth * 0.4, stageHeight * 0.3)
-      .dropBy(stageWidth * 0.09, stageHeight * 0.2)
+    (getImageViews((1, 1))(robot).toList, getImageViews((3, 3))(robot).toList) match {
+      case (h1 :: _, h2 :: _) => robot.drag(h1, MouseButton.PRIMARY).dropTo(h2)
+      case _                  => fail()
+    }
+    for (x <- 1 to maxX; y <- 1 to maxY)
+      yield getImageViews((x, y))(robot)
+        .filter(_.isInstanceOf[ImageView])
+        .map(_.asInstanceOf[ImageView])
+        .find(_.getImage.getUrl == CellImage.PlayAreaTile.image.getUrl) match {
+        case None => fail()
+        case _    =>
+      }
+    WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS)
   }
 
   @Test
   def testDeleteDrawPlayableArea(robot: FxRobot): Unit = {
     testDrawPlayableArea(robot)
-    WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS)
     robot.rightClickOn()
+    getBoard(robot).getChildren.asScala
+      .find(n =>
+        n.isInstanceOf[ImageView] &&
+          n.asInstanceOf[ImageView].getImage.getUrl == CellImage.PlayAreaTile.image.getUrl
+      ) match {
+      case Some(_) => fail
+      case _       =>
+    }
     WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS)
   }
 
+  private def testCellInGridPane(imageViewCell: String)(gridCoordinates: (Int, Int))(robot: FxRobot): Unit =
+    getImageViews(gridCoordinates)(robot)
+      .find(_.getImage.getUrl != CellImage.DefaultTile.image.getUrl)
+      .fold(fail)(n =>
+        assertEquals(
+          n.getImage.getUrl,
+          robot.lookup(s"#$imageViewCell-image-view").query[ImageView].getImage.getUrl
+        )
+      )
   @Test
   def testDragAndDropImageView(robot: FxRobot): Unit = {
     enterEmptyLevelEditor(robot)
-    robot
-      .drag(getImageViewByImage(CellImage.MoverRight.image)(robot))
-      .dropBy(0, -stageHeight * 0.2)
-      .drag(getImageViewByImage(CellImage.GeneratorRight.image)(robot))
-      .drag(getImageViewByImage(CellImage.RotatorClockwise.image)(robot))
-      .dropBy(0, -stageHeight * 0.2)
-      .drag(getImageViewByImage(CellImage.Block.image)(robot))
-      .dropBy(0, -stageHeight * 0.2)
-      .drag(getImageViewByImage(CellImage.Enemy.image)(robot))
-      .dropBy(-stageWidth * 0.05, -stageHeight * 0.2)
-      .drag(getImageViewByImage(CellImage.Wall.image)(robot))
-      .dropBy(-stageWidth * 0.1, -stageHeight * 0.3)
-      .drag(getImageViewByImage(CellImage.Deleter.image)(robot))
-      .dropBy(-stageWidth * 0.25, -stageHeight * 0.3)
-
-      // out of border
-      .drag(getImageViewByImage(CellImage.Enemy.image)(robot))
-      .dropBy(stageHeight * 0.3, -stageHeight * 0.2)
+    // add image views
+    dragAndDrop(imageViewCell = "mover")((1, 5))(robot)
+    dragAndDrop(imageViewCell = "generator")((2, 5))(robot)
+    dragAndDrop(imageViewCell = "rotator")((3, 5))(robot)
+    dragAndDrop(imageViewCell = "block")((4, 5))(robot)
+    dragAndDrop(imageViewCell = "enemy")((5, 5))(robot)
+    dragAndDrop(imageViewCell = "wall")((5, 4))(robot)
+    dragAndDrop(imageViewCell = "deleter")((4, 4))(robot)
+    // out of border
+    dragAndDrop(imageViewCell = "enemy")((6, 5))(robot)
+    // check image views
+    testCellInGridPane(imageViewCell = "mover")((1, 5))(robot)
+    testCellInGridPane(imageViewCell = "generator")((2, 5))(robot)
+    testCellInGridPane(imageViewCell = "rotator")((3, 5))(robot)
+    testCellInGridPane(imageViewCell = "block")((4, 5))(robot)
+    testCellInGridPane(imageViewCell = "enemy")((5, 5))(robot)
+    testCellInGridPane(imageViewCell = "wall")((5, 4))(robot)
+    testCellInGridPane(imageViewCell = "deleter")((4, 4))(robot)
+    // out of border
+    testCellInGridPane(imageViewCell = "wall")((6, 5))(robot)
+    WaitForAsyncUtils.sleep(500, TimeUnit.MILLISECONDS)
   }
 
   protected def testDefaultCellDispenserImageView(defaultImage: Image)(robot: FxRobot): Unit = {
@@ -280,6 +317,9 @@ class EditorViewTest extends ViewTest {
   }
 
   // navigation
+  private def dragAndDrop(imageViewCell: String)(gridCoordinates: (Int, Int))(robot: FxRobot): Unit =
+    getImageViews(gridCoordinates)(robot).foreach(n => robot.drag(s"#$imageViewCell-image-view").dropTo(n))
+
   private def clickOnLevelEditorButton(robot: FxRobot): Unit = clickOnButton(buttonId = "editorButton")(robot)
 
   private def writeOnTextField(textFieldId: String)(value: Int)(robot: FxRobot): Unit = {
@@ -301,5 +341,12 @@ class EditorViewTest extends ViewTest {
     clickOnGoButton(robot)
   }
 
-  private def clickOnButton(buttonId: String)(robot: FxRobot): Unit = robot.clickOn(_.getId == buttonId)
+  protected def getImageViews(coordinates: (Int, Int))(robot: FxRobot): Set[ImageView] =
+    getBoard(robot).getChildren.asScala
+      .filter(n => GridPane.getColumnIndex(n) == coordinates._1 && GridPane.getRowIndex(n) == coordinates._2)
+      .filter(_.isInstanceOf[ImageView])
+      .map(_.asInstanceOf[ImageView])
+      .toSet
+
+  private def clickOnButton(buttonId: String)(robot: FxRobot): Unit = robot.clickOn("#" + buttonId)
 }
