@@ -4,7 +4,7 @@ import it.unibo.pps.caw.common.model.Position
 import it.unibo.pps.caw.common.view.*
 import it.unibo.pps.caw.app.{ViewTest, TestApplicationView}
 import javafx.scene.control.Button
-import javafx.scene.image.ImageView
+import javafx.scene.image.{ImageView, Image}
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
 import javafx.scene.Scene
@@ -96,16 +96,6 @@ class GameViewTest extends ViewTest {
     testDefaultStateButton(buttonId = "backToMenuButton", text = "Menu")(robot)
   }
 
-  private def getGameBoard(robot: FxRobot): GridPane = {
-    val gameView: GridPane = robot.lookup[GridPane](_.isInstanceOf[GridPane]).query()
-    gameView
-      .getChildren
-      .asScala
-      .find(n => GridPane.getColumnIndex(n) == 2 && GridPane.getRowIndex(n) == 3 && n.isInstanceOf[GridPane])
-      .map(_.asInstanceOf[GridPane])
-      .get
-  }
-
   @Test
   def testGameCellDragAndDropDuringSetupPhase(robot: FxRobot): Unit = {
     // during the setup phase
@@ -113,24 +103,24 @@ class GameViewTest extends ViewTest {
     clickOnLevel(robot)
     val gameBoard: GridPane = getGameBoard(robot)
     // the mover cell can be dropped inside the playable area
-    val moverCell: ImageView = getImageView(gameBoard)(CellImage.MoverRight.image)
-    robot.drag(moverCell, MouseButton.PRIMARY).dropBy(0, stageHeight * 0.2).drop()
+    val moverCell = getImageView(gameBoard)(CellImage.MoverRight.image)
+    val outsideTile = getDropTile(gameBoard)(7, 4)
+    robot.drag(moverCell).dropTo(getDropTile(gameBoard)(2, 4))
     // the mover cell cannot be dropped outside the playable area
-    robot.drag(moverCell, MouseButton.PRIMARY).dropBy(stageWidth * 0.2, 0)
+    robot.drag(moverCell).dropTo(outsideTile)
     Assertions.assertEquals((2, 4), (GridPane.getColumnIndex(moverCell), GridPane.getRowIndex(moverCell)))
+
     // the enemy cell cannot be dragged
     val enemyCell = getImageView(gameBoard)(CellImage.Enemy.image)
-    robot
-      .drag(enemyCell, MouseButton.PRIMARY)
-      .dropBy(0, -stageHeight * 0.2)
+    robot.drag(enemyCell).dropTo(outsideTile)
     Assertions.assertEquals((7, 4), (GridPane.getColumnIndex(enemyCell), GridPane.getRowIndex(enemyCell)))
   }
 
   private def moveMoverCell(robot: FxRobot): Unit =
+    val gameBoard = getGameBoard(robot)
     robot
-      .drag(getImageView(getGameBoard(robot))(CellImage.MoverRight.image), MouseButton.PRIMARY)
-      .dropBy(0, stageHeight * 0.2)
-      .drop()
+      .drag(getImageView(gameBoard)(CellImage.MoverRight.image), MouseButton.PRIMARY)
+      .dropTo(getDropTile(gameBoard)(2, 4))
 
   private def clickOnPlaySimulationButton(robot: FxRobot): Unit = robot.clickOn(_.getId == "playSimulationButton")
 
@@ -185,8 +175,9 @@ class GameViewTest extends ViewTest {
     val gameBoard = getGameBoard(robot)
     val moverCell = getImageView(gameBoard)(CellImage.MoverRight.image)
     val enemyCell = getImageView(gameBoard)(CellImage.Enemy.image)
-    robot.drag(moverCell).dropBy(0, -stageHeight * 0.2)
-    robot.drag(enemyCell).dropBy(0, -stageHeight * 0.2)
+    val tile: ImageView = getDropTile(gameBoard)(7, 4)
+    robot.drag(moverCell).dropTo(tile)
+    robot.drag(enemyCell).dropTo(tile)
 
     Assertions.assertEquals((3, 4), (GridPane.getColumnIndex(moverCell), GridPane.getRowIndex(moverCell)))
     Assertions.assertEquals((7, 4), (GridPane.getColumnIndex(enemyCell), GridPane.getRowIndex(enemyCell)))

@@ -44,8 +44,6 @@ class GameViewPersistenceTest extends ViewTest {
     val levels: Set[Button] = getLevels(robot)
     levels
       .foreach(b => {
-        println(b.getText)
-        println(b.getStyleClass.asScala.find(_ == "completed").isEmpty)
         Assertions.assertTrue(b.getStyleClass.asScala.find(_ == "completed").isEmpty)
       })
   }
@@ -67,8 +65,6 @@ class GameViewPersistenceTest extends ViewTest {
     val levels: Set[Button] = getLevels(robot)
     levels
       .foreach(b => {
-        println(b.getText)
-        println(b.getStyleClass.asScala.find(_ == "completed").isEmpty)
         b.getText match {
           case "1" => Assertions.assertTrue(b.getStyleClass.asScala.find(_ == "completed").isDefined)
           case _   => Assertions.assertTrue(b.getStyleClass.asScala.find(_ == "completed").isEmpty)
@@ -84,19 +80,9 @@ class GameViewPersistenceTest extends ViewTest {
   private def clickOnLevel(robot: FxRobot): Unit = robot.clickOn[Button](_.getText == "1")
 
   private def moveMoverCell(robot: FxRobot): Unit =
+    val gameBoard = getGameBoard(robot)
     robot
-      .drag(getImageView(getGameBoard(robot))(CellImage.MoverRight.image), MouseButton.PRIMARY)
-      .dropBy(0, stageHeight * 0.2)
-      .drop()
-
-  private def getGameBoard(robot: FxRobot): GridPane = {
-    val gameView: GridPane = robot.lookup[GridPane](_.isInstanceOf[GridPane]).query()
-    gameView
-      .getChildren
-      .asScala
-      .find(n => GridPane.getColumnIndex(n) == 2 && GridPane.getRowIndex(n) == 3 && n.isInstanceOf[GridPane])
-      .map(_.asInstanceOf[GridPane])
-      .get
-  }
+      .drag(getImageView(gameBoard)(CellImage.MoverRight.image), MouseButton.PRIMARY)
+      .dropTo(getDropTile(gameBoard)(2, 4))
 
 }
