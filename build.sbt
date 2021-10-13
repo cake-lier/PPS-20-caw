@@ -22,9 +22,9 @@ Compile / excludeFilter := "*.pl"
 assembly / mainClass := Some("it.unibo.pps.caw.app.Main")
 assembly / assemblyJarName := "caw.jar"
 assembly / assemblyMergeStrategy := {
-  case "META-INF/io.netty.versions.properties" => MergeStrategy.discard
-  case "module-info.class"                     => MergeStrategy.discard
-  case v                                       => (ThisBuild / assemblyMergeStrategy).value(v)
+  case v if v == s"META-INF${Path.sep}io.netty.versions.properties" => MergeStrategy.discard
+  case "module-info.class"                                          => MergeStrategy.discard
+  case v                                                            => (ThisBuild / assemblyMergeStrategy).value(v)
 }
 
 lazy val osName = System.getProperty("os.name") match {
@@ -35,6 +35,14 @@ lazy val osName = System.getProperty("os.name") match {
 
 ThisBuild / resolvers += Resolver.jcenterRepo
 Test / fork := true
+
+jacocoExcludes := Seq(
+  "**Main*",
+  "**ApplicationView*",
+  "**AudioPlayer*",
+  "**DSLEditorMain*",
+  "**DSLGameMain*"
+)
 
 libraryDependencies ++= Seq(
   "org.scalactic" %% "scalactic" % "3.2.9" % Test,
