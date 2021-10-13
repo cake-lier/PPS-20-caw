@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.view
 
-import it.unibo.pps.caw.app.ViewTest
+import it.unibo.pps.caw.app.{ViewTest, TestApplicationView}
 import javafx.stage.Stage
 import org.junit.jupiter.api.Test
 import org.scalatest.DoNotDiscover

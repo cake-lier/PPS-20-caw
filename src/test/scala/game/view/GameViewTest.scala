@@ -2,10 +2,7 @@ package it.unibo.pps.caw.game.view
 
 import it.unibo.pps.caw.common.model.Position
 import it.unibo.pps.caw.common.view.*
-
-import it.unibo.pps.caw.app
-import it.unibo.pps.caw.app.ViewTest
-import it.unibo.pps.caw.view.TestApplicationView
+import it.unibo.pps.caw.app.{ViewTest, TestApplicationView}
 import javafx.scene.control.Button
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
@@ -101,7 +98,9 @@ class GameViewTest extends ViewTest {
 
   private def getGameBoard(robot: FxRobot): GridPane = {
     val gameView: GridPane = robot.lookup[GridPane](_.isInstanceOf[GridPane]).query()
-    gameView.getChildren.asScala
+    gameView
+      .getChildren
+      .asScala
       .find(n => GridPane.getColumnIndex(n) == 2 && GridPane.getRowIndex(n) == 3 && n.isInstanceOf[GridPane])
       .map(_.asInstanceOf[GridPane])
       .get
@@ -114,22 +113,22 @@ class GameViewTest extends ViewTest {
     clickOnLevel(robot)
     val gameBoard: GridPane = getGameBoard(robot)
     // the mover cell can be dropped inside the playable area
-    val moverCell: ImageView = getImageView(gameBoard)(2, 2)(CellImage.MoverRight.image)
+    val moverCell: ImageView = getImageView(gameBoard)(CellImage.MoverRight.image)
     robot.drag(moverCell, MouseButton.PRIMARY).dropBy(0, stageHeight * 0.2).drop()
-    val moverCellAfterDrag = getImageView(gameBoard)(2, 4)(CellImage.MoverRight.image)
     // the mover cell cannot be dropped outside the playable area
-    robot.drag(moverCellAfterDrag, MouseButton.PRIMARY).dropBy(stageWidth * 0.2, 0)
-    getImageView(gameBoard)(2, 4)(CellImage.MoverRight.image)
+    robot.drag(moverCell, MouseButton.PRIMARY).dropBy(stageWidth * 0.2, 0)
+    Assertions.assertEquals((2, 4), (GridPane.getColumnIndex(moverCell), GridPane.getRowIndex(moverCell)))
     // the enemy cell cannot be dragged
+    val enemyCell = getImageView(gameBoard)(CellImage.Enemy.image)
     robot
-      .drag(getImageView(gameBoard)(7, 4)(CellImage.Enemy.image), MouseButton.PRIMARY)
+      .drag(enemyCell, MouseButton.PRIMARY)
       .dropBy(0, -stageHeight * 0.2)
-    getImageView(gameBoard)(7, 4)(CellImage.Enemy.image)
+    Assertions.assertEquals((7, 4), (GridPane.getColumnIndex(enemyCell), GridPane.getRowIndex(enemyCell)))
   }
 
   private def moveMoverCell(robot: FxRobot): Unit =
     robot
-      .drag(getImageView(getGameBoard(robot))(2, 2)(CellImage.MoverRight.image), MouseButton.PRIMARY)
+      .drag(getImageView(getGameBoard(robot))(CellImage.MoverRight.image), MouseButton.PRIMARY)
       .dropBy(0, stageHeight * 0.2)
       .drop()
 
@@ -147,7 +146,8 @@ class GameViewTest extends ViewTest {
     clickOnStepSimulationButton(robot)
     // after starting the simulation by one step
     // the mover cell should be found at coordinates (3,4)
-    getImageView(getGameBoard(robot))(3, 4)(CellImage.MoverRight.image)
+    val moverCell = getImageView(getGameBoard(robot))(CellImage.MoverRight.image)
+    Assertions.assertEquals((3, 4), (GridPane.getColumnIndex(moverCell), GridPane.getRowIndex(moverCell)))
   }
 
   @Test
@@ -183,8 +183,13 @@ class GameViewTest extends ViewTest {
     clickOnPauseSimulationButton(robot)
     // no game cells should be movable
     val gameBoard = getGameBoard(robot)
-    robot.drag(getImageView(gameBoard)(3, 4)(CellImage.MoverRight.image)).dropBy(0, -stageHeight * 0.2)
-    robot.drag(getImageView(gameBoard)(7, 4)(CellImage.Enemy.image)).dropBy(0, -stageHeight * 0.2)
+    val moverCell = getImageView(gameBoard)(CellImage.MoverRight.image)
+    val enemyCell = getImageView(gameBoard)(CellImage.Enemy.image)
+    robot.drag(moverCell).dropBy(0, -stageHeight * 0.2)
+    robot.drag(enemyCell).dropBy(0, -stageHeight * 0.2)
+
+    Assertions.assertEquals((3, 4), (GridPane.getColumnIndex(moverCell), GridPane.getRowIndex(moverCell)))
+    Assertions.assertEquals((7, 4), (GridPane.getColumnIndex(enemyCell), GridPane.getRowIndex(enemyCell)))
   }
 
   private def clickOnResetSimulationButton(robot: FxRobot): Unit = robot.clickOn(_.getId == "resetButton")
@@ -196,7 +201,8 @@ class GameViewTest extends ViewTest {
     WaitForAsyncUtils.sleep(2, TimeUnit.SECONDS)
     clickOnResetSimulationButton(robot)
     // after reset, the mover cell should be found in the original position
-    getImageView(getGameBoard(robot))(2, 4)(CellImage.MoverRight.image)
+    val moverCell = getImageView(getGameBoard(robot))(CellImage.MoverRight.image)
+    Assertions.assertEquals((2, 4), (GridPane.getColumnIndex(moverCell), GridPane.getRowIndex(moverCell)))
   }
 
   private def clickOnStepSimulationButton(robot: FxRobot): Unit = robot.clickOn(_.getId == "stepSimulationButton")
@@ -208,11 +214,13 @@ class GameViewTest extends ViewTest {
     // it should display the game simulation by 1 step
     clickOnStepSimulationButton(robot)
     // after 1 step, the mover cell should be found at coordinate (3,4)
-    getImageView(gameBoard)(3, 4)(CellImage.MoverRight.image)
+    val moverCellStep1 = getImageView(gameBoard)(CellImage.MoverRight.image)
+    Assertions.assertEquals((3, 4), (GridPane.getColumnIndex(moverCellStep1), GridPane.getRowIndex(moverCellStep1)))
     // it should display the game simulation by 2 step
     clickOnStepSimulationButton(robot)
     // after 2 steps, the mover cell should be found at coordinate (4,4)
-    getImageView(gameBoard)(4, 4)(CellImage.MoverRight.image)
+    val moverCellStep2 = getImageView(gameBoard)(CellImage.MoverRight.image)
+    Assertions.assertEquals((4, 4), (GridPane.getColumnIndex(moverCellStep2), GridPane.getRowIndex(moverCellStep2)))
     // the play button should be clickable
     testDefaultStateButton(buttonId = "playSimulationButton", text = "Play")(robot)
   }
@@ -258,25 +266,5 @@ class GameViewTest extends ViewTest {
     clickOnBackToMenu(robot)
     // it should return to main menu
     testPlayButtonIsPresent(robot)
-  }
-
-  @Test
-  def testFirstLevelIsHighlitedAsCompleted(robot: FxRobot): Unit = {
-    setUpGame(robot)
-    (0 until 5).foreach(_ => clickOnStepSimulationButton(robot))
-    clickOnBackToMenu(robot)
-    clickOnPlayButton(robot)
-
-    //after the first level is completed, its button should be blue
-    val levels: Set[Button] = robot.lookup[Button](_.getText.matches("\\d+")).queryAll[Button]().asScala.toSet
-    levels
-      .foreach(b => {
-        println(b.getText)
-        println(b.getStyleClass.asScala.find(_ == "completed").isEmpty)
-        b.getText match {
-          case "1" => Assertions.assertTrue(b.getStyleClass.asScala.find(_ == "completed").isDefined)
-          case _   => Assertions.assertTrue(b.getStyleClass.asScala.find(_ == "completed").isEmpty)
-        }
-      })
   }
 }
