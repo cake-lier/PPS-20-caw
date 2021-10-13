@@ -93,21 +93,21 @@ object GameModel {
 
   /* Default implementation of the GameModel trait. */
   private class GameModelImpl(
-      rulesEngine: RulesEngine,
-      val state: GameState,
-      isSetupCompleted: Boolean,
-      levels: Seq[Level[BaseCell]],
-      initialBoard: Board[BaseCell],
-      currentBoard: Board[BaseCell]
+    rulesEngine: RulesEngine,
+    val state: GameState,
+    isSetupCompleted: Boolean,
+    levels: Seq[Level[BaseCell]],
+    initialBoard: Board[BaseCell],
+    currentBoard: Board[BaseCell]
   ) extends GameModel {
 
     /* Alternative constructor to be used by the "apply" factory method. */
     def this(
-        rulesEngine: RulesEngine,
-        levels: Seq[Level[BaseCell]],
-        initialLevel: Level[PlayableCell],
-        initialIndex: Int,
-        initialBoard: Board[BaseCell]
+      rulesEngine: RulesEngine,
+      levels: Seq[Level[BaseCell]],
+      initialLevel: Level[PlayableCell],
+      initialIndex: Int,
+      initialBoard: Board[BaseCell]
     ) =
       this(
         rulesEngine,
@@ -175,7 +175,8 @@ object GameModel {
             GameModelImpl(
               rulesEngine,
               state.copy(
-                initialStateLevel = state.levelCurrentState
+                initialStateLevel = state
+                  .levelCurrentState
                   .copy(board =
                     newBoard.map(
                       _.toPlayableCell(c => isPositionInsidePlayableArea(c.position)(state.levelCurrentState.playableArea))
@@ -209,7 +210,8 @@ object GameModel {
     */
   def apply(rulesEngine: RulesEngine, levels: Seq[Level[BaseCell]], initialIndex: Int): GameModel = {
     val boardWithCorners: Board[BaseCell] =
-      levels(initialIndex - 1).board
+      levels(initialIndex - 1)
+        .board
         .map(_.changePositionProperty(c => (c.position.x + 1, c.position.y + 1))) ++
         Set(
           (0 to levels(initialIndex - 1).dimensions.width + 1).map(i => BaseWallCell((i, 0))),

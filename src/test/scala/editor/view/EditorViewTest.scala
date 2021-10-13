@@ -46,7 +46,9 @@ class EditorViewTest extends ViewTest {
   }
 
   private def checkEmptyBoard(robot: FxRobot): Unit =
-    getBoard(robot).getChildren.asScala
+    getBoard(robot)
+      .getChildren
+      .asScala
       .filter(_.isInstanceOf[ImageView])
       .map(_.asInstanceOf[ImageView])
       .find(i =>
@@ -345,7 +347,9 @@ class EditorViewTest extends ViewTest {
   }
 
   protected def getImageViews(coordinates: (Int, Int))(robot: FxRobot): Set[ImageView] =
-    getBoard(robot).getChildren.asScala
+    getBoard(robot)
+      .getChildren
+      .asScala
       .filter(n => GridPane.getColumnIndex(n) == coordinates._1 && GridPane.getRowIndex(n) == coordinates._2)
       .filter(_.isInstanceOf[ImageView])
       .map(_.asInstanceOf[ImageView])

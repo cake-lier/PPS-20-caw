@@ -85,7 +85,7 @@ trait CellsAdders extends PropertiesWord {
     /* Append a BaseWallCell adding operation to the sequence of operations specified by the user. */
     def addWallCells(ops: ListBuffer[BoardBuilder => BoardBuilder], build: Position => Iterable[BaseWallCell]): AtWord =
       addCells(ops, b => p => b.copy(wallCells = b.wallCells ++ build(p)))
-      
+
     /* Append a BaseDeleterCell adding operation to the sequence of operations specified by the user. */
     def addDeleterCells(ops: ListBuffer[BoardBuilder => BoardBuilder], build: Position => Iterable[BaseDeleterCell]): AtWord =
       addCells(ops, b => p => b.copy(deleterCells = b.deleterCells ++ build(p)))
@@ -207,8 +207,8 @@ trait CellsAdders extends PropertiesWord {
   def hasEnemyCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[AtWord] =
     InAnAreaWord(d => addEnemyCells(ops, p => duplicateCells(BaseEnemyCell.apply)(d, p)))
 
-  /** Allows to start the sentence for adding a "wall" cell to the [[BoardBuilder]] currently being used. It returns an
-    * [[AtWord]] so as to allow the user to continue the sentence and specify the other properties of the cell.
+  /** Allows to start the sentence for adding a "wall" cell to the [[BoardBuilder]] currently being used. It returns an [[AtWord]]
+    * so as to allow the user to continue the sentence and specify the other properties of the cell.
     *
     * @param ops
     *   the list of operations to which add this specific operation
@@ -229,7 +229,7 @@ trait CellsAdders extends PropertiesWord {
     */
   def hasWallCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[AtWord] =
     InAnAreaWord(d => addWallCells(ops, p => duplicateCells(BaseWallCell.apply)(d, p)))
-    
+
   /** Allows to start the sentence for adding a "deleter" cell to the [[BoardBuilder]] currently being used. It returns an
     * [[AtWord]] so as to allow the user to continue the sentence and specify the other properties of the cell.
     *
@@ -240,7 +240,7 @@ trait CellsAdders extends PropertiesWord {
     */
   def hasDeleterCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): AtWord =
     addDeleterCells(ops, p => Set(BaseDeleterCell(p)))
-    
+
   /** Allows to start the sentence for adding multiple "deleter" cells to the [[BoardBuilder]] currently being used. It returns an
     * [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
     * properties of the cell being duplicated all over the area.

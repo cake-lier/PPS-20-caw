@@ -2,7 +2,9 @@ name: Coverage automation
 
 on:
   push:
-    branches: [ main, develop ]
+    branches:
+    - "main"
+    - "develop"
     
 jobs:
   coverage:

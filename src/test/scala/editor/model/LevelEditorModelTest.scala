@@ -87,8 +87,8 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
     }
   }
   private def createLevelWithWalls(
-      playableArea: Option[PlayableArea] = None,
-      cells: Set[PlayableCell] = Set.empty
+    playableArea: Option[PlayableArea] = None,
+    cells: Set[PlayableCell] = Set.empty
   ): LevelBuilder =
     val walls: Board[PlayableCell] = Set(
       (0 to dimensions.width + 1).map(i => PlayableWallCell((i, 0))(playable = false)),

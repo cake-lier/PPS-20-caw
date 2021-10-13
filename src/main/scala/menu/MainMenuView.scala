@@ -73,9 +73,9 @@ object MainMenuView {
       playButton.setDisable(false)
       playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, controller))
     }
-    
+
     private val levelFilePicker: FilePicker = FilePicker.forLevelFile(scene)
-    
+
     loadButton.setOnMouseClicked(_ => levelFilePicker.openFile().foreach(controller.startGame(_)))
     settingsButton.setOnMouseClicked(_ => scene.root.value = SettingsView(controller, audioPlayer, scene))
     editorButton.setOnMouseClicked(_ => scene.root.value = LevelEditorMenuView(controller, scene, "Menu"))

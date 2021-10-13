@@ -18,6 +18,7 @@ object Clause {
 }
 
 sealed trait Result {
+
   /** [[Result]] as [[String]] */
   val value: String
   def getLastTerm: String
@@ -33,6 +34,7 @@ object Result {
 }
 
 sealed trait Goal {
+
   /** [[Goal]] as [[String]] */
   val value: String
 }

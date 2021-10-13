@@ -28,7 +28,11 @@ class GameModelTest extends AnyFunSpec with Matchers {
         gameModelSingleLevel.state.levelCurrentState shouldBe Level(
           gameModelSingleLevel.state.levelCurrentState.dimensions,
           Board(
-            gameModelSingleLevel.state.levelInitialState.board.cells
+            gameModelSingleLevel
+              .state
+              .levelInitialState
+              .board
+              .cells
               .map(toUnmovableCell)
           ),
           gameModelSingleLevel.state.levelCurrentState.playableArea
@@ -38,7 +42,11 @@ class GameModelTest extends AnyFunSpec with Matchers {
         gameModelMultipleLevels.state.levelCurrentState shouldBe Level(
           gameModelMultipleLevels.state.levelCurrentState.dimensions,
           Board(
-            gameModelMultipleLevels.state.levelInitialState.board.cells
+            gameModelMultipleLevels
+              .state
+              .levelInitialState
+              .board
+              .cells
               .map(toUnmovableCell)
           ),
           gameModelMultipleLevels.state.levelCurrentState.playableArea
