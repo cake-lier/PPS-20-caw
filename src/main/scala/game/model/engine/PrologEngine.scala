@@ -17,43 +17,48 @@ object Clause {
   def apply(value: String): Clause = ClauseImpl(value)
 }
 
+sealed trait Result {
+
+  /** [[Result]] as [[String]] */
+  val value: String
+  def getLastTerm: String
+}
+object Result {
+  private case class ResultImpl(value: String) extends Result {
+    override def getLastTerm: String = {
+      val term = Term.createTerm(value).asInstanceOf[Struct]
+      term.getArg(term.getArity - 1).getTerm.toString
+    }
+  }
+  def apply(stringResult: String): Result = ResultImpl(stringResult)
+}
+
+sealed trait Goal {
+
+  /** [[Goal]] as [[String]] */
+  val value: String
+}
+object Goal {
+  private case class GoalImpl(value: String) extends Goal
+  def apply(stringGoal: String): Goal = GoalImpl(stringGoal)
+}
+sealed trait PrologEngine {
+  def solve(goal: Goal): Result
+}
+
 /** Object that represent a prolog game engine */
 object PrologEngine {
-
-  /** extract a [[Term]] from a [[Term]]
-    * @param t:
-    *   the all [[Term]]
-    * @param i:
-    *   the index of the [[Term]] to be extracted
-    * @return
-    *   the i-th [[Term]] of the given [[Term]]
-    */
-  def extractTerm(t: Term): Term = {
-    val term = t.asInstanceOf[Struct]
-    term.getArg(term.getArity - 1).getTerm
-  }
-
-  /** implicit conversion from [[String]] to [[Term]]
-    * @return
-    *   the converted [[Term]]
-    */
-  given Conversion[String, Term] = Term.createTerm(_)
-
-  /** implicit conversion from [[Seq]] to [[Term]]
-    * @return
-    *   the builted [[Term]]
-    */
-  given Conversion[Seq[_], Term] = _.mkString("[", ",", "]")
-
-  /** create a function that map from [[Term]] to goal
-    * @param clauses:
-    *   list of [[Clause]] s, the [[Theory]]
-    * @return
-    *   a function [[Term]] to [[Term]] that is the result of goal
-    */
-  def apply(clauses: Clause*): Term => Term = goal => {
+  private case class PrologEngineImpl(clauses: Clause*) extends PrologEngine {
     val engine: Prolog = Prolog()
     engine.setTheory(Theory(clauses map (_.value) mkString (" ")))
-    engine.solve(goal).getSolution
+
+    /** create a function that map from [[Term]] to goal
+      * @param clauses:
+      *   list of [[Clause]] state, the [[Theory]]
+      */
+    override def solve(goal: Goal): Result =
+      Result(engine.solve(Term.createTerm(goal.value)).getSolution.toString)
   }
+
+  def apply(clause: Clause): PrologEngine = PrologEngineImpl(clause)
 }

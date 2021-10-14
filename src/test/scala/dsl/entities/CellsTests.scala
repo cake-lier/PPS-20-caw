@@ -1,5 +1,7 @@
 package it.unibo.pps.caw.dsl.entities
 
+import it.unibo.pps.caw.common.model.Position
+import it.unibo.pps.caw.common.model.cell.*
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -7,44 +9,73 @@ import org.scalatest.matchers.should.Matchers
 class CellsTests extends AnyFunSpec with Matchers {
   private val position: Position = Position(1, 2)
 
-  describe("A generic cell") {
+  describe("An enemy cell") {
     describe("when first created") {
       it("should return the given position") {
-        val cell: Cell = Cell(position)
+        val cell: BaseEnemyCell = BaseEnemyCell(position)
         cell.position shouldBe position
       }
     }
   }
 
-  describe("An oriented cell") {
+  describe("A wall cell") {
+    describe("when first created") {
+      it("should return the given position") {
+        val cell: BaseWallCell = BaseWallCell(position)
+        cell.position shouldBe position
+      }
+    }
+  }
+
+  describe("A mover cell") {
     describe("when first created") {
       it("should return the given orientation and position") {
         val orientation: Orientation = Orientation.Right
-        val cell: OrientableCell = OrientableCell(orientation)(position)
+        val cell: BaseMoverCell = BaseMoverCell(orientation)(position)
         cell.position shouldBe position
         cell.orientation shouldBe orientation
       }
     }
   }
 
-  describe("A directed cell") {
+  describe("A generator cell") {
+    describe("when first created") {
+      it("should return the given orientation and position") {
+        val orientation: Orientation = Orientation.Right
+        val cell: BaseGeneratorCell = BaseGeneratorCell(orientation)(position)
+        cell.position shouldBe position
+        cell.orientation shouldBe orientation
+      }
+    }
+  }
+
+  describe("A rotation cell") {
     describe("when first created") {
       it("should return the given rotation and position") {
         val rotation: Rotation = Rotation.Clockwise
-        val cell: RotatableCell = RotatableCell(rotation)(position)
+        val cell: BaseRotatorCell = BaseRotatorCell(rotation)(position)
         cell.position shouldBe position
         cell.rotation shouldBe rotation
       }
     }
   }
 
-  describe("A movable cell") {
+  describe("A block cell") {
     describe("when first created") {
       it("should return the given push and position") {
         val push: Push = Push.Vertical
-        val cell: PushableCell = PushableCell(push)(position)
+        val cell: BaseBlockCell = BaseBlockCell(push)(position)
         cell.position shouldBe position
         cell.push shouldBe push
+      }
+    }
+  }
+
+  describe("A deleter cell") {
+    describe("when first created") {
+      it("should return the given position") {
+        val cell: BaseDeleterCell = BaseDeleterCell(position)
+        cell.position shouldBe position
       }
     }
   }

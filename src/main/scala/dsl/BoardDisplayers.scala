@@ -1,6 +1,10 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.dsl.entities.{BoardBuilder, Board}
+import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.model.cell.BaseCell
+import it.unibo.pps.caw.common.LevelParser
+import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
+import it.unibo.pps.caw.dsl.entities.LevelBuilderState
 
 import scala.collection.mutable.ListBuffer
 
@@ -11,19 +15,21 @@ import scala.collection.mutable.ListBuffer
   * in JSON format.
   */
 trait BoardDisplayers {
-  import it.unibo.pps.caw.dsl.errors.ErrorChecker
+  import it.unibo.pps.caw.dsl.errors.LevelBuilderStateValidator
 
   /* Generalizes the behavior of the methods in this module. */
-  private def executeAction(ops: ListBuffer[BoardBuilder => BoardBuilder])(action: Board => Unit): Unit =
+  private def executeAction(ops: ListBuffer[LevelBuilderState => LevelBuilderState])(action: Level[BaseCell] => Unit): Unit =
     ops += (b => {
-      ErrorChecker.checkBuilderData(b) match {
+      LevelBuilderStateValidator.validateBuilderState(b) match {
         case Right(v) => action(v)
         case Left(l)  => Console.err.print(l.map(_.message).mkString("\n"))
       }
       b
     })
 
-  import it.unibo.pps.caw.dsl.BoardSerializer
+  private val fileStorage: FileStorage = FileStorage()
+  private val levelParser: LevelParser = LevelParser(fileStorage)
+  private val levelStorage: LevelStorage = LevelStorage(fileStorage, levelParser)
 
   /** Prints a built [[Board]] on the standard output after checking the correctness of the stored data and serializing it in JSON
     * format.
@@ -31,11 +37,8 @@ trait BoardDisplayers {
     * @param ops
     *   the list of operations to which add this specific operation
     */
-  def printIt(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit =
-    executeAction(ops)(b => print(BoardSerializer.serialize(b)))
-
-  import java.nio.file.Paths
-  import java.nio.file.{Files, StandardOpenOption}
+  def printIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit =
+    executeAction(ops)(l => print(levelParser.serializeLevel(l)))
 
   /** Saves a built [[Board]] on the file which path is given after checking the correctness of the stored data and serializing it
     * in JSON format. If the file already exists, for safeness reasons this operation will fail.
@@ -45,17 +48,20 @@ trait BoardDisplayers {
     * @param ops
     *   the list of operations to which add this specific operation
     */
-  def saveIt(path: String)(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit =
-    executeAction(ops)(b => Files.writeString(Paths.get(path), BoardSerializer.serialize(b), StandardOpenOption.CREATE_NEW))
+  def saveIt(path: String)(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit =
+    executeAction(ops)(levelStorage.saveLevel(path, _))
 
   import java.time.LocalDateTime
-  import java.nio.file.Path
+  import java.nio.file.Files
 
-  private def launchApplication(ops: ListBuffer[BoardBuilder => BoardBuilder], launcher: Array[String] => Unit): Unit = {
-    executeAction(ops)(b => {
-      val tempPath: Path = Files.createTempFile(s"level_${LocalDateTime.now()}", ".json")
-      Files.writeString(tempPath, BoardSerializer.serialize(b))
-      launcher(Array(tempPath.toString))
+  private def launchApplication(
+    ops: ListBuffer[LevelBuilderState => LevelBuilderState],
+    launcher: Array[String] => Unit
+  ): Unit = {
+    executeAction(ops)(l => {
+      val tempPath: String = Files.createTempFile(s"level_${LocalDateTime.now()}", ".json").toString
+      levelStorage.saveLevel(tempPath, l)
+      launcher(Array(tempPath))
     })
   }
 
@@ -67,9 +73,9 @@ trait BoardDisplayers {
     * @param ops
     *   the list of operations to which add this specific operation
     */
-  def playIt(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit = launchApplication(ops, DSLGameMain.main(_))
+  def playIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops, DSLGameMain.main(_))
 
-    /** Opens the application for editing a level as created by the user through the DSL after checking the correctness of the
+  /** Opens the application for editing a level as created by the user through the DSL after checking the correctness of the
     * stored data and serializing it in JSON format into a temporary file. This means that, if not coupled with another action
     * intended to saving the file to a specific location, after the closing of the launched application, the file containing the
     * [[Board]] will not be stored anywhere. An option for saving the file will be shown while the editor is open.
@@ -77,5 +83,5 @@ trait BoardDisplayers {
     * @param ops
     *   the list of operations to which add this specific operation
     */
-  def editIt(using ops: ListBuffer[BoardBuilder => BoardBuilder]): Unit = launchApplication(ops, DSLEditorMain.main(_))
+  def editIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops, DSLEditorMain.main(_))
 }

@@ -1,8 +1,10 @@
 package it.unibo.pps.caw.game.view
 
-import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.{AudioPlayer, Board, BoardView, GameBoardView, ModelUpdater, Position, Track, ViewComponent}
-import it.unibo.pps.caw.game.model.{BaseCell, Level, SetupCell}
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.model.{Board, Level, Position}
+import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
+import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
+import it.unibo.pps.caw.common.view.{ModelUpdater, ViewComponent}
 import it.unibo.pps.caw.game.controller.{GameController, ParentDefaultGameController, ParentGameController}
 import javafx.application.Platform
 import javafx.event.EventHandler
@@ -12,12 +14,8 @@ import javafx.scene.control.{Alert, Button}
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.image.ImageView
 import javafx.scene.input.MouseEvent
-import javafx.scene.layout.{GridPane, Pane}
-import scalafx.collections.ObservableBuffer.Update
+import javafx.scene.layout.GridPane
 import scalafx.scene.Scene
-
-import java.io.File
-import java.nio.file.Path
 
 /** The view which displays the game part of an application.
   *
@@ -31,7 +29,7 @@ trait GameView extends ViewComponent[GridPane] {
   /** Makes the application view go back to the main menu, displaying it. */
   def backToMenu(): Unit
 
-  /** Displays the given [[Level]], resetting the component displaying the [[Level]] if necessary. This means that thi method is
+  /** Displays the given [[Level]], resetting the component displaying the [[Level]] if necessary. This means that this method is
     * to be called when there is a change between [[Level]] in the game and not when an update of the same [[Level]] is to be
     * displayed.
     *
@@ -40,7 +38,7 @@ trait GameView extends ViewComponent[GridPane] {
     * @param isCompleted
     *   whether or not this [[Level]] has been completed
     */
-  def drawLevel(level: Level[SetupCell], isCompleted: Boolean): Unit
+  def drawLevel(level: Level[PlayableCell], isCompleted: Boolean): Unit
 
   /** Displays the update to the currently displayed [[Level]], without resetting the component displaying it. This means that
     * this method is not to be called when there is a change between [[Level]], but only during steps over the same [[Level]].
@@ -55,7 +53,7 @@ trait GameView extends ViewComponent[GridPane] {
     *   whether or not this [[Level]] has been completed
     */
   def drawLevelUpdate(
-    update: Level[SetupCell],
+    update: Level[PlayableCell],
     didEnemyExplode: Boolean,
     isCompleted: Boolean
   ): Unit
@@ -65,7 +63,7 @@ trait GameView extends ViewComponent[GridPane] {
     * @param level
     *   the initial configuration of the [[Level]]
     */
-  def drawLevelReset(level: Level[SetupCell]): Unit
+  def drawLevelReset(level: Level[PlayableCell]): Unit
 
   /** Displays the given error message to the player.
     *
@@ -79,8 +77,12 @@ trait GameView extends ViewComponent[GridPane] {
 object GameView {
 
   /* Abstract implementation of the GameView trait for factorizing common behaviors. */
-  private abstract class AbstractGameView(parentController: ParentGameController, audioPlayer: AudioPlayer, scene: Scene)
-    extends AbstractViewComponent[GridPane]("game.fxml")
+  private abstract class AbstractGameView(
+    parentController: ParentGameController,
+    audioPlayer: AudioPlayer,
+    scene: Scene,
+    backButtonText: String
+  ) extends AbstractViewComponent[GridPane]("game.fxml")
     with GameView
     with ModelUpdater {
     @FXML
@@ -90,17 +92,16 @@ object GameView {
     @FXML
     var playSimulationButton: Button = _
     @FXML
-    var backToLevelsButton: Button = _
+    var backToMenuButton: Button = _
     @FXML
     var nextButton: Button = _
     override val innerComponent: GridPane = loader.load[GridPane]
     private val controller: GameController = createController()
     private var boardView: Option[GameBoardView] = None
-    private var isCurrentLevelCompleted: Boolean = false
     audioPlayer.play(Track.GameMusic)
 
     private def resetButtons(): Unit = {
-      playSimulationButton.setText("Start")
+      playSimulationButton.setText("Play")
       playSimulationButton.setOnMouseClicked(startSimulationHandler)
       playSimulationButton.setDisable(false)
       stepSimulationButton.setDisable(false)
@@ -120,6 +121,7 @@ object GameView {
     resetButton.setOnMouseClicked(_ => {
       controller.resetLevel()
       resetButton.setVisible(false)
+      nextButton.setVisible(false)
       resetButtons()
     })
     stepSimulationButton.setOnMouseClicked(_ => {
@@ -127,7 +129,8 @@ object GameView {
       resetButton.setVisible(true)
     })
     playSimulationButton.setOnMouseClicked(startSimulationHandler)
-    backToLevelsButton.setOnMouseClicked(_ => controller.goBack())
+    backToMenuButton.setText(backButtonText)
+    backToMenuButton.setOnMouseClicked(_ => controller.closeGame())
     nextButton.setOnMouseClicked(_ => {
       controller.nextLevel()
       resetButton.setVisible(false)
@@ -139,57 +142,51 @@ object GameView {
     override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.ERROR, message))
 
     override def drawLevelUpdate(
-      update: Level[SetupCell],
+      update: Level[PlayableCell],
       didEnemyExplode: Boolean,
       isCompleted: Boolean
     ): Unit =
       Platform.runLater(() =>
-        boardView match {
-          case Some(b) => {
-            b.drawGameBoard(update.board)
-            audioPlayer.play(Track.Step)
-            if (didEnemyExplode) {
-              audioPlayer.play(Track.Explosion)
-            }
-            if (!isCurrentLevelCompleted && isCompleted) {
-              audioPlayer.play(Track.Victory)
-              controller.pauseUpdates()
-              stepSimulationButton.setDisable(true)
-              playSimulationButton.setDisable(true)
-            }
-            isCurrentLevelCompleted = isCompleted
-            nextButton.setVisible(isCompleted)
+        boardView.foreach(b => {
+          b.drawGameBoard(update.board)
+          audioPlayer.play(Track.Step)
+          if (didEnemyExplode) {
+            audioPlayer.play(Track.Explosion)
           }
-          case None => Console.err.print("The board was not initialized")
-        }
+          if (isCompleted) {
+            audioPlayer.play(Track.Victory)
+            stepSimulationButton.setDisable(true)
+            playSimulationButton.setDisable(true)
+          }
+          nextButton.setVisible(isCompleted)
+        })
       )
 
-    override def drawLevelReset(level: Level[SetupCell]): Unit = Platform.runLater(() => {
-      boardView match {
-        case Some(b) => b.drawSetupBoard(level.board)
-        case None    => Console.err.print("The board was not initialized")
-      }
-    })
+    override def drawLevelReset(level: Level[PlayableCell]): Unit =
+      Platform.runLater(() => boardView.foreach(_.drawSetupBoard(level.board)))
 
-    override def drawLevel(level: Level[SetupCell], isCompleted: Boolean): Unit = Platform.runLater(() => {
+    override def drawLevel(level: Level[PlayableCell], isCompleted: Boolean): Unit = Platform.runLater(() => {
       val newBoardView: GameBoardView = GameBoardView(scene.getWidth, scene.getHeight, level, this)
       boardView.foreach(b => innerComponent.getChildren.remove(b.innerComponent))
       GridPane.setValignment(newBoardView.innerComponent, VPos.CENTER)
       GridPane.setHalignment(newBoardView.innerComponent, HPos.CENTER)
-      GridPane.setMargin(newBoardView.innerComponent, new Insets(25, 0, 25, 0))
+      GridPane.setMargin(newBoardView.innerComponent, Insets(25, 0, 25, 0))
       innerComponent.add(newBoardView.innerComponent, 2, 3, 3, 1)
       boardView = Some(newBoardView)
-      isCurrentLevelCompleted = false
-      nextButton.setVisible(false)
+      if (isCompleted) {
+        stepSimulationButton.setDisable(true)
+        playSimulationButton.setDisable(true)
+      }
+      nextButton.setVisible(isCompleted)
     })
 
-    override def backToMenu(): Unit = controller.goBack()
+    override def backToMenu(): Unit = controller.closeGame()
 
-    override def manageCell(cell: ImageView, newPosition: Position): Unit = {
+    override def manageCell(cellImageView: ImageView, newPosition: Position): Unit = {
       val board = boardView.get.innerComponent
-      controller.updateModel(Position(GridPane.getColumnIndex(cell), GridPane.getRowIndex(cell)), newPosition)
-      board.getChildren.remove(cell)
-      board.add(cell, newPosition.x, newPosition.y)
+      controller.moveCell(Position(GridPane.getColumnIndex(cellImageView), GridPane.getRowIndex(cellImageView)))(newPosition)
+      board.getChildren.remove(cellImageView)
+      board.add(cellImageView, newPosition.x, newPosition.y)
     }
   }
 
@@ -199,8 +196,10 @@ object GameView {
     audioPlayer: AudioPlayer,
     levels: Seq[Level[BaseCell]],
     levelIndex: Int,
-    scene: Scene
-  ) extends AbstractGameView(parentController, audioPlayer, scene) {
+    scene: Scene,
+    backButtonText: String
+  ) extends AbstractGameView(parentController, audioPlayer, scene, backButtonText) {
+
     override protected def createController(): GameController = GameController(parentController, this, levels, levelIndex)
   }
 
@@ -209,15 +208,17 @@ object GameView {
     parentController: ParentGameController,
     audioPlayer: AudioPlayer,
     level: Level[BaseCell],
-    scene: Scene
-  ) extends AbstractGameView(parentController, audioPlayer, scene) {
+    scene: Scene,
+    backButtonText: String
+  ) extends AbstractGameView(parentController, audioPlayer, scene, backButtonText) {
+
     override protected def createController(): GameController = GameController(parentController, this, level)
   }
 
-  /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentDefaultGameController]] so as to be able to complete the
-    * construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
+  /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentDefaultGameController]] so as to be able to complete
+    * the construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
     * music, the sequence of default [[Level]] to be used during this game, the index of the default [[Level]] from which starting
-    * the game and the ScalaFX's [[Scene]] on which displaying the instance after being constructed.
+    * the game and the ScalaFX'state [[Scene]] on which displaying the instance after being constructed.
     *
     * @param parentController
     *   the controller needed so as to be able to complete the construction of a [[GameController]] correctly
@@ -228,7 +229,7 @@ object GameView {
     * @param levelIndex
     *   the index of the default level from which starting the game
     * @param scene
-    *   the ScalaFX's [[Scene]] on which displaying the instance after being constructed
+    *   the ScalaFX'state [[Scene]] on which displaying the instance after being constructed
     * @return
     *   a new [[GameView]] instance
     */
@@ -237,14 +238,15 @@ object GameView {
     audioPlayer: AudioPlayer,
     levels: Seq[Level[BaseCell]],
     levelIndex: Int,
-    scene: Scene
+    scene: Scene,
+    backButtonText: String
   ): GameView =
-    DefaultGameView(parentController, audioPlayer, levels, levelIndex, scene)
+    DefaultGameView(parentController, audioPlayer, levels, levelIndex, scene, backButtonText)
 
   /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentGameController]] so as to be able to complete the
     * construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
-    * music, the [[Level]] from which starting the game and the ScalaFX's [[Scene]] on which displaying the instance after being
-    * constructed.
+    * music, the [[Level]] from which starting the game and the ScalaFX'state [[Scene]] on which displaying the instance after
+    * being constructed.
     *
     * @param parentController
     *   the controller needed so as to be able to complete the construction of a [[GameController]] correctly
@@ -253,10 +255,16 @@ object GameView {
     * @param level
     *   the [[Level]] from which starting the game
     * @param scene
-    *   the ScalaFX's [[Scene]] on which displaying the instance after being constructed
+    *   the ScalaFX'state [[Scene]] on which displaying the instance after being constructed
     * @return
     *   a new [[GameView]] instance
     */
-  def apply(parentController: ParentGameController, audioPlayer: AudioPlayer, level: Level[BaseCell], scene: Scene): GameView =
-    ExternalGameView(parentController, audioPlayer, level, scene)
+  def apply(
+    parentController: ParentGameController,
+    audioPlayer: AudioPlayer,
+    level: Level[BaseCell],
+    scene: Scene,
+    backButtonText: String
+  ): GameView =
+    ExternalGameView(parentController, audioPlayer, level, scene, backButtonText)
 }

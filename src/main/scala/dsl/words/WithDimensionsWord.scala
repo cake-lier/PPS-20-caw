@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.dsl.words
 
-import it.unibo.pps.caw.dsl.entities.Dimensions
+import it.unibo.pps.caw.common.model.Dimensions
 
 /** The "withDimensions" word, used for specifying the [[Dimensions]] of an area.
   *
@@ -28,7 +28,7 @@ object WithDimensionsWord {
   private class WithDimensionsWordImpl(fun: Dimensions => AtWord) extends WithDimensionsWord {
 
     /* Calls the given function with the Dimensions constructed through the values given by the user. */
-    def withDimensions(width: Int, height: Int): AtWord = fun(Dimensions(width, height))
+    def withDimensions(width: Int, height: Int): AtWord = fun((width, height))
   }
 
   /** Returns a new instance of the [[WithDimensionsWord]] trait. It needs a function which can consume the [[Dimensions]] that

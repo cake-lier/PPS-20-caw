@@ -10,6 +10,12 @@ trait SettingsController {
   /** Goes back to the main menu. */
   def goBack(): Unit
 
-  /** Saves values of volume as set in [[SettingsView]]. */
-  def saveVolumeSettings(volumeMusic: Double, volumeSFX: Double): Unit
+  /** Saves values of volume as set in [[SettingsView]].
+    *
+    * @param musicVolume
+    *   the value of the music volume
+    * @param soundVolume
+    *   the value of sound effects volume
+    */
+  def saveVolumeSettings(musicVolume: Double, soundVolume: Double): Unit
 }

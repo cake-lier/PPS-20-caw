@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
-
-<?import it.unibo.pps.caw.common.SoundButton?>
 <?import java.net.URL?>
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="background" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" styleClass="background" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints percentWidth="15.0" />
         <ColumnConstraints percentWidth="17.5" />
@@ -26,37 +29,29 @@
         <RowConstraints percentHeight="7.5" />
         <RowConstraints percentHeight="27.5" />
     </rowConstraints>
-    <Slider fx:id="musicVolumeSlider" showTickLabels="true" value="30" majorTickUnit="10" minorTickCount="0"
-            showTickMarks="true"
-            snapToTicks="true" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="3" GridPane.rowIndex="3">
-    </Slider>
-    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Settings" GridPane.columnIndex="1"
-           GridPane.columnSpan="3" GridPane.rowIndex="1">
+    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Settings" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1">
         <font>
             <Font size="18.0" />
         </font>
     </Label>
-    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Music Volume" GridPane.columnIndex="1"
-           GridPane.rowIndex="3">
+    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Music Volume" GridPane.columnIndex="1" GridPane.rowIndex="3">
         <font>
             <Font size="18.0" />
         </font>
     </Label>
-    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="SFX Volume" GridPane.columnIndex="1"
-           GridPane.rowIndex="5">
+    <Label alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="SFX Volume" GridPane.columnIndex="1" GridPane.rowIndex="5">
         <font>
             <Font size="18.0" />
         </font>
     </Label>
-    <SoundButton fx:id="backFromSettingsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Back"
-                 GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7">
+    <Button fx:id="backFromSettingsButton" alignment="BOTTOM_CENTER" maxHeight="Infinity" maxWidth="Infinity" text="Back" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="7">
         <GridPane.margin>
             <Insets left="100.0" right="100.0" />
         </GridPane.margin>
-    </SoundButton>
-    <Slider fx:id="effectsVolumeSlider" showTickLabels="true" value="70" majorTickUnit="10" minorTickCount="0"
-            showTickMarks="true" snapToTicks="true" maxHeight="Infinity" maxWidth="Infinity" GridPane.columnIndex="3"
-            GridPane.rowIndex="5" />
+    </Button>
+    <Slider fx:id="effectsVolumeSlider" majorTickUnit="10" maxHeight="Infinity" maxWidth="Infinity"
+            minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToPixel="false" snapToTicks="true" GridPane.columnIndex="3" GridPane.rowIndex="5" />
+    <Slider fx:id="musicVolumeSlider" majorTickUnit="10" maxHeight="Infinity" maxWidth="Infinity" minorTickCount="0" showTickLabels="true" showTickMarks="true" snapToPixel="false" snapToTicks="true" GridPane.columnIndex="3" GridPane.rowIndex="3" />
     <stylesheets>
         <URL value="@../css/main.css" />
         <URL value="@../css/settings_page.css" />

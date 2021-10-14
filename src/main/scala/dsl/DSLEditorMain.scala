@@ -1,19 +1,18 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, StageResizer}
-import it.unibo.pps.caw.editor.LevelEditorView
-import it.unibo.pps.caw.editor.controller.{Deserializer, ParentLevelEditorController}
-import it.unibo.pps.caw.editor.model.Level
+import it.unibo.pps.caw.common.LevelParser
+import it.unibo.pps.caw.common.model.cell.BaseCell
+import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
+import it.unibo.pps.caw.common.view.StageResizer
+import it.unibo.pps.caw.common.view.sounds.AudioPlayer
+import it.unibo.pps.caw.editor.view.EditorView
+import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.FlowPane
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.application.JFXApp3.PrimaryStage
-
-import java.io.File
-import java.nio.file.Paths
-import scala.io.Source
-import scala.util.Using
 
 /** The main class for the application launched by the DSL when asked by the user to edit a level with the
   * [[it.unibo.pps.caw.dsl.entities.Board]] which has been just created.
@@ -34,21 +33,22 @@ object DSLEditorMain extends JFXApp3 {
     StageResizer.resize(stage)
     val editorScene: Scene = Scene(stage.width.value, stage.height.value)
     stage.scene = editorScene
-    LevelManager
-      .loadLevelLevelEditor(parameters.raw(0))
+    val fileStorage = FileStorage()
+    val levelManager = LevelStorage(fileStorage, LevelParser(fileStorage))
+    levelManager
+      .loadLevel(parameters.raw(0))
       .fold(
         _ => editorScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
         l => {
-          editorScene.root.value = LevelEditorView(
+          editorScene.root.value = EditorView(
             new ParentLevelEditorController {
+
               override def closeEditor(): Unit = sys.exit()
 
-              override def backToLevelEditorMenu(): Unit = sys.exit()
-
-              override def saveLevel(path: String, level: Level): Unit = LevelManager.writeLevel(path, level)
+              override def saveLevel(path: String, level: Level[BaseCell]): Unit = levelManager.saveLevel(path, level)
             },
             editorScene,
-            "Close",
+            backButtonText = "Close",
             AudioPlayer(),
             l
           )

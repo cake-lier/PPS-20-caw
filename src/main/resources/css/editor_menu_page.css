@@ -3,7 +3,7 @@
 }
 
 .button, .label, .text-field {
-    -fx-font-size: 24px;
+    -fx-font-size: 22px;
 }
 
 #backButton {

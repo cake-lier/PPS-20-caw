@@ -1,11 +1,14 @@
 package it.unibo.pps.caw.dsl
 
-import it.unibo.pps.caw.game.controller.{Deserializer, ParentGameController}
+import it.unibo.pps.caw.game.controller.ParentGameController
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.game.model.Level
-import it.unibo.pps.caw.common.{AudioPlayer, LevelManager, PlayableArea, Position, StageResizer}
+import it.unibo.pps.caw.common.LevelParser
 import it.unibo.pps.caw.menu.MainMenuView
-import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.model.Level
+import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
+import it.unibo.pps.caw.common.view.StageResizer
+import it.unibo.pps.caw.common.view.sounds.AudioPlayer
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.Alert
@@ -16,8 +19,7 @@ import scalafx.application.JFXApp3.{Parameters, PrimaryStage}
 import scalafx.scene.Scene
 
 import java.nio.file.{Path, Paths}
-import scala.io.Source
-import scala.util.{Failure, Try, Using}
+import scala.util.{Failure, Try}
 
 /** The main class for the application launched by the DSL when asked by the user to play a level with the
   * [[it.unibo.pps.caw.dsl.entities.Board]] which has been just created.
@@ -38,20 +40,22 @@ object DSLGameMain extends JFXApp3 {
     StageResizer.resize(stage)
     val gameScene: Scene = Scene(stage.width.value, stage.height.value)
     stage.scene = gameScene
-    LevelManager
-      .load(parameters.raw(0))
+    val fileStorage = FileStorage()
+    LevelStorage(fileStorage, LevelParser(fileStorage))
+      .loadLevel(parameters.raw(0))
       .fold(
         _ => gameScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
         l => {
           gameScene.root.value = GameView(
             new ParentGameController {
+              override def getFileStorage(): FileStorage = fileStorage
 
-              /** Asks the parent controller to go back to the previous state of the application. */
-              override def goBack(): Unit = sys.exit()
+              override def closeGame(): Unit = sys.exit()
             },
             AudioPlayer(),
             l,
-            gameScene
+            gameScene,
+            backButtonText = "Close"
           )
         }
       )

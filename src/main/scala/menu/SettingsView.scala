@@ -1,13 +1,12 @@
 package it.unibo.pps.caw.menu
 
-import it.unibo.pps.caw.common.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.menu.{LevelSelectionView, ParentMainMenuController}
-import it.unibo.pps.caw.common.{AudioPlayer, AudioType, SoundButton, ViewComponent}
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
+import it.unibo.pps.caw.common.view.ViewComponent
 import javafx.fxml.FXML
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
-import javafx.scene.control.Slider
-import scalafx.stage.FileChooser
+import javafx.scene.control.{Slider, Button}
 
 /** The "settings" page on the main menu.
   *
@@ -22,14 +21,14 @@ object SettingsView {
 
   /** Returns a new instance of the [[SettingsView]] trait. It receives the [[SettingsController]] so the constructed view can
     * provide the services which should be accessible through itself, the [[AudioPlayer]] to be used for playing sounds and music
-    * and the ScalaFX's [[Scene]] in order to draw and display itself.
+    * and the ScalaFX'state [[Scene]] in order to draw and display itself.
     *
     * @param controller
     *   the [[SettingsController]] associated to the created [[SettingsView]]
     * @param audioPlayer
     *   the [[AudioPlayer]] to be used for playing sounds and music
     * @param scene
-    *   the ScalaFX's [[Scene]] on which the constructed [[SettingsView]] will draw and display itself
+    *   the ScalaFX'state [[Scene]] on which the constructed [[SettingsView]] will draw and display itself
     * @return
     *   a new [[SettingsView]] instance
     */
@@ -45,7 +44,7 @@ object SettingsView {
     @FXML
     var effectsVolumeSlider: Slider = _
     @FXML
-    var backFromSettingsButton: SoundButton = _
+    var backFromSettingsButton: Button = _
 
     override val innerComponent: Pane = loader.load[GridPane]
 

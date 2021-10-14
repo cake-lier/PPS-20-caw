@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.dsl.words
 
-import it.unibo.pps.caw.dsl.entities.Dimensions
+import it.unibo.pps.caw.common.model.Dimensions
 
 /** The "inAnArea" word, used for specifying the [[Dimensions]] of an area of the [[it.unibo.pps.caw.dsl.entities.Board]] which is
   * populated with the same type of cells.
@@ -33,7 +33,7 @@ object InAnAreaWord {
   private class InAnAreaWordImpl[A <: FollowingInAnAreaWord](fun: Dimensions => A) extends InAnAreaWord[A] {
 
     /* Calls the given function with the Dimensions constructed through the values given by the user. */
-    def inAnArea(width: Int, height: Int): A = fun(Dimensions(width, height))
+    def inAnArea(width: Int, height: Int): A = fun((width, height))
   }
 
   /** Returns a new instance of the [[InAnAreaWord]] trait. It needs a function which can consume the [[Dimensions]] that the user

@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.dsl.words
 
-import it.unibo.pps.caw.dsl.entities.{Orientation, Position, Push, Rotation}
+import it.unibo.pps.caw.common.model.Position
+import it.unibo.pps.caw.common.model.cell.{Orientation, Push, Rotation}
 import it.unibo.pps.caw.dsl.CellsAtWorkDSL.{OrientationWord, PushWord, RotationWord}
 
 /** Used for creating a union type between all words that can follow the [[InAnAreaWord]] in a phrase. */
@@ -29,7 +30,7 @@ object AtWord {
   private class AtWordImpl(fun: Position => Unit) extends AtWord {
 
     /* Calls the given function with the Position constructed through the coordinates given by the user. */
-    def at(x: Int, y: Int): Unit = fun(Position(x, y))
+    def at(x: Int, y: Int): Unit = fun((x, y))
   }
 
   /** Returns a new instance of the [[AtWord]] trait. It needs a function which can consume the [[Position]] that the user
