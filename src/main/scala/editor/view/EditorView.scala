@@ -129,7 +129,7 @@ abstract class AbstractEditorView(
     boardView match {
       case Some(v) => v.drawLevelState(levelState)
       case None =>
-        val newBoardView: EditorBoardView = EditorBoardView(scene.getWidth, scene.getHeight, level, this, this)
+        val newBoardView: EditorBoardView = EditorBoardView(scene.getWidth, scene.getHeight, levelState, this, this)
         boardView.foreach(b => innerComponent.getChildren.remove(b))
         GridPane.setValignment(newBoardView, VPos.CENTER)
         GridPane.setHalignment(newBoardView, HPos.CENTER)

@@ -5,7 +5,7 @@ import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.common.LevelParser
 import it.unibo.pps.caw.common.storage.FileStorage
 import it.unibo.pps.caw.dsl.CellsAtWorkDSL.*
-import it.unibo.pps.caw.dsl.errors.BoardBuilderError
+import it.unibo.pps.caw.dsl.errors.LevelBuilderStateError
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -104,7 +104,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(boardDimensions = None)
         }
-        err.toString shouldBe BoardBuilderError.DimensionsUnset.message
+        err.toString shouldBe LevelBuilderStateError.DimensionsUnset.message
       }
     }
 
@@ -114,7 +114,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = None)
         }
-        err.toString shouldBe BoardBuilderError.PlayableAreaUnset.message
+        err.toString shouldBe LevelBuilderStateError.PlayableAreaUnset.message
       }
     }
 
@@ -124,7 +124,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(boardDimensions = Some(Dimensions(-30, 40)))
         }
-        err.toString shouldBe BoardBuilderError.NegativeDimensions.message
+        err.toString shouldBe LevelBuilderStateError.NegativeDimensions.message
       }
     }
 
@@ -134,7 +134,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(Dimensions(-30, 40))(playableAreaPosition)))
         }
-        err.toString shouldBe BoardBuilderError.NegativeDimensions.message
+        err.toString shouldBe LevelBuilderStateError.NegativeDimensions.message
       }
     }
 
@@ -144,7 +144,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(playableAreaDimensions)(Position(-1, 0))))
         }
-        err.toString shouldBe BoardBuilderError.NegativePosition.message
+        err.toString shouldBe LevelBuilderStateError.NegativePosition.message
       }
     }
 
@@ -154,7 +154,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(playableAreaDimensions)(Position(25, 25))))
         }
-        err.toString shouldBe BoardBuilderError.PlayableAreaNotInBounds.message
+        err.toString shouldBe LevelBuilderStateError.PlayableAreaNotInBounds.message
       }
     }
 
@@ -165,7 +165,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(mover = BaseMoverCell(Orientation.Right)(position), enemy = BaseEnemyCell(position))
         }
-        err.toString shouldBe BoardBuilderError.SamePositionForDifferentCells.message
+        err.toString shouldBe LevelBuilderStateError.SamePositionForDifferentCells.message
       }
     }
 
@@ -175,7 +175,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(generator = BaseGeneratorCell(Orientation.Left)(Position(0, -5)))
         }
-        err.toString shouldBe BoardBuilderError.NegativePosition.message
+        err.toString shouldBe LevelBuilderStateError.NegativePosition.message
       }
     }
 
@@ -185,7 +185,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(block = BaseBlockCell(Push.Vertical)(Position(50, 50)))
         }
-        err.toString shouldBe BoardBuilderError.CellOutsideBounds.message
+        err.toString shouldBe LevelBuilderStateError.CellOutsideBounds.message
       }
     }
 

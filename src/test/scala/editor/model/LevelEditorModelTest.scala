@@ -98,6 +98,6 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
     ).flatten ++ cells
     playableArea
       .map(p => LevelBuilderState(p)((dimensions.width + 2, dimensions.height + 2))(walls))
-      .getOrElse(LevelBuilder((dimensions.width + 2, dimensions.height + 2))(walls))
+      .getOrElse(LevelBuilderState((dimensions.width + 2, dimensions.height + 2))(walls))
 
 }

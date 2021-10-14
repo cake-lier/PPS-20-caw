@@ -15,7 +15,7 @@ class LevelBuilderStateTest extends AnyFunSpec with Matchers {
   )
   private val playableArea: PlayableArea = PlayableArea((7, 5))((1, 1))
 
-  describe("A level builder") {
+  describe("A level builder state") {
     describe("when first created with dimensions and board") {
       it("should return the given dimensions and board") {
         val state: LevelBuilderState = LevelBuilderState(dimensions)(board)

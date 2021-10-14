@@ -7,7 +7,7 @@ import it.unibo.pps.caw.dsl.words.{AtWord, FacingWord, InAnAreaWord, PushableWor
 
 import scala.collection.mutable.ListBuffer
 
-/** Adds all methods to the DSL that are able to addi new cells to a [[BoardBuilder]].
+/** Adds all methods to the DSL that are able to add new cells to a [[LevelBuilderState]].
   *
   * The methods in this module can add a single cell or an area of cells of the same type, for each type of cells in the game.
   */
@@ -27,73 +27,82 @@ trait CellsAdders extends PropertiesWord {
 
     /* Append an "orientable" cell adding operation to the sequence of operations specified by the user. */
     private def addOrientableCells(
-      ops: ListBuffer[BoardBuilder => BoardBuilder],
-      build: BoardBuilder => Orientation => Position => BoardBuilder
+      ops: ListBuffer[LevelBuilderState => LevelBuilderState],
+      build: LevelBuilderState => Orientation => Position => LevelBuilderState
     ): FacingWord =
       FacingWord(o => AtWord(p => ops += (b => build(b)(o)(p))))
 
     /* Append a BaseMoverCell adding operation to the sequence of operations specified by the user. */
     def addMoverCells(
-      ops: ListBuffer[BoardBuilder => BoardBuilder],
+      ops: ListBuffer[LevelBuilderState => LevelBuilderState],
       build: Orientation => Position => Iterable[BaseMoverCell]
     ): FacingWord =
       addOrientableCells(ops, b => o => p => b.copy(moverCells = b.moverCells ++ build(o)(p)))
 
     /* Append a BaseGeneratorCell cell adding operation to the sequence of operations specified by the user. */
     def addGeneratorCells(
-      ops: ListBuffer[BoardBuilder => BoardBuilder],
+      ops: ListBuffer[LevelBuilderState => LevelBuilderState],
       build: Orientation => Position => Iterable[BaseGeneratorCell]
     ): FacingWord =
       addOrientableCells(ops, b => o => p => b.copy(generatorCells = b.generatorCells ++ build(o)(p)))
 
     /* Append a "rotatable" cell adding operation to the sequence of operations specified by the user. */
     private def addRotatableCells(
-      ops: ListBuffer[BoardBuilder => BoardBuilder],
-      build: BoardBuilder => Rotation => Position => BoardBuilder
+      ops: ListBuffer[LevelBuilderState => LevelBuilderState],
+      build: LevelBuilderState => Rotation => Position => LevelBuilderState
     ): RotatingWord =
       RotatingWord(d => AtWord(p => ops += (b => build(b)(d)(p))))
 
     /* Append a BaseRotatorCell adding operation to the sequence of operations specified by the user. */
     def addRotatorCells(
-      ops: ListBuffer[BoardBuilder => BoardBuilder],
+      ops: ListBuffer[LevelBuilderState => LevelBuilderState],
       build: Rotation => Position => Iterable[BaseRotatorCell]
     ): RotatingWord =
       addRotatableCells(ops, b => d => p => b.copy(rotatorCells = b.rotatorCells ++ build(d)(p)))
 
     /* Append a "pushable" cell adding operation to the sequence of operations specified by the user. */
     private def addPushableCells(
-      ops: ListBuffer[BoardBuilder => BoardBuilder],
-      build: BoardBuilder => Push => Position => BoardBuilder
+      ops: ListBuffer[LevelBuilderState => LevelBuilderState],
+      build: LevelBuilderState => Push => Position => LevelBuilderState
     ): PushableWord =
       PushableWord(m => AtWord(p => ops += (b => build(b)(m)(p))))
 
     /* Append a BaseBlockCell adding operation to the sequence of operations specified by the user. */
     def addBlockCells(
-      ops: ListBuffer[BoardBuilder => BoardBuilder],
+      ops: ListBuffer[LevelBuilderState => LevelBuilderState],
       build: Push => Position => Iterable[BaseBlockCell]
     ): PushableWord =
       addPushableCells(ops, b => m => p => b.copy(blockCells = b.blockCells ++ build(m)(p)))
 
     /* Append a simple cell adding operation to the sequence of operations specified by the user. */
-    private def addCells(ops: ListBuffer[BoardBuilder => BoardBuilder], build: BoardBuilder => Position => BoardBuilder): AtWord =
+    private def addCells(
+      ops: ListBuffer[LevelBuilderState => LevelBuilderState],
+      build: LevelBuilderState => Position => LevelBuilderState
+    ): AtWord =
       AtWord(p => ops += (b => build(b)(p)))
 
     /* Append a BaseEnemyCell adding operation to the sequence of operations specified by the user. */
-    def addEnemyCells(ops: ListBuffer[BoardBuilder => BoardBuilder], build: Position => Iterable[BaseEnemyCell]): AtWord =
+    def addEnemyCells(
+      ops: ListBuffer[LevelBuilderState => LevelBuilderState],
+      build: Position => Iterable[BaseEnemyCell]
+    ): AtWord =
       addCells(ops, b => p => b.copy(enemyCells = b.enemyCells ++ build(p)))
 
     /* Append a BaseWallCell adding operation to the sequence of operations specified by the user. */
-    def addWallCells(ops: ListBuffer[BoardBuilder => BoardBuilder], build: Position => Iterable[BaseWallCell]): AtWord =
+    def addWallCells(ops: ListBuffer[LevelBuilderState => LevelBuilderState], build: Position => Iterable[BaseWallCell]): AtWord =
       addCells(ops, b => p => b.copy(wallCells = b.wallCells ++ build(p)))
 
     /* Append a BaseDeleterCell adding operation to the sequence of operations specified by the user. */
-    def addDeleterCells(ops: ListBuffer[BoardBuilder => BoardBuilder], build: Position => Iterable[BaseDeleterCell]): AtWord =
+    def addDeleterCells(
+      ops: ListBuffer[LevelBuilderState => LevelBuilderState],
+      build: Position => Iterable[BaseDeleterCell]
+    ): AtWord =
       addCells(ops, b => p => b.copy(deleterCells = b.deleterCells ++ build(p)))
   }
 
   import CellsAddersHelpers.*
 
-  /** Allows to start the sentence for adding a "mover" cell to the [[BoardBuilder]] currently being used. It returns a
+  /** Allows to start the sentence for adding a "mover" cell to the [[LevelBuilderState]] currently being used. It returns a
     * [[FacingWord]] so as to allow the user to continue the sentence and specify the other properties of the cell.
     *
     * @param ops
@@ -101,33 +110,10 @@ trait CellsAdders extends PropertiesWord {
     * @return
     *   a [[FacingWord]] so as to allow the user to continue the sentence
     */
-  def hasMoverCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): FacingWord =
+  def hasMoverCell(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): FacingWord =
     addMoverCells(ops, o => p => Set(BaseMoverCell(o)(p)))
 
-  /** Allows to start the sentence for adding multiple "mover" cells to the [[BoardBuilder]] currently being used. It returns an
-    * [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
-    * properties of the cell being duplicated all over the area.
-    *
-    * @param ops
-    *   the list of operations to which add this specific operation
-    * @return
-    *   an [[InAnAreaWord]] so as to allow the user to continue the sentence
-    */
-  def hasMoverCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[FacingWord] =
-    InAnAreaWord(d => addMoverCells(ops, o => p => duplicateCells(BaseMoverCell(o))(d, p)))
-
-  /** Allows to start the sentence for adding a "generator" cell to the [[BoardBuilder]] currently being used. It returns a
-    * [[FacingWord]] so as to allow the user to continue the sentence and specify the other properties of the cell.
-    *
-    * @param ops
-    *   the list of operations to which add this specific operation
-    * @return
-    *   a [[FacingWord]] so as to allow the user to continue the sentence
-    */
-  def hasGeneratorCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): FacingWord =
-    addGeneratorCells(ops, o => p => Set(BaseGeneratorCell(o)(p)))
-
-  /** Allows to start the sentence for adding multiple "generator" cells to the [[BoardBuilder]] currently being used. It returns
+  /** Allows to start the sentence for adding multiple "mover" cells to the [[LevelBuilderState]] currently being used. It returns
     * an [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
     * properties of the cell being duplicated all over the area.
     *
@@ -136,10 +122,33 @@ trait CellsAdders extends PropertiesWord {
     * @return
     *   an [[InAnAreaWord]] so as to allow the user to continue the sentence
     */
-  def hasGeneratorCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[FacingWord] =
+  def hasMoverCells(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): InAnAreaWord[FacingWord] =
+    InAnAreaWord(d => addMoverCells(ops, o => p => duplicateCells(BaseMoverCell(o))(d, p)))
+
+  /** Allows to start the sentence for adding a "generator" cell to the [[LevelBuilderState]] currently being used. It returns a
+    * [[FacingWord]] so as to allow the user to continue the sentence and specify the other properties of the cell.
+    *
+    * @param ops
+    *   the list of operations to which add this specific operation
+    * @return
+    *   a [[FacingWord]] so as to allow the user to continue the sentence
+    */
+  def hasGeneratorCell(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): FacingWord =
+    addGeneratorCells(ops, o => p => Set(BaseGeneratorCell(o)(p)))
+
+  /** Allows to start the sentence for adding multiple "generator" cells to the [[LevelBuilderState]] currently being used. It
+    * returns an [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells
+    * and the properties of the cell being duplicated all over the area.
+    *
+    * @param ops
+    *   the list of operations to which add this specific operation
+    * @return
+    *   an [[InAnAreaWord]] so as to allow the user to continue the sentence
+    */
+  def hasGeneratorCells(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): InAnAreaWord[FacingWord] =
     InAnAreaWord(d => addGeneratorCells(ops, o => p => duplicateCells(BaseGeneratorCell(o))(d, p)))
 
-  /** Allows to start the sentence for adding a "rotator" cell to the [[BoardBuilder]] currently being used. It returns a
+  /** Allows to start the sentence for adding a "rotator" cell to the [[LevelBuilderState]] currently being used. It returns a
     * [[RotatingWord]] so as to allow the user to continue the sentence and specify the other properties of the cell.
     *
     * @param ops
@@ -147,22 +156,22 @@ trait CellsAdders extends PropertiesWord {
     * @return
     *   a [[RotatingWord]] so as to allow the user to continue the sentence
     */
-  def hasRotatorCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): RotatingWord =
+  def hasRotatorCell(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): RotatingWord =
     addRotatorCells(ops, r => p => Set(BaseRotatorCell(r)(p)))
 
-  /** Allows to start the sentence for adding multiple "rotator" cells to the [[BoardBuilder]] currently being used. It returns an
-    * [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
-    * properties of the cell being duplicated all over the area.
+  /** Allows to start the sentence for adding multiple "rotator" cells to the [[LevelBuilderState]] currently being used. It
+    * returns an [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells
+    * and the properties of the cell being duplicated all over the area.
     *
     * @param ops
     *   the list of operations to which add this specific operation
     * @return
     *   an [[InAnAreaWord]] so as to allow the user to continue the sentence
     */
-  def hasRotatorCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[RotatingWord] =
+  def hasRotatorCells(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): InAnAreaWord[RotatingWord] =
     InAnAreaWord(d => addRotatorCells(ops, r => p => duplicateCells(BaseRotatorCell(r))(d, p)))
 
-  /** Allows to start the sentence for adding a "block" cell to the [[BoardBuilder]] currently being used. It returns a
+  /** Allows to start the sentence for adding a "block" cell to the [[LevelBuilderState]] currently being used. It returns a
     * [[PushableWord]] so as to allow the user to continue the sentence and specify the other properties of the cell.
     *
     * @param ops
@@ -170,11 +179,11 @@ trait CellsAdders extends PropertiesWord {
     * @return
     *   a [[PushableWord]] so as to allow the user to continue the sentence
     */
-  def hasBlockCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): PushableWord =
+  def hasBlockCell(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): PushableWord =
     addBlockCells(ops, m => p => Set(BaseBlockCell(m)(p)))
 
-  /** Allows to start the sentence for adding multiple "block" cells to the [[BoardBuilder]] currently being used. It returns an
-    * [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
+  /** Allows to start the sentence for adding multiple "block" cells to the [[LevelBuilderState]] currently being used. It returns
+    * an [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
     * properties of the cell being duplicated all over the area.
     *
     * @param ops
@@ -182,10 +191,10 @@ trait CellsAdders extends PropertiesWord {
     * @return
     *   an [[InAnAreaWord]] so as to allow the user to continue the sentence
     */
-  def hasBlockCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[PushableWord] =
+  def hasBlockCells(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): InAnAreaWord[PushableWord] =
     InAnAreaWord(d => addBlockCells(ops, m => p => duplicateCells(BaseBlockCell(m))(d, p)))
 
-  /** Allows to start the sentence for adding a "enemy" cell to the [[BoardBuilder]] currently being used. It returns an
+  /** Allows to start the sentence for adding a "enemy" cell to the [[LevelBuilderState]] currently being used. It returns an
     * [[AtWord]] so as to allow the user to continue the sentence and specify the other properties of the cell.
     *
     * @param ops
@@ -193,10 +202,11 @@ trait CellsAdders extends PropertiesWord {
     * @return
     *   an [[AtWord]] so as to allow the user to continue the sentence
     */
-  def hasEnemyCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): AtWord = addEnemyCells(ops, p => Set(BaseEnemyCell(p)))
+  def hasEnemyCell(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): AtWord =
+    addEnemyCells(ops, p => Set(BaseEnemyCell(p)))
 
-  /** Allows to start the sentence for adding multiple "enemy" cells to the [[BoardBuilder]] currently being used. It returns an
-    * [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
+  /** Allows to start the sentence for adding multiple "enemy" cells to the [[LevelBuilderState]] currently being used. It returns
+    * an [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
     * properties of the cell being duplicated all over the area.
     *
     * @param ops
@@ -204,33 +214,10 @@ trait CellsAdders extends PropertiesWord {
     * @return
     *   an [[InAnAreaWord]] so as to allow the user to continue the sentence
     */
-  def hasEnemyCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[AtWord] =
+  def hasEnemyCells(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): InAnAreaWord[AtWord] =
     InAnAreaWord(d => addEnemyCells(ops, p => duplicateCells(BaseEnemyCell.apply)(d, p)))
 
-  /** Allows to start the sentence for adding a "wall" cell to the [[BoardBuilder]] currently being used. It returns an [[AtWord]]
-    * so as to allow the user to continue the sentence and specify the other properties of the cell.
-    *
-    * @param ops
-    *   the list of operations to which add this specific operation
-    * @return
-    *   an [[AtWord]] so as to allow the user to continue the sentence
-    */
-  def hasWallCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): AtWord =
-    addWallCells(ops, p => Set(BaseWallCell(p)))
-
-  /** Allows to start the sentence for adding multiple "wall" cells to the [[BoardBuilder]] currently being used. It returns an
-    * [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
-    * properties of the cell being duplicated all over the area.
-    *
-    * @param ops
-    *   the list of operations to which add this specific operation
-    * @return
-    *   an [[InAnAreaWord]] so as to allow the user to continue the sentence
-    */
-  def hasWallCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[AtWord] =
-    InAnAreaWord(d => addWallCells(ops, p => duplicateCells(BaseWallCell.apply)(d, p)))
-
-  /** Allows to start the sentence for adding a "deleter" cell to the [[BoardBuilder]] currently being used. It returns an
+  /** Allows to start the sentence for adding a "wall" cell to the [[LevelBuilderState]] currently being used. It returns an
     * [[AtWord]] so as to allow the user to continue the sentence and specify the other properties of the cell.
     *
     * @param ops
@@ -238,11 +225,11 @@ trait CellsAdders extends PropertiesWord {
     * @return
     *   an [[AtWord]] so as to allow the user to continue the sentence
     */
-  def hasDeleterCell(using ops: ListBuffer[BoardBuilder => BoardBuilder]): AtWord =
-    addDeleterCells(ops, p => Set(BaseDeleterCell(p)))
+  def hasWallCell(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): AtWord =
+    addWallCells(ops, p => Set(BaseWallCell(p)))
 
-  /** Allows to start the sentence for adding multiple "deleter" cells to the [[BoardBuilder]] currently being used. It returns an
-    * [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
+  /** Allows to start the sentence for adding multiple "wall" cells to the [[LevelBuilderState]] currently being used. It returns
+    * an [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells and the
     * properties of the cell being duplicated all over the area.
     *
     * @param ops
@@ -250,6 +237,29 @@ trait CellsAdders extends PropertiesWord {
     * @return
     *   an [[InAnAreaWord]] so as to allow the user to continue the sentence
     */
-  def hasDeleterCells(using ops: ListBuffer[BoardBuilder => BoardBuilder]): InAnAreaWord[AtWord] =
+  def hasWallCells(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): InAnAreaWord[AtWord] =
+    InAnAreaWord(d => addWallCells(ops, p => duplicateCells(BaseWallCell.apply)(d, p)))
+
+  /** Allows to start the sentence for adding a "deleter" cell to the [[LevelBuilderState]] currently being used. It returns an
+    * [[AtWord]] so as to allow the user to continue the sentence and specify the other properties of the cell.
+    *
+    * @param ops
+    *   the list of operations to which add this specific operation
+    * @return
+    *   an [[AtWord]] so as to allow the user to continue the sentence
+    */
+  def hasDeleterCell(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): AtWord =
+    addDeleterCells(ops, p => Set(BaseDeleterCell(p)))
+
+  /** Allows to start the sentence for adding multiple "deleter" cells to the [[LevelBuilderState]] currently being used. It
+    * returns an [[InAnAreaWord]] so as to allow the user to continue the sentence and specify the area in which placing the cells
+    * and the properties of the cell being duplicated all over the area.
+    *
+    * @param ops
+    *   the list of operations to which add this specific operation
+    * @return
+    *   an [[InAnAreaWord]] so as to allow the user to continue the sentence
+    */
+  def hasDeleterCells(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): InAnAreaWord[AtWord] =
     InAnAreaWord(d => addDeleterCells(ops, p => duplicateCells(BaseDeleterCell.apply)(d, p)))
 }

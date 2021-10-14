@@ -75,7 +75,7 @@ object EditorBoardView {
     private var startPosition = Position(0, 0)
     private var endPosition = Position(0, 0)
 
-    drawLevelState(initialLevel)
+    drawLevelState(initialLevelState)
 
     override def drawLevelState(levelState: LevelBuilderState): Unit = {
       clearComponents()

@@ -160,5 +160,5 @@ object LevelEditorModel {
     *   a new instance of [[LevelEditorModel]]
     */
   def apply(width: Int, height: Int): LevelEditorModel =
-    LevelEditorModelImpl(addCornerWalls(LevelBuilder((width, height))(Board.empty[PlayableCell])))
+    LevelEditorModelImpl(addCornerWalls(LevelBuilderState((width, height))(Board.empty[PlayableCell])))
 }
