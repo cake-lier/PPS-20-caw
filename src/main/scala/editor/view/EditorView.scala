@@ -7,7 +7,7 @@ import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
 import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView, FilePicker, ModelUpdater, ViewComponent}
 import it.unibo.pps.caw.editor.controller.{EditorController, ParentLevelEditorController}
-import it.unibo.pps.caw.editor.model.LevelBuilder
+import it.unibo.pps.caw.editor.model.LevelBuilderState
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.{FXML, FXMLLoader}
@@ -30,11 +30,12 @@ import java.io.File
   */
 trait EditorView extends ViewComponent[Pane] {
 
-  /** Draws the given [[LevelBuilder]].
-    * @param level
-    *   the [[LevelBuilder]] to be displayed
+  /** Draws the given [[LevelBuilderState]].
+    *
+    * @param levelState
+    *   the [[LevelBuilderState]] to be displayed
     */
-  def drawLevel(level: LevelBuilder): Unit
+  def drawLevelState(levelState: LevelBuilderState): Unit
 
   /** Displays the given error message to the player.
     * @param message
@@ -124,9 +125,9 @@ abstract class AbstractEditorView(
   resetAll.setOnMouseClicked(_ => controller.resetLevel())
   rotateCellsButton.setOnMouseClicked(_ => rotateButtons())
 
-  override def drawLevel(level: LevelBuilder): Unit = Platform.runLater(() => {
+  override def drawLevelState(levelState: LevelBuilderState): Unit = Platform.runLater(() =>
     boardView match {
-      case Some(_) => boardView.get.drawBoard(level)
+      case Some(v) => v.drawLevelState(levelState)
       case None =>
         val newBoardView: EditorBoardView = EditorBoardView(scene.getWidth, scene.getHeight, level, this, this)
         boardView.foreach(b => innerComponent.getChildren.remove(b))
@@ -136,7 +137,7 @@ abstract class AbstractEditorView(
         innerComponent.add(newBoardView, 2, 3, 10, 1)
         boardView = Some(newBoardView)
     }
-  })
+  )
 
   override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.Error, message).showAndWait())
 
@@ -231,6 +232,7 @@ abstract class AbstractEditorView(
 
 /** The companion object of the trait [[EditorView]], containing its factory methods. */
 object EditorView {
+
   /* Concrete implementation of an EditorView displaying an empty level. */
   private final class EmptyEditorViewImpl(
     parentLevelEditorController: ParentLevelEditorController,
@@ -240,6 +242,7 @@ object EditorView {
     width: Int,
     height: Int
   ) extends AbstractEditorView(scene, backButtonText, audioPlayer) {
+
     override protected def createController(): EditorController =
       EditorController(parentLevelEditorController, this, width, height)
   }
@@ -252,11 +255,9 @@ object EditorView {
     audioPlayer: AudioPlayer,
     level: Level[BaseCell]
   ) extends AbstractEditorView(scene, backButtonText, audioPlayer) {
-    override protected def createController(): EditorController = EditorController(
-      parentLevelEditorController,
-      this,
-      level
-    )
+
+    override protected def createController(): EditorController =
+      EditorController(parentLevelEditorController, this, level)
   }
 
   /** Returns a new instance of [[EditorView]]. It receives the [[ParentLevelEditorController]] so as to be able to correctly

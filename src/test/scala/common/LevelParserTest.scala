@@ -63,7 +63,7 @@ class LevelParserTest extends AnyFunSpec with Matchers {
       }
     }
     describe("when with correct format") {
-      it("should produce a LevelBuilder") {
+      it("should produce a LevelBuilderState") {
         val jsonLevel: String = fileStorage.loadResource("all_cells_valid_file.json").get
         levelParser.deserializeLevel(jsonLevel) match {
           case Success(l) => l shouldBe allCellsLevel

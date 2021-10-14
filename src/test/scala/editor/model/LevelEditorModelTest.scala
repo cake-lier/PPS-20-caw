@@ -11,7 +11,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private val dimensions: Dimensions = (20, 20)
   private val playableAreaDimensions: Dimensions = (5, 5)
   private val playableAreaPosition: Position = (0, 0)
-  private val emptyLevel: LevelBuilder = createLevelWithWalls(cells = Board.empty)
+  private val emptyLevel: LevelBuilderState = createLevelWithWalls(cells = Board.empty)
   private val enemy1: BaseEnemyCell = BaseEnemyCell((1, 1))
   private val playableEnemy1: PlayableEnemyCell = PlayableEnemyCell((1, 1))(true)
   private val enemy2: BaseEnemyCell = BaseEnemyCell((2, 2))
@@ -21,8 +21,8 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
 
   describe("LevelEditorModel") {
     describe("when new") {
-      it("should contain an empty LevelBuilder") {
-        LevelEditorModel(dimensions.width, dimensions.height).currentLevel shouldBe emptyLevel
+      it("should contain an empty LevelBuilderState") {
+        LevelEditorModel(dimensions.width, dimensions.height).currentState shouldBe emptyLevel
       }
     }
     describe("when resetted") {
@@ -30,8 +30,8 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
         LevelEditorModel(dimensions.width, dimensions.height).resetLevel should not equals
           LevelEditorModel(dimensions.width, dimensions.height)
       }
-      it("should contain an empty LevelBuilder") {
-        LevelEditorModel(dimensions.width, dimensions.height).resetLevel.currentLevel shouldBe emptyLevel
+      it("should contain an empty LevelBuilderState") {
+        LevelEditorModel(dimensions.width, dimensions.height).resetLevel.currentState shouldBe emptyLevel
       }
     }
     describe("when a cell is set") {
@@ -39,8 +39,8 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
         LevelEditorModel(dimensions.width, dimensions.height).setCell(enemy1) should not equals
           LevelEditorModel(dimensions.width, dimensions.height)
       }
-      it("should update the LevelBuilder") {
-        LevelEditorModel(dimensions.width, dimensions.height).setCell(enemy1).currentLevel shouldBe
+      it("should update the LevelBuilderState") {
+        LevelEditorModel(dimensions.width, dimensions.height).setCell(enemy1).currentState shouldBe
           createLevelWithWalls(cells = Board(playableEnemy1))
       }
     }
@@ -50,13 +50,13 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
           .setCell(enemy1)
           .unsetCell(enemy1.position) should not equals LevelEditorModel(dimensions.width, dimensions.height)
       }
-      it("should update the LevelBuilder") {
+      it("should update the LevelBuilderState") {
         LevelEditorModel(dimensions.width, dimensions.height)
           .setCell(enemy1)
           .setCell(enemy2)
           .setCell(enemy3)
           .unsetCell(enemy1.position)
-          .currentLevel shouldBe createLevelWithWalls(cells = Board(playableEnemy2, playableEnemy3))
+          .currentState shouldBe createLevelWithWalls(cells = Board(playableEnemy2, playableEnemy3))
       }
     }
     describe("when a PlayableArea is set") {
@@ -65,10 +65,10 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
           .setPlayableArea(playableAreaPosition, playableAreaDimensions) should not equals
           LevelEditorModel(dimensions.width, dimensions.height)
       }
-      it("should update the LevelBuilder") {
+      it("should update the LevelBuilderState") {
         LevelEditorModel(dimensions.width, dimensions.height)
           .setPlayableArea(playableAreaPosition, playableAreaDimensions)
-          .currentLevel shouldBe
+          .currentState shouldBe
           createLevelWithWalls(
             playableArea = Some(PlayableArea(playableAreaDimensions)(playableAreaPosition)),
             cells = Board.empty
@@ -80,8 +80,8 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
         LevelEditorModel(dimensions.width, dimensions.height).unsetPlayableArea should not equals
           LevelEditorModel(dimensions.width, dimensions.height)
       }
-      it("should update the LevelBuilder") {
-        LevelEditorModel(dimensions.width, dimensions.height).unsetPlayableArea.currentLevel shouldBe
+      it("should update the LevelBuilderState") {
+        LevelEditorModel(dimensions.width, dimensions.height).unsetPlayableArea.currentState shouldBe
           createLevelWithWalls()
       }
     }
@@ -89,7 +89,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private def createLevelWithWalls(
     playableArea: Option[PlayableArea] = None,
     cells: Set[PlayableCell] = Set.empty
-  ): LevelBuilder =
+  ): LevelBuilderState =
     val walls: Board[PlayableCell] = Set(
       (0 to dimensions.width + 1).map(i => PlayableWallCell((i, 0))(playable = false)),
       (0 to dimensions.width + 1).map(i => PlayableWallCell((i, dimensions.height + 1))(playable = false)),
@@ -97,7 +97,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
       (1 to dimensions.height).map(i => PlayableWallCell((dimensions.width + 1, i))(playable = false))
     ).flatten ++ cells
     playableArea
-      .map(p => LevelBuilder(p)((dimensions.width + 2, dimensions.height + 2))(walls))
+      .map(p => LevelBuilderState(p)((dimensions.width + 2, dimensions.height + 2))(walls))
       .getOrElse(LevelBuilder((dimensions.width + 2, dimensions.height + 2))(walls))
 
 }

@@ -28,7 +28,7 @@ trait Level[A <: Cell] {
 /** Companion object of the [[Level]] trait, containing its factory method. */
 object Level {
 
-  /* Default implementation of the LevelBuilder trait. */
+  /* Default implementation of the LevelBuilderState trait. */
   private case class LevelImpl[A <: Cell](dimensions: Dimensions, board: Board[A], playableArea: PlayableArea) extends Level[A]
 
   /** Returns a new instance of the [[Level]] trait given its [[Dimensions]], its [[Board]] of [[Cell]] and its [[PlayableArea]].

@@ -1,10 +1,9 @@
-package it.unibo.pps.caw
-package editor.controller
+package it.unibo.pps.caw.editor.controller
 
-import common.model.cell.BaseCell
-import common.model.{Dimensions, Level, Position}
-import editor.model.LevelEditorModel
-import editor.view.EditorView
+import it.unibo.pps.caw.common.model.cell.BaseCell
+import it.unibo.pps.caw.common.model.{Dimensions, Level, Position}
+import it.unibo.pps.caw.editor.model.LevelEditorModel
+import it.unibo.pps.caw.editor.view.EditorView
 
 /** The parent controller to the [[EditorController]].
   *
@@ -85,24 +84,17 @@ object EditorController {
     extends EditorController {
     private var levelEditorModel: LevelEditorModel = createEditorModel()
 
-    view.drawLevel(levelEditorModel.currentLevel)
+    view.drawLevelState(levelEditorModel.currentState)
+
     protected def createEditorModel(): LevelEditorModel
 
-    override def resetLevel(): Unit = {
-      updateShowLevel(levelEditorModel.resetLevel)
-    }
+    override def resetLevel(): Unit = updateShowLevel(levelEditorModel.resetLevel)
 
-    override def removeCell(position: Position): Unit = {
-      updateShowLevel(levelEditorModel.unsetCell(position))
-    }
+    override def removeCell(position: Position): Unit = updateShowLevel(levelEditorModel.unsetCell(position))
 
-    override def setCell(cell: BaseCell): Unit = {
-      updateShowLevel(levelEditorModel.setCell(cell))
-    }
+    override def setCell(cell: BaseCell): Unit = updateShowLevel(levelEditorModel.setCell(cell))
 
-    override def removePlayableArea(): Unit = {
-      updateShowLevel(levelEditorModel.unsetPlayableArea)
-    }
+    override def removePlayableArea(): Unit = updateShowLevel(levelEditorModel.unsetPlayableArea)
 
     override def setPlayableArea(position: Position, dimensions: Dimensions): Unit =
       updateShowLevel(levelEditorModel.setPlayableArea(position, dimensions))
@@ -110,16 +102,21 @@ object EditorController {
     override def saveLevel(path: String): Unit =
       levelEditorModel
         .builtLevel
-        .fold(view.showError("No playable area was set, could not save"))(parentLevelEditorController.saveLevel(path, _))
+        .fold(
+          view.showError(message = "No playable area was set, could not save")
+        )(
+          parentLevelEditorController.saveLevel(path, _)
+        )
 
     override def closeEditor(): Unit = parentLevelEditorController.closeEditor()
 
-    override def updateCellPosition(oldPosition: Position, newPosition: Position): Unit = {
+    override def updateCellPosition(oldPosition: Position, newPosition: Position): Unit =
       updateShowLevel(levelEditorModel.updateCellPosition(oldPosition, newPosition))
-    }
 
-    private def updateShowLevel(newLevelEditorModel: LevelEditorModel): Unit =
-      levelEditorModel = newLevelEditorModel; view.drawLevel(levelEditorModel.currentLevel)
+    private def updateShowLevel(newLevelEditorModel: LevelEditorModel): Unit = {
+      levelEditorModel = newLevelEditorModel
+      view.drawLevelState(levelEditorModel.currentState)
+    }
   }
 
   /* Extension of the AbstractEditorController to create a new level from a empty board. */
@@ -129,6 +126,7 @@ object EditorController {
     width: Int,
     height: Int
   ) extends AbstractEditorController(parentLevelEditorController: ParentLevelEditorController, levelEditorView: EditorView) {
+
     override def createEditorModel(): LevelEditorModel = LevelEditorModel(width, height)
   }
 
@@ -138,6 +136,7 @@ object EditorController {
     levelEditorView: EditorView,
     level: Level[BaseCell]
   ) extends AbstractEditorController(parentLevelEditorController: ParentLevelEditorController, levelEditorView: EditorView) {
+
     override def createEditorModel(): LevelEditorModel = LevelEditorModel(level)
   }
 
@@ -184,9 +183,5 @@ object EditorController {
     levelEditorView: EditorView,
     level: Level[BaseCell]
   ): EditorController =
-    LevelEditorController(
-      parentLevelEditorController,
-      levelEditorView,
-      level
-    )
+    LevelEditorController(parentLevelEditorController, levelEditorView, level)
 }

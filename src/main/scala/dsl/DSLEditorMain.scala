@@ -8,15 +8,11 @@ import it.unibo.pps.caw.common.view.StageResizer
 import it.unibo.pps.caw.common.view.sounds.AudioPlayer
 import it.unibo.pps.caw.editor.view.EditorView
 import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
-import it.unibo.pps.caw.editor.model.LevelBuilder
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.FlowPane
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.application.JFXApp3.PrimaryStage
-
-import java.io.File
-import java.nio.file.Paths
 
 /** The main class for the application launched by the DSL when asked by the user to edit a level with the
   * [[it.unibo.pps.caw.dsl.entities.Board]] which has been just created.

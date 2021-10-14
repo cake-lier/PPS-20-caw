@@ -3,7 +3,7 @@ package it.unibo.pps.caw.editor.view
 import it.unibo.pps.caw.common.model.cell.PlayableCell
 import it.unibo.pps.caw.common.model.{Board, Position}
 import it.unibo.pps.caw.common.*
-import it.unibo.pps.caw.editor.model.LevelBuilder
+import it.unibo.pps.caw.editor.model.LevelBuilderState
 
 import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellImage, CellView, DraggableImageView, ModelUpdater}
 import javafx.scene.Node
@@ -20,25 +20,27 @@ import javafx.scene.layout.GridPane
   */
 sealed trait EditorBoardView extends BoardView {
 
-  /** Draws the [[LevelBuilder]] received in input.
-    * @param level
-    *   the [[LevelBuilder]] to be drawn
+  /** Draws the [[LevelBuilderState]] received in input.
+    *
+    * @param levelState
+    *   the [[LevelBuilderState]] to be drawn
     */
-  def drawBoard(level: LevelBuilder): Unit
+  def drawLevelState(levelState: LevelBuilderState): Unit
 }
 
 /** Companion object of the [[EditorBoardView]] trait, containing its factory method. */
 object EditorBoardView {
 
   /** Returns a new instance of [[EditorBoardView]]. It receives the screen width and height, necessary to calculate the size of
-    * the board, the [[LevelBuilder]] containing all the necessary information to draw the level, the [[ModelUpdater]] and the
-    * [[EditorUpdater]], necessary to update the model after the player modifies the view.
+    * the board, the [[LevelBuilderState]] containing all the necessary information to draw the level, the [[ModelUpdater]] and
+    * the [[EditorUpdater]], necessary to update the model after the player modifies the view.
+    *
     * @param screenWidth
     *   the width of the screen necessary to calculate the board width
     * @param screenHeight
     *   the height of the screen necessary to calculate the board width
-    * @param level
-    *   the [[LevelBuilder]] to be drawn
+    * @param levelState
+    *   the [[LevelBuilderState]] to be drawn
     * @param model
     *   the [[ModelUpdater]] necessary to update the model after view changes
     * @param updater
@@ -49,41 +51,41 @@ object EditorBoardView {
   def apply(
     screenWidth: Double,
     screenHeight: Double,
-    level: LevelBuilder,
+    levelState: LevelBuilderState,
     model: ModelUpdater,
     updater: EditorUpdater
   ): EditorBoardView =
-    EditorBoardViewImpl(screenWidth, screenHeight, level, model, updater)
+    EditorBoardViewImpl(screenWidth, screenHeight, levelState, model, updater)
 
   /* Extension of AbstractBoardView */
   private case class EditorBoardViewImpl(
     screenWidth: Double,
     screenHeight: Double,
-    initialLevel: LevelBuilder,
+    initialLevelState: LevelBuilderState,
     modelUpdater: ModelUpdater,
     updater: EditorUpdater
   ) extends AbstractBoardView(
       screenWidth,
       screenHeight,
-      initialLevel.dimensions.width,
-      initialLevel.dimensions.height,
+      initialLevelState.dimensions.width,
+      initialLevelState.dimensions.height,
       modelUpdater
     )
     with EditorBoardView {
     private var startPosition = Position(0, 0)
     private var endPosition = Position(0, 0)
 
-    drawBoard(initialLevel)
+    drawLevelState(initialLevel)
 
-    override def drawBoard(level: LevelBuilder): Unit = {
+    override def drawLevelState(levelState: LevelBuilderState): Unit = {
       clearComponents()
       drawPavement(droppablePavement = true)
-      level.playableArea match {
+      levelState.playableArea match {
         case Some(p) =>
           drawPlayableArea(p.position.x, p.position.y, p.dimensions.width, p.dimensions.height, droppablePlayableArea = true)
         case _ => applyHandler(n => enablePlayableAreaSelection(n.asInstanceOf[ImageView]))
       }
-      level.board.foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
+      levelState.board.foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
     }
 
     /** Adds an [[ImageView]] to the editor board, that is a view that can be removed if it was added by the user.
