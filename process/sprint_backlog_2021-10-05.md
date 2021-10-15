@@ -143,25 +143,25 @@ Aggiungere la cellula trash al gioco, aumentare la coverage data dagli unit test
             <td>Aggiungere acceptance test per la pagina principale del menu</td>
             <td>Yuqi Sun</td>
             <td>1</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>1</td>
+            <td>1</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Aggiungere acceptance test per level selection, gioco</td>
             <td>Yuqi Sun</td>
             <td>7</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>7</td>
+            <td>6</td>
+            <td>5</td>
+            <td>4</td>
+            <td>3</td>
+            <td>3</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Aggiungere acceptance test per settings</td>
