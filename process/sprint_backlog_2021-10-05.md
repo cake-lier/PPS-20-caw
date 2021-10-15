@@ -106,37 +106,37 @@ Aggiungere la cellula trash al gioco, aumentare la coverage data dagli unit test
             <td>Aggiungere unit test per tutte le classi del package "common.storage"</td>
             <td>Elena Rughi</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>4</td>
+            <td>4</td>
+            <td>3</td>
+            <td>1</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Espandere gli unit test già scritti per Cell per coprire tutti i metodi mancanti di BaseCell, ripetere per PlayableCell, UpdateCell</td>
             <td>Elena Rughi</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Testare Board, Level, LevelBuilder di editor</td>
             <td>Elena Rughi</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>3</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td rowspan="4">Aggiungere gli acceptance test</td>
