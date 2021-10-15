@@ -38,13 +38,13 @@ object UpdateCell {
       *   a new [[UpdateCell]] with the same properties of this [[BaseCell]] and the given values for the added properties
       */
     def toUpdateCell(id: Int, updated: Boolean): UpdateCell = cell match {
-      case BaseMoverCell(o, p)     => UpdateMoverCell(p, o, id, false)
-      case BaseGeneratorCell(o, p) => UpdateGeneratorCell(p, o, id, updated)
-      case BaseRotatorCell(r, p)   => UpdateRotatorCell(p, r, id, updated)
-      case BaseBlockCell(d, p)     => UpdateBlockCell(p, d, id, updated)
-      case BaseEnemyCell(p)        => UpdateEnemyCell(p, id, updated)
-      case BaseWallCell(p)         => UpdateWallCell(p, id, updated)
-      case BaseDeleterCell(p)      => UpdateDeleterCell(p, id, updated)
+      case BaseMoverCell(o, p)     => UpdateMoverCell(p)(o)(id)(false)
+      case BaseGeneratorCell(o, p) => UpdateGeneratorCell(p)(o)(id)(updated)
+      case BaseRotatorCell(r, p)   => UpdateRotatorCell(p)(r)(id)(updated)
+      case BaseBlockCell(d, p)     => UpdateBlockCell(p)(d)(id)(updated)
+      case BaseEnemyCell(p)        => UpdateEnemyCell(p)(id)(updated)
+      case BaseWallCell(p)         => UpdateWallCell(p)(id)(updated)
+      case BaseDeleterCell(p)      => UpdateDeleterCell(p)(id)(updated)
     }
   }
 
@@ -59,13 +59,13 @@ object UpdateCell {
       *   this [[UpdateCell]] with its [[UpdateCell.updated]] property set to the given value
       */
     def changeUpdatedProperty(updated: Boolean): UpdateCell = cell match {
-      case UpdateRotatorCell(p, r, i, _)   => UpdateRotatorCell(p, r, i, updated)
-      case UpdateGeneratorCell(p, o, i, _) => UpdateGeneratorCell(p, o, i, updated)
-      case UpdateEnemyCell(p, i, _)        => UpdateEnemyCell(p, i, updated)
-      case UpdateMoverCell(p, o, i, _)     => UpdateMoverCell(p, o, i, updated)
-      case UpdateBlockCell(p, d, i, _)     => UpdateBlockCell(p, d, i, updated)
-      case UpdateWallCell(p, i, _)         => UpdateWallCell(p, i, updated)
-      case UpdateDeleterCell(p, i, _)      => UpdateDeleterCell(p, i, updated)
+      case UpdateRotatorCell(p, r, i, _)   => UpdateRotatorCell(p)(r)(i)(updated)
+      case UpdateGeneratorCell(p, o, i, _) => UpdateGeneratorCell(p)(o)(i)(updated)
+      case UpdateEnemyCell(p, i, _)        => UpdateEnemyCell(p)(i)(updated)
+      case UpdateMoverCell(p, o, i, _)     => UpdateMoverCell(p)(o)(i)(updated)
+      case UpdateBlockCell(p, d, i, _)     => UpdateBlockCell(p)(d)(i)(updated)
+      case UpdateWallCell(p, i, _)         => UpdateWallCell(p)(i)(updated)
+      case UpdateDeleterCell(p, i, _)      => UpdateDeleterCell(p)(i)(updated)
     }
 
     /** Returns this [[UpdateCell]] converted to its equivalent [[BaseCell]]. */
@@ -105,7 +105,7 @@ object UpdateRotatorCell {
     * @return
     *   a new instance of [[UpdateRotatorCell]]
     */
-  def apply(position: Position, rotation: Rotation, id: Int, updated: Boolean): UpdateRotatorCell =
+  def apply(position: Position)(rotation: Rotation)(id: Int)(updated: Boolean): UpdateRotatorCell =
     UpdateRotatorCellImpl(position, rotation, id, updated)
 
   /** Extracts the [[Position]], [[Rotation]], "id" and "updated" properties from the given instance of [[UpdateRotatorCell]].
@@ -168,7 +168,7 @@ object UpdateGeneratorCell {
     * @return
     *   a new instance of [[UpdateGeneratorCell]]
     */
-  def apply(position: Position, orientation: Orientation, id: Int, updated: Boolean): UpdateGeneratorCell =
+  def apply(position: Position)(orientation: Orientation)(id: Int)(updated: Boolean): UpdateGeneratorCell =
     UpdateGeneratorCellImpl(position, orientation, id, updated)
 
   /** Extracts the [[Position]], [[Orientation]], "id" and "updated" properties from the given instance of
@@ -230,7 +230,7 @@ object UpdateEnemyCell {
     * @return
     *   a new instance of [[UpdateEnemyCell]]
     */
-  def apply(position: Position, id: Int, updated: Boolean): UpdateEnemyCell =
+  def apply(position: Position)(id: Int)(updated: Boolean): UpdateEnemyCell =
     UpdateEnemyCellImpl(position, id, updated)
 
   /** Extracts the [[Position]], "id" and "updated" properties from the given instance of [[UpdateEnemyCell]].
@@ -290,7 +290,7 @@ object UpdateMoverCell {
     * @return
     *   a new instance of [[UpdateMoverCell]]
     */
-  def apply(position: Position, orientation: Orientation, id: Int, updated: Boolean): UpdateMoverCell =
+  def apply(position: Position)(orientation: Orientation)(id: Int)(updated: Boolean): UpdateMoverCell =
     UpdateMoverCellImpl(position, orientation, id, updated)
 
   /** Extracts the [[Position]], [[Orientation]], "id" and "updated" properties from the given instance of [[UpdateMoverCell]].
@@ -353,7 +353,7 @@ object UpdateBlockCell {
     * @return
     *   a new instance of [[UpdateBlockCell]]
     */
-  def apply(position: Position, push: Push, id: Int, updated: Boolean): UpdateBlockCell =
+  def apply(position: Position)(push: Push)(id: Int)(updated: Boolean): UpdateBlockCell =
     UpdateBlockCellImpl(position, push, id, updated)
 
   /** Extracts the [[Position]], [[Push]] direction, "id" and "updated" properties from the given instance of [[UpdateBlockCell]].
@@ -413,7 +413,7 @@ object UpdateWallCell {
     * @return
     *   a new instance of [[UpdateWallCell]]
     */
-  def apply(position: Position, id: Int, updated: Boolean): UpdateWallCell = UpdateWallCellImpl(position, id, updated)
+  def apply(position: Position)(id: Int)(updated: Boolean): UpdateWallCell = UpdateWallCellImpl(position, id, updated)
 
   /** Extracts the [[Position]], "id" and "updated" properties from the given instance of [[UpdateWallCell]].
     *
@@ -469,7 +469,7 @@ object UpdateDeleterCell {
     * @return
     *   a new instance of [[UpdateDeleterCell]]
     */
-  def apply(position: Position, id: Int, updated: Boolean): UpdateDeleterCell = UpdateDeleterCellImpl(position, id, updated)
+  def apply(position: Position)(id: Int)(updated: Boolean): UpdateDeleterCell = UpdateDeleterCellImpl(position, id, updated)
 
   /** Extracts the [[Position]], "id" and "updated" properties from the given instance of [[UpdateDeleterCell]].
     *

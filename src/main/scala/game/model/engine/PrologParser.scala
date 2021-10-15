@@ -70,24 +70,19 @@ private object PrologParser {
     val updated: Boolean = false // default value, properly set in nextState()
 
     cellType match {
-      case s"mover_$orientation" => UpdateMoverCell(position, Orientation.fromName(orientation).get, cellId, updated)
-      case "enemy"               => UpdateEnemyCell(position, cellId, updated)
-      case "wall"                => UpdateWallCell(position, cellId, updated)
+      case s"mover_$orientation" => UpdateMoverCell(position)(Orientation.fromName(orientation).get)(cellId)(updated)
+      case "enemy"               => UpdateEnemyCell(position)(cellId)(updated)
+      case "wall"                => UpdateWallCell(position)(cellId)(updated)
       case s"block$movement" =>
-        UpdateBlockCell(
-          position,
-          movement match {
-            case "_hor" => Push.Horizontal
-            case "_ver" => Push.Vertical
-            case _      => Push.Both
-          },
-          cellId,
-          updated
-        )
+        UpdateBlockCell(position)(movement match {
+          case "_hor" => Push.Horizontal
+          case "_ver" => Push.Vertical
+          case _      => Push.Both
+        })(cellId)(updated)
       case s"generator_$orientation" =>
-        UpdateGeneratorCell(position, Orientation.fromName(orientation).get, cellId, updated)
-      case s"rotator_$rotation" => UpdateRotatorCell(position, Rotation.fromName(rotation).get, cellId, updated)
-      case "deleter"            => UpdateDeleterCell(position, cellId, updated)
+        UpdateGeneratorCell(position)(Orientation.fromName(orientation).get)(cellId)(updated)
+      case s"rotator_$rotation" => UpdateRotatorCell(position)(Rotation.fromName(rotation).get)(cellId)(updated)
+      case "deleter"            => UpdateDeleterCell(position)(cellId)(updated)
     }
   }
 }
