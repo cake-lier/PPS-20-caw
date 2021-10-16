@@ -7,19 +7,34 @@ import it.unibo.pps.caw.game.model.UpdateCell.toUpdateCell
 
 import scala.annotation.tailrec
 
-/** Engine of game rules */
+/** The rules engine of the game, containing all the necessary logic to apply the game rules to the game.
+  *
+  * It receives the Prolog theory containing all the game rules in its constructor and calculates the subsequent state of a
+  * [[Board]] of cells by applying the correct rule to each ''active'' cell. We define as ''active'' cell the [[GeneratorCell]],
+  * the [[RotatorCell]] and the [[MoverCell]], since these are cells that are capable of changing the state of surrounding cells
+  * by moving, generating or rotating other cells; the other cells, like [[BlockCell]] or [[DeleterCell]], though may affect the
+  * current state of the board, are ''passive'' cells since they are not able to execute their function until a cell is pushed in
+  * their direction, either because it was generated, rotated or moved.
+  */
 sealed trait RulesEngine {
 
-  /** Calculate the next [[Board]] starting from the current [[Board]] and the [[Cell]] to be updated */
+  /** Calculates the next [[Board]] by applying the game rules to the current [[Board]].
+    * @param currentBoard
+    *   the current [[Board]] of [[BaseCell]]
+    * @return
+    *   a new updated [[Board]] of [[BaseCell]]
+    */
   def update(currentBoard: Board[BaseCell]): Board[BaseCell]
 }
 
-/** Companion object for trait [[RulesEngine]] */
+/** Companion object for the trait [[RulesEngine]], containing its factory methods. */
 object RulesEngine {
 
+  /* Default implementation of the RulesEngine trait. */
   private class RulesEngineImpl(theory: String) extends RulesEngine {
     private val engine: PrologEngine = PrologEngine(Clause(theory))
 
+    /* Given the current board, calculates the next state of the board by applying the game rules to the given cell.*/
     private def nextState(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = {
       val cellState: Map[Int, Boolean] = board.map(c => if (c.id == cell.id) (c.id, true) else (c.id, c.updated)).toMap
       val resBoard: Board[UpdateCell] =
@@ -118,11 +133,20 @@ object RulesEngine {
   }
 
   private case class DummyRulesEngine() extends RulesEngine {
-
     override def update(currentBoard: Board[BaseCell]): Board[BaseCell] = currentBoard
   }
 
+  /** Returns an instance of [[RulesEngine]] trait given a Prolog theory.
+    * @param theory
+    *   the Prolog theory in form of string
+    * @return
+    *   an new instance of [[RulesEngine]] that will apply the given theory
+    */
   def apply(theory: String): RulesEngine = RulesEngineImpl(theory)
 
+  /** Returns an instance of [[RulesEngine]] trait with no theory.
+    * @return
+    *   a new instance of [[RulesEngine]] with no theory to apply
+    */
   def apply(): RulesEngine = DummyRulesEngine()
 }
