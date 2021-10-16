@@ -1,7 +1,9 @@
-package it.unibo.pps.caw.menu
+package it.unibo.pps.caw.menu.view
 
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.view.ViewComponent
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.menu.controller.LevelSelectionController
+
 import javafx.scene.control.Button
 
 /** A button on the "level selection" page in the main menu. */

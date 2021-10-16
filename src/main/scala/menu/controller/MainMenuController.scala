@@ -1,8 +1,7 @@
-package it.unibo.pps.caw.menu
+package it.unibo.pps.caw.menu.controller
 
-import it.unibo.pps.caw.editor.controller.ParentLevelEditorMenuController
-import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.storage.Settings
+import it.unibo.pps.caw.menu.view.MainMenuView
 
 /** The parent controller to the [[MainMenuController]].
   *
@@ -49,14 +48,14 @@ trait ParentMainMenuController {
     * @param height
     *   the height of the blank level
     */
-  def startEditor(width: Int, height: Int): Unit
+  def openEditor(width: Int, height: Int): Unit
 
   /** Asks the parent controller to start the level editor with a level loaded from file.
     *
     * @param path
     *   the path to the level file
     */
-  def startEditor(path: String): Unit
+  def openEditor(path: String): Unit
 
   /** Asks the parent controller to show the main menu initial page. */
   def showMainMenu(): Unit
@@ -70,7 +69,7 @@ trait ParentMainMenuController {
   * This controller is responsible for containing all functionalities which are proper to the main menu and that this last one
   * offers. It must be constructed through its companion object.
   */
-trait MainMenuController extends LevelSelectionController with SettingsController with ParentLevelEditorMenuController {
+trait MainMenuController extends LevelSelectionController with SettingsController with EditorMenuController {
 
   /** Returns the number of default [[Level]] available. */
   val levelsCount: Int
@@ -99,6 +98,10 @@ object MainMenuController {
 
     override def solvedLevels: Set[Int] = parentController.settings.solvedLevels
 
+    override def soundVolume: Double = parentController.settings.soundVolume
+
+    override def musicVolume: Double = parentController.settings.musicVolume
+
     override def startGame(levelIndex: Int): Unit = parentController.startGame(levelIndex)
 
     override def startGame(levelPath: String): Unit = parentController.startGame(levelPath)
@@ -110,10 +113,9 @@ object MainMenuController {
     override def saveVolumeSettings(musicVolume: Double, soundVolume: Double): Unit =
       parentController.saveVolumeSettings(musicVolume, soundVolume)
 
-    override def startEditor(width: Int, height: Int): Unit = parentController.startEditor(width, height)
+    override def openEditor(width: Int, height: Int): Unit = parentController.openEditor(width, height)
 
-    override def startEditor(path: String): Unit = parentController.startEditor(path)
-
+    override def openEditor(path: String): Unit = parentController.openEditor(path)
   }
 
   /** Returns a new instance of the [[MainMenuController]] trait. It must receive the [[ParentMainMenuController]], which it

@@ -20,7 +20,7 @@ import scala.util.Using
 trait ParentGameController {
 
   /** Asks the parent controller to provide its instance of [[FileStorage]]. */
-  def getFileStorage(): FileStorage
+  val fileStorage: FileStorage
 
   /** Asks the parent controller to go back to the previous state of the application. */
   def closeGame(): Unit
@@ -94,12 +94,22 @@ object GameController {
     parentController: ParentGameController,
     view: GameView
   ) extends GameController {
-    protected val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-    protected var updatesHandler: Option[ScheduledFuture[?]] = None
-    protected val rulesEngine: RulesEngine = createRulesEngine()
+    private val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+    private var updatesHandler: Option[ScheduledFuture[?]] = None
+
+    /* Creates a new GameModel to be used by this GameController given the needed RulesEngine. */
     protected def createModel(rulesEngine: RulesEngine): GameModel
 
-    protected var model: GameModel = createModel(rulesEngine)
+    protected var model: GameModel = createModel(
+      parentController
+        .fileStorage
+        .loadResource(path = "cellmachine.pl")
+        .map(RulesEngine(_))
+        .getOrElse({
+          view.showError(message = "Impossible to load rules file")
+          RulesEngine()
+        })
+    )
 
     view.drawLevel(model.state.levelInitialState, model.state.isCurrentLevelCompleted)
 
@@ -144,23 +154,13 @@ object GameController {
 
     override def moveCell(oldPosition: Position)(newPosition: Position): Unit =
       model = model.moveCell(oldPosition)(newPosition)
-
-    private def createRulesEngine(): RulesEngine =
-      parentController
-        .getFileStorage()
-        .loadResource("cellmachine.pl")
-        .map(RulesEngine(_))
-        .getOrElse({
-          view.showError("Impossible to load rules file")
-          RulesEngine()
-        })
   }
 
   /* Extension of the AbstractGameController class for playing a generic level. */
   private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level[BaseCell])
     extends AbstractGameController(parentController, view) {
 
-    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine, initialLevel)
+    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine)(initialLevel)
   }
 
   /* Extension of the AbstractGameController class for playing the default levels. */
@@ -171,7 +171,7 @@ object GameController {
     initialIndex: Int
   ) extends AbstractGameController(parentController, view) {
 
-    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine, levels, initialIndex)
+    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine)(levels, initialIndex)
 
     override def step(): Unit = {
       super.step()

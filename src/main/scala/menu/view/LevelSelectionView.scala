@@ -1,10 +1,11 @@
-package it.unibo.pps.caw.menu
+package it.unibo.pps.caw.menu.view
 
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.view.ViewComponent
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.menu.controller.LevelSelectionController
+
 import javafx.fxml.FXML
-import javafx.scene.control.{ScrollPane, Button}
+import javafx.scene.control.{Button, ScrollPane}
 import javafx.scene.image.ImageView
 import javafx.scene.layout.{GridPane, Pane, RowConstraints}
 import scalafx.scene.Scene

@@ -1,12 +1,13 @@
-package it.unibo.pps.caw.menu
+package it.unibo.pps.caw.menu.view
 
 import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
 import it.unibo.pps.caw.common.view.ViewComponent
+import it.unibo.pps.caw.menu.controller.SettingsController
 import javafx.fxml.FXML
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
-import javafx.scene.control.{Slider, Button}
+import javafx.scene.control.{Button, Slider}
 
 /** The "settings" page on the main menu.
   *
@@ -48,21 +49,26 @@ object SettingsView {
 
     override val innerComponent: Pane = loader.load[GridPane]
 
+    private var volumes: Map[AudioType, Double] =
+      Map(AudioType.Music -> controller.musicVolume, AudioType.Sound -> controller.soundVolume)
+
     setupSlider(musicVolumeSlider, AudioType.Music)
     setupSlider(effectsVolumeSlider, AudioType.Sound)
     backFromSettingsButton.setOnMouseClicked(_ => {
-      controller.saveVolumeSettings(audioPlayer.getVolume(AudioType.Music), audioPlayer.getVolume(AudioType.Sound))
+      controller.saveVolumeSettings(volumes(AudioType.Music), volumes(AudioType.Sound))
       controller.goBack()
     })
 
+    /* Performs the setup of a generic slider given the type of audio which is related to. */
     private def setupSlider(slider: Slider, audioType: AudioType): Unit = {
-      slider.setValue(audioPlayer.getVolume(audioType) * slider.getMax)
+      slider.setValue(volumes(audioType) * slider.getMax)
       slider
         .valueProperty()
         .addListener((_, _, v) => {
           val roundedValue = Math.floor(v.doubleValue / slider.getBlockIncrement) * slider.getBlockIncrement
           slider.valueProperty.set(roundedValue)
           audioPlayer.setVolume(roundedValue / slider.getMax, audioType)
+          volumes += (audioType -> roundedValue / slider.getMax)
         })
     }
   }

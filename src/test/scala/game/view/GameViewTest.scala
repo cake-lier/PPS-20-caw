@@ -2,9 +2,10 @@ package it.unibo.pps.caw.game.view
 
 import it.unibo.pps.caw.common.model.Position
 import it.unibo.pps.caw.common.view.*
-import it.unibo.pps.caw.app.{ViewTest, TestApplicationView}
+import it.unibo.pps.caw.app.{TestApplicationView, ViewTest}
+import it.unibo.pps.caw.menu.view.LevelSelectionView
 import javafx.scene.control.Button
-import javafx.scene.image.{ImageView, Image}
+import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
 import javafx.scene.Scene
@@ -19,7 +20,7 @@ import org.testfx.util.WaitForAsyncUtils
 import java.util.concurrent.TimeUnit
 import scala.jdk.CollectionConverters.given
 
-/** Test for [[it.unibo.pps.caw.menu.LevelSelectionView]] and [[it.unibo.pps.caw.game.view.GameView]] */
+/** Test for [[LevelSelectionView]] and [[it.unibo.pps.caw.game.view.GameView]] */
 class GameViewTest extends ViewTest {
 
   protected var stageWidth: Double = 0.0

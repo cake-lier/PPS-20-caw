@@ -1,13 +1,14 @@
 package it.unibo.pps.caw.view
 
-import it.unibo.pps.caw.app.{ViewTest, TestApplicationView}
+import it.unibo.pps.caw.app.{TestApplicationView, ViewTest}
+import it.unibo.pps.caw.menu.view.MainMenuView
 import javafx.stage.Stage
 import org.junit.jupiter.api.Test
 import org.scalatest.DoNotDiscover
 import org.testfx.api.{FxRobot, FxToolkit}
 import org.testfx.framework.junit5.{Start, Stop}
 
-/** Test for [[it.unibo.pps.caw.menu.MainMenuView]] */
+/** Test for [[MainMenuView]] */
 class MainMenuTest extends ViewTest {
 
   @Start

@@ -33,7 +33,7 @@ sealed trait GameModel {
     * @return
     *   an updated instance of [[GameModel]] where the [[Cell]] has been moved, if possible
     */
-  def moveCell(currentPosition: Position)(nextPosition: Position): GameModel
+  def moveCell(currentPosition: => Position)(nextPosition: => Position): GameModel
 
   /** Updates the current state of the game, obtaining its next one.
     *
@@ -144,7 +144,7 @@ object GameModel {
 
     override def nextLevel: GameModel =
       if (state.hasNextLevel && state.isCurrentLevelCompleted)
-        GameModel(rulesEngine, levels, state.currentLevelIndex + 1)
+        GameModel(rulesEngine)(levels, state.currentLevelIndex + 1)
       else
         this
 
@@ -163,15 +163,16 @@ object GameModel {
         initialBoard
       )
 
-    override def moveCell(currentPosition: Position)(nextPosition: Position): GameModel =
+    override def moveCell(currentPosition: => Position)(nextPosition: => Position): GameModel =
       if (
         !isSetupCompleted &&
         isPositionInsidePlayableArea(nextPosition)(state.levelCurrentState.playableArea)
-      )
-        (currentBoard.find(_.position == nextPosition), currentBoard.find(_.position == currentPosition)) match {
+      ) {
+        lazy val current: Position = currentPosition
+        (currentBoard.find(_.position == nextPosition), currentBoard.find(_.position == current)) match {
           case (None, Some(c)) => {
             val newBoard: Board[BaseCell] =
-              currentBoard.filter(_.position != currentPosition) + c.changePositionProperty(_ => nextPosition)
+              currentBoard.filter(_.position != current) + c.changePositionProperty(_ => nextPosition)
             GameModelImpl(
               rulesEngine,
               state.copy(
@@ -192,8 +193,9 @@ object GameModel {
           }
           case _ => this
         }
-      else
+      } else {
         this
+      }
   }
 
   /** Returns a new instance of the [[GameModel]] trait to be used when playing a game with the default [[Level]]. For creating a
@@ -208,7 +210,7 @@ object GameModel {
     * @return
     *   a new [[GameModel]] instance
     */
-  def apply(rulesEngine: RulesEngine, levels: Seq[Level[BaseCell]], initialIndex: Int): GameModel = {
+  def apply(rulesEngine: RulesEngine)(levels: Seq[Level[BaseCell]], initialIndex: Int): GameModel = {
     val boardWithCorners: Board[BaseCell] =
       levels(initialIndex - 1)
         .board
@@ -247,5 +249,5 @@ object GameModel {
     * @return
     *   a new [[GameModel]] instance
     */
-  def apply(rulesEngine: RulesEngine, level: Level[BaseCell]): GameModel = GameModel(rulesEngine, Seq(level), 1)
+  def apply(rulesEngine: RulesEngine)(level: Level[BaseCell]): GameModel = GameModel(rulesEngine)(Seq(level), 1)
 }

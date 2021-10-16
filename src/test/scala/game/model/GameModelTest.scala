@@ -19,8 +19,8 @@ class GameModelTest extends AnyFunSpec with Matchers {
   private val rulesEngine: RulesEngine = RulesEngine(loadFile("cellmachine.pl"))
   private val level1: Level[BaseCell] = levelParser.deserializeLevel(loadFile("level01.json")).get
   private val level2: Level[BaseCell] = levelParser.deserializeLevel(loadFile("level02.json")).get
-  private val gameModelSingleLevel: GameModel = GameModel(rulesEngine, level1)
-  private val gameModelMultipleLevels: GameModel = GameModel(rulesEngine, Seq(level1, level2), 1)
+  private val gameModelSingleLevel: GameModel = GameModel(rulesEngine)(level1)
+  private val gameModelMultipleLevels: GameModel = GameModel(rulesEngine)(Seq(level1, level2), 1)
 
   describe("The game model") {
     describe("when first created") {
@@ -72,14 +72,16 @@ class GameModelTest extends AnyFunSpec with Matchers {
         it("With single levels, should return a new gameModel but the board is not updated") {
           assume(gameModelSingleLevel.state.levelCurrentState.board.cells.find(_.position == Position(7, 4)).isDefined)
           gameModelSingleLevel.moveCell((2, 2))((7, 4)).state.levelCurrentState shouldBe GameModel(
-            rulesEngine,
+            rulesEngine
+          )(
             level1
           ).state.levelCurrentState
         }
         it("With multiple levels, should do nothing") {
           assume(gameModelMultipleLevels.state.levelCurrentState.board.cells.find(_.position == Position(7, 4)).isDefined)
           gameModelMultipleLevels.moveCell((2, 2))((7, 4)).state.levelCurrentState shouldBe GameModel(
-            rulesEngine,
+            rulesEngine
+          )(
             level1
           ).state.levelCurrentState
         }

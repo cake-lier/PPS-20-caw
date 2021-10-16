@@ -6,7 +6,7 @@ import it.unibo.pps.caw.common.model.{Board, Dimensions, PlayableArea, Position}
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
-/** Tests for the [[LevelEditorModel]] trait */
+/** Tests for the [[EditorModel]] trait */
 class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private val dimensions: Dimensions = (20, 20)
   private val playableAreaDimensions: Dimensions = (5, 5)
@@ -19,55 +19,55 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private val enemy3: BaseEnemyCell = BaseEnemyCell((3, 3))
   private val playableEnemy3: PlayableEnemyCell = PlayableEnemyCell((3, 3))(true)
 
-  describe("LevelEditorModel") {
+  describe("EditorModel") {
     describe("when new") {
       it("should contain an empty LevelBuilderState") {
-        LevelEditorModel(dimensions.width, dimensions.height).currentState shouldBe emptyLevel
+        EditorModel(dimensions.width, dimensions.height).currentState shouldBe emptyLevel
       }
     }
     describe("when resetted") {
       it("should return another instance of itself") {
-        LevelEditorModel(dimensions.width, dimensions.height).resetLevel should not equals
-          LevelEditorModel(dimensions.width, dimensions.height)
+        EditorModel(dimensions.width, dimensions.height).resetLevel should not equals
+          EditorModel(dimensions.width, dimensions.height)
       }
       it("should contain an empty LevelBuilderState") {
-        LevelEditorModel(dimensions.width, dimensions.height).resetLevel.currentState shouldBe emptyLevel
+        EditorModel(dimensions.width, dimensions.height).resetLevel.currentState shouldBe emptyLevel
       }
     }
     describe("when a cell is set") {
       it("should return another instance of itself") {
-        LevelEditorModel(dimensions.width, dimensions.height).setCell(enemy1) should not equals
-          LevelEditorModel(dimensions.width, dimensions.height)
+        EditorModel(dimensions.width, dimensions.height).addCell(enemy1) should not equals
+          EditorModel(dimensions.width, dimensions.height)
       }
       it("should update the LevelBuilderState") {
-        LevelEditorModel(dimensions.width, dimensions.height).setCell(enemy1).currentState shouldBe
+        EditorModel(dimensions.width, dimensions.height).addCell(enemy1).currentState shouldBe
           createLevelWithWalls(cells = Board(playableEnemy1))
       }
     }
     describe("when a cell is removed") {
       it("should return another instance of itself") {
-        LevelEditorModel(dimensions.width, dimensions.height)
-          .setCell(enemy1)
-          .unsetCell(enemy1.position) should not equals LevelEditorModel(dimensions.width, dimensions.height)
+        EditorModel(dimensions.width, dimensions.height)
+          .addCell(enemy1)
+          .removeCell(enemy1.position) should not equals EditorModel(dimensions.width, dimensions.height)
       }
       it("should update the LevelBuilderState") {
-        LevelEditorModel(dimensions.width, dimensions.height)
-          .setCell(enemy1)
-          .setCell(enemy2)
-          .setCell(enemy3)
-          .unsetCell(enemy1.position)
+        EditorModel(dimensions.width, dimensions.height)
+          .addCell(enemy1)
+          .addCell(enemy2)
+          .addCell(enemy3)
+          .removeCell(enemy1.position)
           .currentState shouldBe createLevelWithWalls(cells = Board(playableEnemy2, playableEnemy3))
       }
     }
     describe("when a PlayableArea is set") {
       it("should return another instance of itself") {
-        LevelEditorModel(dimensions.width, dimensions.height)
-          .setPlayableArea(playableAreaPosition, playableAreaDimensions) should not equals
-          LevelEditorModel(dimensions.width, dimensions.height)
+        EditorModel(dimensions.width, dimensions.height)
+          .addPlayableArea(playableAreaPosition, playableAreaDimensions) should not equals
+          EditorModel(dimensions.width, dimensions.height)
       }
       it("should update the LevelBuilderState") {
-        LevelEditorModel(dimensions.width, dimensions.height)
-          .setPlayableArea(playableAreaPosition, playableAreaDimensions)
+        EditorModel(dimensions.width, dimensions.height)
+          .addPlayableArea(playableAreaPosition, playableAreaDimensions)
           .currentState shouldBe
           createLevelWithWalls(
             playableArea = Some(PlayableArea(playableAreaDimensions)(playableAreaPosition)),
@@ -77,11 +77,11 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
     }
     describe("when a PlayableArea is removed") {
       it("should return another instance of itself") {
-        LevelEditorModel(dimensions.width, dimensions.height).unsetPlayableArea should not equals
-          LevelEditorModel(dimensions.width, dimensions.height)
+        EditorModel(dimensions.width, dimensions.height).removePlayableArea should not equals
+          EditorModel(dimensions.width, dimensions.height)
       }
       it("should update the LevelBuilderState") {
-        LevelEditorModel(dimensions.width, dimensions.height).unsetPlayableArea.currentState shouldBe
+        EditorModel(dimensions.width, dimensions.height).removePlayableArea.currentState shouldBe
           createLevelWithWalls()
       }
     }

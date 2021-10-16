@@ -7,7 +7,7 @@ import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
 import it.unibo.pps.caw.common.view.StageResizer
 import it.unibo.pps.caw.common.view.sounds.AudioPlayer
 import it.unibo.pps.caw.editor.view.EditorView
-import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
+import it.unibo.pps.caw.editor.controller.ParentEditorController
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.FlowPane
 import scalafx.application.JFXApp3
@@ -41,7 +41,7 @@ object DSLEditorMain extends JFXApp3 {
         _ => editorScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
         l => {
           editorScene.root.value = EditorView(
-            new ParentLevelEditorController {
+            new ParentEditorController {
 
               override def closeEditor(): Unit = sys.exit()
 
@@ -49,7 +49,7 @@ object DSLEditorMain extends JFXApp3 {
             },
             editorScene,
             backButtonText = "Close",
-            AudioPlayer(),
+            AudioPlayer(musicVolume = 0.5, soundsVolume = 0.5),
             l
           )
         }

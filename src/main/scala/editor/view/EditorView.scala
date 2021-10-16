@@ -6,7 +6,7 @@ import it.unibo.pps.caw.common.view.CellImage.*
 import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
 import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView, FilePicker, ModelUpdater, ViewComponent}
-import it.unibo.pps.caw.editor.controller.{EditorController, ParentLevelEditorController}
+import it.unibo.pps.caw.editor.controller.{EditorController, ParentEditorController}
 import it.unibo.pps.caw.editor.model.LevelBuilderState
 import javafx.application.Platform
 import javafx.event.EventHandler
@@ -145,10 +145,10 @@ abstract class AbstractEditorView(
     if (boardView.get.getChildren.contains(cellImage))
       controller.updateCellPosition(Position(GridPane.getColumnIndex(cellImage), GridPane.getRowIndex(cellImage)), newPosition)
     else
-      controller.setCell(getSetupCell(cellImage.getImage, newPosition))
+      controller.addCell(getSetupCell(cellImage.getImage, newPosition))
 
   override def createPlayableArea(topLeft: Position, downRight: Position): Unit =
-    controller.setPlayableArea(topLeft, (downRight.x - topLeft.x + 1, downRight.y - topLeft.y + 1))
+    controller.addPlayableArea(topLeft, (downRight.x - topLeft.x + 1, downRight.y - topLeft.y + 1))
 
   override def removeCell(position: Position): Unit = controller.removeCell(position)
 
@@ -235,7 +235,7 @@ object EditorView {
 
   /* Concrete implementation of an EditorView displaying an empty level. */
   private final class EmptyEditorViewImpl(
-    parentLevelEditorController: ParentLevelEditorController,
+    parentLevelEditorController: ParentEditorController,
     scene: Scene,
     backButtonText: String,
     audioPlayer: AudioPlayer,
@@ -249,7 +249,7 @@ object EditorView {
 
   /* Concrete implementation of an EditorView displaying an existing level. */
   private final class LevelEditorViewImpl(
-    parentLevelEditorController: ParentLevelEditorController,
+    parentLevelEditorController: ParentEditorController,
     scene: Scene,
     backButtonText: String,
     audioPlayer: AudioPlayer,
@@ -260,9 +260,9 @@ object EditorView {
       EditorController(parentLevelEditorController, this, level)
   }
 
-  /** Returns a new instance of [[EditorView]]. It receives the [[ParentLevelEditorController]] so as to be able to correctly
-    * create and then use its [[EditorController]], the ScalaFX [[Scene]] where the [[EditorView]] will draw and display itself,
-    * the text that the upper left button will display, depending if the [[EditorView]] was called from the menu or as a its own
+  /** Returns a new instance of [[EditorView]]. It receives the [[ParentEditorController]] so as to be able to correctly create
+    * and then use its [[EditorController]], the ScalaFX [[Scene]] where the [[EditorView]] will draw and display itself, the text
+    * that the upper left button will display, depending if the [[EditorView]] was called from the menu or as a its own
     * application and the [[AudioPlayer]] to be used for playing sounds and music for the editor.
     *
     * @param parentLevelEditorController
@@ -279,7 +279,7 @@ object EditorView {
     *   a new instance of [[EditorView]] displaying an existing level to be edited by the user
     */
   def apply(
-    parentLevelEditorController: ParentLevelEditorController,
+    parentLevelEditorController: ParentEditorController,
     scene: Scene,
     backButtonText: String,
     audioPlayer: AudioPlayer,
@@ -293,9 +293,9 @@ object EditorView {
       level
     )
 
-  /** Returns a new instance of [[EditorView]]. It receives the [[ParentLevelEditorController]] so as to be able to correctly
-    * create and then use its [[EditorController]], the ScalaFX [[Scene]] where the [[EditorView]] will draw and display itself,
-    * the text that the upper left button will display, depending if the [[EditorView]] was called from the menu or as a its own
+  /** Returns a new instance of [[EditorView]]. It receives the [[ParentEditorController]] so as to be able to correctly create
+    * and then use its [[EditorController]], the ScalaFX [[Scene]] where the [[EditorView]] will draw and display itself, the text
+    * that the upper left button will display, depending if the [[EditorView]] was called from the menu or as a its own
     * application and the [[AudioPlayer]] to be used for playing sounds and music for the editor.
     *
     * @param parentLevelEditorController
@@ -314,7 +314,7 @@ object EditorView {
     *   a new instance of [[EditorView]] displaying an new empty level with the given widht and height
     */
   def apply(
-    parentLevelEditorController: ParentLevelEditorController,
+    parentLevelEditorController: ParentEditorController,
     scene: Scene,
     backButtonText: String,
     audioPlayer: AudioPlayer,

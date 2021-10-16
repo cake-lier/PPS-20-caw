@@ -8,7 +8,7 @@ import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.editor.view.EditorView
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.menu.MainMenuView
+import it.unibo.pps.caw.menu.view.MainMenuView
 import javafx.application.Platform
 import javafx.scene.layout.Pane
 import javafx.stage.{Screen, Stage}

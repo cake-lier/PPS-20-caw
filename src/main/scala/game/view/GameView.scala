@@ -43,18 +43,16 @@ trait GameView extends ViewComponent[GridPane] {
   /** Displays the update to the currently displayed [[Level]], without resetting the component displaying it. This means that
     * this method is not to be called when there is a change between [[Level]], but only during steps over the same [[Level]].
     *
-    * @param level
+    * @param update
     *   the [[Level]] containing the update
-    * @param currentBoard
-    *   the current [[Board]] to display
-    * @param didEnemyExplode
+    * @param didEnemyDie
     *   whether or not an enemy exploded after this update
     * @param isCompleted
     *   whether or not this [[Level]] has been completed
     */
   def drawLevelUpdate(
     update: Level[PlayableCell],
-    didEnemyExplode: Boolean,
+    didEnemyDie: Boolean,
     isCompleted: Boolean
   ): Unit
 
@@ -95,11 +93,15 @@ object GameView {
     var backToMenuButton: Button = _
     @FXML
     var nextButton: Button = _
+
     override val innerComponent: GridPane = loader.load[GridPane]
+
     private val controller: GameController = createController()
     private var boardView: Option[GameBoardView] = None
+
     audioPlayer.play(Track.GameMusic)
 
+    /* Resets the "play" and "step" buttons. */
     private def resetButtons(): Unit = {
       playSimulationButton.setText("Play")
       playSimulationButton.setOnMouseClicked(startSimulationHandler)
@@ -107,17 +109,18 @@ object GameView {
       stepSimulationButton.setDisable(false)
     }
 
-    var startSimulationHandler: EventHandler[MouseEvent] = _ => {
+    private var startSimulationHandler: EventHandler[MouseEvent] = _ => {
       controller.startUpdates()
       playSimulationButton.setText("Pause")
       playSimulationButton.setOnMouseClicked(endSimulationHandler)
       stepSimulationButton.setDisable(true)
       resetButton.setVisible(true)
     }
-    var endSimulationHandler: EventHandler[MouseEvent] = _ => {
+    private var endSimulationHandler: EventHandler[MouseEvent] = _ => {
       controller.pauseUpdates()
       resetButtons()
     }
+
     resetButton.setOnMouseClicked(_ => {
       controller.resetLevel()
       resetButton.setVisible(false)
@@ -137,20 +140,21 @@ object GameView {
       resetButtons()
     })
 
+    /* Creates the GameController to be used by this GameView instance. */
     protected def createController(): GameController
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.ERROR, message))
 
     override def drawLevelUpdate(
       update: Level[PlayableCell],
-      didEnemyExplode: Boolean,
+      didEnemyDie: Boolean,
       isCompleted: Boolean
     ): Unit =
       Platform.runLater(() =>
         boardView.foreach(b => {
           b.drawGameBoard(update.board)
           audioPlayer.play(Track.Step)
-          if (didEnemyExplode) {
+          if (didEnemyDie) {
             audioPlayer.play(Track.Explosion)
           }
           if (isCompleted) {

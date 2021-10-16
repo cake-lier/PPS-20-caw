@@ -1,12 +1,12 @@
 package it.unibo.pps.caw.app
 
-import it.unibo.pps.caw.menu.MainMenuView
 import it.unibo.pps.caw.editor.view.EditorView
 import it.unibo.pps.caw.game.view.GameView
 import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
 import it.unibo.pps.caw.common.view.{StageResizer, ViewComponent}
+import it.unibo.pps.caw.menu.view.MainMenuView
 import javafx.application.Platform
 import javafx.scene.layout.Pane
 import scalafx.scene.control.Alert
@@ -77,9 +77,9 @@ object ApplicationView {
   /* Default implementation of the ApplicationView trait. */
   private class ApplicationViewImpl(stage: PrimaryStage) extends ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
-    private val audioPlayer: AudioPlayer = AudioPlayer()
+    private val audioPlayer: AudioPlayer = AudioPlayer(controller.settings.musicVolume, controller.settings.soundVolume)
     StageResizer.resize(stage)
-    private val scene: Scene = Scene(stage.getWidth, stage.getHeight)
+    private val scene: Scene = Scene(stage.width.value, stage.height.value)
 
     stage.resizable = false
     stage.maximized = false
@@ -94,23 +94,26 @@ object ApplicationView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: Level[BaseCell]): Unit = show(
-      GameView(controller, audioPlayer, level, scene, backButtonText = "Menu")
-    )
+    override def showGame(level: Level[BaseCell]): Unit =
+      Platform.runLater(() => scene.root.value = GameView(controller, audioPlayer, level, scene, backButtonText = "Menu"))
 
     override def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit =
-      show(GameView(controller, audioPlayer, levels, levelIndex, scene, backButtonText = "Menu"))
+      Platform.runLater(() =>
+        scene.root.value = GameView(controller, audioPlayer, levels, levelIndex, scene, backButtonText = "Menu")
+      )
 
     override def showMainMenu(): Unit =
-      show(MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0))
+      Platform.runLater(() =>
+        scene.root.value = MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
+      )
 
     override def showLevelEditor(width: Int, height: Int): Unit =
-      show(EditorView(controller, scene, backButtonText = "Menu", audioPlayer, width, height))
+      Platform.runLater(() =>
+        scene.root.value = EditorView(controller, scene, backButtonText = "Menu", audioPlayer, width, height)
+      )
 
     override def showLevelEditor(level: Level[BaseCell]): Unit =
-      show(EditorView(controller, scene, backButtonText = "Menu", audioPlayer, level))
-
-    private def show(view: ViewComponent[? <: Pane]) = Platform.runLater(() => scene.root.value = view)
+      Platform.runLater(() => scene.root.value = EditorView(controller, scene, backButtonText = "Menu", audioPlayer, level))
   }
 
   /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX'state [[PrimaryStage]] for creating a view for

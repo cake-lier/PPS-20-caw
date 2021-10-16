@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.menu
+package it.unibo.pps.caw.menu.controller
 
 /** The controller to be used by the level selection page in the main menu.
   *

@@ -8,7 +8,11 @@ import java.io.File
 import java.nio.file.{Files, Path, Paths}
 import scala.util.Try
 
-/** Represents the storage of [[Level]] files to disk: it allows to load and save level files. */
+/** Represents the storage of [[Level]] files to disk.
+  *
+  * This component allows to load from and save to disk files containing game levels. This means that not only it retrieve or
+  * store them on disk, but it also performs the serialization operation. It must be constructed through its companion object.
+  */
 trait LevelStorage {
 
   /** Deserializes the file associated to the given [[Path]] producing a [[Level]] object which represents the [[Level]] contained
@@ -33,20 +37,31 @@ trait LevelStorage {
   def saveLevel(path: String, level: Level[BaseCell]): Try[Unit]
 }
 
-/** Companion object to the [[LevelStorage]] trait */
+/** Companion object to the [[LevelStorage]] trait, containing its factory method. */
 object LevelStorage {
 
+  /* Default implementation of the LevelStorage trait. */
   private class LevelStorageImpl(fileStorage: FileStorage, levelParser: LevelParser) extends LevelStorage {
-    def loadLevel(path: String): Try[Level[BaseCell]] =
+
+    override def loadLevel(path: String): Try[Level[BaseCell]] =
       for {
         f <- fileStorage.loadFile(path)
         l <- levelParser.deserializeLevel(f)
       } yield l
 
-    def saveLevel(path: String, level: Level[BaseCell]): Try[Unit] =
+    override def saveLevel(path: String, level: Level[BaseCell]): Try[Unit] =
       fileStorage.writeFile(path, levelParser.serializeLevel(level))
   }
 
-  /** Returns a new instance of the [[LevelStorage]] trait. */
+  /** Returns a new instance of the [[LevelStorage]] trait given the [[FileStorage]] from which retrieving and storing the files
+    * on disk and the [[LevelParser]] to be used for serializing and deserializing the contents of those files.
+    *
+    * @param fileStorage
+    *   the storage to be used for retrieving or storing files on disk
+    * @param levelParser
+    *   the parser to be used for serializing or deserializing the contents of the files
+    * @return
+    *   a new [[LevelStorage]] instance
+    */
   def apply(fileStorage: FileStorage, levelParser: LevelParser): LevelStorage = LevelStorageImpl(fileStorage, levelParser)
 }

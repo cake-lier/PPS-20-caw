@@ -12,7 +12,7 @@ import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
   * they can add a game cell in whichever position they want, move it from a position to another or remove it. It must be
   * constructed through its companion object.
   */
-sealed trait LevelEditorModel {
+sealed trait EditorModel {
 
   /** The [[LevelBuilderState]] of the editor. */
   val currentState: LevelBuilderState
@@ -21,59 +21,65 @@ sealed trait LevelEditorModel {
   val builtLevel: Option[Level[BaseCell]]
 
   /** Resets the level, removing the playable area and all the cells.
+    *
     * @return
-    *   a new instance of empty [[LevelEditorModel]]
+    *   a new instance of empty [[EditorModel]]
     */
-  def resetLevel: LevelEditorModel
+  def resetLevel: EditorModel
 
   /** Adds the given cell to the model.
+    *
     * @param cell
     *   the [[BaseCell]] to be added
     * @return
-    *   a new instance of [[LevelEditorModel]] with the added cell
+    *   a new instance of [[EditorModel]] with the added cell
     */
-  def setCell(cell: BaseCell): LevelEditorModel
+  def addCell(cell: BaseCell): EditorModel
 
   /** Moves a cell given its previous [[Position]] and the new [[Position]] in which was moved.
+    *
     * @param oldPosition
     *   the [[Position]] of the [[Cell]] that was moved
     * @param newPosition
     *   the new [[Position]] of the [[Cell]]
     * @return
-    *   a new instance of [[LevelEditorModel]] with the [[Cell]] moved to its new [[Position]]
+    *   a new instance of [[EditorModel]] with the [[Cell]] moved to its new [[Position]]
     */
-  def updateCellPosition(oldPosition: Position, newPosition: Position): LevelEditorModel
+  def updateCellPosition(oldPosition: Position, newPosition: Position): EditorModel
 
   /** Removes the cell in the given [[Position]].
+    *
     * @param position
     *   the [[Position]] of the [[Cell]] that has to be removed
     * @return
-    *   a new instance of [[LevelEditorModel]] with the [[Cell]] removed
+    *   a new instance of [[EditorModel]] with the [[Cell]] removed
     */
-  def unsetCell(position: Position): LevelEditorModel
+  def removeCell(position: Position): EditorModel
 
   /** Places a [[PlayableArea]] in the given [[Position]] with the given [[Dimensions]].
+    *
     * @param position
     *   the upper left corner [[Position]] of the [[PlayableArea]]
     * @param dimensions
     *   the [[Dimensions]] of the [[PlayableArea]]
     * @return
-    *   a new instance of [[LevelEditorModel]] containing a new [[PlayableArea]]
+    *   a new instance of [[EditorModel]] containing a new [[PlayableArea]]
     */
-  def setPlayableArea(position: Position, dimensions: Dimensions): LevelEditorModel
+  def addPlayableArea(position: Position, dimensions: Dimensions): EditorModel
 
   /** Removes the [[PlayableArea]] from the level.
+    *
     * @return
-    *   a new instance of [[LevelEditorModel]] with the [[PlayableArea]] removed
+    *   a new instance of [[EditorModel]] with the [[PlayableArea]] removed
     */
-  def unsetPlayableArea: LevelEditorModel
+  def removePlayableArea: EditorModel
 }
 
-/** The companion object of the trait [[LevelEditorModel]], containing its factory methods. */
-object LevelEditorModel {
+/** The companion object of the trait [[EditorModel]], containing its factory methods. */
+object EditorModel {
 
-  /* Implementation of LevelEditorModel. */
-  private case class LevelEditorModelImpl(currentState: LevelBuilderState) extends LevelEditorModel {
+  /* Implementation of EditorModel. */
+  private case class LevelEditorModelImpl(currentState: LevelBuilderState) extends EditorModel {
 
     override val builtLevel: Option[Level[BaseCell]] =
       currentState
@@ -86,11 +92,11 @@ object LevelEditorModel {
           )
         )
 
-    override def resetLevel: LevelEditorModel =
+    override def resetLevel: EditorModel =
       //-2 because addCornerWalls adds 2 in each dimension
-      LevelEditorModel(currentState.dimensions.width - 2, currentState.dimensions.height - 2)
+      EditorModel(currentState.dimensions.width - 2, currentState.dimensions.height - 2)
 
-    override def updateCellPosition(oldPosition: Position, newPosition: Position): LevelEditorModel =
+    override def updateCellPosition(oldPosition: Position, newPosition: Position): EditorModel =
       (currentState.board.find(_.position == newPosition), currentState.board.find(_.position == oldPosition)) match {
         case (None, Some(c)) =>
           LevelEditorModelImpl(
@@ -101,16 +107,16 @@ object LevelEditorModel {
         case _ => this
       }
 
-    override def setCell(cell: BaseCell): LevelEditorModel =
+    override def addCell(cell: BaseCell): EditorModel =
       LevelEditorModelImpl(currentState.copy(board = currentState.board + cell.toPlayableCell(_ => true)))
 
-    override def unsetCell(position: Position): LevelEditorModel =
+    override def removeCell(position: Position): EditorModel =
       LevelEditorModelImpl(currentState.copy(board = currentState.board.filter(_.position != position)))
 
-    override def setPlayableArea(position: Position, dimensions: Dimensions): LevelEditorModel =
+    override def addPlayableArea(position: Position, dimensions: Dimensions): EditorModel =
       LevelEditorModelImpl(currentState.copy(playableArea = Some(PlayableArea(dimensions)(position))))
 
-    override def unsetPlayableArea: LevelEditorModel = LevelEditorModelImpl(currentState.copy(playableArea = None))
+    override def removePlayableArea: EditorModel = LevelEditorModelImpl(currentState.copy(playableArea = None))
   }
 
   private def addCornerWalls(levelBuilder: LevelBuilderState): LevelBuilderState = {
@@ -132,13 +138,14 @@ object LevelEditorModel {
       )
   }
 
-  /** Returns a new instance of [[LevelEditorModel]] when editing an already existing level.
+  /** Returns a new instance of [[EditorModel]] when editing an already existing level.
+    *
     * @param level
     *   the existing level to be edited
     * @return
-    *   a new instance of [[LevelEditorModel]]
+    *   a new instance of [[EditorModel]]
     */
-  def apply(level: Level[BaseCell]): LevelEditorModel =
+  def apply(level: Level[BaseCell]): EditorModel =
     LevelEditorModelImpl(
       addCornerWalls(
         LevelBuilderState(
@@ -151,14 +158,15 @@ object LevelEditorModel {
       )
     )
 
-  /** Returns a new instance of [[LevelEditorModel]] when creating a new level.
+  /** Returns a new instance of [[EditorModel]] when creating a new level.
+    *
     * @param width
     *   the width of the level
     * @param height
     *   the height of the level
     * @return
-    *   a new instance of [[LevelEditorModel]]
+    *   a new instance of [[EditorModel]]
     */
-  def apply(width: Int, height: Int): LevelEditorModel =
+  def apply(width: Int, height: Int): EditorModel =
     LevelEditorModelImpl(addCornerWalls(LevelBuilderState((width, height))(Board.empty[PlayableCell])))
 }

@@ -9,8 +9,6 @@ object DummyAudioPlayer {
 
     override def play(track: Track): Unit = {}
 
-    override def getVolume(audioType: AudioType): Double = volumes(audioType)
-
     override def setVolume(volume: Double, audioType: AudioType): Unit = volumes += (audioType -> volume)
   }
 

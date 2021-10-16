@@ -1,4 +1,4 @@
-package it.unibo.pps.caw.menu
+package it.unibo.pps.caw.menu.controller
 
 /** The controller to be used by the settings page in the main menu.
   *
@@ -6,6 +6,12 @@ package it.unibo.pps.caw.menu
   * makes always possible to go back from the selected page to the main menu.
   */
 trait SettingsController {
+
+  /** Returns the current value of the music volume. */
+  def musicVolume: Double
+
+  /** Returns the current value of the sound volume. */
+  def soundVolume: Double
 
   /** Goes back to the main menu. */
   def goBack(): Unit

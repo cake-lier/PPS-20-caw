@@ -1,11 +1,12 @@
 package it.unibo.pps.caw.editor.view
 
 import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView}
-import it.unibo.pps.caw.editor.view.{EditorView, LevelEditorMenuView}
+import it.unibo.pps.caw.editor.view.EditorView
 import it.unibo.pps.caw.game.model.GameModel
 import com.sun.javafx.scene.input.DragboardHelper.DragboardAccessor
 import it.unibo.pps.caw.app.ViewTest
 import it.unibo.pps.caw.app.TestApplicationView
+import it.unibo.pps.caw.menu.view.EditorMenuView
 import javafx.scene.Node
 import javafx.scene.control.{Button, Slider, TextField}
 import javafx.scene.image.{Image, ImageView}
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit
 import scala.annotation.tailrec
 import scala.jdk.CollectionConverters.given
 
-/** Tests for class [[EditorView]] and [[LevelEditorMenuView]] */
+/** Tests for class [[EditorView]] and [[EditorMenuView]] */
 class EditorViewTest extends ViewTest {
 
   protected var stageWidth: Double = 0.0
