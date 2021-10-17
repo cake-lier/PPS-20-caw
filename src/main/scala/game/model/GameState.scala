@@ -1,7 +1,7 @@
 package it.unibo.pps.caw.game.model
 
 import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.model.cell.PlayableCell
+import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
 
 /** The state of the game, an entity collecting all information about the state of the [[GameModel]], which runs the current game.
   *
@@ -17,7 +17,7 @@ trait GameState {
   val levelInitialState: Level[PlayableCell]
 
   /** Returns the state of the [[Level]] currently being played at its current state, after the last update made by the game. */
-  val levelCurrentState: Level[PlayableCell]
+  val levelCurrentState: Level[BaseCell]
 
   /** Returns whether or not the [[Level]] currently being played has been completed or not. */
   val isCurrentLevelCompleted: Boolean
@@ -42,7 +42,7 @@ object GameState {
   /* Default implementation of the GameState trait. */
   private case class GameStateImpl(
     levelInitialState: Level[PlayableCell],
-    levelCurrentState: Level[PlayableCell],
+    levelCurrentState: Level[BaseCell],
     currentLevelIndex: Int,
     hasNextLevel: Boolean,
     didEnemyDie: Boolean,
@@ -71,7 +71,7 @@ object GameState {
     */
   def apply(
     levelInitialState: Level[PlayableCell],
-    levelCurrentState: Level[PlayableCell],
+    levelCurrentState: Level[BaseCell],
     currentLevelIndex: Int,
     hasNextLevel: Boolean,
     didEnemyDie: Boolean,
@@ -104,13 +104,13 @@ object GameState {
       *   a new [[GameState]] instance copied from the given one
       */
     def copy(
-      initialStateLevel: Level[PlayableCell] = state.levelInitialState,
-      currentStateLevel: Level[PlayableCell] = state.levelCurrentState,
+      levelInitialState: Level[PlayableCell] = state.levelInitialState,
+      levelCurrentState: Level[BaseCell] = state.levelCurrentState,
       currentLevelIndex: Int = state.currentLevelIndex,
       hasNextLevel: Boolean = state.hasNextLevel,
       didEnemyDie: Boolean = state.didEnemyDie,
       isCurrentLevelCompleted: Boolean = state.isCurrentLevelCompleted
     ): GameState =
-      GameStateImpl(initialStateLevel, currentStateLevel, currentLevelIndex, hasNextLevel, didEnemyDie, isCurrentLevelCompleted)
+      GameStateImpl(levelInitialState, levelCurrentState, currentLevelIndex, hasNextLevel, didEnemyDie, isCurrentLevelCompleted)
   }
 }

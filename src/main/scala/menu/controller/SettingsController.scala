@@ -11,7 +11,7 @@ trait SettingsController {
   def musicVolume: Double
 
   /** Returns the current value of the sound volume. */
-  def soundVolume: Double
+  def soundsVolume: Double
 
   /** Goes back to the main menu. */
   def goBack(): Unit
@@ -20,8 +20,8 @@ trait SettingsController {
     *
     * @param musicVolume
     *   the value of the music volume
-    * @param soundVolume
+    * @param soundsVolume
     *   the value of sound effects volume
     */
-  def saveVolumeSettings(musicVolume: Double, soundVolume: Double): Unit
+  def saveVolumeSettings(musicVolume: Double, soundsVolume: Double): Unit
 }

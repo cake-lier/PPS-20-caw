@@ -11,7 +11,7 @@ import scala.collection.mutable.ListBuffer
   * This object is the one to be imported fully for using the language specifically designed for creating new levels of the "Cells
   * At Work" game.
   */
-object CellsAtWorkDSL extends CellsAdders with BoardDisplayers {
+object CellsAtWorkDSL extends CellsAdders with LevelDisplayers {
 
   /** Allows to start writing a new specification for a [[Board]]. The specification must be written inside the block opened for
     * calling this function.

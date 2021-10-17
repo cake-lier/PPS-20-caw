@@ -16,10 +16,10 @@ trait EditorMenuController {
   def openEditor(width: Int, height: Int): Unit
 
   /** Shows the editor with a level loaded from file.
-    * @param path
+    * @param levelPath
     *   the path of the level
     */
-  def openEditor(path: String): Unit
+  def openEditor(levelPath: String): Unit
 
   /** Returns to the main menu. */
   def goBack(): Unit

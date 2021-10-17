@@ -113,7 +113,11 @@ object GameModel {
         rulesEngine,
         GameState(
           initialLevel,
-          initialLevel.copy(board = initialLevel.board.map(_.changePlayableProperty(playable = false))),
+          Level(
+            initialLevel.dimensions,
+            initialLevel.board.map(_.toBaseCell),
+            initialLevel.playableArea
+          ),
           initialIndex,
           initialIndex + 1 <= levels.length,
           didEnemyDie = false,
@@ -131,7 +135,7 @@ object GameModel {
       GameModelImpl(
         rulesEngine,
         state.copy(
-          currentStateLevel = state.levelCurrentState.copy(board = updatedBoard.map(_.toPlayableCell(_ => false))),
+          levelCurrentState = state.levelCurrentState.copy(board = updatedBoard),
           didEnemyDie = enemiesInBoard(state.levelCurrentState.board) > enemiesInBoard(updatedBoard),
           isCurrentLevelCompleted = isLevelCompleted(updatedBoard)
         ),
@@ -152,8 +156,11 @@ object GameModel {
       GameModelImpl(
         rulesEngine,
         state.copy(
-          currentStateLevel =
-            state.levelInitialState.copy(board = state.levelInitialState.board.map(_.changePlayableProperty(playable = false))),
+          levelCurrentState = Level(
+            state.levelInitialState.dimensions,
+            state.levelInitialState.board.map(_.toBaseCell),
+            state.levelInitialState.playableArea
+          ),
           didEnemyDie = false,
           isCurrentLevelCompleted = isLevelCompleted(state.levelInitialState.board)
         ),
@@ -176,14 +183,14 @@ object GameModel {
             GameModelImpl(
               rulesEngine,
               state.copy(
-                initialStateLevel = state
-                  .levelCurrentState
-                  .copy(board =
-                    newBoard.map(
-                      _.toPlayableCell(c => isPositionInsidePlayableArea(c.position)(state.levelCurrentState.playableArea))
+                levelInitialState = state
+                  .levelInitialState
+                  .copy(
+                    board = newBoard.map(
+                      _.toPlayableCell(c => isPositionInsidePlayableArea(c.position)(state.levelInitialState.playableArea))
                     )
                   ),
-                currentStateLevel = state.levelCurrentState.copy(board = newBoard.map(_.toPlayableCell(_ => false)))
+                levelCurrentState = state.levelCurrentState.copy(board = newBoard)
               ),
               isSetupCompleted = false,
               levels,

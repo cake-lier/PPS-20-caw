@@ -128,7 +128,7 @@ object GameController {
       if (model.state.isCurrentLevelCompleted) {
         pauseUpdates()
       }
-      view.drawLevelUpdate(model.state.levelCurrentState, model.state.didEnemyDie, model.state.isCurrentLevelCompleted)
+      view.drawPlayBoard(model.state.levelCurrentState.board, model.state.didEnemyDie, model.state.isCurrentLevelCompleted)
     }
 
     override def nextLevel(): Unit = {
@@ -144,7 +144,7 @@ object GameController {
     override def resetLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
       model = model.reset
-      view.drawLevelReset(model.state.levelInitialState)
+      view.drawSetupBoard(model.state.levelInitialState.board)
     }
 
     override def closeGame(): Unit = {

@@ -87,7 +87,7 @@ abstract class AbstractBoardView(
       y <- 0 until levelHeight
     } do
       drawImageView(
-        TileView.apply(CellImage.DefaultTile.image, innerComponent, droppablePavement, modelUpdater.manageCell).innerComponent,
+        TileView(CellImage.DefaultTile.image, innerComponent, droppablePavement, modelUpdater.manageCell).innerComponent,
         x,
         y
       )
@@ -119,9 +119,7 @@ abstract class AbstractBoardView(
       y <- 0 until playableAreaHeight
     } do
       drawImageView(
-        TileView
-          .apply(CellImage.PlayAreaTile.image, innerComponent, droppablePlayableArea, modelUpdater.manageCell)
-          .innerComponent,
+        TileView(CellImage.PlayAreaTile.image, innerComponent, droppablePlayableArea, modelUpdater.manageCell).innerComponent,
         x + positionX,
         y + positionY
       )

@@ -41,7 +41,7 @@ object AudioPlayer {
           t -> mediaPlayer
         })
         .toMap
-    private var soundPlayers: Map[Track, Set[MediaPlayer]] = Map()
+    private var soundsPlayers: Map[Track, Set[MediaPlayer]] = Map()
 
     override def play(track: Track): Unit = track.audioType match {
       case AudioType.Music => {
@@ -54,21 +54,21 @@ object AudioPlayer {
           mediaPlayer.stop()
           mediaPlayer.play()
         }
-        mediaPlayer.onEndOfMedia = soundPlayers += (track -> (soundPlayers(track) - mediaPlayer))
+        mediaPlayer.onEndOfMedia = soundsPlayers += (track -> (soundsPlayers(track) - mediaPlayer))
         mediaPlayer.volume = soundsVolume
-        soundPlayers += (track -> (soundPlayers.getOrElse(track, Set()) + mediaPlayer))
+        soundsPlayers += (track -> (soundsPlayers.getOrElse(track, Set()) + mediaPlayer))
       }
     }
 
     override def setVolume(volume: Double, audioType: AudioType): Unit = audioType match {
       case AudioType.Music => musicPlayers.foreach(_._2.setVolume(volume))
       case AudioType.Sound => {
-        soundPlayers.values.flatten.foreach(_.setVolume(volume))
+        soundsPlayers.values.flatten.foreach(_.setVolume(volume))
         soundsVolume = volume
       }
     }
   }
 
   /** Returns a new instance of the [[AudioPlayer]] trait. */
-  def apply(musicVolume: Double, soundsVolume: Double): AudioPlayer = AudioPlayerImpl(musicVolume: Double, soundsVolume: Double)
+  def apply(musicVolume: Double, soundsVolume: Double): AudioPlayer = AudioPlayerImpl(musicVolume, soundsVolume)
 }

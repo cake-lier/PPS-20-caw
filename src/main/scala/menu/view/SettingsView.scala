@@ -50,7 +50,7 @@ object SettingsView {
     override val innerComponent: Pane = loader.load[GridPane]
 
     private var volumes: Map[AudioType, Double] =
-      Map(AudioType.Music -> controller.musicVolume, AudioType.Sound -> controller.soundVolume)
+      Map(AudioType.Music -> controller.musicVolume, AudioType.Sound -> controller.soundsVolume)
 
     setupSlider(musicVolumeSlider, AudioType.Music)
     setupSlider(effectsVolumeSlider, AudioType.Sound)

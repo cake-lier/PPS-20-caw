@@ -75,8 +75,8 @@ object ApplicationController {
       future.onComplete(_ => futures.remove(future))
     }
 
-    override def saveVolumeSettings(musicVolume: Double, soundVolume: Double): Unit = {
-      _settings = _settings.copy(musicVolume = musicVolume, soundVolume = soundVolume)
+    override def saveVolumeSettings(musicVolume: Double, soundsVolume: Double): Unit = {
+      _settings = _settings.copy(musicVolume = musicVolume, soundsVolume = soundsVolume)
       saveSettings(_settings)
     }
 

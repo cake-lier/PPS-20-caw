@@ -29,9 +29,8 @@ trait GameView extends ViewComponent[GridPane] {
   /** Makes the application view go back to the main menu, displaying it. */
   def backToMenu(): Unit
 
-  /** Displays the given [[Level]], resetting the component displaying the [[Level]] if necessary. This means that this method is
-    * to be called when there is a change between [[Level]] in the game and not when an update of the same [[Level]] is to be
-    * displayed.
+  /** Displays the given [[Level]], resetting the component displaying it. This means that this method is to be called when there
+    * is a change between [[Level]] in the game and not when an update of the same [[Level]] is to be displayed.
     *
     * @param level
     *   the [[Level]] to display
@@ -40,28 +39,28 @@ trait GameView extends ViewComponent[GridPane] {
     */
   def drawLevel(level: Level[PlayableCell], isCompleted: Boolean): Unit
 
-  /** Displays the update to the currently displayed [[Level]], without resetting the component displaying it. This means that
-    * this method is not to be called when there is a change between [[Level]], but only during steps over the same [[Level]].
+  /** Displays an update to the [[Board]] of the currently displayed [[Level]]. This means that this method is not to be called
+    * when there is a change between [[Level]], but only during update steps over the same [[Level]].
     *
-    * @param update
-    *   the [[Level]] containing the update
+    * @param board
+    *   the updated [[Board]] to be displayed
     * @param didEnemyDie
-    *   whether or not an enemy exploded after this update
+    *   whether or not an enemy died after this update
     * @param isCompleted
     *   whether or not this [[Level]] has been completed
     */
-  def drawLevelUpdate(
-    update: Level[PlayableCell],
+  def drawPlayBoard(
+    board: Board[BaseCell],
     didEnemyDie: Boolean,
     isCompleted: Boolean
   ): Unit
 
-  /** Displays again the initial configuration of the [[Level]], resetting the [[GameView]].
+  /** Displays the initial configuration of the [[Board]] of the currently displayed [[Level]], actually resetting this view.
     *
-    * @param level
-    *   the initial configuration of the [[Level]]
+    * @param board
+    *   the initial configuration of the [[Board]] to be displayed
     */
-  def drawLevelReset(level: Level[PlayableCell]): Unit
+  def drawSetupBoard(board: Board[PlayableCell]): Unit
 
   /** Displays the given error message to the player.
     *
@@ -145,14 +144,14 @@ object GameView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(AlertType.ERROR, message))
 
-    override def drawLevelUpdate(
-      update: Level[PlayableCell],
+    override def drawPlayBoard(
+      board: Board[BaseCell],
       didEnemyDie: Boolean,
       isCompleted: Boolean
     ): Unit =
       Platform.runLater(() =>
         boardView.foreach(b => {
-          b.drawGameBoard(update.board)
+          b.drawGameBoard(board)
           audioPlayer.play(Track.Step)
           if (didEnemyDie) {
             audioPlayer.play(Track.Explosion)
@@ -166,8 +165,8 @@ object GameView {
         })
       )
 
-    override def drawLevelReset(level: Level[PlayableCell]): Unit =
-      Platform.runLater(() => boardView.foreach(_.drawSetupBoard(level.board)))
+    override def drawSetupBoard(board: Board[PlayableCell]): Unit =
+      Platform.runLater(() => boardView.foreach(_.drawSetupBoard(board)))
 
     override def drawLevel(level: Level[PlayableCell], isCompleted: Boolean): Unit = Platform.runLater(() => {
       val newBoardView: GameBoardView = GameBoardView(scene.getWidth, scene.getHeight, level, this)

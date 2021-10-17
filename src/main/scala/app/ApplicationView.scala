@@ -77,7 +77,7 @@ object ApplicationView {
   /* Default implementation of the ApplicationView trait. */
   private class ApplicationViewImpl(stage: PrimaryStage) extends ApplicationView {
     private val controller: ApplicationController = ApplicationController(this)
-    private val audioPlayer: AudioPlayer = AudioPlayer(controller.settings.musicVolume, controller.settings.soundVolume)
+    private val audioPlayer: AudioPlayer = AudioPlayer(controller.settings.musicVolume, controller.settings.soundsVolume)
     StageResizer.resize(stage)
     private val scene: Scene = Scene(stage.width.value, stage.height.value)
 
@@ -90,7 +90,7 @@ object ApplicationView {
     stage.show()
     stage.setOnCloseRequest(_ => controller.exit())
     audioPlayer.setVolume(controller.settings.musicVolume, AudioType.Music)
-    audioPlayer.setVolume(controller.settings.soundVolume, AudioType.Sound)
+    audioPlayer.setVolume(controller.settings.soundsVolume, AudioType.Sound)
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 

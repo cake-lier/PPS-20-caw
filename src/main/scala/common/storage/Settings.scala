@@ -11,8 +11,8 @@ sealed trait Settings {
   /** The volume of the game music, ranging from 0 to 1. */
   val musicVolume: Double
 
-  /** The volume of the special effects, ranging from 0 to 1. */
-  val soundVolume: Double
+  /** The volume of the sound effects, ranging from 0 to 1. */
+  val soundsVolume: Double
 
   /** The indexes of completed default levels. */
   val solvedLevels: Set[Int]
@@ -22,7 +22,7 @@ sealed trait Settings {
 object Settings {
 
   /* Default implementation of the Settings trait. */
-  private case class SettingsImpl(musicVolume: Double, soundVolume: Double, solvedLevels: Set[Int]) extends Settings
+  private case class SettingsImpl(musicVolume: Double, soundsVolume: Double, solvedLevels: Set[Int]) extends Settings
 
   /** Returns a new instance of the [[Settings]] trait, given the values that makes up the settings themselves.
     *
@@ -46,7 +46,7 @@ object Settings {
       *
       * @param musicVolume
       *   the value of the music volume which is part of the current settings
-      * @param soundVolume
+      * @param soundsVolume
       *   the value of the sound volume which is part of the current settings
       * @param solvedLevels
       *   the indexes of the solved levels which are part of the current settings
@@ -55,16 +55,16 @@ object Settings {
       */
     def copy(
       musicVolume: Double = settings.musicVolume,
-      soundVolume: Double = settings.soundVolume,
+      soundsVolume: Double = settings.soundsVolume,
       solvedLevels: Set[Int] = settings.solvedLevels
-    ): Settings = SettingsImpl(musicVolume, soundVolume, solvedLevels)
+    ): Settings = SettingsImpl(musicVolume, soundsVolume, solvedLevels)
   }
 
   /** Allows for a [[Settings]] value to be converted to a [[JsValue]]. */
   implicit val settingsWrites: Writes[Settings] = new Writes[Settings] {
     override def writes(settings: Settings) = Json.obj(
       "musicVolume" -> settings.musicVolume,
-      "soundVolume" -> settings.soundVolume,
+      "soundsVolume" -> settings.soundsVolume,
       "solvedLevels" -> settings.solvedLevels
     )
   }

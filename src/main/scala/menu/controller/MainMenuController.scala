@@ -36,10 +36,10 @@ trait ParentMainMenuController {
     *
     * @param musicVolume
     *   the value of the music volume
-    * @param soundVolume
+    * @param soundsVolume
     *   the value of sound effects volume
     */
-  def saveVolumeSettings(musicVolume: Double, soundVolume: Double): Unit
+  def saveVolumeSettings(musicVolume: Double, soundsVolume: Double): Unit
 
   /** Asks the parent controller to start the level editor with a blank level of specified dimensions.
     *
@@ -52,10 +52,10 @@ trait ParentMainMenuController {
 
   /** Asks the parent controller to start the level editor with a level loaded from file.
     *
-    * @param path
+    * @param levelPath
     *   the path to the level file
     */
-  def openEditor(path: String): Unit
+  def openEditor(levelPath: String): Unit
 
   /** Asks the parent controller to show the main menu initial page. */
   def showMainMenu(): Unit
@@ -98,7 +98,7 @@ object MainMenuController {
 
     override def solvedLevels: Set[Int] = parentController.settings.solvedLevels
 
-    override def soundVolume: Double = parentController.settings.soundVolume
+    override def soundsVolume: Double = parentController.settings.soundsVolume
 
     override def musicVolume: Double = parentController.settings.musicVolume
 
@@ -110,12 +110,12 @@ object MainMenuController {
 
     override def goBack(): Unit = parentController.showMainMenu()
 
-    override def saveVolumeSettings(musicVolume: Double, soundVolume: Double): Unit =
-      parentController.saveVolumeSettings(musicVolume, soundVolume)
+    override def saveVolumeSettings(musicVolume: Double, soundsVolume: Double): Unit =
+      parentController.saveVolumeSettings(musicVolume, soundsVolume)
 
     override def openEditor(width: Int, height: Int): Unit = parentController.openEditor(width, height)
 
-    override def openEditor(path: String): Unit = parentController.openEditor(path)
+    override def openEditor(levelPath: String): Unit = parentController.openEditor(levelPath)
   }
 
   /** Returns a new instance of the [[MainMenuController]] trait. It must receive the [[ParentMainMenuController]], which it

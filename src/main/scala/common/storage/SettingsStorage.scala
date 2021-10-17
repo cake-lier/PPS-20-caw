@@ -49,7 +49,7 @@ object SettingsStorage {
         case Success(jsonString: String) =>
           Try {
             val json = Json.parse(jsonString)
-            Settings((json \ "musicVolume").as[Double], (json \ "soundVolume").as[Double], (json \ "solvedLevels").as[Set[Int]])
+            Settings((json \ "musicVolume").as[Double], (json \ "soundsVolume").as[Double], (json \ "solvedLevels").as[Set[Int]])
           }
         case Failure(e: FileNotFoundException) =>
           fileStorage.writeFile(filePath, defaultSettingsJson.toString) match {

@@ -2,7 +2,7 @@ package it.unibo.pps.caw
 package game.view
 
 import common.model.{Board, Level}
-import common.model.cell.PlayableCell
+import common.model.cell.{BaseCell, Cell, PlayableCell}
 
 import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellView, ModelUpdater}
 
@@ -24,7 +24,7 @@ trait GameBoardView extends BoardView {
     * @param board
     *   the [[Board]] containing the [[PlayableCell]] to be drawn in the board
     */
-  def drawGameBoard(board: Board[PlayableCell]): Unit
+  def drawGameBoard(board: Board[BaseCell]): Unit
 }
 
 /** Companion object of the [[GameBoardView]] trait, containing its factory method. */
@@ -70,14 +70,7 @@ object GameBoardView {
 
     drawSetupBoard(initialLevel.board)
 
-    override def drawGameBoard(board: Board[PlayableCell]): Unit = draw(board)
-
-    override def drawSetupBoard(board: Board[PlayableCell]): Unit = draw(board, droppablePlayableArea = true)
-
-    private def draw(
-      board: Board[PlayableCell],
-      droppablePlayableArea: Boolean = false
-    ): Unit = {
+    override def drawGameBoard(board: Board[BaseCell]): Unit = {
       clearComponents()
       drawPavement()
       drawPlayableArea(
@@ -85,17 +78,22 @@ object GameBoardView {
         initialLevel.playableArea.position.y,
         initialLevel.playableArea.dimensions.width,
         initialLevel.playableArea.dimensions.height,
-        droppablePlayableArea
+        droppablePlayableArea = false
       )
-      board
-        .cells
-        .foreach(c =>
-          drawImageView(
-            CellView(c, innerComponent).innerComponent,
-            c.position.x,
-            c.position.y
-          )
-        )
+      board.foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
+    }
+
+    override def drawSetupBoard(board: Board[PlayableCell]): Unit = {
+      clearComponents()
+      drawPavement()
+      drawPlayableArea(
+        initialLevel.playableArea.position.x,
+        initialLevel.playableArea.position.y,
+        initialLevel.playableArea.dimensions.width,
+        initialLevel.playableArea.dimensions.height,
+        droppablePlayableArea = true
+      )
+      board.foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
     }
   }
 }

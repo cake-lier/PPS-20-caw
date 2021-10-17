@@ -85,7 +85,9 @@ object EditorBoardView {
           drawPlayableArea(p.position.x, p.position.y, p.dimensions.width, p.dimensions.height, droppablePlayableArea = true)
         case _ => applyHandler(n => enablePlayableAreaSelection(n.asInstanceOf[ImageView]))
       }
-      levelState.board.foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
+      levelState
+        .board
+        .foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
     }
 
     /** Adds an [[ImageView]] to the editor board, that is a view that can be removed if it was added by the user.
