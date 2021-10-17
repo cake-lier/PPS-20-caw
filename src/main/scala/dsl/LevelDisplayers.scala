@@ -8,13 +8,13 @@ import it.unibo.pps.caw.dsl.entities.LevelBuilderState
 
 import scala.collection.mutable.ListBuffer
 
-/** Adds all methods to the DSL that are able to display a built [[Level]].
-  *
-  * The methods in this module are capable of displaying a [[Level]], after building it, in different ways. They can display it on
-  * a console or saving it to a file, but always after checking the correctness of the data stored by the user and serializing it
-  * in JSON format.
-  */
-trait LevelDisplayers {
+/* Adds all methods to the DSL that are able to display a built Level.
+ *
+ * The methods in this module are capable of displaying a Level, after building it, in different ways. They can display it on
+ * a console or saving it to a file, but always after checking the correctness of the data stored by the user and serializing it
+ * in JSON format.
+ */
+private trait LevelDisplayers {
   import it.unibo.pps.caw.dsl.validation.LevelBuilderStateValidator
 
   /* Generalizes the behavior of the methods in this module. */
@@ -31,7 +31,7 @@ trait LevelDisplayers {
   private val levelParser: LevelParser = LevelParser(fileStorage)
   private val levelStorage: LevelStorage = LevelStorage(fileStorage, levelParser)
 
-  /** Prints a built [[Board]] on the standard output after checking the correctness of the stored data and serializing it in JSON
+  /** Prints a built [[Level]] on the standard output after checking the correctness of the stored data and serializing it in JSON
     * format.
     *
     * @param ops
@@ -40,11 +40,11 @@ trait LevelDisplayers {
   def printIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit =
     executeAction(ops)(l => print(levelParser.serializeLevel(l)))
 
-  /** Saves a built [[Board]] on the file which path is given after checking the correctness of the stored data and serializing it
+  /** Saves a built [[Level]] on the file which path is given after checking the correctness of the stored data and serializing it
     * in JSON format.
     *
     * @param path
-    *   the path of the file to which save the built [[Board]]
+    *   the path of the file to which save the built [[Level]]
     * @param ops
     *   the list of operations to which add this specific operation
     */
@@ -54,6 +54,7 @@ trait LevelDisplayers {
   import java.time.LocalDateTime
   import java.nio.file.Files
 
+  /* Launches an application with the given launcher after storing the level being currently built onto in a temporary file. */
   private def launchApplication(
     ops: ListBuffer[LevelBuilderState => LevelBuilderState],
     launcher: Array[String] => Unit
@@ -65,20 +66,20 @@ trait LevelDisplayers {
     })
   }
 
-  /** Opens the application for playing a level as created by the user through the DSL after checking the correctness of the
+  /** Opens the application for playing a [[Level]] as created by the user through the DSL after checking the correctness of the
     * stored data and serializing it in JSON format into a temporary file. This means that, if not coupled with another action
     * intended to saving the file to a specific location, after the closing of the launched application, the file containing the
-    * [[Board]] will not be stored anywhere. No options for saving the file will be shown in-game.
+    * [[Level]] will not be stored anywhere. No options for saving the file will be shown in-game.
     *
     * @param ops
     *   the list of operations to which add this specific operation
     */
   def playIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops, DSLGameMain.main(_))
 
-  /** Opens the application for editing a level as created by the user through the DSL after checking the correctness of the
+  /** Opens the application for editing a [[Level]] as created by the user through the DSL after checking the correctness of the
     * stored data and serializing it in JSON format into a temporary file. This means that, if not coupled with another action
     * intended to saving the file to a specific location, after the closing of the launched application, the file containing the
-    * [[Board]] will not be stored anywhere. An option for saving the file will be shown while the editor is open.
+    * [[Level]] will not be stored anywhere. An option for saving the file will be shown while the editor is open.
     *
     * @param ops
     *   the list of operations to which add this specific operation

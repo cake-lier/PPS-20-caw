@@ -12,7 +12,6 @@ import scala.util.matching.Regex
 private object PrologParser {
 
   /* Returns a Prolog cell(id, cellType, x, y) given its Scala cell. */
-
   def serializeCell(cell: UpdateCell): String = {
     val cellType: String = cell match {
       case _: UpdateWallCell           => "wall"
@@ -32,9 +31,10 @@ private object PrologParser {
   }
 
   /* Returns the Prolog clause given its cell.
-
-     If the cell is a mover or a rotator, it returns mover/rotator_next_state[board, x, y, NB].
-     If the cell is a generator, it returns generator_next_state[board, maxId, x, y, NB] */
+   *
+   * If the cell is a mover or a rotator, it returns mover/rotator_next_state[board, x, y, NB].
+   * If the cell is a generator, it returns generator_next_state[board, maxId, x, y, NB]
+   */
   def createSerializedPredicate(board: Board[UpdateCell], maxId: Long, cell: UpdateCell): Option[String] = {
     var seq = Seq(board.map(serializeCell).mkString("[", ",", "]"), cell.position.x, cell.position.y)
     if (cell.isInstanceOf[UpdateGeneratorCell]) {
@@ -69,7 +69,6 @@ private object PrologParser {
     val cellId: Int = id.toInt
     val position: Position = Position(stringX.toInt, stringY.toInt)
     val updated: Boolean = false // default value, properly set in nextState()
-
     cellType match {
       case s"mover_$orientation" => UpdateMoverCell(position)(Orientation.fromName(orientation).get)(cellId)(updated)
       case "enemy"               => UpdateEnemyCell(position)(cellId)(updated)

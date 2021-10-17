@@ -4,105 +4,38 @@ import alice.tuprolog.*
 
 import scala.util.{Success, Try}
 
-/** Represents a Prolog clause. */
-sealed trait Clause {
+/* A goal to be solved by the [[PrologEngine]]. */
+private type Goal = String
 
-  /** The [[Clause]] as [[String]] */
-  val value: String
-}
+/* A clause which is part of a PROLOG theory. */
+private type Clause = String
 
-/** The companion object of the trait [[Clause]]. */
-object Clause {
-  private case class ClauseImpl(value: String) extends Clause
+/* Represents a PROLOG engine, an entity capable of solving goals given a theory following the specifications of the PROLOG
+ * language.
+ *
+ * This entity is a wrapper over a PROLOG library capable of evaluating PROLOG code. Being so, it should be initialized with a
+ * theory, which will be used for solving every goal submitted to the engine. Every submission will result in a [[Result]] of
+ * that resolution. It is assumed that every resolution will have a compound term as a result and not a simple term or just the
+ * satisfiability of the given goal. It must be constructed through its companion object.
+ */
+private trait PrologEngine {
 
-  /** Returns an instance of [[Clause]].
-    * @param value
-    *   the value of the [[Clause]]
-    * @return
-    *   a new instance of [[Clause]]
-    */
-  def apply(value: String): Clause = ClauseImpl(value)
-}
-
-/** Represents the result of a Prolog goal. */
-sealed trait Result {
-
-  /** The [[Result]] as [[String]]. */
-  val value: String
-
-  /** Returns the last term of a compound term.
-    * @return
-    *   the last term as [[String]]
-    */
-  def getLastTerm: String
-}
-
-/** The companion object of the trait [[Result]]. */
-object Result {
-  private case class ResultImpl(value: String) extends Result {
-    override def getLastTerm: String = {
-      val term = Term.createTerm(value).asInstanceOf[Struct]
-      term.getArg(term.getArity - 1).getTerm.toString
-    }
-  }
-
-  /** Returns an instance of [[Result]].
-    * @param stringResult
-    *   the result of a Prolog goal as [[String]]
-    * @return
-    *   a new instance of [[Result]]
-    */
-  def apply(stringResult: String): Result = ResultImpl(stringResult)
-}
-
-/** Represents a Prolog goal. */
-sealed trait Goal {
-
-  /** [[Goal]] as [[String]] */
-  val value: String
-}
-
-/** The companion object of the trait [[Goal]]. */
-object Goal {
-  private case class GoalImpl(value: String) extends Goal
-
-  /** Returns a new instance of [[Goal]].
-    * @param stringGoal
-    *   the Prolog goal as [[String]]
-    * @return
-    *   a new instance of [[Goal]]
-    */
-  def apply(stringGoal: String): Goal = GoalImpl(stringGoal)
-}
-
-/** Represents the Prolog engine of the game.
-  *
-  * It contains a Prolog theory, the collection of clauses needed to solve any [[Goal]] this engine may receive.
-  */
-sealed trait PrologEngine {
-
-  /** Solves the given [[Goal]] and returns its [[Result]].
-    * @param goal
-    *   the given [[Goal]] to be solved
-    * @return
-    *   a new instance of [[Result]]
-    */
+  /* Solves the given [[Goal]] and returns the [[Result]] of the resolution, assuming it is a compound term. */
   def solve(goal: Goal): Result
 }
 
-/** The companion object of the trait [[PrologEngine]]. */
-object PrologEngine {
-  private case class PrologEngineImpl(clauses: Clause*) extends PrologEngine {
-    val engine: Prolog = Prolog()
-    engine.setTheory(Theory(clauses map (_.value) mkString (" ")))
+/* The companion object of the trait PrologEngine, containing its factory method. */
+private object PrologEngine {
 
-    override def solve(goal: Goal): Result =
-      Result(engine.solve(Term.createTerm(goal.value)).getSolution.toString)
+  /* Default implementation of the PrologEngine trait. */
+  private case class PrologEngineImpl(clauses: Seq[Clause]) extends PrologEngine {
+    private val engine: Prolog = Prolog()
+
+    engine.setTheory(Theory(clauses.mkString("\n")))
+
+    override def solve(goal: Goal): Result = Result(engine.solve(Term.createTerm(goal)).getSolution.toString)
   }
 
-  /** Returns a new instance of [[PrologEngine]].
-    * @param clause
-    *   the
-    */
-  def apply(clause: Clause): PrologEngine = PrologEngineImpl(clause)
+  /* Returns a new instance of [[PrologEngine]] given the clauses which are part of the PROLOG theory to put into the engine. */
+  def apply(clauses: Clause*): PrologEngine = PrologEngineImpl(clauses)
 }

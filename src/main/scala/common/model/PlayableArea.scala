@@ -2,13 +2,14 @@ package it.unibo.pps.caw.common.model
 
 import it.unibo.pps.caw.common.model.cell.Cell
 
-/** The area of a [[Level]] on which the player can move [[Cell]].
+/** The area of a [[Level]] on which the player can move [[it.unibo.pps.caw.common.model.cell.Cell]].
   *
-  * The [[PlayableArea]] is a special area in a [[Level]] where the [[Cell]] inside it can be moved by the player to another
-  * [[Position]] inside the the area itself. Being an area like the area of the whole game, and being a part of the game world, it
-  * is represented by a two-dimensional grid and, because of this, it has specific [[Dimensions]]. Furthermore, being only a part
-  * of the game word, it needs to be located at a given [[Position]]. The chosen [[Position]] for representing the
-  * [[PlayableArea]] is the upper left corner of the area itself. It must be constructed through its companion object.
+  * The [[PlayableArea]] is a special area in a [[Level]] where the [[it.unibo.pps.caw.common.model.cell.Cell]] inside it can be
+  * moved by the player to another [[Position]] inside the the area itself. Being an area like the area of the whole game, and
+  * being a part of the game world, it is represented by a two-dimensional grid and, because of this, it has specific
+  * [[Dimensions]]. Furthermore, being only a part of the game word, it needs to be located at a given [[Position]]. The chosen
+  * [[Position]] for representing the [[PlayableArea]] is the upper left corner of the area itself. It must be constructed through
+  * its companion object.
   */
 trait PlayableArea {
 

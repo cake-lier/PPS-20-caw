@@ -4,25 +4,25 @@ import it.unibo.pps.caw.common.model.cell.*
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
 
-/** The view of a [[Cell]]. */
+/** The view of a [[it.unibo.pps.caw.common.model.cell.Cell]]. */
 trait CellView extends ViewComponent[ImageView]
 
 /** Factory for new [[CellView]] instance. */
 object CellView {
 
-  /** Creates a new [[CellView]] component for a [[PlayableCell]].
+  /** Creates a new [[CellView]] component for a [[it.unibo.pps.caw.common.model.cell.PlayableCell]].
     * @param cell
-    *   the [[PlayableCell]] to be drawn
+    *   the [[it.unibo.pps.caw.common.model.cell.PlayableCell]] to be drawn
     * @param board
-    *   the [[GridPane]] in which the cell will be drawn
+    *   the [[javafx.scene.layout.GridPane]] in which the cell will be drawn
     */
   def apply(cell: PlayableCell, board: GridPane): CellView = CellViewImpl(cell.toBaseCell, cell.playable, board)
 
-  /** Creates a new [[CellView]] component for a [[BaseCell]].
+  /** Creates a new [[CellView]] component for a [[it.unibo.pps.caw.common.model.cell.BaseCell]].
     * @param cell
-    *   the [[BaseCell]] to be drawn
+    *   the [[it.unibo.pps.caw.common.model.cell.BaseCell]] to be drawn
     * @param board
-    *   the [[GridPane]] in which the cell will be drawn
+    *   the [[javafx.scene.layout.GridPane]] in which the cell will be drawn
     */
   def apply(cell: BaseCell, board: GridPane): CellView = CellViewImpl(cell, draggable = false, board)
 

@@ -5,10 +5,10 @@ import scalafx.application.JFXApp3.PrimaryStage
 import scalafx.geometry.Rectangle2D
 import scalafx.stage.Screen
 
-/** Utility object to automatically resize the [[PrimaryStage]] for the screen. */
+/** Utility object to automatically resize the [[scalafx.application.JFXApp3.PrimaryStage]] for the screen. */
 object StageResizer {
 
-  /** Resizes the [[PrimaryStage]] to the screen dimensions, so as to be fullscreen windowed.
+  /** Resizes the [[scalafx.application.JFXApp3.PrimaryStage]] to the screen dimensions, so as to be fullscreen windowed.
     *
     * @param stage
     *   the stage to be resized

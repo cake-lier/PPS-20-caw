@@ -31,10 +31,12 @@ class DSLTests extends AnyFunSpec with Matchers {
   private val cellsArea: Dimensions = (2, 2)
   private val fileStorage: FileStorage = FileStorage()
   private val levelParser: LevelParser = LevelParser(fileStorage)
+  private val negativeDimensionsError: String = "The dimensions given to an entity were negative"
+  private val negativePositionError: String = "The position given to an entity has negative coordinates"
 
   describe("The DSL") {
-    describe("when asked to print a correctly constructed board") {
-      it("should correctly print the constructed board") {
+    describe("when asked to print a correctly constructed level") {
+      it("should correctly print the constructed level") {
         val out: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withOut(out) {
           buildBoardWithDSL()
@@ -50,7 +52,7 @@ class DSLTests extends AnyFunSpec with Matchers {
     }
 
     describe("when using the words for inserting multiple cells at the same time") {
-      it("should correctly print the constructed board") {
+      it("should correctly print the constructed level") {
         val out: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withOut(out) {
           board {
@@ -98,94 +100,94 @@ class DSLTests extends AnyFunSpec with Matchers {
       }
     }
 
-    describe("when asked to print a board without dimensions") {
+    describe("when asked to print a level without dimensions") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(boardDimensions = None)
         }
-        err.toString shouldBe ValidationError.DimensionsUnset.message
+        err.toString shouldBe "The dimensions were not set"
       }
     }
 
-    describe("when asked to print a board without a playable area") {
+    describe("when asked to print a level without a playable area") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = None)
         }
-        err.toString shouldBe ValidationError.PlayableAreaUnset.message
+        err.toString shouldBe "The playable area was not set"
       }
     }
 
-    describe("when asked to print a board with negative dimensions") {
+    describe("when asked to print a level with negative dimensions") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(boardDimensions = Some(Dimensions(-30, 40)))
         }
-        err.toString shouldBe ValidationError.NegativeDimensions.message
+        err.toString shouldBe negativeDimensionsError
       }
     }
 
-    describe("when asked to print a board with a playable area with negative dimensions") {
+    describe("when asked to print a level with a playable area with negative dimensions") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(Dimensions(-30, 40))(playableAreaPosition)))
         }
-        err.toString shouldBe ValidationError.NegativeDimensions.message
+        err.toString shouldBe negativeDimensionsError
       }
     }
 
-    describe("when asked to print a board with a playable area with a negative position") {
+    describe("when asked to print a level with a playable area with a negative position") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(playableAreaDimensions)(Position(-1, 0))))
         }
-        err.toString shouldBe ValidationError.NegativePosition.message
+        err.toString shouldBe negativePositionError
       }
     }
 
-    describe("when asked to print a board with a playable area outside the board bounds") {
+    describe("when asked to print a level with a playable area outside the level bounds") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(playableAreaDimensions)(Position(25, 25))))
         }
-        err.toString shouldBe ValidationError.PlayableAreaNotInBounds.message
+        err.toString shouldBe "The playable area exceeds the level bounds"
       }
     }
 
-    describe("when asked to print a board with two cells in the same position") {
+    describe("when asked to print a level with two cells in the same position") {
       it("should print an error on stderr") {
         val position: Position = Position(10, 10)
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(mover = BaseMoverCell(Orientation.Right)(position), enemy = BaseEnemyCell(position))
         }
-        err.toString shouldBe ValidationError.SamePositionForDifferentCells.message
+        err.toString shouldBe "Two or more cells have the same position"
       }
     }
 
-    describe("when asked to print a board with a cell with a negative position") {
+    describe("when asked to print a level with a cell with a negative position") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(generator = BaseGeneratorCell(Orientation.Left)(Position(0, -5)))
         }
-        err.toString shouldBe ValidationError.NegativePosition.message
+        err.toString shouldBe negativePositionError
       }
     }
 
-    describe("when asked to print a board with a cell outside the board bounds") {
+    describe("when asked to print a level with a cell outside the level bounds") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(block = BaseBlockCell(Push.Vertical)(Position(50, 50)))
         }
-        err.toString shouldBe ValidationError.CellOutsideBounds.message
+        err.toString shouldBe "A cell was placed outside the level bounds"
       }
     }
 
@@ -193,7 +195,7 @@ class DSLTests extends AnyFunSpec with Matchers {
     import scala.util.Using
     import scala.io.Source
 
-    describe("when asked to save a board to file") {
+    describe("when asked to save a level to file") {
       it("should produce the correct file") {
         val fileName: String = "level.json"
         val path: String = Paths.get(System.getProperty("user.home"), fileName).toString

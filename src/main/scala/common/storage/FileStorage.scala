@@ -11,23 +11,23 @@ import scala.util.{Try, Using}
   */
 trait FileStorage {
 
-  /** Loads a resource from disk. It needs the path to the resource and returns a [[Try]] with the content of the file in a string
-    * if the loading was successful, an exception otherwise.
+  /** Loads a resource from disk. It needs the path to the resource and returns a [[scala.util.Try]] with the content of the file
+    * in a string if the loading was successful, an exception otherwise.
     *
     * @param path
     *   the path to the resource file to load
     * @return
-    *   a [[Try]] with the contents of the file in a string
+    *   a [[scala.util.Try]] with the contents of the file in a string
     */
   def loadResource(path: String): Try[String]
 
-  /** Loads a file from disk. It needs the absolute path to the file and returns a [[Try]] with the content of the file in a
-    * string if the loading was successful, an exception otherwise.
+  /** Loads a file from disk. It needs the absolute path to the file and returns a [[scala.util.Try]] with the content of the file
+    * in a string if the loading was successful, an exception otherwise.
     *
     * @param path
     *   the path to the file to load
     * @return
-    *   a [[Try]] with the contents of the file in a string
+    *   a [[scala.util.Try]] with the contents of the file in a string
     */
   def loadFile(path: String): Try[String]
 

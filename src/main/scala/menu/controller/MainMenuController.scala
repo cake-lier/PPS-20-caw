@@ -11,7 +11,7 @@ import it.unibo.pps.caw.menu.view.MainMenuView
   */
 trait ParentMainMenuController {
 
-  /** Asks the parent controller to return the number of default [[Level]] available. */
+  /** Asks the parent controller to return the number of default [[it.unibo.pps.caw.common.model.Level]] available. */
   val levelsCount: Int
 
   /** Returns the current game settings. */

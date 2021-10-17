@@ -2,14 +2,15 @@ package it.unibo.pps.caw.dsl
 
 import it.unibo.pps.caw.common.model.cell.{Orientation, Push, Rotation}
 
-/** Contains all words for specifying properties of [[it.unibo.pps.caw.dsl.entities.Cell]].
-  *
-  * These properties are the [[Orientation]], the [[Rotation]] and the [[Push]], which must be preceded by the words that can set
-  * those properties to the cells.
-  */
-trait PropertiesWord {
+/* Contains all words for specifying properties of Cell.
+ *
+ * These properties are the Orientation, the Rotation and the Push, which must be preceded by the words that can set
+ * those properties to the cells.
+ */
+private trait PropertiesWord {
 
-  /** A word for specifying the [[Orientation]] of an [[it.unibo.pps.caw.dsl.entities.OrientableCell]].
+  /** A word for specifying the [[Orientation]] of a [[it.unibo.pps.caw.common.model.cell.MoverCell]] or a
+    * [[it.unibo.pps.caw.common.model.cell.GeneratorCell]].
     *
     * Each word is associated to the corresponding [[Orientation]] to which this word is related.
     */
@@ -27,7 +28,7 @@ trait PropertiesWord {
   /** The "down" word which specifies the [[Orientation.Down]]. */
   case object down extends OrientationWord(Orientation.Down)
 
-  /** A word for specifying the [[Rotation]] of a [[it.unibo.pps.caw.dsl.entities.RotatableCell]].
+  /** A word for specifying the [[Rotation]] of a [[it.unibo.pps.caw.common.model.cell.RotatorCell]].
     *
     * Each word is associated to the corresponding [[Rotation]] to which this word is related.
     */
@@ -39,7 +40,7 @@ trait PropertiesWord {
   /** The "counterclockwise" word which specifies the [[Rotation.Counterclockwise]]. */
   case object counterclockwise extends RotationWord(Rotation.Counterclockwise)
 
-  /** A word for specifying the [[Push]] of a [[it.unibo.pps.caw.dsl.entities.PushableCell]].
+  /** A word for specifying the [[Push]] of a [[it.unibo.pps.caw.common.model.cell.BlockCell]].
     *
     * Each word is associated to the corresponding [[Push]] to which this word is related.
     */

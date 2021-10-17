@@ -3,9 +3,7 @@ package it.unibo.pps.caw.common.view
 import javafx.scene.Scene
 import scalafx.stage.FileChooser
 
-import java.io.File
-
-/** A special window dialog for allowing the user to choose a file from, or save a file to, the filesystem.
+/** A special window dialog for allowing the user to choose a file from, or save a file to, the file system.
   *
   * It must be constructed through one of the factory methods in its companion object.
   */
@@ -41,10 +39,10 @@ object FilePicker {
   }
 
   /** Creates a new [[FilePicker]] instance for opening and saving a [[it.unibo.pps.caw.common.model.Level]] file. It needs the
-    * [[Scene]] on which displaying the dialog.
+    * [[javafx.scene.Scene]] on which displaying the dialog.
     *
     * @param scene
-    *   the [[Scene]] on which displaying the newly created dialog
+    *   the [[javafx.scene.Scene]] on which displaying the newly created dialog
     * @return
     *   a new [[FilePicker]] for [[it.unibo.pps.caw.common.model.Level]] files
     */

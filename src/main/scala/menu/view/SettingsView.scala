@@ -20,12 +20,13 @@ trait SettingsView extends ViewComponent[Pane]
 /** Companion object of the [[SettingsView]] trait, containing its factory method. */
 object SettingsView {
 
-  /** Returns a new instance of the [[SettingsView]] trait. It receives the [[SettingsController]] so the constructed view can
-    * provide the services which should be accessible through itself, the [[AudioPlayer]] to be used for playing sounds and music
-    * and the ScalaFX'state [[Scene]] in order to draw and display itself.
+  /** Returns a new instance of the [[SettingsView]] trait. It receives the
+    * [[it.unibo.pps.caw.menu.controller.SettingsController]] so the constructed view can provide the services which should be
+    * accessible through itself, the [[AudioPlayer]] to be used for playing sounds and music and the ScalaFX'state [[Scene]] in
+    * order to draw and display itself.
     *
     * @param controller
-    *   the [[SettingsController]] associated to the created [[SettingsView]]
+    *   the [[it.unibo.pps.caw.menu.controller.SettingsController]] associated to the created [[SettingsView]]
     * @param audioPlayer
     *   the [[AudioPlayer]] to be used for playing sounds and music
     * @param scene

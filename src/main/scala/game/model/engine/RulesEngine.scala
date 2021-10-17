@@ -3,7 +3,7 @@ package it.unibo.pps.caw.game.model.engine
 import it.unibo.pps.caw.common.model.*
 import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.game.model.*
-import it.unibo.pps.caw.game.model.UpdateCell.toUpdateCell
+import UpdateCell.toUpdateCell
 
 import scala.annotation.tailrec
 
@@ -16,7 +16,7 @@ import scala.annotation.tailrec
   * current state of the board, are ''passive'' cells since they are not able to execute their function until a cell is pushed in
   * their direction, either because it was generated, rotated or moved.
   */
-sealed trait RulesEngine {
+trait RulesEngine {
 
   /** Calculates the next [[Board]] by applying the game rules to the current [[Board]].
     * @param currentBoard
@@ -32,7 +32,7 @@ object RulesEngine {
 
   /* Default implementation of the RulesEngine trait. */
   private class RulesEngineImpl(theory: String) extends RulesEngine {
-    private val engine: PrologEngine = PrologEngine(Clause(theory))
+    private val engine: PrologEngine = PrologEngine(theory)
 
     /* Given the current board, calculates the next state of the board by applying the game rules to the given cell.*/
     private def nextState(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = {
@@ -40,7 +40,7 @@ object RulesEngine {
       val resBoard: Board[UpdateCell] =
         PrologParser
           .createSerializedPredicate(getPartialBoard(board, cell), cellState.keySet.max + 1, cell)
-          .map(p => PrologParser.deserializeBoard(engine.solve(Goal(p)).getLastTerm))
+          .map(p => PrologParser.deserializeBoard(engine.solve(p).extractLastTerm))
           .getOrElse(board)
       updateGlobalBoard(
         board,
@@ -132,21 +132,21 @@ object RulesEngine {
     }
   }
 
-  private case class DummyRulesEngine() extends RulesEngine {
+  /* A dummy implementation of the RulesEngine trait to be used when the theory could not be deserialized. */
+  private class DummyRulesEngine extends RulesEngine {
+
     override def update(currentBoard: Board[BaseCell]): Board[BaseCell] = currentBoard
   }
 
-  /** Returns an instance of [[RulesEngine]] trait given a Prolog theory.
+  /** Returns an instance of [[RulesEngine]] trait given the PROLOG theory to be used as rules for the game.
+    *
     * @param theory
-    *   the Prolog theory in form of string
+    *   the PROLOG theory in a string form
     * @return
     *   an new instance of [[RulesEngine]] that will apply the given theory
     */
   def apply(theory: String): RulesEngine = RulesEngineImpl(theory)
 
-  /** Returns an instance of [[RulesEngine]] trait with no theory.
-    * @return
-    *   a new instance of [[RulesEngine]] with no theory to apply
-    */
+  /** Returns an instance of [[RulesEngine]] trait without any theory. Updates will not do anything. */
   def apply(): RulesEngine = DummyRulesEngine()
 }

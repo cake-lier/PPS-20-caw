@@ -10,29 +10,29 @@ import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString, JsValue, Json}
 
 import scala.util.Try
 
-/** Parser for serialization and deserialization of [[Level]].
+/** Parser for serialization and deserialization of [[it.unibo.pps.caw.common.model.Level]].
   *
   * The strings received to be deserialized and the strings produced after serialization must follow be in JSON format, which is
   * the only supported format for serialization. It must be constructed through its companion object.
   */
 trait LevelParser {
 
-  /** Serializes a [[Level]] instance, returns the level data as a string.
+  /** Serializes a [[it.unibo.pps.caw.common.model.Level]] instance, returns the level data as a string.
     *
     * @param level
-    *   the [[Level]] instance to serialize
+    *   the [[it.unibo.pps.caw.common.model.Level]] instance to serialize
     * @return
     *   the string of the level data, in JSON format
     */
   def serializeLevel(level: Level[BaseCell]): String
 
-  /** Deserializes a JSON string of a level, returns the corresponding [[Level]]. The JSON string must follow a schema for the
-    * validation, if not a [[IllegalArgumentException]] is thrown.
+  /** Deserializes a JSON string of a level, returns the corresponding [[it.unibo.pps.caw.common.model.Level]]. The JSON string
+    * must follow a schema for the validation, if not a [[IllegalArgumentException]] is thrown.
     *
     * @param json
     *   the level data written in JSON format
     * @return
-    *   [[Level]] instance filled with the data from the JSON string
+    *   a [[it.unibo.pps.caw.common.model.Level]] instance filled with the data from the JSON string
     */
   def deserializeLevel(json: String): Try[Level[BaseCell]]
 }
@@ -181,7 +181,7 @@ object LevelParser {
   }
 
   /** Returns a new instance of the [[LevelParser]] trait given the storage from which retrieving the file containing the JSON
-    * schema of a [[Level]].
+    * schema of a [[it.unibo.pps.caw.common.model.Level]].
     *
     * @param fileStorage
     *   the storage from which retrieving the file containing the JSON schema to be used

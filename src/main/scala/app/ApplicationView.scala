@@ -33,39 +33,43 @@ trait ApplicationView {
     */
   def showError(message: String): Unit
 
-  /** Shows the [[MainMenuView]] to the user, hiding the currently displayed view. */
+  /** Shows the [[it.unibo.pps.caw.menu.view.MainMenuView]] to the user, hiding the currently displayed view. */
   def showMainMenu(): Unit
 
-  /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing the given [[Level]].
+  /** Shows the [[it.unibo.pps.caw.game.view.GameView]] to the player, hiding the currently displayed view, for playing the given
+    * [[it.unibo.pps.caw.common.model.Level]].
     *
     * @param level
-    *   the [[Level]] which will be first displayed
+    *   the [[it.unibo.pps.caw.common.model.Level]] which will be first displayed
     */
   def showGame(level: Level[BaseCell]): Unit
 
-  /** Shows the [[GameView]] to the player, hiding the currently displayed view, for playing a default [[Level]]. The [[Level]]
-    * which will be played will be the one with the given index between the given sequence of default [[Level]]. After playing
-    * that [[Level]], the player will be able to play all subsequent [[Level]] in the sequence, until its end.
+  /** Shows the [[it.unibo.pps.caw.game.view.GameView]] to the player, hiding the currently displayed view, for playing a default
+    * [[it.unibo.pps.caw.common.model.Level]]. The level which will be played will be the one with the given index between the
+    * given sequence of default levels. After playing that level, the player will be able to play all subsequent level in the
+    * sequence, until its end.
     *
     * @param levels
-    *   the sequence of default [[Level]] that will be used while playing the game
+    *   the sequence of default [[it.unibo.pps.caw.common.model.Level]] that will be used while playing the game
     * @param levelIndex
-    *   the index of the [[Level]] which will be first displayed in the given sequence of [[Level]]
+    *   the index of the [[it.unibo.pps.caw.common.model.Level]] which will be first displayed in the given sequence of levels
     */
   def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit
 
-  /** Shows the [[EditorView]] to the player with an empty level, hiding the currently displayed view.
+  /** Shows the [[it.unibo.pps.caw.editor.view.EditorView]] to the player with an empty level, hiding the currently displayed
+    * view.
     *
-    * @param width:
-    *   the width of the empty [[Level]]
-    * @param height:
-    *   the height of the empty [[Level]]
+    * @param width
+    *   the width of the empty [[it.unibo.pps.caw.common.model.Level]]
+    * @param height
+    *   the height of the empty [[it.unibo.pps.caw.common.model.Level]]
     */
   def showLevelEditor(width: Int, height: Int): Unit
 
-  /** Shows the [[EditorView]] to the player with an empty level, hiding the currently displayed view.
+  /** Shows the [[it.unibo.pps.caw.editor.view.EditorView]] to the player with an empty level, hiding the currently displayed
+    * view.
     *
-    * @param level:
+    * @param level
     *   the loaded level
     */
   def showLevelEditor(level: Level[BaseCell]): Unit
@@ -116,11 +120,11 @@ object ApplicationView {
       Platform.runLater(() => scene.root.value = EditorView(controller, scene, backButtonText = "Menu", audioPlayer, level))
   }
 
-  /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX'state [[PrimaryStage]] for creating a view for
-    * the application.
+  /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX'state
+    * [[scalafx.application.JFXApp3.PrimaryStage]] for creating a view for the application.
     *
     * @param stage
-    *   the ScalaFX'state [[PrimaryStage]] used for creating a view for the application
+    *   the ScalaFX'state [[scalafx.application.JFXApp3.PrimaryStage]] used for creating a view for the application
     * @return
     *   a new [[ApplicationView]] instance
     */

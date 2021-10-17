@@ -13,11 +13,11 @@ import scala.collection.mutable.ListBuffer
   */
 object CellsAtWorkDSL extends CellsAdders with LevelDisplayers {
 
-  /** Allows to start writing a new specification for a [[Board]]. The specification must be written inside the block opened for
-    * calling this function.
+  /** Allows to start writing a new specification for a [[it.unibo.pps.caw.common.model.Level]]. The specification must be written
+    * inside the block opened for calling this function.
     *
     * @param fun
-    *   the function which will contain the new [[Board]] definition
+    *   the function which will contain the new [[it.unibo.pps.caw.common.model.Level]] definition
     */
   def board(fun: ListBuffer[LevelBuilderState => LevelBuilderState] ?=> Unit): Unit = {
     given ops: ListBuffer[LevelBuilderState => LevelBuilderState] = ListBuffer()
@@ -25,21 +25,21 @@ object CellsAtWorkDSL extends CellsAdders with LevelDisplayers {
     ops.foldLeft(LevelBuilderState())((b, op) => op(b))
   }
 
-  /** Allows to specify the dimensions of the [[Board]] which is currently being defined.
+  /** Allows to specify the dimensions of the [[it.unibo.pps.caw.common.model.Level]] which is currently being defined.
     *
     * @param width
-    *   the width of the [[Board]]
+    *   the width of the [[it.unibo.pps.caw.common.model.Level]]
     * @param height
-    *   the height of the [[Board]]
+    *   the height of the [[it.unibo.pps.caw.common.model.Level]]
     * @param ops
     *   the list of operations to which add this specific operation
     */
   def withDimensions(width: Int, height: Int)(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit =
     ops += (_.copy(dimensions = Some((width, height))))
 
-  /** Allows to specify the properties of the [[PlayableArea]] of the [[Board]] currently being defined. It returns a
-    * [[WithDimensionsWord]] which can then be used by the user for specifying the [[Dimensions]] and the [[Position]] of the
-    * [[PlayableArea]] and continuing the sentence.
+  /** Allows to specify the properties of the [[PlayableArea]] of the [[it.unibo.pps.caw.common.model.Level]] currently being
+    * defined. It returns a [[WithDimensionsWord]] which can then be used by the user for specifying the [[Dimensions]] and the
+    * [[Position]] of the [[PlayableArea]] and continuing the sentence.
     *
     * @param ops
     *   the list of operations to which add this specific operation

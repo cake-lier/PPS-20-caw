@@ -19,7 +19,7 @@ import scala.util.Using
   */
 trait ParentGameController {
 
-  /** Asks the parent controller to provide its instance of [[FileStorage]]. */
+  /** Asks the parent controller to provide its instance of [[it.unibo.pps.caw.common.storage.FileStorage]]. */
   val fileStorage: FileStorage
 
   /** Asks the parent controller to go back to the previous state of the application. */

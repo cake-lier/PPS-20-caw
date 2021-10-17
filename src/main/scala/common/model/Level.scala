@@ -5,13 +5,13 @@ import it.unibo.pps.caw.common.model.cell.Cell
 /** A level of the game, with its structure and its cells.
   *
   * A [[Level]] is a part of the game in which this is divided. Every level is characterized by its [[Dimensions]], its
-  * [[PlayableArea]] and the [[Cell]] which are part of the [[Board]] of this [[Level]]. Every [[Cell]] is fully contained into
-  * the [[Level]] and the same goes for the [[PlayableArea]]. Moreover, if a [[Cell]] is also contained into the [[PlayableArea]]
-  * is then a "playable" [[Cell]], which means that it can be manipulated by the player and mover in another [[Position]] inside
-  * the [[PlayableArea]]. It must be constructed through its companion object.
+  * [[PlayableArea]] and the [[it.unibo.pps.caw.common.model.cell.Cell]] which are part of the [[Board]] of this level. Every cell
+  * is fully contained into the level and the same goes for the playable area. Moreover, if a cell is also contained into the
+  * playable area is then a "playable" cell, which means that it can be manipulated by the player and mover in another
+  * [[Position]] inside the playable area. It must be constructed through its companion object.
   *
   * @tparam A
-  *   the type of [[Cell]] inside the [[Board]] which is part of this [[Level]]
+  *   the type of [[it.unibo.pps.caw.common.model.cell.Cell]] inside the [[Board]] which is part of this [[Level]]
   */
 trait Level[A <: Cell] {
 
@@ -31,16 +31,17 @@ object Level {
   /* Default implementation of the LevelBuilderState trait. */
   private case class LevelImpl[A <: Cell](dimensions: Dimensions, board: Board[A], playableArea: PlayableArea) extends Level[A]
 
-  /** Returns a new instance of the [[Level]] trait given its [[Dimensions]], its [[Board]] of [[Cell]] and its [[PlayableArea]].
+  /** Returns a new instance of the [[Level]] trait given its [[Dimensions]], its [[Board]] of
+    * [[it.unibo.pps.caw.common.model.cell.Cell]] and its [[PlayableArea]].
     *
     * @param dimensions
     *   the [[Dimensions]] of the created [[Level]]
     * @param board
-    *   the [[Board]] of [[Cell]] of the created [[Level]]
+    *   the [[Board]] of [[it.unibo.pps.caw.common.model.cell.Cell]] of the created [[Level]]
     * @param playableArea
     *   the [[PlayableArea]] of the created [[Level]]
     * @tparam A
-    *   the type of [[Cell]] inside the [[Board]] which is part of this [[Level]]
+    *   the type of [[it.unibo.pps.caw.common.model.cell.Cell]] inside the [[Board]] which is part of this [[Level]]
     * @return
     *   a new [[Level]] instance
     */
@@ -51,16 +52,17 @@ object Level {
   extension [A <: Cell](l: Level[A]) {
 
     /** Copy constructor of the [[Level]] trait for creating a new instance copying the already created one and modifying its
-      * properties with the given values for its [[Dimensions]], its [[Board]] of [[Cell]] and its [[PlayableArea]].
+      * properties with the given values for its [[Dimensions]], its [[Board]] of [[it.unibo.pps.caw.common.model.cell.Cell]] and
+      * its [[PlayableArea]].
       *
       * @param dimensions
       *   the [[Dimensions]] of the created [[Level]]
       * @param board
-      *   the [[Board]] of [[Cell]] of the created [[Level]]
+      *   the [[Board]] of [[it.unibo.pps.caw.common.model.cell.Cell]] of the created [[Level]]
       * @param playableArea
       *   the [[PlayableArea]] of the created [[Level]]
       * @tparam A
-      *   the type of [[Cell]] inside the [[Board]] which is part of this [[Level]]
+      *   the type of [[it.unibo.pps.caw.common.model.cell.Cell]] inside the [[Board]] which is part of this [[Level]]
       * @return
       *   a new [[Level]] instance copied from the given one
       */

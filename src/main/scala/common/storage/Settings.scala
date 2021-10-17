@@ -6,7 +6,7 @@ import play.api.libs.json.{Json, Writes, JsValue}
   *
   * It must be constructed through its companion object.
   */
-sealed trait Settings {
+trait Settings {
 
   /** The volume of the game music, ranging from 0 to 1. */
   val musicVolume: Double
@@ -60,7 +60,7 @@ object Settings {
     ): Settings = SettingsImpl(musicVolume, soundsVolume, solvedLevels)
   }
 
-  /** Allows for a [[Settings]] value to be converted to a [[JsValue]]. */
+  /** Allows for a [[Settings]] value to be converted to a [[play.api.libs.json.JsValue]]. */
   implicit val settingsWrites: Writes[Settings] = new Writes[Settings] {
     override def writes(settings: Settings) = Json.obj(
       "musicVolume" -> settings.musicVolume,

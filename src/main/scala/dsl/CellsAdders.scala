@@ -7,11 +7,11 @@ import it.unibo.pps.caw.dsl.words.{AtWord, FacingWord, InAnAreaWord, PushableWor
 
 import scala.collection.mutable.ListBuffer
 
-/** Adds all methods to the DSL that are able to add new cells to a [[LevelBuilderState]].
-  *
-  * The methods in this module can add a single cell or an area of cells of the same type, for each type of cells in the game.
-  */
-trait CellsAdders extends PropertiesWord {
+/* Adds all methods to the DSL that are able to add new cells to a LevelBuilderState.
+ *
+ * The methods in this module can add a single cell or an area of cells of the same type, for each type of cells in the game.
+ */
+private trait CellsAdders extends PropertiesWord {
 
   /* Allows to duplicate any cell given a builder for the cell and the Dimensions and the Position of the upper left corner
    * of the area in which place the duplicated cells.
