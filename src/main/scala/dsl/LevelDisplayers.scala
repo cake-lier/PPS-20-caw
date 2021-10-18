@@ -31,8 +31,8 @@ private trait LevelDisplayers {
   private val levelParser: LevelParser = LevelParser(fileStorage)
   private val levelStorage: LevelStorage = LevelStorage(fileStorage, levelParser)
 
-  /** Prints a built [[Level]] on the standard output after checking the correctness of the stored data and serializing it in JSON
-    * format.
+  /** Prints a built [[it.unibo.pps.caw.common.model.Level]] on the standard output after checking the correctness of the stored
+    * data and serializing it in JSON format.
     *
     * @param ops
     *   the list of operations to which add this specific operation
@@ -40,11 +40,11 @@ private trait LevelDisplayers {
   def printIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit =
     executeAction(ops)(l => print(levelParser.serializeLevel(l)))
 
-  /** Saves a built [[Level]] on the file which path is given after checking the correctness of the stored data and serializing it
-    * in JSON format.
+  /** Saves a built [[it.unibo.pps.caw.common.model.Level]] on the file which path is given after checking the correctness of the
+    * stored data and serializing it in JSON format.
     *
     * @param path
-    *   the path of the file to which save the built [[Level]]
+    *   the path of the file to which save the built [[it.unibo.pps.caw.common.model.Level]]
     * @param ops
     *   the list of operations to which add this specific operation
     */
@@ -66,20 +66,22 @@ private trait LevelDisplayers {
     })
   }
 
-  /** Opens the application for playing a [[Level]] as created by the user through the DSL after checking the correctness of the
-    * stored data and serializing it in JSON format into a temporary file. This means that, if not coupled with another action
-    * intended to saving the file to a specific location, after the closing of the launched application, the file containing the
-    * [[Level]] will not be stored anywhere. No options for saving the file will be shown in-game.
+  /** Opens the application for playing a [[it.unibo.pps.caw.common.model.Level]] as created by the user through the DSL after
+    * checking the correctness of the stored data and serializing it in JSON format into a temporary file. This means that, if not
+    * coupled with another action intended to saving the file to a specific location, after the closing of the launched
+    * application, the file containing the level will not be stored anywhere. No options for saving the file will be shown
+    * in-game.
     *
     * @param ops
     *   the list of operations to which add this specific operation
     */
   def playIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops, DSLGameMain.main(_))
 
-  /** Opens the application for editing a [[Level]] as created by the user through the DSL after checking the correctness of the
-    * stored data and serializing it in JSON format into a temporary file. This means that, if not coupled with another action
-    * intended to saving the file to a specific location, after the closing of the launched application, the file containing the
-    * [[Level]] will not be stored anywhere. An option for saving the file will be shown while the editor is open.
+  /** Opens the application for editing a [[it.unibo.pps.caw.common.model.Level]] as created by the user through the DSL after
+    * checking the correctness of the stored data and serializing it in JSON format into a temporary file. This means that, if not
+    * coupled with another action intended to saving the file to a specific location, after the closing of the launched
+    * application, the file containing the level will not be stored anywhere. An option for saving the file will be shown while
+    * the editor is open.
     *
     * @param ops
     *   the list of operations to which add this specific operation

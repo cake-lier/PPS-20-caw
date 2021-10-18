@@ -10,19 +10,22 @@ import scala.annotation.tailrec
 /** The rules engine of the game, containing all the necessary logic to apply the game rules to the game.
   *
   * It receives the Prolog theory containing all the game rules in its constructor and calculates the subsequent state of a
-  * [[Board]] of cells by applying the correct rule to each ''active'' cell. We define as ''active'' cell the [[GeneratorCell]],
-  * the [[RotatorCell]] and the [[MoverCell]], since these are cells that are capable of changing the state of surrounding cells
-  * by moving, generating or rotating other cells; the other cells, like [[BlockCell]] or [[DeleterCell]], though may affect the
-  * current state of the board, are ''passive'' cells since they are not able to execute their function until a cell is pushed in
-  * their direction, either because it was generated, rotated or moved.
+  * [[it.unibo.pps.caw.common.model.Board]] of cells by applying the correct rule to each ''active'' cell. We define as ''active''
+  * cell the [[it.unibo.pps.caw.common.model.cell.GeneratorCell]], the [[it.unibo.pps.caw.common.model.cell.RotatorCell]] and the
+  * [[it.unibo.pps.caw.common.model.cell.MoverCell]], since these are cells that are capable of changing the state of surrounding
+  * cells by moving, generating or rotating other cells; the other cells, like [[it.unibo.pps.caw.common.model.cell.BlockCell]] or
+  * [[it.unibo.pps.caw.common.model.cell.DeleterCell]], though may affect the current state of the board, are ''passive'' cells
+  * since they are not able to execute their function until a cell is pushed in their direction, either because it was generated,
+  * rotated or moved.
   */
 trait RulesEngine {
 
-  /** Calculates the next [[Board]] by applying the game rules to the current [[Board]].
+  /** Calculates the next [[it.unibo.pps.caw.common.model.Board]] by applying the game rules to the current board.
+    *
     * @param currentBoard
-    *   the current [[Board]] of [[BaseCell]]
+    *   the current [[it.unibo.pps.caw.common.model.Board]] of [[it.unibo.pps.caw.common.model.cell.BaseCell]]
     * @return
-    *   a new updated [[Board]] of [[BaseCell]]
+    *   a new updated [[it.unibo.pps.caw.common.model.Board]] of [[it.unibo.pps.caw.common.model.cell.BaseCell]]
     */
   def update(currentBoard: Board[BaseCell]): Board[BaseCell]
 }

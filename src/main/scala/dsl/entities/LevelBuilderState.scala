@@ -18,8 +18,8 @@ trait LevelBuilderState {
     */
   val dimensions: Option[Dimensions]
 
-  /** Returns an [[scala.Option]] with the [[PlayableArea]] of the [[it.unibo.pps.caw.common.model.Level]] to be built, if it has
-    * been set.
+  /** Returns an [[scala.Option]] with the [[it.unibo.pps.caw.common.model.PlayableArea]] of the
+    * [[it.unibo.pps.caw.common.model.Level]] to be built, if it has been set.
     */
   val playableArea: Option[PlayableArea]
 
@@ -64,9 +64,11 @@ object LevelBuilderState {
   /** Returns a new instance of the [[LevelBuilderState]] trait.
     *
     * @param dimensions
-    *   the [[Dimensions]] of the [[LevelBuilderState]] to create, which are set to [[scala.None]] by default, which means unset
+    *   the [[it.unibo.pps.caw.common.model.Dimensions]] of the [[LevelBuilderState]] to create, which are set to [[scala.None]]
+    *   by default, which means unset
     * @param playableArea
-    *   the [[PlayableArea]] of the [[LevelBuilderState]] to create, which is set to [[scala.None]] by default, which means unset
+    *   the [[it.unibo.pps.caw.common.model.PlayableArea]] of the [[LevelBuilderState]] to create, which is set to [[scala.None]]
+    *   by default, which means unset
     * @param moverCells
     *   the mover cells stored by this [[LevelBuilderState]]
     * @param generatorCells
@@ -113,32 +115,32 @@ object LevelBuilderState {
       * instance unless some parameters are modified.
       *
       * @param dimensions
-      *   the [[Dimensions]] of the [[LevelBuilderState]] to create, which are set to the original instance [[Dimensions]] by
-      *   default
+      *   the [[it.unibo.pps.caw.common.model.Dimensions]] of the [[LevelBuilderState]] to create, which are set to the original
+      *   instance dimensions by default
       * @param playableArea
-      *   the [[PlayableArea]] of the [[LevelBuilderState]] to create, which is set to the [[PlayableArea]] of the original
-      *   instance by default
+      *   the [[it.unibo.pps.caw.common.model.PlayableArea]] of the [[LevelBuilderState]] to create, which is set to the playable
+      *   area of the original instance by default
       * @param moverCells
-      *   the [[BaseMoverCell]] stored by this [[LevelBuilderState]], which are the mover cells stored in the original instance by
-      *   default
+      *   the [[it.unibo.pps.caw.common.model.cell.BaseMoverCell]] stored by this [[LevelBuilderState]], which are the mover cells
+      *   stored in the original instance by default
       * @param generatorCells
-      *   the [[BaseGeneratorCell]] stored by this [[LevelBuilderState]], which are the generator cells stored in the original
-      *   instance by default
+      *   the [[it.unibo.pps.caw.common.model.cell.BaseGeneratorCell]] stored by this [[LevelBuilderState]], which are the
+      *   generator cells stored in the original instance by default
       * @param rotatorCells
-      *   the [[BaseRotatorCell]] stored by this [[LevelBuilderState]], which are the rotator cells stored in the original
-      *   instance by default
+      *   the [[it.unibo.pps.caw.common.model.cell.BaseRotatorCell]] stored by this [[LevelBuilderState]], which are the rotator
+      *   cells stored in the original instance by default
       * @param blockCells
-      *   the [[BaseBlockCell]] stored by this [[LevelBuilderState]], which are the block cells stored in the original instance by
-      *   default
+      *   the [[it.unibo.pps.caw.common.model.cell.BaseBlockCell]] stored by this [[LevelBuilderState]], which are the block cells
+      *   stored in the original instance by default
       * @param enemyCells
-      *   the [[BaseEnemyCell]] stored by this [[LevelBuilderState]], which are the enemy cells stored in the original instance by
-      *   default
+      *   the [[it.unibo.pps.caw.common.model.cell.BaseEnemyCell]] stored by this [[LevelBuilderState]], which are the enemy cells
+      *   stored in the original instance by default
       * @param wallCells
-      *   the [[BaseWallCell]] stored by this [[LevelBuilderState]], which are the wall cells stored in the original instance by
-      *   default
+      *   the [[it.unibo.pps.caw.common.model.cell.BaseWallCell]] stored by this [[LevelBuilderState]], which are the wall cells
+      *   stored in the original instance by default
       * @param deleterCells
-      *   the [[BaseDeleterCell]] stored by this [[LevelBuilderState]], which are the deleter cells stored in the original
-      *   instance by default
+      *   the [[it.unibo.pps.caw.common.model.cell.BaseDeleterCell]] stored by this [[LevelBuilderState]], which are the deleter
+      *   cells stored in the original instance by default
       * @return
       *   a new instance of the [[LevelBuilderState]] trait
       */

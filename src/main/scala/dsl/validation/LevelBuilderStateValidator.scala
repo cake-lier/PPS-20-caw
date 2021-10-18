@@ -1,17 +1,18 @@
 package it.unibo.pps.caw.dsl.validation
 
-import it.unibo.pps.caw.dsl.entities.*
+import it.unibo.pps.caw.dsl.entities.LevelBuilderState
 import cats.data.ValidatedNel
 import cats.implicits.given
 import cats.syntax.apply
 import it.unibo.pps.caw.common.model.{Dimensions, Level, PlayableArea, Position}
 import it.unibo.pps.caw.common.model.cell.BaseCell
 
-/** Contains the method for validating the correctness of a [[LevelBuilderState]] entity and extract the informations for building
-  * a [[Level]].
+/** Contains the method for validating the correctness of a [[it.unibo.pps.caw.dsl.entities.LevelBuilderState]] entity and extract
+  * the informations for building a [[it.unibo.pps.caw.common.model.Level]].
   *
-  * This object is a module for containing methods which can check the correctness of a [[LevelBuilderState]] entity, so it can be
-  * then built into a [[Level]] entity.
+  * This object is a module for containing methods which can check the correctness of a
+  * [[it.unibo.pps.caw.dsl.entities.LevelBuilderState]] entity, so it can be then built into a
+  * [[it.unibo.pps.caw.common.model.Level]] entity.
   */
 object LevelBuilderStateValidator {
 
@@ -82,16 +83,17 @@ object LevelBuilderStateValidator {
 
   import Checkers.*
 
-  /** Checks if the data which was stored into the given [[LevelBuilderState]] is valid or not and, if it is, builds a new
-    * [[Level]] using that data. An [[scala.util.Either]] is returned at the end of the check operation: if the operation
-    * succeeded, the built [[Level]] will be contained inside the [[scala.util.Either]]. If the check fails, all the
-    * [[ValidationError]] encountered while checking will be contained inside the [[scala.util.Either]].
+  /** Checks if the data which was stored into the given [[it.unibo.pps.caw.dsl.entities.LevelBuilderState]] is valid or not and,
+    * if it is, builds a new [[it.unibo.pps.caw.common.model.Level]] using that data. An [[scala.util.Either]] is returned at the
+    * end of the check operation: if the operation succeeded, the built level will be contained inside the [[scala.util.Either]].
+    * If the check fails, all the [[ValidationError]] encountered while checking will be contained inside the
+    * [[scala.util.Either]].
     *
     * @param state
-    *   the [[LevelBuilderState]] to be checked and to be used for building
+    *   the [[it.unibo.pps.caw.dsl.entities.LevelBuilderState]] to be checked and to be used for building
     * @return
-    *   an [[scala.util.Either]] with the built [[Level]] if the check succeedes or with all the encountered [[ValidationError]]
-    *   if the check fails
+    *   an [[scala.util.Either]] with the built [[it.unibo.pps.caw.common.model.Level]] if the check succeedes or with all the
+    *   encountered [[ValidationError]] if the check fails
     */
   def validateBuilderState(state: LevelBuilderState): Either[Seq[ValidationError], Level[BaseCell]] =
     checkBoardDimensions(state.dimensions)

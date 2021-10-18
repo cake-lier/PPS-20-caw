@@ -8,16 +8,17 @@ import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
 /** The model of the editor, containing all its business logic.
   *
   * The model contains the logic of the editor, providing the necessary functionalities to modify the current edited level given
-  * the player inputs. A level is made of a playable area and cells: the player is able to select and deselect the playable area;
-  * they can add a game cell in whichever position they want, move it from a position to another or remove it. It must be
-  * constructed through its companion object.
+  * the player inputs. A level is made of a [[it.unibo.pps.caw.common.model.PlayableArea]] and a
+  * [[it.unibo.pps.caw.common.model.Board]] with [[it.unibo.pps.caw.common.model.cell.Cell]]: the player is able to select and
+  * deselect the playable area; they can add a cell in whichever position they want, move it from a position to another or remove
+  * it. It must be constructed through its companion object.
   */
 sealed trait EditorModel {
 
   /** The [[LevelBuilderState]] of the editor. */
   val currentState: LevelBuilderState
 
-  /** The [[Level]] built by the player. */
+  /** The [[it.unibo.pps.caw.common.model.Level]] built by the player. */
   val builtLevel: Option[Level[BaseCell]]
 
   /** Resets the level, removing the playable area and all the cells.
@@ -30,47 +31,50 @@ sealed trait EditorModel {
   /** Adds the given cell to the model.
     *
     * @param cell
-    *   the [[BaseCell]] to be added
+    *   the [[it.unibo.pps.caw.common.model.cell.BaseCell]] to be added
     * @return
     *   a new instance of [[EditorModel]] with the added cell
     */
   def addCell(cell: BaseCell): EditorModel
 
-  /** Moves a cell given its previous [[Position]] and the new [[Position]] in which was moved.
+  /** Moves a cell given its previous [[it.unibo.pps.caw.common.model.Position]] and the new
+    * [[it.unibo.pps.caw.common.model.Position]] in which was moved.
     *
     * @param oldPosition
-    *   the [[Position]] of the [[Cell]] that was moved
+    *   the [[it.unibo.pps.caw.common.model.Position]] of the [[it.unibo.pps.caw.common.model.cell.Cell]] that was moved
     * @param newPosition
-    *   the new [[Position]] of the [[Cell]]
+    *   the new [[it.unibo.pps.caw.common.model.Position]] of the [[it.unibo.pps.caw.common.model.cell.Cell]]
     * @return
-    *   a new instance of [[EditorModel]] with the [[Cell]] moved to its new [[Position]]
+    *   a new instance of [[EditorModel]] with the [[it.unibo.pps.caw.common.model.cell.Cell]] moved to its new
+    *   [[it.unibo.pps.caw.common.model.Position]]
     */
   def updateCellPosition(oldPosition: Position, newPosition: Position): EditorModel
 
-  /** Removes the cell in the given [[Position]].
+  /** Removes the cell in the given [[it.unibo.pps.caw.common.model.Position]].
     *
     * @param position
-    *   the [[Position]] of the [[Cell]] that has to be removed
+    *   the [[it.unibo.pps.caw.common.model.Position]] of the [[it.unibo.pps.caw.common.model.cell.Cell]] that has to be removed
     * @return
-    *   a new instance of [[EditorModel]] with the [[Cell]] removed
+    *   a new instance of [[EditorModel]] with the [[it.unibo.pps.caw.common.model.cell.Cell]] removed
     */
   def removeCell(position: Position): EditorModel
 
-  /** Places a [[PlayableArea]] in the given [[Position]] with the given [[Dimensions]].
+  /** Places a [[it.unibo.pps.caw.common.model.PlayableArea]] in the given [[it.unibo.pps.caw.common.model.Position]] with the
+    * given [[it.unibo.pps.caw.common.model.Dimensions]].
     *
     * @param position
-    *   the upper left corner [[Position]] of the [[PlayableArea]]
+    *   the upper left corner [[it.unibo.pps.caw.common.model.Position]] of the [[it.unibo.pps.caw.common.model.PlayableArea]]
     * @param dimensions
-    *   the [[Dimensions]] of the [[PlayableArea]]
+    *   the [[it.unibo.pps.caw.common.model.Dimensions]] of the [[it.unibo.pps.caw.common.model.PlayableArea]]
     * @return
-    *   a new instance of [[EditorModel]] containing a new [[PlayableArea]]
+    *   a new instance of [[EditorModel]] containing a new [[it.unibo.pps.caw.common.model.PlayableArea]]
     */
   def addPlayableArea(position: Position, dimensions: Dimensions): EditorModel
 
-  /** Removes the [[PlayableArea]] from the level.
+  /** Removes the [[it.unibo.pps.caw.common.model.PlayableArea]] from the level.
     *
     * @return
-    *   a new instance of [[EditorModel]] with the [[PlayableArea]] removed
+    *   a new instance of [[EditorModel]] with the [[it.unibo.pps.caw.common.model.PlayableArea]] removed
     */
   def removePlayableArea: EditorModel
 }

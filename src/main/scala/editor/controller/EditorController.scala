@@ -26,9 +26,11 @@ trait ParentEditorController {
 
 /** The controller that manages the editor.
   *
-  * It acts as a bridge between the [[EditorView]] and the [[EditorModel]]. It receives the player inputs from the [[EditorView]]
-  * and consequently updates the [[EditorModel]]; it then updates the [[EditorView]] with the newly updated [[EditorModel]]. It
-  * must be constructed through its companion object.
+  * It acts as a bridge between the [[it.unibo.pps.caw.editor.view.EditorView]] and the
+  * [[it.unibo.pps.caw.editor.model.EditorModel]]. It receives the player inputs from the
+  * [[it.unibo.pps.caw.editor.view.EditorView]] and consequently updates the [[it.unibo.pps.caw.editor.model.EditorModel]]; it
+  * then updates the [[it.unibo.pps.caw.editor.view.EditorView]] with the newly updated
+  * [[it.unibo.pps.caw.editor.model.EditorModel]]. It must be constructed through its companion object.
   */
 sealed trait EditorController {
 
@@ -38,43 +40,45 @@ sealed trait EditorController {
   /** Resets the editor board, removing the playable area and all the cells present in the board. */
   def resetLevel(): Unit
 
-  /** Adds a new cell to the [[EditorModel]].
+  /** Adds a new cell to the [[it.unibo.pps.caw.editor.model.EditorModel]].
     *
     * @param cell
-    *   the [[BaseCell]] to be added
+    *   the [[it.unibo.pps.caw.common.model.cell.BaseCell]] to be added
     */
   def addCell(cell: BaseCell): Unit
 
-  /** Updates the [[EditorModel]] by moving the cell whose [[Position]] is equal to the given old [[Position]] to the new given
-    * [[Position]].
+  /** Updates the [[it.unibo.pps.caw.editor.model.EditorModel]] by moving the cell whose
+    * [[it.unibo.pps.caw.common.model.Position]] is equal to the given old position to the new given position.
     *
     * @param oldPosition
-    *   the [[Position]] in which the cell was originally located
+    *   the [[it.unibo.pps.caw.common.model.Position]] in which the cell was originally located
     * @param newPosition
-    *   the [[Position]] to which the cell was moved
+    *   the [[it.unibo.pps.caw.common.model.Position]] to which the cell was moved
     */
   def updateCellPosition(oldPosition: Position, newPosition: Position): Unit
 
-  /** Removes the cell whose [[Position]] is equal to the given [[Position]] from the [[EditorModel]].
+  /** Removes the cell whose [[it.unibo.pps.caw.common.model.Position]] is equal to the given position from the
+    * [[it.unibo.pps.caw.editor.model.EditorModel]].
     *
     * @param position
-    *   the [[Position]] of the cell that has to be removed
+    *   the [[it.unibo.pps.caw.common.model.Position]] of the cell that has to be removed
     */
   def removeCell(position: Position): Unit
 
-  /** Adds a [[it.unibo.pps.caw.common.model.PlayableArea]] to the [[EditorModel]].
+  /** Adds a [[it.unibo.pps.caw.common.model.PlayableArea]] to the [[it.unibo.pps.caw.editor.model.EditorModel]].
     *
     * @param position
-    *   the upper left [[Position]] where the [[it.unibo.pps.caw.common.model.PlayableArea]] is located
+    *   the upper left corner [[it.unibo.pps.caw.common.model.Position]] where the [[it.unibo.pps.caw.common.model .PlayableArea]]
+    *   is located
     * @param dimensions
-    *   the [[Dimensions]] of the [[it.unibo.pps.caw.common.model.PlayableArea]]
+    *   the [[it.unibo.pps.caw.common.model.Dimensions]] of the [[it.unibo.pps.caw.common.model.PlayableArea]]
     */
   def addPlayableArea(position: Position, dimensions: Dimensions): Unit
 
-  /** Removes the [[it.unibo.pps.caw.common.model.PlayableArea]] from the [[EditorModel]] . */
+  /** Removes the [[it.unibo.pps.caw.common.model.PlayableArea]] from the [[it.unibo.pps.caw.editor.model.EditorModel]] . */
   def removePlayableArea(): Unit
 
-  /** Saves the current [[Level]] built by the user.
+  /** Saves the current [[it.unibo.pps.caw.common.model.Level]] built by the user.
     * @param path
     *   the path of the file where the level will be saved
     */
@@ -145,13 +149,13 @@ object EditorController {
 
   /** Returns a new instance of the [[EditorController]] trait. It must receive the [[ParentEditorController]], which it
     * represents its parent controller which provides all the functionalities which must be delegated to this type of controller,
-    * the [[EditorView]] which will be called by and will call the returned [[EditorController]] instance and the width and height
-    * of the new level the player wants to create.
+    * the [[it.unibo.pps.caw.editor.view.EditorView]] which will be called by and will call the returned [[EditorController]]
+    * instance and the width and height of the new level the player wants to create.
     *
     * @param parentController
     *   the parent controller of the returned [[EditorController]]
     * @param view
-    *   the [[EditorView]]
+    *   the [[it.unibo.pps.caw.editor.view.EditorView]]
     * @param width
     *   the width of the level the player wants to create
     * @param height
@@ -169,15 +173,15 @@ object EditorController {
 
   /** Returns a new instance of the [[EditorController]] trait. It must receive the [[ParentEditorController]], which it
     * represents its parent controller which provides all the functionalities which must be delegated to this type of controller,
-    * the [[EditorView]] which will be called by and will call the returned [[EditorController]] instance and the [[Level]] that
-    * the player wants to edit.
+    * the [[it.unibo.pps.caw.editor.view.EditorView]] which will be called by and will call the returned [[EditorController]]
+    * instance and the [[it.unibo.pps.caw.common.model.Level]] that the player wants to edit.
     *
     * @param parentController
     *   the parent controller of the returned [[EditorController]]
     * @param view
-    *   the [[EditorView]]
+    *   the [[it.unibo.pps.caw.editor.view.EditorView]]
     * @param level
-    *   the [[Level]] the player wants to edit
+    *   the [[it.unibo.pps.caw.common.model.Level]] the player wants to edit
     * @return
     *   a new instance [[EditorController]]
     */

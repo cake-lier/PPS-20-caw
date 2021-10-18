@@ -9,31 +9,28 @@ import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView, FilePicker, 
 import it.unibo.pps.caw.editor.controller.{EditorController, ParentEditorController}
 import it.unibo.pps.caw.editor.model.LevelBuilderState
 import javafx.application.Platform
-import javafx.event.EventHandler
 import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.{HPos, Insets, VPos}
 import javafx.scene.control.Button
 import javafx.scene.image.{Image, ImageView}
-import javafx.scene.input.{ClipboardContent, MouseButton, MouseEvent, TransferMode}
-import javafx.scene.layout.{FlowPane, GridPane, Pane}
+import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert
 import scalafx.scene.control.Alert.AlertType
 
-import java.io.File
-
 /** The view that displays the editor.
   *
   * It is responsible of displaying the editor, with its controls and the current level being edited, and capturing the player
-  * inputs, relaying them to the [[EditorController]]. After the controller has processed the receiving input, the [[EditorView]]
-  * displays the current state of the edited level. It must be constructed through its companion object.
+  * inputs, relaying them to the [[it.unibo.pps.caw.editor.controller.EditorController]]. After the controller has processed the
+  * receiving input, the [[EditorView]] displays the current state of the edited level. It must be constructed through its
+  * companion object.
   */
 trait EditorView extends ViewComponent[Pane] {
 
-  /** Draws the given [[LevelBuilderState]].
+  /** Draws the given [[it.unibo.pps.caw.editor.model.LevelBuilderState]].
     *
     * @param levelState
-    *   the [[LevelBuilderState]] to be displayed
+    *   the [[it.unibo.pps.caw.editor.model.LevelBuilderState]] to be displayed
     */
   def drawLevelState(levelState: LevelBuilderState): Unit
 
@@ -46,30 +43,31 @@ trait EditorView extends ViewComponent[Pane] {
 
 /** Updates the editor model when view is modified.
   *
-  * Its methods are called when a [[PlayableArea]] is placed to the board or removed from it by the player and when a [[Cell]] is
-  * removed by the player.
+  * Its methods are called when a [[it.unibo.pps.caw.common.model.PlayableArea]] is placed to the board or removed from it by the
+  * player and when a [[it.unibo.pps.caw.common.model.cell.Cell]] is removed by the player.
   */
 trait EditorUpdater {
 
-  /** Creates a new [[PlayableArea]], given its upper left [[Position]] and its lower right [[Position]].
+  /** Creates a new [[it.unibo.pps.caw.common.model.PlayableArea]], given its upper left
+    * [[it.unibo.pps.caw.common.model.Position]] and its lower right [[it.unibo.pps.caw.common.model.Position]].
     */
   def createPlayableArea(topLeft: Position, downRight: Position): Unit
 
-  /** Removes a [[Cell]] given its current [[Position]]. */
+  /** Removes a [[it.unibo.pps.caw.common.model.cell.Cell]] given its current [[it.unibo.pps.caw.common.model.Position]]. */
   def removeCell(position: Position): Unit
 
-  /** Removes the [[PlayableArea]]. */
+  /** Removes the [[it.unibo.pps.caw.common.model.PlayableArea]]. */
   def removePlayableArea(): Unit
 }
 
 /** The abstract view displaying the [[EditorView]].
   *
   * @param scene
-  *   the ScalaFX [[Scene]] on which the [[EditorView]] will be drawn
+  *   the ScalaFX [[scalafx.scene.Scene]] on which the [[EditorView]] will be drawn
   * @param backButtonText
   *   the text displayed in the close/back button
   * @param audioPlayer
-  *   the [[AudioPlayer]] that will play the editor music
+  *   the [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] that will play the editor music
   */
 abstract class AbstractEditorView(
   scene: Scene,
@@ -260,19 +258,20 @@ object EditorView {
       EditorController(parentLevelEditorController, this, level)
   }
 
-  /** Returns a new instance of [[EditorView]]. It receives the [[ParentEditorController]] so as to be able to correctly create
-    * and then use its [[EditorController]], the ScalaFX [[Scene]] where the [[EditorView]] will draw and display itself, the text
-    * that the upper left button will display, depending if the [[EditorView]] was called from the menu or as a its own
-    * application and the [[AudioPlayer]] to be used for playing sounds and music for the editor.
+  /** Returns a new instance of [[EditorView]]. It receives the [[it.unibo.pps.caw.editor.controller.ParentEditorController]] so
+    * as to be able to correctly create and then use its [[it.unibo.pps.caw.editor.controller.EditorController]], the ScalaFX
+    * [[scalafx.scene.Scene]] where the [[EditorView]] will draw and display itself, the text that the upper left button will
+    * display, depending if the [[EditorView]] was called from the menu or as a its own application and the
+    * [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] to be used for playing sounds and music for the editor.
     *
     * @param parentLevelEditorController
-    *   the controller needed to build the [[EditorController]]
+    *   the controller needed to build the [[it.unibo.pps.caw.editor.controller.EditorController]]
     * @param scene
-    *   the ScalaFX [[Scene]] where the [[EditorView]] will be drawn and displayed
+    *   the ScalaFX [[scalafx.scene.Scene]] where the [[EditorView]] will be drawn and displayed
     * @param backButtonText
     *   the text of the upper left button
     * @param audioPlayer
-    *   the [[AudioPlayer]] used to play the music and sounds for the editor
+    *   the [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] used to play the music and sounds for the editor
     * @param level
     *   the level that the [[EditorView]] will display
     * @return
@@ -293,19 +292,20 @@ object EditorView {
       level
     )
 
-  /** Returns a new instance of [[EditorView]]. It receives the [[ParentEditorController]] so as to be able to correctly create
-    * and then use its [[EditorController]], the ScalaFX [[Scene]] where the [[EditorView]] will draw and display itself, the text
-    * that the upper left button will display, depending if the [[EditorView]] was called from the menu or as a its own
-    * application and the [[AudioPlayer]] to be used for playing sounds and music for the editor.
+  /** Returns a new instance of [[EditorView]]. It receives the [[it.unibo.pps.caw.editor.controller.ParentEditorController]] so
+    * as to be able to correctly create and then use its [[it.unibo.pps.caw.editor.controller.EditorController]], the ScalaFX
+    * [[scalafx.scene.Scene]] where the [[EditorView]] will draw and display itself, the text that the upper left button will
+    * display, depending if the [[EditorView]] was called from the menu or as a its own application and the
+    * [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] to be used for playing sounds and music for the editor.
     *
     * @param parentLevelEditorController
-    *   the controller needed to build the [[EditorController]]
+    *   the controller needed to build the [[it.unibo.pps.caw.editor.controller.EditorController]]
     * @param scene
-    *   the ScalaFX [[Scene]] where the [[EditorView]] will be drawn and displayed
+    *   the ScalaFX [[scalafx.scene.Scene]] where the [[EditorView]] will be drawn and displayed
     * @param backButtonText
     *   the text of the upper left button
     * @param audioPlayer
-    *   the [[AudioPlayer]] used to play the music and sounds for the editor
+    *   the [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] used to play the music and sounds for the editor
     * @param boardWidth
     *   the width of the new empty level
     * @param boardHeight

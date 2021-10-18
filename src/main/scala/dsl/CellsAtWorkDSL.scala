@@ -37,14 +37,16 @@ object CellsAtWorkDSL extends CellsAdders with LevelDisplayers {
   def withDimensions(width: Int, height: Int)(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit =
     ops += (_.copy(dimensions = Some((width, height))))
 
-  /** Allows to specify the properties of the [[PlayableArea]] of the [[it.unibo.pps.caw.common.model.Level]] currently being
-    * defined. It returns a [[WithDimensionsWord]] which can then be used by the user for specifying the [[Dimensions]] and the
-    * [[Position]] of the [[PlayableArea]] and continuing the sentence.
+  /** Allows to specify the properties of the [[it.unibo.pps.caw.common.model.PlayableArea]] of the
+    * [[it.unibo.pps.caw.common.model.Level]] currently being defined. It returns a
+    * [[it.unibo.pps.caw.dsl.words.WithDimensionsWord]] which can then be used by the user for specifying the
+    * [[it.unibo.pps.caw.common.model.Dimensions]] and the [[it.unibo.pps.caw.common.model.Position]] of the playable area and
+    * continuing the sentence.
     *
     * @param ops
     *   the list of operations to which add this specific operation
     * @return
-    *   a [[WithDimensionsWord]] which can then be used by the user for continuing the sentence
+    *   a [[it.unibo.pps.caw.dsl.words.WithDimensionsWord]] which can then be used by the user for continuing the sentence
     */
   def hasPlayableArea(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): WithDimensionsWord =
     WithDimensionsWord(d => AtWord(p => ops += (_.copy(playableArea = Some(PlayableArea(d)(p))))))

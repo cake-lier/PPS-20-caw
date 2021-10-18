@@ -6,17 +6,17 @@ import it.unibo.pps.caw.common.model.cell.PlayableCell
 /** The state of a level builder used by the editor.
   *
   * It collects the necessary data inserted by the user in order to allow another entity to modify and build a
-  * [[it.unibo.pps.caw .common.model.Level]] and its structure. It must be constructed through its companion object.
+  * [[it.unibo.pps.caw.common.model.Level]] and its structure. It must be constructed through its companion object.
   */
 trait LevelBuilderState {
 
-  /** Returns the [[Dimensions]] of this [[LevelBuilderState]]. */
+  /** Returns the [[it.unibo.pps.caw.common.model.Dimensions]] of this [[LevelBuilderState]]. */
   val dimensions: Dimensions
 
-  /** Returns the [[Board]] of this [[LevelBuilderState]]. */
+  /** Returns the [[it.unibo.pps.caw.common.model.Board]] of this [[LevelBuilderState]]. */
   val board: Board[PlayableCell]
 
-  /** Returns the [[PlayableArea]] of this [[LevelBuilderState]]. */
+  /** Returns the [[it.unibo.pps.caw.common.model.PlayableArea]] of this [[LevelBuilderState]]. */
   val playableArea: Option[PlayableArea]
 }
 
@@ -27,28 +27,30 @@ object LevelBuilderState {
   private case class LevelBuilderImpl(dimensions: Dimensions, board: Board[PlayableCell], playableArea: Option[PlayableArea])
     extends LevelBuilderState
 
-  /** Returns a new instance of [[LevelBuilderState]] given its [[Dimensions]], its [[Board]] and its [[PlayableArea]].
+  /** Returns a new instance of [[LevelBuilderState]] given its [[it.unibo.pps.caw.common.model.Dimensions]], its
+    * [[it.unibo.pps.caw.common.model.Board]] and its [[it.unibo.pps.caw.common.model.PlayableArea]].
     *
     * @param dimensions
-    *   the [[Dimensions]] of the [[LevelBuilderState]] to create
+    *   the [[it.unibo.pps.caw.common.model.Dimensions]] of the [[LevelBuilderState]] to create
     * @param board
-    *   the [[Board]] of the [[LevelBuilderState]] to create
+    *   the [[it.unibo.pps.caw.common.model.Board]] of the [[LevelBuilderState]] to create
     * @param playableArea
-    *   the [[PlayableArea]] of the [[LevelBuilderState]] to create
+    *   the [[it.unibo.pps.caw.common.model.PlayableArea]] of the [[LevelBuilderState]] to create
     * @param playableArea
-    *   the [[PlayableArea]] of the level
+    *   the [[it.unibo.pps.caw.common.model.PlayableArea]] of the level
     * @return
     *   a new instance of [[LevelBuilderState]]
     */
   def apply(playableArea: PlayableArea)(dimensions: Dimensions)(board: Board[PlayableCell]): LevelBuilderState =
     LevelBuilderImpl(dimensions, board, Some(playableArea))
 
-  /** Returns a new instance of [[LevelBuilderState]] given its [[Dimensions]] and its [[Board]].
+  /** Returns a new instance of [[LevelBuilderState]] given its [[it.unibo.pps.caw.common.model.Dimensions]] and its
+    * [[it.unibo.pps.caw.common.model.Board]].
     *
     * @param dimensions
-    *   the [[Dimensions]] of the [[LevelBuilderState]] to create
+    *   the [[it.unibo.pps.caw.common.model.Dimensions]] of the [[LevelBuilderState]] to create
     * @param board
-    *   the [[Board]] of the [[LevelBuilderState]] to create
+    *   the [[it.unibo.pps.caw.common.model.Board]] of the [[LevelBuilderState]] to create
     * @return
     *   a new instance of [[LevelBuilderState]]
     */
@@ -62,11 +64,11 @@ object LevelBuilderState {
       * [[LevelBuilderState]].
       *
       * @param dimensions
-      *   the [[Dimensions]] of the [[LevelBuilderState]] to create
+      *   the [[it.unibo.pps.caw.common.model.Dimensions]] of the [[LevelBuilderState]] to create
       * @param board
-      *   the [[Board]] of the [[LevelBuilderState]] to create
+      *   the [[it.unibo.pps.caw.common.model.Board]] of the [[LevelBuilderState]] to create
       * @param playableArea
-      *   the [[PlayableArea]] of the [[LevelBuilderState]] to create
+      *   the [[it.unibo.pps.caw.common.model.PlayableArea]] of the [[LevelBuilderState]] to create
       * @return
       *   a new instance of [[LevelBuilderState]] copied from this one
       */

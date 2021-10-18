@@ -20,34 +20,36 @@ import scalafx.scene.Scene
 /** The view which displays the game part of an application.
   *
   * This view is responsible for displaying everything related to a game in an application. This means that this component should
-  * capture the user input while playing and should relay it to its controller, the [[GameController]]. After the controller has
-  * processed the input, the [[GameView]] should be used to display the current state of the game. It must be constructed through
-  * its companion object.
+  * capture the user input while playing and should relay it to its controller, the
+  * [[it.unibo.pps.caw.game.controller.GameController]]. After the controller has processed the input, the [[GameView]] should be
+  * used to display the current state of the game. It must be constructed through its companion object.
   */
 trait GameView extends ViewComponent[GridPane] {
 
   /** Makes the application view go back to the main menu, displaying it. */
   def backToMenu(): Unit
 
-  /** Displays the given [[Level]], resetting the component displaying it. This means that this method is to be called when there
-    * is a change between [[Level]] in the game and not when an update of the same [[Level]] is to be displayed.
+  /** Displays the given [[it.unibo.pps.caw.common.model.Level]], resetting the component displaying it. This means that this
+    * method is to be called when there is a change between level in the game and not when an update of the same level is to be
+    * displayed.
     *
     * @param level
-    *   the [[Level]] to display
+    *   the [[it.unibo.pps.caw.common.model.Level]] to display
     * @param isCompleted
-    *   whether or not this [[Level]] has been completed
+    *   whether or not this [[it.unibo.pps.caw.common.model.Level]] has been completed
     */
   def drawLevel(level: Level[PlayableCell], isCompleted: Boolean): Unit
 
-  /** Displays an update to the [[Board]] of the currently displayed [[Level]]. This means that this method is not to be called
-    * when there is a change between [[Level]], but only during update steps over the same [[Level]].
+  /** Displays an update to the [[it.unibo.pps.caw.common.model.Board]] of the currently displayed
+    * [[it.unibo.pps.caw.common.model.Level]]. This means that this method is not to be called when there is a change between
+    * levels, but only during update steps over the same level.
     *
     * @param board
-    *   the updated [[Board]] to be displayed
+    *   the updated [[it.unibo.pps.caw.common.model.Board]] to be displayed
     * @param didEnemyDie
     *   whether or not an enemy died after this update
     * @param isCompleted
-    *   whether or not this [[Level]] has been completed
+    *   whether or not this [[it.unibo.pps.caw.common.model.Level]] has been completed
     */
   def drawPlayBoard(
     board: Board[BaseCell],
@@ -55,10 +57,11 @@ trait GameView extends ViewComponent[GridPane] {
     isCompleted: Boolean
   ): Unit
 
-  /** Displays the initial configuration of the [[Board]] of the currently displayed [[Level]], actually resetting this view.
+  /** Displays the initial configuration of the [[it.unibo.pps.caw.common.model.Board]] of the currently displayed
+    * [[it.unibo.pps.caw.common.model.Level]], actually resetting this view.
     *
     * @param board
-    *   the initial configuration of the [[Board]] to be displayed
+    *   the initial configuration of the [[it.unibo.pps.caw.common.model.Board]] to be displayed
     */
   def drawSetupBoard(board: Board[PlayableCell]): Unit
 
@@ -218,21 +221,24 @@ object GameView {
     override protected def createController(): GameController = GameController(parentController, this, level)
   }
 
-  /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentDefaultGameController]] so as to be able to complete
-    * the construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
-    * music, the sequence of default [[Level]] to be used during this game, the index of the default [[Level]] from which starting
-    * the game and the ScalaFX'state [[Scene]] on which displaying the instance after being constructed.
+  /** Returns a new instance of the [[GameView]] trait. It receives a
+    * [[it.unibo.pps.caw.game.controller.ParentDefaultGameController]] so as to be able to complete the construction of a
+    * [[it.unibo.pps.caw.game.controller.GameController]] correctly in order to use it, the
+    * [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] to be used for playing sounds and music, the sequence of default
+    * [[it.unibo.pps.caw.common.model.Level]] to be used during this game, the index of the default level from which starting the
+    * game and the ScalaFX'state [[scalafx.scene.Scene]] on which displaying the instance after being constructed.
     *
     * @param parentController
-    *   the controller needed so as to be able to complete the construction of a [[GameController]] correctly
+    *   the controller needed so as to be able to complete the construction of a
+    *   [[it.unibo.pps.caw.game.controller.GameController]] correctly
     * @param audioPlayer
-    *   the [[AudioPlayer]] to be used for playing sounds and music
+    *   the [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] to be used for playing sounds and music
     * @param levels
-    *   the sequence of default [[Level]] to be used during this game
+    *   the sequence of default [[it.unibo.pps.caw.common.model.Level]] to be used during this game
     * @param levelIndex
     *   the index of the default level from which starting the game
     * @param scene
-    *   the ScalaFX'state [[Scene]] on which displaying the instance after being constructed
+    *   the ScalaFX'state [[scalafx.scene.Scene]] on which displaying the instance after being constructed
     * @return
     *   a new [[GameView]] instance
     */
@@ -246,19 +252,21 @@ object GameView {
   ): GameView =
     DefaultGameView(parentController, audioPlayer, levels, levelIndex, scene, backButtonText)
 
-  /** Returns a new instance of the [[GameView]] trait. It receives a [[ParentGameController]] so as to be able to complete the
-    * construction of a [[GameController]] correctly in order to use it, the [[AudioPlayer]] to be used for playing sounds and
-    * music, the [[Level]] from which starting the game and the ScalaFX'state [[Scene]] on which displaying the instance after
-    * being constructed.
+  /** Returns a new instance of the [[GameView]] trait. It receives a [[it.unibo.pps.caw.game.controller.ParentGameController]] so
+    * as to be able to complete the construction of a [[it.unibo.pps.caw.game.controller.GameController]] correctly in order to
+    * use it, the [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] to be used for playing sounds and music, the
+    * [[it.unibo.pps.caw.common.model.Level]] from which starting the game and the ScalaFX'state [[scalafx.scene.Scene]] on which
+    * displaying the instance after being constructed.
     *
     * @param parentController
-    *   the controller needed so as to be able to complete the construction of a [[GameController]] correctly
+    *   the controller needed so as to be able to complete the construction of a
+    *   [[it.unibo.pps.caw.game.controller.GameController]] correctly
     * @param audioPlayer
-    *   the [[AudioPlayer]] to be used for playing sounds and music
+    *   the [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] to be used for playing sounds and music
     * @param level
-    *   the [[Level]] from which starting the game
+    *   the [[it.unibo.pps.caw.common.model.Level]] from which starting the game
     * @param scene
-    *   the ScalaFX'state [[Scene]] on which displaying the instance after being constructed
+    *   the ScalaFX'state [[scalafx.scene.Scene]] on which displaying the instance after being constructed
     * @return
     *   a new [[GameView]] instance
     */

@@ -1,8 +1,7 @@
-package it.unibo.pps.caw
-package game.view
+package it.unibo.pps.caw.game.view
 
-import common.model.{Board, Level}
-import common.model.cell.{BaseCell, Cell, PlayableCell}
+import it.unibo.pps.caw.common.model.{Board, Level}
+import it.unibo.pps.caw.common.model.cell.{BaseCell, Cell, PlayableCell}
 
 import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellView, ModelUpdater}
 
@@ -14,15 +13,19 @@ import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellView, Mod
   */
 trait GameBoardView extends BoardView {
 
-  /** Draws the [[PlayableCell]] received in input during the setup phase.
+  /** Draws the [[it.unibo.pps.caw.common.model.cell.PlayableCell]] received in input during the setup phase.
+    *
     * @param board
-    *   the [[Board]] containing the [[PlayableCell]] to be drawn in the board
+    *   the [[it.unibo.pps.caw.common.model.Board]] containing the [[it.unibo.pps.caw.common.model.cell.PlayableCell]] to be drawn
+    *   in the board
     */
   def drawSetupBoard(board: Board[PlayableCell]): Unit
 
-  /** Draws the [[PlayableCell]] received in input during the game phase.
+  /** Draws the [[it.unibo.pps.caw.common.model.cell.PlayableCell]] received in input during the game phase.
+    *
     * @param board
-    *   the [[Board]] containing the [[PlayableCell]] to be drawn in the board
+    *   the [[it.unibo.pps.caw.common.model.Board]] containing the [[it.unibo.pps.caw.common.model.cell.PlayableCell]] to be drawn
+    *   in the board
     */
   def drawGameBoard(board: Board[BaseCell]): Unit
 }
@@ -31,17 +34,17 @@ trait GameBoardView extends BoardView {
 object GameBoardView {
 
   /** Returns a new instance of the [[GameBoardView]] trait. It receives the screen width and height, necessary to calculate the
-    * size of the board, the [[Level]] to be drawn and the [[ModelUpdater]], necessary to update the model after the player
-    * modifies the view.
+    * size of the board, the [[it.unibo.pps.caw.common.model.Level]] to be drawn and the
+    * [[it.unibo.pps.caw.common.view.ModelUpdater]], necessary to update the model after the player modifies the view.
     *
     * @param screenWidth
     *   the width of the screen necessary to calculate the board width
     * @param screenHeight
     *   the height of the screen necessary to calculate the board height
     * @param initialLevel
-    *   the [[Level]] to be drawn
+    *   the [[it.unibo.pps.caw.common.model.Level]] to be drawn
     * @param modelUpdater
-    *   the [[ModelUpdater]] necessary to update the model after view changes
+    *   the [[it.unibo.pps.caw.common.view.ModelUpdater]] necessary to update the model after view changes
     * @return
     *   a new instance of [[GameBoardView]]
     */
