@@ -7,7 +7,8 @@ package it.unibo.pps.caw.menu.controller
   */
 trait EditorMenuController {
 
-  /** Shows the editor with an empty level of a given width and height.
+  /** Shows the editor with an empty level with a given width and height.
+    *
     * @param width
     *   the width of the level
     * @param height
@@ -16,6 +17,7 @@ trait EditorMenuController {
   def openEditor(width: Int, height: Int): Unit
 
   /** Shows the editor with a level loaded from file.
+    *
     * @param levelPath
     *   the path of the level
     */

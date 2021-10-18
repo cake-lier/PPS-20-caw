@@ -20,11 +20,8 @@ trait EditorMenuView extends ViewComponent[Pane]
 object EditorMenuView {
 
   /* Implementation of the EditorMenuView. */
-  private final class LevelEditorMenuViewImpl(
-    parentController: EditorMenuController,
-    scene: Scene,
-    buttonMessage: String
-  ) extends AbstractViewComponent[Pane]("editor_menu_page.fxml")
+  private final class EditorMenuViewImpl(controller: EditorMenuController, scene: Scene)
+    extends AbstractViewComponent[Pane](fxmlFileName = "editor_menu_page.fxml")
     with EditorMenuView {
     @FXML
     var backButton: Button = _
@@ -48,31 +45,23 @@ object EditorMenuView {
         else
           f.setText(o)
       }
-    backButton.setText(buttonMessage)
+    backButton.setText("Menu")
     continue.setDisable(true)
     width.textProperty().addListener(changeListener(width))
     height.textProperty().addListener(changeListener(height))
-    backButton.setOnMouseClicked(_ => parentController.goBack())
-    loadFile.setOnMouseClicked(_ => FilePicker.forLevelFile(scene).openFile().foreach(parentController.openEditor(_)))
-    continue.setOnMouseClicked(_ => parentController.openEditor(width.getText.toInt, height.getText.toInt))
+    backButton.setOnMouseClicked(_ => controller.goBack())
+    loadFile.setOnMouseClicked(_ => FilePicker.forLevelFile(scene).openFile().foreach(controller.openEditor(_)))
+    continue.setOnMouseClicked(_ => controller.openEditor(width.getText.toInt, height.getText.toInt))
   }
 
-  /** Returns a new instance of [[EditorMenuView]]. It receives the [[ParentEditorMenuController]] so as to be able to correctly
-    * create and then use its [[EditorMenuController]], the ScalaFX [[Scene]] where the [[EditorView]] will draw and display
-    * itself, the text that the upper left button will display depending if the [[EditorView]] was called from the menu or as a
-    * its own application.
+  /** Returns a new instance of [[EditorMenuView]]. It receives the [[it.unibo.pps.caw.menu.controller.EditorMenuController]] so
+    * the constructed view can provide the services which should be accessible through itself, the ScalaFX [[scalafx.scene.Scene]]
+    * where the [[EditorMenuView]] will draw and display itself.
     *
-    * @param parentController
-    *   the controller needed to build the [[EditorMenuController]]
+    * @param controller
+    *   the controller needed to build the [[it.unibo.pps.caw.menu.controller.EditorMenuController]]
     * @param scene
-    *   the ScalaFX [[Scene]] where the [[EditorMenuView]] will be drawn and displayed
-    * @param closeEditorButtonText
-    *   the text of the upper left button
+    *   the ScalaFX [[scalafx.scene.Scene]] where the [[EditorMenuView]] will be drawn and displayed
     */
-  def apply(
-    parentController: EditorMenuController,
-    scene: Scene,
-    buttonMessage: String
-  ): EditorMenuView =
-    LevelEditorMenuViewImpl(parentController, scene, buttonMessage)
+  def apply(controller: EditorMenuController, scene: Scene): EditorMenuView = EditorMenuViewImpl(controller, scene)
 }

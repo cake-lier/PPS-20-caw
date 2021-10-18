@@ -120,11 +120,11 @@ object ApplicationView {
       Platform.runLater(() => scene.root.value = EditorView(controller, scene, backButtonText = "Menu", audioPlayer, level))
   }
 
-  /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX'state
-    * [[scalafx.application.JFXApp3.PrimaryStage]] for creating a view for the application.
+  /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX [[scalafx.application.JFXApp3.PrimaryStage]]
+    * for creating a view for the application.
     *
     * @param stage
-    *   the ScalaFX'state [[scalafx.application.JFXApp3.PrimaryStage]] used for creating a view for the application
+    *   the ScalaFX [[scalafx.application.JFXApp3.PrimaryStage]] used for creating a view for the application
     * @return
     *   a new [[ApplicationView]] instance
     */

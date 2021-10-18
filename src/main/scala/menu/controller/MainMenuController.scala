@@ -71,14 +71,14 @@ trait ParentMainMenuController {
   */
 trait MainMenuController extends LevelSelectionController with SettingsController with EditorMenuController {
 
-  /** Returns the number of default [[Level]] available. */
+  /** Returns the number of default [[it.unibo.pps.caw.common.model.Level]] available. */
   val levelsCount: Int
 
   /** Starts a new game for playing the level contained in the file with the given path. No other level will be played after this
     * one, the only option for the player will be to exit the game.
     *
     * @param levelPath
-    *   the path to the file containing the [[Level]] to play in the new game
+    *   the path to the file containing the [[it.unibo.pps.caw.common.model.Level]] to play in the new game
     */
   def startGame(levelPath: String): Unit
 
@@ -120,12 +120,14 @@ object MainMenuController {
 
   /** Returns a new instance of the [[MainMenuController]] trait. It must receive the [[ParentMainMenuController]], which it
     * represents its parent controller which provides all functionalities which must be delegated to this type of controllers. It
-    * must also receive the [[MainMenuView]] which will be called by and will call the returned [[MainMenuController]] instance.
+    * must also receive the [[it.unibo.pps.caw.menu.view.MainMenuView]] which will be called by and will call the returned
+    * [[MainMenuController]] instance.
     *
     * @param parentController
     *   the parent controller of the returned [[MainMenuController]]
     * @param view
-    *   the [[GameView]] which will be called by and which will call the returned [[MainMenuController]] instance
+    *   the [[it.unibo.pps.caw.game.view.GameView]] which will be called by and which will call the returned
+    *   [[MainMenuController]] instance
     * @return
     *   a new [[MainMenuController]] instance
     */

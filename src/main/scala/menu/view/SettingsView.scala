@@ -13,7 +13,8 @@ import javafx.scene.control.{Button, Slider}
   *
   * This view component represents the "settings" screen, which is part of the main menu. As such, its duty is to capture all
   * interactions with this specific part of the view and provide the expected functionalities such as applying the chosen volumes
-  * for the audio and the music through the [[SettingsController]]. It must be constructed through its companion object.
+  * for the audio and the music through the [[it.unibo.pps.caw.menu.controller.SettingsController]]. It must be constructed
+  * through its companion object.
   */
 trait SettingsView extends ViewComponent[Pane]
 
@@ -22,15 +23,15 @@ object SettingsView {
 
   /** Returns a new instance of the [[SettingsView]] trait. It receives the
     * [[it.unibo.pps.caw.menu.controller.SettingsController]] so the constructed view can provide the services which should be
-    * accessible through itself, the [[AudioPlayer]] to be used for playing sounds and music and the ScalaFX'state [[Scene]] in
-    * order to draw and display itself.
+    * accessible through itself, the [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] to be used for playing sounds and music
+    * and the ScalaFX [[scalafx.scene.Scene]] in order to draw and display itself.
     *
     * @param controller
     *   the [[it.unibo.pps.caw.menu.controller.SettingsController]] associated to the created [[SettingsView]]
     * @param audioPlayer
-    *   the [[AudioPlayer]] to be used for playing sounds and music
+    *   the [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] to be used for playing sounds and music
     * @param scene
-    *   the ScalaFX'state [[Scene]] on which the constructed [[SettingsView]] will draw and display itself
+    *   the ScalaFX [[scalafx.scene.Scene]] on which the constructed [[SettingsView]] will draw and display itself
     * @return
     *   a new [[SettingsView]] instance
     */

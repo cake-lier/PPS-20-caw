@@ -226,7 +226,7 @@ object GameView {
     * [[it.unibo.pps.caw.game.controller.GameController]] correctly in order to use it, the
     * [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] to be used for playing sounds and music, the sequence of default
     * [[it.unibo.pps.caw.common.model.Level]] to be used during this game, the index of the default level from which starting the
-    * game and the ScalaFX'state [[scalafx.scene.Scene]] on which displaying the instance after being constructed.
+    * game and the ScalaFX [[scalafx.scene.Scene]] on which displaying the instance after being constructed.
     *
     * @param parentController
     *   the controller needed so as to be able to complete the construction of a
@@ -238,7 +238,7 @@ object GameView {
     * @param levelIndex
     *   the index of the default level from which starting the game
     * @param scene
-    *   the ScalaFX'state [[scalafx.scene.Scene]] on which displaying the instance after being constructed
+    *   the ScalaFX [[scalafx.scene.Scene]] on which displaying the instance after being constructed
     * @return
     *   a new [[GameView]] instance
     */
@@ -255,7 +255,7 @@ object GameView {
   /** Returns a new instance of the [[GameView]] trait. It receives a [[it.unibo.pps.caw.game.controller.ParentGameController]] so
     * as to be able to complete the construction of a [[it.unibo.pps.caw.game.controller.GameController]] correctly in order to
     * use it, the [[it.unibo.pps.caw.common.view.sounds.AudioPlayer]] to be used for playing sounds and music, the
-    * [[it.unibo.pps.caw.common.model.Level]] from which starting the game and the ScalaFX'state [[scalafx.scene.Scene]] on which
+    * [[it.unibo.pps.caw.common.model.Level]] from which starting the game and the ScalaFX [[scalafx.scene.Scene]] on which
     * displaying the instance after being constructed.
     *
     * @param parentController
@@ -266,7 +266,7 @@ object GameView {
     * @param level
     *   the [[it.unibo.pps.caw.common.model.Level]] from which starting the game
     * @param scene
-    *   the ScalaFX'state [[scalafx.scene.Scene]] on which displaying the instance after being constructed
+    *   the ScalaFX [[scalafx.scene.Scene]] on which displaying the instance after being constructed
     * @return
     *   a new [[GameView]] instance
     */

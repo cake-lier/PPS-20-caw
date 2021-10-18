@@ -72,11 +72,11 @@ object TestApplicationView {
 
   }
 
-  /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX'state [[PrimaryStage]] for creating a view for
-    * the application.
+  /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX [[PrimaryStage]] for creating a view for the
+    * application.
     *
     * @param stage
-    *   the ScalaFX'state [[PrimaryStage]] used for creating a view for the application
+    *   the ScalaFX [[PrimaryStage]] used for creating a view for the application
     * @return
     *   a new [[ApplicationView]] instance
     */
