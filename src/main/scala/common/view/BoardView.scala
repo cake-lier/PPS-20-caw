@@ -14,7 +14,7 @@ import javafx.scene.layout.{ColumnConstraints, GridPane, RowConstraints}
   */
 trait ModelUpdater {
 
-  /** Updates the model with the cell linked to the given [[javafx.scene.image.ImageView]].
+  /** Updates the model with the cell which has the given [[javafx.scene.image.ImageView]].
     * @param cellImageView
     *   the [[javafx.scene.image.ImageView]] that was moved by the player
     * @param newPosition
@@ -135,6 +135,6 @@ abstract class AbstractBoardView(
     */
   protected def drawImageView(node: ImageView, x: Int, y: Int): Unit = innerComponent.add(node, x, y)
 
-  /** Clears the board. */
+  /** Clears the board, removing all the entities previously drawn. */
   protected def clearComponents(): Unit = innerComponent.getChildren.clear()
 }
