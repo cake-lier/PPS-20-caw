@@ -29,8 +29,7 @@ object AtWord {
   /* Default implementation of the AtWord trait. */
   private class AtWordImpl(fun: Position => Unit) extends AtWord {
 
-    /* Calls the given function with the Position constructed through the coordinates given by the user. */
-    def at(x: Int, y: Int): Unit = fun((x, y))
+    override def at(x: Int, y: Int): Unit = fun((x, y))
   }
 
   /** Returns a new instance of the [[AtWord]] trait. It needs a function which can consume the
@@ -69,8 +68,7 @@ object FacingWord {
   /* Default implementation of the FacingWord trait. */
   private class FacingWordImpl(fun: Orientation => AtWord) extends FacingWord {
 
-    /* Calls the given function with the Orientation obtained from the OrientationWord used by the user. */
-    def facing(orientationWord: OrientationWord): AtWord = fun(orientationWord.orientation)
+    override def facing(orientationWord: OrientationWord): AtWord = fun(orientationWord.orientation)
   }
 
   /** Returns a new instance of the [[FacingWord]] trait. It needs a function which can consume the
@@ -111,8 +109,7 @@ object RotatingWord {
   /* Default implementation of the RotatingWord trait. */
   private class RotatingWordImpl(fun: Rotation => AtWord) extends RotatingWord {
 
-    /* Calls the given function with the Rotation obtained from the RotationWord used by the user. */
-    def rotating(rotationWord: RotationWord): AtWord = fun(rotationWord.rotation)
+    override def rotating(rotationWord: RotationWord): AtWord = fun(rotationWord.rotation)
   }
 
   /** Returns a new instance of the [[RotatingWord]] trait. It needs a function which can consume the
@@ -153,8 +150,7 @@ object PushableWord {
   /* Default implementation of the PushableWord trait. */
   private class PushableWordImpl(fun: Push => AtWord) extends PushableWord {
 
-    /* Calls the given function with the Push obtained from the PushWord used by the user. */
-    def pushable(pushWord: PushWord): AtWord = fun(pushWord.push)
+    override def pushable(pushWord: PushWord): AtWord = fun(pushWord.push)
   }
 
   /** Returns a new instance of the [[PushableWord]] trait. It needs a function which can consume the

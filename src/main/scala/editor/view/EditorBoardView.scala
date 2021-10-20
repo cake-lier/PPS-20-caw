@@ -3,7 +3,7 @@ package it.unibo.pps.caw.editor.view
 import it.unibo.pps.caw.common.model.cell.PlayableCell
 import it.unibo.pps.caw.common.model.{Board, Position}
 import it.unibo.pps.caw.common.*
-import it.unibo.pps.caw.editor.model.LevelBuilderState
+import it.unibo.pps.caw.editor.model.EditorModelState
 
 import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellImage, CellView, DraggableImageView, ModelUpdater}
 import javafx.scene.Node
@@ -21,7 +21,7 @@ import javafx.scene.layout.GridPane
 private trait EditorBoardView extends BoardView {
 
   /* Draws the LevelBuilderState received in input. */
-  def drawLevelState(levelState: LevelBuilderState): Unit
+  def drawState(state: EditorModelState): Unit
 }
 
 /* Companion object of the EditorBoardView trait, containing its factory method. */
@@ -34,41 +34,41 @@ private object EditorBoardView {
   def apply(
     screenWidth: Double,
     screenHeight: Double,
-    levelState: LevelBuilderState,
+    levelState: EditorModelState,
     model: ModelUpdater,
     updater: EditorUpdater
   ): EditorBoardView =
     EditorBoardViewImpl(screenWidth, screenHeight, levelState, model, updater)
 
   /* An extension of AbstractBoardView for the EditorView. */
-  private case class EditorBoardViewImpl(
+  private class EditorBoardViewImpl(
     screenWidth: Double,
     screenHeight: Double,
-    initialLevelState: LevelBuilderState,
+    initialState: EditorModelState,
     modelUpdater: ModelUpdater,
     updater: EditorUpdater
   ) extends AbstractBoardView(
       screenWidth,
       screenHeight,
-      initialLevelState.dimensions.width,
-      initialLevelState.dimensions.height,
+      initialState.dimensions.width,
+      initialState.dimensions.height,
       modelUpdater
     )
     with EditorBoardView {
     private var startPosition: Position = Position(0, 0)
     private var endPosition: Position = Position(0, 0)
 
-    drawLevelState(initialLevelState)
+    drawState(initialState)
 
-    override def drawLevelState(levelState: LevelBuilderState): Unit = {
+    override def drawState(state: EditorModelState): Unit = {
       clearComponents()
       drawPavement(droppablePavement = true)
-      levelState.playableArea match {
+      state.playableArea match {
         case Some(p) =>
           drawPlayableArea(p.position.x, p.position.y, p.dimensions.width, p.dimensions.height, droppablePlayableArea = true)
         case _ => applyHandler(n => enablePlayableAreaSelection(n.asInstanceOf[ImageView]))
       }
-      levelState
+      state
         .board
         .foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
     }

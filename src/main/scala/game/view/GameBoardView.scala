@@ -57,7 +57,7 @@ object GameBoardView {
     GameBoardViewImpl(screenWidth, screenHeight, initialLevel, modelUpdater)
 
   /* Extension of AbstractBoardView */
-  private case class GameBoardViewImpl(
+  private class GameBoardViewImpl(
     screenWidth: Double,
     screenHeight: Double,
     initialLevel: Level[PlayableCell],

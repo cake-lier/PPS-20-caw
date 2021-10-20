@@ -13,10 +13,10 @@ import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
   * deselect the playable area; they can add a cell in whichever position they want, move it from a position to another or remove
   * it. It must be constructed through its companion object.
   */
-sealed trait EditorModel {
+trait EditorModel {
 
-  /** The [[LevelBuilderState]] of the editor. */
-  val currentState: LevelBuilderState
+  /** The [[EditorModelState]] of the editor. */
+  val state: EditorModelState
 
   /** The [[it.unibo.pps.caw.common.model.Level]] built by the player. */
   val builtLevel: Option[Level[BaseCell]]
@@ -37,18 +37,19 @@ sealed trait EditorModel {
     */
   def addCell(cell: BaseCell): EditorModel
 
-  /** Moves a cell given its previous [[it.unibo.pps.caw.common.model.Position]] and the new
-    * [[it.unibo.pps.caw.common.model.Position]] in which was moved.
+  /** Moves a cell given its current [[it.unibo.pps.caw.common.model.Position]] and the next
+    * [[it.unibo.pps.caw.common.model.Position]] in which is moved.
     *
-    * @param oldPosition
-    *   the [[it.unibo.pps.caw.common.model.Position]] of the [[it.unibo.pps.caw.common.model.cell.Cell]] that was moved
-    * @param newPosition
-    *   the new [[it.unibo.pps.caw.common.model.Position]] of the [[it.unibo.pps.caw.common.model.cell.Cell]]
+    * @param currentPosition
+    *   the [[it.unibo.pps.caw.common.model.Position]] of the [[it.unibo.pps.caw.common.model.cell.Cell]] that is going to be
+    *   moved
+    * @param nextPosition
+    *   the next [[it.unibo.pps.caw.common.model.Position]] of the [[it.unibo.pps.caw.common.model.cell.Cell]]
     * @return
-    *   a new instance of [[EditorModel]] with the [[it.unibo.pps.caw.common.model.cell.Cell]] moved to its new
+    *   a new instance of [[EditorModel]] with the [[it.unibo.pps.caw.common.model.cell.Cell]] moved to its next
     *   [[it.unibo.pps.caw.common.model.Position]]
     */
-  def updateCellPosition(oldPosition: Position, newPosition: Position): EditorModel
+  def updateCellPosition(currentPosition: Position, nextPosition: Position): EditorModel
 
   /** Removes the cell in the given [[it.unibo.pps.caw.common.model.Position]].
     *
@@ -83,47 +84,47 @@ sealed trait EditorModel {
 object EditorModel {
 
   /* Implementation of EditorModel. */
-  private case class LevelEditorModelImpl(currentState: LevelBuilderState) extends EditorModel {
+  private case class LevelEditorModelImpl(state: EditorModelState) extends EditorModel {
 
     override val builtLevel: Option[Level[BaseCell]] =
-      currentState
+      state
         .playableArea
         .map(a =>
           Level(
-            Dimensions(currentState.dimensions.width - 2, currentState.dimensions.height - 2),
-            currentState.board.filter(_.playable).map(_.changePositionProperty(p => (p.x - 1, p.y - 1))).map(_.toBaseCell),
+            Dimensions(state.dimensions.width - 2, state.dimensions.height - 2),
+            state.board.filter(_.playable).map(_.changePositionProperty(p => (p.x - 1, p.y - 1))).map(_.toBaseCell),
             PlayableArea(a.dimensions)((a.position.x - 1, a.position.y - 1))
           )
         )
 
     override def resetLevel: EditorModel =
       //-2 because addCornerWalls adds 2 in each dimension
-      EditorModel(currentState.dimensions.width - 2, currentState.dimensions.height - 2)
+      EditorModel(state.dimensions.width - 2, state.dimensions.height - 2)
 
-    override def updateCellPosition(oldPosition: Position, newPosition: Position): EditorModel =
-      (currentState.board.find(_.position == newPosition), currentState.board.find(_.position == oldPosition)) match {
+    override def updateCellPosition(currentPosition: Position, nextPosition: Position): EditorModel =
+      (state.board.find(_.position == nextPosition), state.board.find(_.position == currentPosition)) match {
         case (None, Some(c)) =>
           LevelEditorModelImpl(
-            currentState.copy(
-              board = currentState.board.filter(_.position != oldPosition) + c.changePositionProperty(_ => newPosition)
+            state.copy(
+              board = state.board.filter(_.position != currentPosition) + c.changePositionProperty(_ => nextPosition)
             )
           )
         case _ => this
       }
 
     override def addCell(cell: BaseCell): EditorModel =
-      LevelEditorModelImpl(currentState.copy(board = currentState.board + cell.toPlayableCell(_ => true)))
+      LevelEditorModelImpl(state.copy(board = state.board + cell.toPlayableCell(_ => true)))
 
     override def removeCell(position: Position): EditorModel =
-      LevelEditorModelImpl(currentState.copy(board = currentState.board.filter(_.position != position)))
+      LevelEditorModelImpl(state.copy(board = state.board.filter(_.position != position)))
 
     override def addPlayableArea(position: Position, dimensions: Dimensions): EditorModel =
-      LevelEditorModelImpl(currentState.copy(playableArea = Some(PlayableArea(dimensions)(position))))
+      LevelEditorModelImpl(state.copy(playableArea = Some(PlayableArea(dimensions)(position))))
 
-    override def removePlayableArea: EditorModel = LevelEditorModelImpl(currentState.copy(playableArea = None))
+    override def removePlayableArea: EditorModel = LevelEditorModelImpl(state.copy(playableArea = None))
   }
 
-  private def addCornerWalls(levelBuilder: LevelBuilderState): LevelBuilderState = {
+  private def addCornerWalls(levelBuilder: EditorModelState): EditorModelState = {
     val walls: Set[PlayableCell] = Set(
       (0 to levelBuilder.dimensions.width + 1).map(i => PlayableWallCell((i, 0))(playable = false)),
       (0 to levelBuilder.dimensions.width + 1).map(i =>
@@ -134,8 +135,8 @@ object EditorModel {
     ).flatten
     levelBuilder
       .playableArea
-      .map(p => LevelBuilderState(PlayableArea(p.dimensions)((p.position.x + 1, p.position.y + 1))))
-      .getOrElse(LevelBuilderState.apply: Dimensions => Board[PlayableCell] => LevelBuilderState)(
+      .map(p => EditorModelState(PlayableArea(p.dimensions)((p.position.x + 1, p.position.y + 1))))
+      .getOrElse(EditorModelState.apply: Dimensions => Board[PlayableCell] => EditorModelState)(
         (levelBuilder.dimensions.width + 2, levelBuilder.dimensions.height + 2)
       )(
         levelBuilder.board ++ walls
@@ -152,7 +153,7 @@ object EditorModel {
   def apply(level: Level[BaseCell]): EditorModel =
     LevelEditorModelImpl(
       addCornerWalls(
-        LevelBuilderState(
+        EditorModelState(
           level.playableArea
         )(
           level.dimensions
@@ -172,5 +173,5 @@ object EditorModel {
     *   a new instance of [[EditorModel]]
     */
   def apply(width: Int, height: Int): EditorModel =
-    LevelEditorModelImpl(addCornerWalls(LevelBuilderState((width, height))(Board.empty[PlayableCell])))
+    LevelEditorModelImpl(addCornerWalls(EditorModelState((width, height))(Board.empty[PlayableCell])))
 }

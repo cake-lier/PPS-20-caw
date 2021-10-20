@@ -77,16 +77,16 @@ trait GameController {
   def nextLevel(): Unit
 
   /** Updates the [[it.unibo.pps.caw.game.model.GameModel]] moving the [[it.unibo.pps.caw.common.model.cell.Cell]] which has a
-    * [[it.unibo.pps.caw.common.model.Position]] equal to the given old position parameter to the position given by the new
+    * [[it.unibo.pps.caw.common.model.Position]] equal to the given current position parameter to the position given by the next
     * position parameter.
     *
-    * @param oldPosition
+    * @param currentPosition
     *   the [[it.unibo.pps.caw.common.model.Position]] in which a [[it.unibo.pps.caw.common.model.cell.Cell]] is located
-    * @param newPosition
-    *   the [[it.unibo.pps.caw.common.model.Position]] to which the [[it.unibo.pps.caw.common.model.cell.Cell]] located at the old
-    *   position parameter is moved
+    * @param nextPosition
+    *   the [[it.unibo.pps.caw.common.model.Position]] to which the [[it.unibo.pps.caw.common.model.cell.Cell]] located at the
+    *   current position parameter is moved
     */
-  def moveCell(oldPosition: Position)(newPosition: Position): Unit
+  def moveCell(currentPosition: Position, nextPosition: Position): Unit
 }
 
 /** Companion object of the [[GameController]] trait, containing its factory method. */
@@ -155,8 +155,8 @@ object GameController {
       parentController.closeGame()
     }
 
-    override def moveCell(oldPosition: Position)(newPosition: Position): Unit =
-      model = model.moveCell(oldPosition)(newPosition)
+    override def moveCell(currentPosition: Position, nextPosition: Position): Unit =
+      model = model.moveCell(currentPosition, nextPosition)
   }
 
   /* Extension of the AbstractGameController class for playing a generic level. */

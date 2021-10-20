@@ -7,7 +7,7 @@ import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
 import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView, FilePicker, ModelUpdater, ViewComponent}
 import it.unibo.pps.caw.editor.controller.{EditorController, ParentEditorController}
-import it.unibo.pps.caw.editor.model.LevelBuilderState
+import it.unibo.pps.caw.editor.model.EditorModelState
 import javafx.application.Platform
 import javafx.fxml.{FXML, FXMLLoader}
 import javafx.geometry.{HPos, Insets, VPos}
@@ -27,12 +27,12 @@ import scalafx.scene.control.Alert.AlertType
   */
 trait EditorView extends ViewComponent[Pane] {
 
-  /** Draws the given [[it.unibo.pps.caw.editor.model.LevelBuilderState]].
+  /** Draws the given [[it.unibo.pps.caw.editor.model.EditorModelState]].
     *
-    * @param levelState
-    *   the [[it.unibo.pps.caw.editor.model.LevelBuilderState]] to be displayed
+    * @param state
+    *   the [[it.unibo.pps.caw.editor.model.EditorModelState]] to be displayed
     */
-  def drawLevelState(levelState: LevelBuilderState): Unit
+  def drawState(state: EditorModelState): Unit
 
   /** Displays the given error message to the player.
     * @param message
@@ -123,11 +123,11 @@ abstract class AbstractEditorView(
   resetAll.setOnMouseClicked(_ => controller.resetLevel())
   rotateCellsButton.setOnMouseClicked(_ => rotateButtons())
 
-  override def drawLevelState(levelState: LevelBuilderState): Unit = Platform.runLater(() =>
+  override def drawState(state: EditorModelState): Unit = Platform.runLater(() =>
     boardView match {
-      case Some(v) => v.drawLevelState(levelState)
+      case Some(v) => v.drawState(state)
       case None =>
-        val newBoardView: EditorBoardView = EditorBoardView(scene.getWidth, scene.getHeight, levelState, this, this)
+        val newBoardView: EditorBoardView = EditorBoardView(scene.width.value, scene.height.value, state, this, this)
         boardView.foreach(b => innerComponent.getChildren.remove(b))
         GridPane.setValignment(newBoardView, VPos.CENTER)
         GridPane.setHalignment(newBoardView, HPos.CENTER)

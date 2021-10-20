@@ -21,7 +21,7 @@ import it.unibo.pps.caw.game.model.engine.RulesEngine
   * that the player not necessarily configured the level to destroy all enemy cells the first time, it is given to the player the
   * possibility to reset the state of the game to just before the second phase beginned.
   */
-sealed trait GameModel {
+trait GameModel {
 
   /** Allows to move a cell during the "setup" phase of the game given its current [[it.unibo.pps.caw.common.model.Position]] and
     * the position in which needs to be moved. If no cell is present in the specified current position, no action is performed. If
@@ -36,7 +36,7 @@ sealed trait GameModel {
     * @return
     *   an updated instance of [[GameModel]] where the [[it.unibo.pps.caw.common.model.cell.Cell]] has been moved, if possible
     */
-  def moveCell(currentPosition: => Position)(nextPosition: => Position): GameModel
+  def moveCell(currentPosition: Position, nextPosition: Position): GameModel
 
   /** Updates the current state of the game, obtaining its next one.
     *
@@ -178,7 +178,7 @@ object GameModel {
         initialBoard
       )
 
-    override def moveCell(currentPosition: => Position)(nextPosition: => Position): GameModel =
+    override def moveCell(currentPosition: Position, nextPosition: Position): GameModel =
       if (
         !isSetupCompleted &&
         isPositionInsidePlayableArea(nextPosition)(state.levelCurrentState.playableArea)

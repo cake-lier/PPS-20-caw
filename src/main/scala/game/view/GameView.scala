@@ -26,9 +26,6 @@ import scalafx.scene.Scene
   */
 trait GameView extends ViewComponent[GridPane] {
 
-  /** Makes the application view go back to the main menu, displaying it. */
-  def backToMenu(): Unit
-
   /** Displays the given [[it.unibo.pps.caw.common.model.Level]], resetting the component displaying it. This means that this
     * method is to be called when there is a change between level in the game and not when an update of the same level is to be
     * displayed.
@@ -51,11 +48,7 @@ trait GameView extends ViewComponent[GridPane] {
     * @param isCompleted
     *   whether or not this [[it.unibo.pps.caw.common.model.Level]] has been completed
     */
-  def drawPlayBoard(
-    board: Board[BaseCell],
-    didEnemyDie: Boolean,
-    isCompleted: Boolean
-  ): Unit
+  def drawPlayBoard(board: Board[BaseCell], didEnemyDie: Boolean, isCompleted: Boolean): Unit
 
   /** Displays the initial configuration of the [[it.unibo.pps.caw.common.model.Board]] of the currently displayed
     * [[it.unibo.pps.caw.common.model.Level]], actually resetting this view.
@@ -186,11 +179,9 @@ object GameView {
       nextButton.setVisible(isCompleted)
     })
 
-    override def backToMenu(): Unit = controller.closeGame()
-
     override def manageCell(cellImageView: ImageView, newPosition: Position): Unit = {
       val board = boardView.get.innerComponent
-      controller.moveCell(Position(GridPane.getColumnIndex(cellImageView), GridPane.getRowIndex(cellImageView)))(newPosition)
+      controller.moveCell(Position(GridPane.getColumnIndex(cellImageView), GridPane.getRowIndex(cellImageView)), newPosition)
       board.getChildren.remove(cellImageView)
       board.add(cellImageView, newPosition.x, newPosition.y)
     }

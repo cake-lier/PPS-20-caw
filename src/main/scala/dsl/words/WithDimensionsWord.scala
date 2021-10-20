@@ -27,8 +27,7 @@ object WithDimensionsWord {
   /* Default implementation of the WithDimensionsWord trait. */
   private class WithDimensionsWordImpl(fun: Dimensions => AtWord) extends WithDimensionsWord {
 
-    /* Calls the given function with the Dimensions constructed through the values given by the user. */
-    def withDimensions(width: Int, height: Int): AtWord = fun((width, height))
+    override def withDimensions(width: Int, height: Int): AtWord = fun((width, height))
   }
 
   /** Returns a new instance of the [[WithDimensionsWord]] trait. It needs a function which can consume the

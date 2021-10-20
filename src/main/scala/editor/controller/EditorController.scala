@@ -32,7 +32,7 @@ trait ParentEditorController {
   * then updates the [[it.unibo.pps.caw.editor.view.EditorView]] with the newly updated
   * [[it.unibo.pps.caw.editor.model.EditorModel]]. It must be constructed through its companion object.
   */
-sealed trait EditorController {
+trait EditorController {
 
   /** Closes the editor. */
   def closeEditor(): Unit
@@ -48,14 +48,14 @@ sealed trait EditorController {
   def addCell(cell: BaseCell): Unit
 
   /** Updates the [[it.unibo.pps.caw.editor.model.EditorModel]] by moving the cell whose
-    * [[it.unibo.pps.caw.common.model.Position]] is equal to the given old position to the new given position.
+    * [[it.unibo.pps.caw.common.model.Position]] is equal to the given current position to the given next position.
     *
-    * @param oldPosition
-    *   the [[it.unibo.pps.caw.common.model.Position]] in which the cell was originally located
-    * @param newPosition
-    *   the [[it.unibo.pps.caw.common.model.Position]] to which the cell was moved
+    * @param currentPosition
+    *   the [[it.unibo.pps.caw.common.model.Position]] in which the cell is currently located
+    * @param nextPosition
+    *   the [[it.unibo.pps.caw.common.model.Position]] to which the cell is going to be moved
     */
-  def updateCellPosition(oldPosition: Position, newPosition: Position): Unit
+  def updateCellPosition(currentPosition: Position, nextPosition: Position): Unit
 
   /** Removes the cell whose [[it.unibo.pps.caw.common.model.Position]] is equal to the given position from the
     * [[it.unibo.pps.caw.editor.model.EditorModel]].
@@ -91,7 +91,7 @@ object EditorController {
   abstract class AbstractEditorController(parentController: ParentEditorController, view: EditorView) extends EditorController {
     private var levelEditorModel: EditorModel = createEditorModel()
 
-    view.drawLevelState(levelEditorModel.currentState)
+    view.drawState(levelEditorModel.state)
 
     protected def createEditorModel(): EditorModel
 
@@ -117,12 +117,12 @@ object EditorController {
 
     override def closeEditor(): Unit = parentController.closeEditor()
 
-    override def updateCellPosition(oldPosition: Position, newPosition: Position): Unit =
-      updateShowLevel(levelEditorModel.updateCellPosition(oldPosition, newPosition))
+    override def updateCellPosition(currentPosition: Position, nextPosition: Position): Unit =
+      updateShowLevel(levelEditorModel.updateCellPosition(currentPosition, nextPosition))
 
     private def updateShowLevel(newLevelEditorModel: EditorModel): Unit = {
       levelEditorModel = newLevelEditorModel
-      view.drawLevelState(levelEditorModel.currentState)
+      view.drawState(levelEditorModel.state)
     }
   }
 

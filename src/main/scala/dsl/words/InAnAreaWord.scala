@@ -32,8 +32,7 @@ object InAnAreaWord {
   /* Default implementation of the InAnAreaWord trait. */
   private class InAnAreaWordImpl[A <: FollowingInAnAreaWord](fun: Dimensions => A) extends InAnAreaWord[A] {
 
-    /* Calls the given function with the Dimensions constructed through the values given by the user. */
-    def inAnArea(width: Int, height: Int): A = fun((width, height))
+    override def inAnArea(width: Int, height: Int): A = fun((width, height))
   }
 
   /** Returns a new instance of the [[InAnAreaWord]] trait. It needs a function which can consume the

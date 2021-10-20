@@ -55,16 +55,12 @@ private trait LevelDisplayers {
   import java.nio.file.Files
 
   /* Launches an application with the given launcher after storing the level being currently built onto in a temporary file. */
-  private def launchApplication(
-    ops: ListBuffer[LevelBuilderState => LevelBuilderState],
-    launcher: Array[String] => Unit
-  ): Unit = {
+  private def launchApplication(ops: ListBuffer[LevelBuilderState => LevelBuilderState])(launcher: Array[String] => Unit): Unit =
     executeAction(ops)(l => {
       val tempPath: String = Files.createTempFile(s"level_${LocalDateTime.now()}", ".json").toString
       levelStorage.saveLevel(tempPath, l)
       launcher(Array(tempPath))
     })
-  }
 
   /** Opens the application for playing a [[it.unibo.pps.caw.common.model.Level]] as created by the user through the DSL after
     * checking the correctness of the stored data and serializing it in JSON format into a temporary file. This means that, if not
@@ -75,7 +71,7 @@ private trait LevelDisplayers {
     * @param ops
     *   the list of operations to which add this specific operation
     */
-  def playIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops, DSLGameMain.main(_))
+  def playIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops)(DSLGameMain.main(_))
 
   /** Opens the application for editing a [[it.unibo.pps.caw.common.model.Level]] as created by the user through the DSL after
     * checking the correctness of the stored data and serializing it in JSON format into a temporary file. This means that, if not
@@ -86,5 +82,5 @@ private trait LevelDisplayers {
     * @param ops
     *   the list of operations to which add this specific operation
     */
-  def editIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops, DSLEditorMain.main(_))
+  def editIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops)(DSLEditorMain.main(_))
 }

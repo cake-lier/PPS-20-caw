@@ -11,7 +11,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private val dimensions: Dimensions = (20, 20)
   private val playableAreaDimensions: Dimensions = (5, 5)
   private val playableAreaPosition: Position = (0, 0)
-  private val emptyLevel: LevelBuilderState = createLevelWithWalls(cells = Board.empty)
+  private val emptyLevel: EditorModelState = createLevelWithWalls(cells = Board.empty)
   private val enemy1: BaseEnemyCell = BaseEnemyCell((1, 1))
   private val playableEnemy1: PlayableEnemyCell = PlayableEnemyCell((1, 1))(true)
   private val enemy2: BaseEnemyCell = BaseEnemyCell((2, 2))
@@ -22,7 +22,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
   describe("EditorModel") {
     describe("when new") {
       it("should contain an empty LevelBuilderState") {
-        EditorModel(dimensions.width, dimensions.height).currentState shouldBe emptyLevel
+        EditorModel(dimensions.width, dimensions.height).state shouldBe emptyLevel
       }
     }
     describe("when resetted") {
@@ -31,7 +31,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
           EditorModel(dimensions.width, dimensions.height)
       }
       it("should contain an empty LevelBuilderState") {
-        EditorModel(dimensions.width, dimensions.height).resetLevel.currentState shouldBe emptyLevel
+        EditorModel(dimensions.width, dimensions.height).resetLevel.state shouldBe emptyLevel
       }
     }
     describe("when a cell is set") {
@@ -40,7 +40,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
           EditorModel(dimensions.width, dimensions.height)
       }
       it("should update the LevelBuilderState") {
-        EditorModel(dimensions.width, dimensions.height).addCell(enemy1).currentState shouldBe
+        EditorModel(dimensions.width, dimensions.height).addCell(enemy1).state shouldBe
           createLevelWithWalls(cells = Board(playableEnemy1))
       }
     }
@@ -56,7 +56,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
           .addCell(enemy2)
           .addCell(enemy3)
           .removeCell(enemy1.position)
-          .currentState shouldBe createLevelWithWalls(cells = Board(playableEnemy2, playableEnemy3))
+          .state shouldBe createLevelWithWalls(cells = Board(playableEnemy2, playableEnemy3))
       }
     }
     describe("when a PlayableArea is set") {
@@ -68,7 +68,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
       it("should update the LevelBuilderState") {
         EditorModel(dimensions.width, dimensions.height)
           .addPlayableArea(playableAreaPosition, playableAreaDimensions)
-          .currentState shouldBe
+          .state shouldBe
           createLevelWithWalls(
             playableArea = Some(PlayableArea(playableAreaDimensions)(playableAreaPosition)),
             cells = Board.empty
@@ -81,7 +81,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
           EditorModel(dimensions.width, dimensions.height)
       }
       it("should update the LevelBuilderState") {
-        EditorModel(dimensions.width, dimensions.height).removePlayableArea.currentState shouldBe
+        EditorModel(dimensions.width, dimensions.height).removePlayableArea.state shouldBe
           createLevelWithWalls()
       }
     }
@@ -89,7 +89,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
   private def createLevelWithWalls(
     playableArea: Option[PlayableArea] = None,
     cells: Set[PlayableCell] = Set.empty
-  ): LevelBuilderState =
+  ): EditorModelState =
     val walls: Board[PlayableCell] = Set(
       (0 to dimensions.width + 1).map(i => PlayableWallCell((i, 0))(playable = false)),
       (0 to dimensions.width + 1).map(i => PlayableWallCell((i, dimensions.height + 1))(playable = false)),
@@ -97,7 +97,7 @@ class LevelEditorModelTest extends AnyFunSpec with Matchers {
       (1 to dimensions.height).map(i => PlayableWallCell((dimensions.width + 1, i))(playable = false))
     ).flatten ++ cells
     playableArea
-      .map(p => LevelBuilderState(p)((dimensions.width + 2, dimensions.height + 2))(walls))
-      .getOrElse(LevelBuilderState((dimensions.width + 2, dimensions.height + 2))(walls))
+      .map(p => EditorModelState(p)((dimensions.width + 2, dimensions.height + 2))(walls))
+      .getOrElse(EditorModelState((dimensions.width + 2, dimensions.height + 2))(walls))
 
 }
