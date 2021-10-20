@@ -8,7 +8,7 @@ on:
     - "report/**"
     
 jobs:
-  convert_via_pandoc:
+  Generate:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -17,17 +17,19 @@ jobs:
         run: |
           cd report
           echo "::set-output name=files::$(printf 'report/%s ' *.md)"
-      - uses: docker://pandoc/latex:2.9
+      - name: Convert with pandoc
+        uses: docker://pandoc/latex:2.9
         with:
           args: >-
             -f markdown
             -t pdf
-            -o report/report.pdf
+            -o report.pdf
             --toc
-            --standalone
+            --metadata-file=report/metadata.yml
+            --resource-path=report
             ${{ steps.files_list.outputs.files }}
-            report/metadata.yml
-      - uses: actions/upload-artifact@master
+      - name: Upload
+        uses: actions/upload-artifact@master
         with:
           name: report
-          path: report/report.pdf
+          path: report.pdf
