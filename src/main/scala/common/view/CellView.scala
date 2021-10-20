@@ -6,8 +6,8 @@ import javafx.scene.layout.GridPane
 
 /** The view of a [[Cell]].
   *
-  * It draws the view of a cell with the correct image. Depending on the cell to be drawn, the view can be draggable or not, that
-  * is the view can be moved to a different position.
+  * It draws the view of a cell with the correct [[javafx.scene.image.Image]]. Depending on the cell to be drawn, the view can be
+  * draggable or not, that is the view can be moved to a different position.
   */
 trait CellView extends ViewComponent[ImageView]
 
