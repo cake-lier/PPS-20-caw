@@ -21,7 +21,7 @@ jobs:
         uses: docker://pandoc/latex:2.9
         with:
           args: >-
-            -f markdown
+            -f markdown+raw_attribute+tex_math_dollars
             -t pdf
             -o report.pdf
             --toc
