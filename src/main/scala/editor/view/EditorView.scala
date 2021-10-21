@@ -50,10 +50,17 @@ trait EditorUpdater {
 
   /** Creates a new [[it.unibo.pps.caw.common.model.PlayableArea]], given its upper left
     * [[it.unibo.pps.caw.common.model.Position]] and its lower right [[it.unibo.pps.caw.common.model.Position]].
+    * @param topLeft
+    *   the upper-left position of the [[it.unibo.pps.caw.common.model.PlayableArea]]
+    * @param downRight
+    *   the lowest-right position of the [[it.unibo.pps.caw.common.model.PlayableArea]]
     */
   def createPlayableArea(topLeft: Position, downRight: Position): Unit
 
-  /** Removes a [[it.unibo.pps.caw.common.model.cell.Cell]] given its current [[it.unibo.pps.caw.common.model.Position]]. */
+  /** Removes a [[it.unibo.pps.caw.common.model.cell.Cell]] given its current [[it.unibo.pps.caw.common.model.Position]].
+    * @param position
+    *   the [[it.unibo.pps.caw.common.model.Position]] of the [[it.unibo.pps.caw.common.model.cell.Cell]] to be removed
+    */
   def removeCell(position: Position): Unit
 
   /** Removes the [[it.unibo.pps.caw.common.model.PlayableArea]]. */

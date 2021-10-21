@@ -20,16 +20,16 @@ import javafx.scene.layout.GridPane
  */
 private trait EditorBoardView extends BoardView {
 
-  /* Draws the LevelBuilderState received in input. */
+  /* Draws the EditorModelState received in input. */
   def drawState(state: EditorModelState): Unit
 }
 
 /* Companion object of the EditorBoardView trait, containing its factory method. */
 private object EditorBoardView {
 
-  /* Returns a new instance of [[EditorBoardView]]. It receives the screen width and height, necessary to calculate the size of
-   * the board, the [[LevelBuilderState]] containing all the necessary information to draw the level, the [[ModelUpdater]] and
-   * the [[EditorUpdater]], necessary to update the model after the player modifies the view.
+  /* Returns a new instance of EditorBoardView. It receives the screen width and height, necessary to calculate the size of
+   * the board, the EditorModelState containing all the necessary information to draw the level, the ModelUpdater and
+   * the EditorUpdater, necessary to update the model after the player modifies the view.
    */
   def apply(
     screenWidth: Double,
