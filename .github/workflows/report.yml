@@ -24,6 +24,7 @@ jobs:
             -f markdown+raw_attribute+tex_math_dollars
             -t pdf
             -o report.pdf
+            -N
             --toc
             --metadata-file=report/metadata.yml
             --resource-path=report
