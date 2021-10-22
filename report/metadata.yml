@@ -1,9 +1,27 @@
 ---
 title: 'Relazione di progetto "Cells At Work"'
-author:
-- Elena Rughi
-- Lorenzo Gardini
-- Matteo Castellucci
-- Yuqi Sun
+date: 06/11/2021
 documentclass: report
+author: 
+- "Castellucci Matteo"
+- "Gardini Lorenzo"
+- "Rughi Elena"
+- "Sun Yuqi"
+header-includes:
+- |
+  ```{=latex}
+  \usepackage[utf8]{inputenc}
+  \usepackage{amssymb}
+  \usepackage[italian]{babel}
+  \usepackage{amsmath}
+  \usepackage{textcomp}
+  \usepackage[a4paper, total={17cm, 24cm}]{geometry}
+  \usepackage[format=plain,labelfont=bf,up,textfont=normal,up,justification=justified,singlelinecheck=false,skip=0.01\linewidth]{caption}
+  \usepackage{indentfirst}
+  \usepackage{float}
+  \usepackage{graphicx}
+  ```
+indent: true
+fontsize: 12pt
+papersize: a4
 ---
