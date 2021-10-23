@@ -20,6 +20,34 @@ Inoltre anche noi abbiamo voluto dare al giocatore non solo la possibilità di r
 
 ## Requisiti funzionali
 
+A partire dai requisiti utente, si elencano i seguenti requisiti funzionali.
+
+### Applicazione
+1. Al suo avvio, l'applicazione deve mostrare un menù con le opzioni per permettere al giocatore di:
+   - giocare un livello di default selezionandolo da una lista;
+   - giocare un livello creato dall'utente caricandolo da file;
+   - uscire dall'applicazione;
+2. Assieme all'applicazione, deve essere fornito un DSL con il quale il giocatore è in grado di creare un nuovo livello e salvarlo su file.
+
+### Gioco
+1. Il gioco deve essere composto da livelli.
+2. Un livello è una griglia bidimensionale di una certa dimensione al cui interno sono posizionate le cellule di gioco.
+    - Ogni cellula deve avere una posizione univoca nella griglia e un determinato comportamento.
+       - I tipi di cellule sono: *Mover*, *Generator*, *Block*, *Rotator*, *Enemy*, *Wall*.
+   - Il giocatore può manipolare solo le cellule posizionate in una determinata area, facendo drag-and-drop delle cellule.
+   - Il livello si evolve di stato in stato secondo regole ben definite.
+3. Il giocatore deve avere la possibilità di visualizzare l'evoluzione del livello in maniera continuativa o step-by-step.
+   - Mentre è in corso la simulazione nessuna cellula è manipolabile.
+4. Il giocatore deve avere la possibilità di resettare il livello al suo stato iniziale.
+
+### Requisiti opzionali
+1. L'applicazione deve permettere all'utente di creare un nuovo livello o modificare un livello già esistente attraverso un *level editor*.
+   - Il menù deve avere un'opzione per aprire il *level editor*.
+2. Il gioco ha anche la cellula di tipo *Trash*.
+3. L'applicazione deve avere musica ed effetti sonori.
+   - Il menù deve avere un'opzione per accedere alle impostazioni dove si può modificare il volume della musica e degli effetti sonori.
+4. Il gioco deve avere animazioni.
+
 ![Diagramma del modello del dominio dell'applicazione catturato tramite diagramma delle classi UML](imgs/domain_classes.jpg)
 
 ## Requisiti non funzionali
