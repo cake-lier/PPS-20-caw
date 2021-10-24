@@ -4,6 +4,23 @@
 
 ## Lorenzo Gardini
 
+### Model
+Nella prima settimana mi sono dedicato all'implementazione delle classi che compongono gli elementi di primo livello del dominio del gioco(Cell, Board, Level, etc.) e la struttura del GameModel, dopodiché ho implementato la persistenza su file dei livelli tramite appositi serializzatore e deserializzatore.
+
+Successivamente, mi sono occupato di alcuni predicati in Prolog e di come integrarlo con Scala tramite PrologEngine e RulesEngine.
+
+Infine, mi sono dedicato alla parte di implementazione dell’EditorModel.
+
+### Controller 
+Ho realizzato i Controller per la gestione dell’Editor, quindi l’EditorMenuController e l’EditorController
+
+
+### View
+Per il lato View ho realizzato, utilizzando il file fxml scritto da Matteo, la schermata delle impostazioni del gioco e la classe AudioPlayer che permette di inserire nel gioco musica ed effetti sonori.
+
+Ho gestito la parte grafica dell’editor, compreso il menu introduttivo.
+Io e Yuqi abbiamo esteso la BoardView (già scritta da lei) in modo da poter essere utilizzata anche dall’Editor.
+
 ## Matteo Castellucci
 
 ## Yuqi Sun
