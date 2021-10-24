@@ -18,12 +18,66 @@ Ultimo componente, ma non per questo meno importante, è quello relativo al menu
 
 ![Design architetturale catturato tramite diagramma delle classi UML](imgs/architecture_classes.jpg){ width=100% }
 
-Dalle specifiche precedentemente descritte sul DSL, si è deciso di costruire un linguaggio che le soddisfa con una grammatica libera dal contesto qui di seguito descritta. Per poter descrivere un nuovo livello, occorre aprire un nuovo blocco, il quale deve essere preceduto dalla parola "level". Ogni istruzione che definisce le caratteristiche del livello stesso deve essere posta su di una nuova riga, cioè deve essere separata dalla precedente tramite un carattere di "*newline*". Le istruzioni che possono essere specificate all'interno del blocco sono le seguenti:
+Dalle specifiche precedentemente descritte sul DSL, si è deciso di costruire un linguaggio che le soddisfa con una grammatica libera dal contesto qui di seguito descritta. Per poter descrivere un nuovo livello, occorre aprire un nuovo blocco, il quale deve essere preceduto dalla parola "level". Ogni istruzione che definisce le caratteristiche del livello stesso deve essere posta su di una nuova riga, cioè deve essere separata dalla precedente tramite un carattere di "*newline*". Le istruzioni che possono essere specificate all'interno del blocco sono definite dalla seguente grammatica espressa in forma di Backus-Naur estesa
 
-* "withDimensions (Int, Int)": per specificare le dimensioni del livello
-* "hasPlayableArea withDimensions (Int, Int) at (Int, Int)": per specificare le dimensioni e la posizione, intesa come angolo in altro a sinistra, dell'area di gioco
-* "hasMoverCell facing Orientation at (Int, Int)": per specificare la presenza di una cellula "mover" alla posizione data
-* "hasMoverCells inAnArea (Int, Int) facing Orientation at (Int, Int)": per specificare la presenza di un gruppo di cellule "mover" in un area le cui dimensioni e la cui posizione, intesa come angolo in alto a sinistra, sono date
+```{=latex}
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lclN}
+		Statement & = & WithDimensionsWord & \label{prod:1} \\
+		& | & ``hasPlayableArea '', WithDimensionsWord, AtWord & \label{prod:2} \\
+		& | & ``hasMoverCell facing '', OrientationWord, AtWord & \label{prod:3} \\
+		& | & ``hasMoverCells '', InAnAreaWord, `` facing '', OrientationWord, AtWord & \label{prod:4} \\
+		& | & ``hasGeneratorCell facing '', Orientation, AtWord & \label{prod:5} \\
+		& | & ``hasGeneratorCells '', InAnAreaWord, `` facing '', OrientationWord, AtWord & \label{prod:6} \\
+		& | & ``hasRotatorCell rotating '', Rotation, AtWord & \label{prod:7} \\
+		& | & ``hasRotatorCells '', InAnAreaWord, `` rotating '', RotationWord, AtWord & \label{prod:8} \\
+		& | & ``hasBlockCell pushable '', Push, AtWord & \label{prod:9} \\
+		& | & ``hasBlockCells '', InAnAreaWord, `` pushable '', PushWord, AtWord & \label{prod:10} \\
+		& | & ``hasEnemyCell'', AtWord & \label{prod:11} \\
+		& | & ``hasEnemyCells '', InAnAreaWord, AtWord & \label{prod:12} \\
+		& | & ``hasWallCell'', AtWord & \label{prod:13} \\
+		& | & ``hasWallCells '', InAnAreaWord, AtWord & \label{prod:14} \\
+		& | & ``hasDeleterCell'', AtWord & \label{prod:15} \\
+		& | & ``hasDeleterCells '', InAnAreaWord, AtWord & \label{prod:16} \\
+		& | & ``printIt'' & \label{prod:17} \\
+		& | & ``saveIt to '', String & \label{prod:18} \\
+		& | & ``playIt'' & \label{prod:19} \\
+		& | & ``editIt''; & \label{prod:20} \\
+		\multicolumn{4}{l}{WithDimensionsWord = ``withDimensions '', Int, `` by '', Int;} \\
+		\multicolumn{4}{l}{AtWord = `` at ('', Int, ``, '', Int, ``)";} \\
+		\multicolumn{4}{l}{InAnAreaWord = ``inAnArea '', Int, `` by ", Int;} \\
+		\multicolumn{4}{l}{OrientationWord = ``right'' | ``left'' | ``top'' | ``bottom'';} \\
+		\multicolumn{4}{l}{RotationWord = ``clockwise'' | ``counterclockwise'';} \\
+		\multicolumn{4}{l}{PushWord = ``vertically'' | ``horizontally'' | ``inBothDirections'';} \\
+	\end{tabular}
+\end{table}
+
+\noindent dove
+
+\begin{itemize}
+	\item la \eqref{prod:1} permette di specificare le dimensioni del livello
+	\item la \eqref{prod:2} permette di specificare le dimensioni e la posizione, intesa come coordinate dell'angolo in altro a sinistra, dell'area di gioco
+	\item la \eqref{prod:3} permette di specificare la presenza di una cellula "mover", orientata in una certa direzione, alla posizione data
+	\item la \eqref{prod:4} permette di specificare la presenza di un gruppo di cellule "mover", orientate in una certa direzione, che riempiono un'area le cui dimensioni e la cui posizione, intesa come coordinate dell'angolo in alto a sinistra, sono date 
+	\item la \eqref{prod:5} permette di specificare la presenza di una cellula "generator", orientata in una certa direzione, alla posizione data
+	\item la \eqref{prod:6} permette di specificare la presenza di un gruppo di cellule "generator", orientate in una certa direzione, in un area le cui dimensioni e la cui posizione, intesa come coordinate dell'angolo in alto a sinistra, sono date
+	\item la \eqref{prod:7} permette di specificare la presenza di una cellula "rotator", che ruota in una certa direzione di rotazione, alla posizione data
+	\item la \eqref{prod:8} permette di specificare la presenza di un gruppo di cellule "rotator", che ruotano in una certa direzione di rotazione, in un area le cui dimensioni e la cui posizione, intesa come coordinate dell'angolo in alto a sinistra, sono date
+	\item la \eqref{prod:9} permette di specificare la presenza di una cellula "block", che può essere spinta in una certa direzione, alla posizione data
+	\item la \eqref{prod:10} permette di specificare la presenza di un gruppo di cellule "block", che possono essere spinte in una certa direzione, in un area le cui dimensioni e la cui posizione, intesa come coordinate dell'angolo in alto a sinistra, sono date
+	\item la \eqref{prod:11} permette di specificare la presenza di una cellula "enemy" alla posizione data
+	\item la \eqref{prod:12} permette di specificare la presenza di un gruppo di cellule "enemy" in un area le cui dimensioni e la cui posizione, intesa come coordinate dell'angolo in alto a sinistra, sono date
+	\item la \eqref{prod:13} permette di specificare la presenza di una cellula "wall" alla posizione data
+	\item la \eqref{prod:14} permette di specificare la presenza di un gruppo di cellule "wall" in un area le cui dimensioni e la cui posizione, intesa come coordinate dell'angolo in alto a sinistra, sono date
+	\item la \eqref{prod:15} permette di specificare la presenza di una cellula "deleter" alla posizione data
+	\item la \eqref{prod:16} permette di specificare la presenza di un gruppo di cellule "deleter" in un area le cui dimensioni e la cui posizione, intesa come coordinate dell'angolo in alto a sinistra, sono date
+	\item la \eqref{prod:17} permette di visualizzare a riga di comando il livello creato
+	\item la \eqref{prod:18} permette di salvare il livello creato in un file il cui percorso è dato
+	\item la \eqref{prod:19} permette di giocare il livello appena creato
+	\item la \eqref{prod:20} permette di aprire il livello appena creato nel \textit{editor} di livelli
+\end{itemize}
+```
 
 ![Diagramma del Domain Specific Language specificato tramite diagramma di sintassi](imgs/railroad.svg){ width=100% }
 

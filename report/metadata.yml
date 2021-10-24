@@ -20,6 +20,12 @@ header-includes:
   \usepackage{indentfirst}
   \usepackage{float}
   \usepackage{graphicx}
+  \floatplacement{figure}{H}
+  \usepackage{array}
+  \newcounter{rowcntr}[table]
+  \renewcommand{\therowcntr}{\thechapter.\arabic{rowcntr}}
+  \newcolumntype{N}{>{\refstepcounter{rowcntr}(\therowcntr)}c}
+  \AtBeginEnvironment{tabular}{\setcounter{rowcntr}{0}}
   ```
 indent: true
 fontsize: 12pt
