@@ -79,6 +79,6 @@ Dalle specifiche precedentemente descritte sul DSL, si è deciso di costruire un
 \end{itemize}
 ```
 
-![Diagramma del Domain Specific Language specificato tramite diagramma di sintassi](imgs/railroad.svg){ width=100% }
+![Diagramma del Domain Specific Language specificato tramite diagramma di sintassi](imgs/railroad.png){ width=100% }
 
 ## Design di dettaglio
