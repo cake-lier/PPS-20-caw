@@ -171,6 +171,11 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
 
 ## Requisiti non funzionali
 
+- Applicazione cross-platform, eseguibile su Windows, MacOS, Linux.
+- L'applicazione non deve interrompersi qualora si verifichi un errore, deve invece mostrare il messaggio di errore all'utente.
+- Interfaccia grafica reattiva.
+- L'applicazione deve essere fluida, non presentare stuttering o freezing su una macchina con requisiti minimi di 6GB di RAM, processore i5-2400.
+
 ## Requisiti implementativi
 
 - Implementazione in Scala, compatibilità garantita sulla versione 3.0.2
