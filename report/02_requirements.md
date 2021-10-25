@@ -36,7 +36,7 @@ Si elencano i seguenti requisiti opzionali:
 2. Il gioco deve implementare la cellula di tipo *Deleter*.
 3. L'applicazione deve avere musica ed effetti sonori.
    - Il menù deve avere un'opzione per accedere alle impostazioni dove si può modificare il volume della musica e degli effetti sonori.
-   - Le impostazioni deve avere l'opzione di tornare indietro al menù.
+   - Le impostazioni devono avere l'opzione di tornare indietro al menù.
 4. Il gioco deve avere animazioni.
 
 Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazione.
@@ -48,22 +48,23 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
       - I tipi di cellule sono: *Mover*, *Generator*, *Block*, *Rotator*, *Enemy*, *Wall*, *Deleter*.
    - Di default un livello deve essere circondato da un perimetro di cellule *Wall*.
    - Il livello deve avere una sola *Playable Area*, ovvero un'area rettangolare del livello le cui cellule possono essere spostate.
-      - Il giocatore può spostare le cellule della *Playable Area* in una posizione diversa ma sempre interna alla *Playable Area*, facendo drag-and-drop con il mouse.
+      - Il giocatore può spostare le cellule della *Playable Area* in una posizione diversa ma sempre interna alla *Playable Area*.
       - Il giocatore non può spostare le cellule posizionate al di fuori della *Playable Area*.
-      - Per evidenziare la *Playable Area*, questa deve avere un colore diverso dalla restante area del livello.
+      - La *Playable Area* deve essere evidenziata per distinguerla dalla restante area del livello.
 3. L'obiettivo del livello è eliminare le cellule *Enemy*.
    - Un livello si dice *completato* quando tutte le cellule *Enemy* sono state eliminate.
-   - Per completare il livello, il giocatore riorganizza le cellule posizionate all'interno della *Playable Area*.
-      - Definiamo questa fase come "fase di setup".
-   - Decisa una certa disposizione delle cellule della *Playable Area*, il giocatore deve avere la possibilità di far partire la simulazione del livello.
+4. Il gioco deve prevedere due fasi distinte: *fase di setup* e *fase di gioco*.
+   - Nella fase di setup, il giocatore riorganizza le cellule posizionate all'interno della *Playable Area*.
+   - Decisa una certa disposizione delle cellule della *Playable Area*, il giocatore ha la possibilità di far partire la simulazione del livello, dando inizio alla fase di gioco.
    - Una *simulazione* è l'evolversi dello stato del livello secondo regole ben definite.
       - Cambiare di stato vuol dire applicare una sola volta le regole di gioco alle cellule, modificando lo stato delle cellule e di conseguenza lo stato del livello.
       - La simulazione termina quando tutte le cellule *Enemy* sono state eliminate o quando non è più applicabile nessuna regola.
-      - Definiamo questa fase come "fase di gioco".
-3. Il giocatore deve avere la possibilità di visualizzare la simulazione in maniera continuativa o step-by-step.
-   - Il giocatore deve avere la possibilità di mettere in pausa e riprendere la simulazione.
-   - Mentre è in corso la simulazione le cellule non possono essere spostate dal giocatore.
-4. Il giocatore deve avere la possibilità di resettare il livello allo stato iniziale precedente alla simulazione.
+   -  Nella fase di gioco, le cellule non possono essere spostate dal giocatore.
+3. Il giocatore deve avere la possibilità di:
+   - visualizzare la simulazione in maniera continuativa o step-by-step;
+   - mettere in pausa e riprendere la simulazione;
+4. Il giocatore deve avere la possibilità di resettare il livello allo stato iniziale precedente alla fase di gioco.
+   - Facendo reset, il gioco torna alla fase di setup.
 5. Quando un livello è completato, deve essere mostrato al giocatore l'opzione per giocare il livello successivo.
 
 ### Cellule
@@ -76,14 +77,12 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
    - Non può spostare *Generator* o *Mover* se hanno un orientamento opposto.
    - Non può spostare *Rotator* o *Wall*.
    - Non può spostare *Block* se questo non può essere spostato nello stesso orientamento del *Mover*.
-   - Non si muove quando:
-      - non ci sono più posizioni vuote verso cui spostarsi;
-      - incontra cellule che non può spostare;
+   - Non si muove quando incontra cellule che non può spostare.
 3. Una cellula *Generator* genera un'altra cellula nella direzione data dal suo orientamento.
    - Può generare se dietro al *Generator* è presente un'altra cellula.
    - La generazione è un processo composto da due passi:
       - la cellula generata viene posizionata di fronte al *Generator*;
-      - eventuali cellule già presenti di fronte al *Generator* e vengono spostate di una posizione;
+      - eventuali cellule che erano presenti di fronte al *Generator* vengono spostate di una posizione;
    - Non può generare cellule *Enemy*.
    - Non può generare se la generazione incontra un *Mover* o un altro *Generator* con un orientamento opposto.
    - Non può generare se la generazione incontra un *Wall*.
@@ -95,7 +94,7 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
       - sia orrizontale sia verticale;
    - Non può essere spinta in una direzione diversa dal suo spostamento.
 5. Una cellula *Rotator* ruota le cellule adiacenti ad essa, ovvero le cellule immediatamente sopra, sotto, a destra e a sinistra di essa.
-   - Può ruotare le altre cellule in senso orario o antiorario.
+   - Può ruotare le cellule in senso orario o antiorario.
    - La rotazione non ha effetto sul *Wall* o *Enemy*.
    - La rotazione non ha effetto sul *Block* che può spostarsi sia orrizontalmente sia verticalmente.
 6. Una cellula *Enemy* è la cellula che deve essere eliminata dal giocatore.
@@ -103,7 +102,7 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
    - Oltre all'*Enemy*, viene eliminata anche la cellula che è stata spostata contro l'*Enemy*.
 7. Una cellula *Wall* non si muove.
    - Non può essere spostata né da un *Generator* né da un *Mover*.
-   - L'unico momento del gioco in cui si può muovere un *Wall* è durante durante la fase di setup quando questa è posizionata nella *Playable Area*.
+   - L'unico momento del gioco in cui si può muovere un *Wall* è durante la fase di setup quando questa è posizionata nella *Playable Area*.
 8. Una cellula *Deleter* è in grado di rimuovere le altre cellule.
    - Rimuove qualsiasi tipo di cellula quando:
       - la cellula viene spinta contro il *Deleter*;
@@ -117,12 +116,13 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
 
 ### Regole di gioco
 1. Le regole di gioco devono essere regole espresse tramite logica di primo ordine.
-2. Le regole del gioco definiscono il comportamento delle cellule *Mover*, *Generator* e *Rotator*, in quanto sono le uniche cellule che cambiano attivamento lo stato del livello, in quanto si muovono oppure spostano, ruotano o generano altre cellule. Le regole devono essere applicate nel seguente ordine:
+2. Le regole del gioco definiscono il comportamento delle cellule *Mover*, *Generator* e *Rotator*, in quanto sono le uniche cellule che cambiano attivamento lo stato del livello, in quanto si muovono oppure spostano, ruotano o generano altre cellule.
+3. Le regole del gioco non definiscono il comportamento delle cellule *Block*, *Enemy*, *Wall* o *Deleter* in quanto non possono attivamente cambiare lo stato del livello finché una cellula non si sposta o viene spostata nella loro direzione.
+4. Per cambiare lo stato del livello, si applicano le regole del gioco nel seguente ordine:
    - la regola del *Rotator*: applicato ai *Rotator*, ruota le cellule circostanti se queste sono ruotabili;
    - la regola del *Generator*: applicato ai *Generator*, effettua la generazione di una nuova cellula se le condizioni sono soddisfatte;
    - la regola del *Mover*: applicato ai *Mover*, sposta il *Mover* e le cellule di fronte se le condizioni sono soddisfatte;
-3. Le regole del gioco non definiscono il comportamento delle cellule *Block*, *Enemy* o *Wall* in quanto non possono attivamente cambiare lo stato del livello finché una cellula non si sposta nella loro direzione.
-4. Dato un gruppo di cellule dello stesso tipo, la precedenza di applicazione della corrispondente regola è data alla cellula che si trova più in alto e più a sinistra delle altre.
+5. Dato un gruppo di cellule dello stesso tipo, la precedenza di applicazione della corrispondente regola è data alla cellula che si trova più in alto e più a sinistra delle altre.
 
 ### DSL
 1. Il DSL deve essere il più vicino possibile al linguaggio umano.
@@ -135,13 +135,13 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
       - lo spostamento se è un *Block*;
    - aggiungere un gruppo di uno stesso tipo di cellule collocandole in una determinata area, specificando
       - tutte le caratteristiche della cellula;
-      - la dimensione dell'area e la posizione in cui deve essere collacata;
+      - la dimensione dell'area e la posizione in cui deve essere collocata;
 3. Il DSL deve permettere di:
-   - salvare il livello creato
-   - stampare il livello creato
-   - giocare il livello creato
-   - modificare il livello creato con l'editor
-4. Il DSL deve mostrare errore se:
+   - salvare il livello
+   - stampare il livello
+   - giocare il livello
+   - modificare il livello con l'editor
+4. Il DSL deve dare errore se:
    - il livello non ha dimensione;
    - la *Playable Area* è assente oppure occupa un'area maggiore del livello;
    - si usano dimensioni negative;
@@ -149,17 +149,25 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
    - due o più cellule hanno la stessa posizione;
 
 ### Editor
-1. L'editor deve permettere di:
+1. Dato un livello, l'editor permette il giocatore di modificarlo.
+2. Deve avere un menù dove il giocatore sceglie se:
    - modificare un livello già esistente caricandolo da file;
    - creare un nuovo livello specificandone le dimensioni;
+3. Di default, il livello dell'editor è circondato da un perimetro di cellule *Wall* che non può essere rimosso.
 3. Il giocatore deve avere la possibilità di:
    - selezionare e deselezionare la *Playable Area* del livello;
-   - aggiungere, spostare e rimuovere cellule;
+   - aggiungere, spostare e rimuovere qualunque tipo di cellula;
    - resettare il livello, rimuovendo la *Playable Area* e le cellule;
    - salvare su file il livello creato o modificato;
 
 ### Selezione dei livelli
-1. Quando l'applicazione mostra la lista dei livelli di default, deve evidenziare i livelli precedentemente completati.
+1. L'applicazione deve fare persistenza dei livelli completati dal giocatore.
+2. Quando l'applicazione mostra la lista dei livelli di default, deve evidenziare i livelli completati.
+3. I livelli di default non devono essere bloccati quando tutti i livelli precedenti non sono stati completati.
+   - L'applicazione deve permettere di giocare i livelli di default nell'ordine in cui preferisce il giocatore.
+
+### Impostazioni
+1. L'applicazione deve fare persistenza del volume della musica e degli effetti sonori scelto dal giocatore.
 
 ## Requisiti non funzionali
 
