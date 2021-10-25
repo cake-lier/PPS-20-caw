@@ -55,7 +55,7 @@ class DSLTests extends AnyFunSpec with Matchers {
       it("should correctly print the constructed level") {
         val out: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withOut(out) {
-          board {
+          level {
             withDimensions(boardDimensions.width, boardDimensions.height)
             hasPlayableArea
               .withDimensions(playableArea.dimensions.width, playableArea.dimensions.height)
@@ -199,7 +199,7 @@ class DSLTests extends AnyFunSpec with Matchers {
       it("should produce the correct file") {
         val fileName: String = "level.json"
         val path: String = Paths.get(System.getProperty("user.home"), fileName).toString
-        board {
+        level {
           withDimensions(boardDimensions.width, boardDimensions.height)
           hasPlayableArea
             .withDimensions(playableArea.dimensions.width, playableArea.dimensions.height)
@@ -240,7 +240,7 @@ class DSLTests extends AnyFunSpec with Matchers {
     wall: BaseWallCell = wall,
     deleter: BaseDeleterCell = deleter
   ): Unit = {
-    board {
+    level {
       boardDimensions.foreach(d => withDimensions(d.width, d.height))
       playableArea.foreach(a =>
         hasPlayableArea withDimensions (a.dimensions.width, a.dimensions.height) at (a.position.x, a.position.y)

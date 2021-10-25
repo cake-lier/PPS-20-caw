@@ -19,7 +19,7 @@ object CellsAtWorkDSL extends CellsAdders with LevelDisplayers {
     * @param fun
     *   the function which will contain the new [[it.unibo.pps.caw.common.model.Level]] definition
     */
-  def board(fun: ListBuffer[LevelBuilderState => LevelBuilderState] ?=> Unit): Unit = {
+  def level(fun: ListBuffer[LevelBuilderState => LevelBuilderState] ?=> Unit): Unit = {
     given ops: ListBuffer[LevelBuilderState => LevelBuilderState] = ListBuffer()
     fun
     ops.foldLeft(LevelBuilderState())((b, op) => op(b))
