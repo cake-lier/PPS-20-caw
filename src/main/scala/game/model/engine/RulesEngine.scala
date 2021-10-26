@@ -40,59 +40,34 @@ object RulesEngine {
     /* Given the current board, calculates the next state of the board by applying the game rules to the given cell.*/
     private def nextState(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = {
       val cellState: Map[Int, Boolean] = board.map(c => if (c.id == cell.id) (c.id, true) else (c.id, c.updated)).toMap
+      val partialBoard: Board[UpdateCell] = extractNeighborhood(board, cell)
       val resBoard: Board[UpdateCell] =
         PrologParser
-          .createSerializedPredicate(getPartialBoard(board, cell), cellState.keySet.max + 1, cell)
+          .createSerializedPredicate(partialBoard, cellState.keySet.max + 1, cell)
           .map(p => PrologParser.deserializeBoard(engine.solve(p).extractLastTerm))
           .getOrElse(board)
-      updateGlobalBoard(
-        board,
-        resBoard.map(_ match {
-          case c if (c.id > cellState.keySet.max) => c.changeUpdatedProperty(updated = true) // new cell created by a generator
-          case c                                  => c.changeUpdatedProperty(cellState(c.id))
-        }),
-        cell
-      )
+          .map(_ match {
+            case c if (c.id > cellState.keySet.max) => c.changeUpdatedProperty(updated = true) // new cell created by a generator
+            case c                                  => c.changeUpdatedProperty(cellState(c.id))
+          })
+
+      board -- partialBoard ++ resBoard
     }
 
-    private def updateGlobalBoard(
-      globalBoard: Board[UpdateCell],
-      partialBoard: Board[UpdateCell],
-      cell: UpdateCell
-    ): Board[UpdateCell] =
-      cell match {
-        case UpdateGeneratorCell(p, o, _, _) =>
-          o match {
-            case Orientation.Right | Orientation.Left => globalBoard.filter(_.position.y != p.y) ++ partialBoard
-            case Orientation.Top | Orientation.Down   => globalBoard.filter(_.position.x != p.x) ++ partialBoard
-          }
-        case UpdateMoverCell(p, o, _, _) =>
-          o match {
-            case Orientation.Right | Orientation.Left => globalBoard.filter(_.position.y != p.y) ++ partialBoard
-            case Orientation.Top | Orientation.Down   => globalBoard.filter(_.position.x != p.x) ++ partialBoard
-          }
-        case UpdateRotatorCell(p, _, _, _) =>
-          globalBoard
-            .filter(c =>
-              c.position != Position(p.x, p.y) &&
-                c.position != Position(p.x, p.y - 1) &&
-                c.position != Position(p.x, p.y + 1) &&
-                c.position != Position(p.x - 1, p.y) &&
-                c.position != Position(p.x + 1, p.y)
-            ) ++ partialBoard
-        case _ => globalBoard
-      }
-
-    private def getPartialBoard(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = cell match {
+    private def extractNeighborhood(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = cell match {
       case UpdateGeneratorCell(p, o, _, _) =>
         o match {
-          case Orientation.Right | Orientation.Left => board.filter(_.position.y == p.y)
-          case Orientation.Top | Orientation.Down   => board.filter(_.position.x == p.x)
+          case Orientation.Right => board.filter(c => c.position.y == p.y && c.position.x >= p.x - 1)
+          case Orientation.Left  => board.filter(c => c.position.y == p.y && c.position.x <= p.x + 1)
+          case Orientation.Top   => board.filter(c => c.position.x == p.x && c.position.y <= p.y + 1)
+          case Orientation.Down  => board.filter(c => c.position.x == p.x && c.position.y >= p.y - 1)
         }
       case UpdateMoverCell(p, o, _, _) =>
         o match {
-          case Orientation.Right | Orientation.Left => board.filter(_.position.y == p.y)
-          case Orientation.Top | Orientation.Down   => board.filter(_.position.x == p.x)
+          case Orientation.Right => board.filter(c => c.position.y == p.y && c.position.x >= p.x)
+          case Orientation.Left  => board.filter(c => c.position.y == p.y && c.position.x <= p.x)
+          case Orientation.Top   => board.filter(c => c.position.x == p.x && c.position.y <= p.y)
+          case Orientation.Down  => board.filter(c => c.position.x == p.x && c.position.y >= p.y)
         }
       case UpdateRotatorCell(p, _, _, _) =>
         board
