@@ -79,14 +79,8 @@ object GameBoardView {
 
     private def draw(cells: Set[PlayableCell] | Set[BaseCell], droppablePlayableArea: Boolean = false): Unit = {
       clearComponents()
-      drawPavement()
-      drawPlayableArea(
-        initialLevel.playableArea.position.x,
-        initialLevel.playableArea.position.y,
-        initialLevel.playableArea.dimensions.width,
-        initialLevel.playableArea.dimensions.height,
-        droppablePlayableArea
-      )
+      drawFloor()
+      drawPlayableArea(initialLevel.playableArea.position, initialLevel.playableArea.dimensions, droppablePlayableArea)
       cells.foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
     }
   }

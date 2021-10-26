@@ -12,6 +12,23 @@ import javafx.scene.image.ImageView
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
 
+/* Updates the editor model when the view is modified.
+ *
+ * Its methods are called when a PlayableArea is placed to the board or removed from it by the player and when a Cell is
+ * removed by the player.
+ */
+private trait EditorModelUpdater extends ModelUpdater {
+
+  /* Creates a new PlayableArea, given its upper left Position and its lower right Position. */
+  def addPlayableArea(topLeftCorner: Position, downRightCorner: Position): Unit
+
+  /* Removes a Cell given its current Position. */
+  def removeCell(position: Position): Unit
+
+  /* Removes the previously added PlayableArea. */
+  def removePlayableArea(): Unit
+}
+
 /* The board displayed in the editor.
  *
  * In the editor, the player can modify the level board as they please: they can select and deselect the
@@ -29,24 +46,21 @@ private object EditorBoardView {
 
   /* Returns a new instance of EditorBoardView. It receives the screen width and height, necessary to calculate the size of
    * the board, the EditorModelState containing all the necessary information to draw the level, the ModelUpdater and
-   * the EditorUpdater, necessary to update the model after the player modifies the view.
+   * the EditorModelUpdater, necessary to update the model after the player modifies the view.
    */
   def apply(
     screenWidth: Double,
     screenHeight: Double,
     levelState: EditorModelState,
-    model: ModelUpdater,
-    updater: EditorUpdater
-  ): EditorBoardView =
-    EditorBoardViewImpl(screenWidth, screenHeight, levelState, model, updater)
+    modelUpdater: EditorModelUpdater
+  ): EditorBoardView = EditorBoardViewImpl(screenWidth, screenHeight, levelState, modelUpdater)
 
   /* An extension of AbstractBoardView for the EditorView. */
   private class EditorBoardViewImpl(
     screenWidth: Double,
     screenHeight: Double,
     initialState: EditorModelState,
-    modelUpdater: ModelUpdater,
-    updater: EditorUpdater
+    modelUpdater: EditorModelUpdater
   ) extends AbstractBoardView(
       screenWidth,
       screenHeight,
@@ -62,10 +76,10 @@ private object EditorBoardView {
 
     override def drawState(state: EditorModelState): Unit = {
       clearComponents()
-      drawPavement(droppablePavement = true)
+      drawFloor(isDroppable = true)
       state.playableArea match {
         case Some(p) =>
-          drawPlayableArea(p.position.x, p.position.y, p.dimensions.width, p.dimensions.height, droppablePlayableArea = true)
+          drawPlayableArea(p.position, p.dimensions, isDroppable = true)
         case _ => applyHandler(n => enablePlayableAreaSelection(n.asInstanceOf[ImageView]))
       }
       state
@@ -73,26 +87,26 @@ private object EditorBoardView {
         .foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
     }
 
-    override protected def drawImageView(node: ImageView, x: Int, y: Int): Unit = {
-      node.getImage match {
+    override protected def drawImageView(imageView: ImageView, x: Int, y: Int): Unit = {
+      imageView.getImage match {
         case CellImage.PlayAreaTile.image =>
-          node.setOnMouseClicked(e =>
+          imageView.setOnMouseClicked(e =>
             if (e.getButton.equals(MouseButton.SECONDARY)) {
-              updater.removePlayableArea()
+              modelUpdater.removePlayableArea()
               e.consume()
             }
           )
         case _ =>
-          if (node.isInstanceOf[DraggableImageView]) {
-            node.setOnMouseClicked(e => {
+          if (imageView.isInstanceOf[DraggableImageView]) {
+            imageView.setOnMouseClicked(e => {
               if (e.getButton.equals(MouseButton.SECONDARY)) {
-                updater.removeCell(x, y)
+                modelUpdater.removeCell(x, y)
                 e.consume()
               }
             })
           }
       }
-      super.drawImageView(node, x, y)
+      super.drawImageView(imageView, x, y)
     }
 
     /* Given an image view, adds the necessary JavaFX event handlers to select a playable area with the mouse and to highlight
@@ -108,7 +122,7 @@ private object EditorBoardView {
 
       imageView.setOnMouseDragReleased(e => {
         endPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
-        updater.createPlayableArea(startPosition, endPosition)
+        modelUpdater.addPlayableArea(startPosition, endPosition)
         e.consume()
       })
 
