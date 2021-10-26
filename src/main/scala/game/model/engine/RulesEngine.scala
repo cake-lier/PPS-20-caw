@@ -56,61 +56,52 @@ object RulesEngine {
     }
 
     private def updateGlobalBoard(
-      globalboard: Board[UpdateCell],
+      globalBoard: Board[UpdateCell],
       partialBoard: Board[UpdateCell],
       cell: UpdateCell
     ): Board[UpdateCell] =
       cell match {
-        case UpdateGeneratorCell(position, orientation, _, _) =>
-          orientation match {
-            case Orientation.Right | Orientation.Left =>
-              Board[UpdateCell](globalboard.cells.filter(_.position.y != position.y).toSet ++ partialBoard.cells)
-            case Orientation.Top | Orientation.Down =>
-              Board[UpdateCell](globalboard.cells.filter(_.position.x != position.x).toSet ++ partialBoard.cells)
+        case UpdateGeneratorCell(p, o, _, _) =>
+          o match {
+            case Orientation.Right | Orientation.Left => globalBoard.filter(_.position.y != p.y) ++ partialBoard
+            case Orientation.Top | Orientation.Down   => globalBoard.filter(_.position.x != p.x) ++ partialBoard
           }
-        case UpdateMoverCell(position, orientation, _, _) =>
-          orientation match {
-            case Orientation.Right | Orientation.Left =>
-              Board[UpdateCell](globalboard.cells.filter(_.position.y != position.y).toSet ++ partialBoard.cells)
-            case Orientation.Top | Orientation.Down =>
-              Board[UpdateCell](globalboard.cells.filter(_.position.x != position.x).toSet ++ partialBoard.cells)
+        case UpdateMoverCell(p, o, _, _) =>
+          o match {
+            case Orientation.Right | Orientation.Left => globalBoard.filter(_.position.y != p.y) ++ partialBoard
+            case Orientation.Top | Orientation.Down   => globalBoard.filter(_.position.x != p.x) ++ partialBoard
           }
-        case UpdateRotatorCell(position, _, _, _) =>
-          Board[UpdateCell](
-            globalboard
-              .cells
-              .filter(c =>
-                c.position != Position(position.x, position.y) && c.position != Position(position.x, position.y - 1) &&
-                  c.position != Position(position.x, position.y + 1) &&
-                  c.position != Position(position.x - 1, position.y) && c.position != Position(position.x + 1, position.y)
-              )
-              .toSet ++ partialBoard.cells
-          )
-        case _ => globalboard
+        case UpdateRotatorCell(p, _, _, _) =>
+          globalBoard
+            .filter(c =>
+              c.position != Position(p.x, p.y) &&
+                c.position != Position(p.x, p.y - 1) &&
+                c.position != Position(p.x, p.y + 1) &&
+                c.position != Position(p.x - 1, p.y) &&
+                c.position != Position(p.x + 1, p.y)
+            ) ++ partialBoard
+        case _ => globalBoard
       }
 
     private def getPartialBoard(board: Board[UpdateCell], cell: UpdateCell): Board[UpdateCell] = cell match {
-      case UpdateGeneratorCell(position, orientation, _, _) =>
-        orientation match {
-          case Orientation.Right | Orientation.Left => Board[UpdateCell](board.cells.filter(_.position.y == position.y))
-          case Orientation.Top | Orientation.Down   => Board[UpdateCell](board.cells.filter(_.position.x == position.x))
+      case UpdateGeneratorCell(p, o, _, _) =>
+        o match {
+          case Orientation.Right | Orientation.Left => board.filter(_.position.y == p.y)
+          case Orientation.Top | Orientation.Down   => board.filter(_.position.x == p.x)
         }
-      case UpdateMoverCell(position, orientation, _, _) =>
-        orientation match {
-          case Orientation.Right | Orientation.Left => Board[UpdateCell](board.cells.filter(_.position.y == position.y))
-          case Orientation.Top | Orientation.Down   => Board[UpdateCell](board.cells.filter(_.position.x == position.x))
+      case UpdateMoverCell(p, o, _, _) =>
+        o match {
+          case Orientation.Right | Orientation.Left => board.filter(_.position.y == p.y)
+          case Orientation.Top | Orientation.Down   => board.filter(_.position.x == p.x)
         }
-      case UpdateRotatorCell(position, _, _, _) =>
-        Board[UpdateCell](
-          board
-            .cells
-            .filter(c =>
-              c.position == Position(position.x, position.y - 1) ||
-                c.position == Position(position.x, position.y + 1) ||
-                c.position == Position(position.x - 1, position.y) ||
-                c.position == Position(position.x + 1, position.y)
-            ) + cell
-        )
+      case UpdateRotatorCell(p, _, _, _) =>
+        board
+          .filter(c =>
+            c.position == Position(p.x, p.y - 1) ||
+              c.position == Position(p.x, p.y + 1) ||
+              c.position == Position(p.x - 1, p.y) ||
+              c.position == Position(p.x + 1, p.y)
+          ) + cell
       case _ => board
     }
 
