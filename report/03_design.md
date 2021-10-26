@@ -41,12 +41,12 @@ Dalle specifiche precedentemente descritte sul DSL, si è deciso di costruire un
 		& | & ``hasDeleterCell'', AtWord & \label{prod:15} \\
 		& | & ``hasDeleterCells '', InAnAreaWord, AtWord & \label{prod:16} \\
 		& | & ``printIt'' & \label{prod:17} \\
-		& | & ``saveIt to '', String & \label{prod:18} \\
+		& | & ``saveIt ('', String, ``)'' & \label{prod:18} \\
 		& | & ``playIt'' & \label{prod:19} \\
 		& | & ``editIt''; & \label{prod:20} \\
-		\multicolumn{4}{l}{WithDimensionsWord = ``withDimensions '', Int, `` by '', Int;} \\
-		\multicolumn{4}{l}{AtWord = `` at ('', Int, ``, '', Int, ``)";} \\
-		\multicolumn{4}{l}{InAnAreaWord = ``inAnArea '', Int, `` by ", Int;} \\
+		\multicolumn{4}{l}{WithDimensionsWord = ``withDimensions ('', Int, ``, '', Int, ``)'';} \\
+		\multicolumn{4}{l}{AtWord = `` at ('', Int, ``, '', Int, ``)'';} \\
+		\multicolumn{4}{l}{InAnAreaWord = ``inAnArea ('', Int, ``, '', Int, ``)'';} \\
 		\multicolumn{4}{l}{OrientationWord = ``right'' | ``left'' | ``top'' | ``bottom'';} \\
 		\multicolumn{4}{l}{RotationWord = ``clockwise'' | ``counterclockwise'';} \\
 		\multicolumn{4}{l}{PushWord = ``vertically'' | ``horizontally'' | ``inBothDirections'';} \\
