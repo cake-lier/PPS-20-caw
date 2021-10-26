@@ -7,7 +7,7 @@ Abbiamo svolto *daily scrum*, ovvero brevi meeting giornalieri molto conducenti 
 
 All'inizio di ogni sprint abbiamo tenuto un team meeting per definire lo *sprint goal* e il *product backlog* per realizzarlo. Gli item che costituiscono ogni *product backlog* sono stati individuati suddividendo i main goal in sub-goals, e assegnando task autocontenuti e di piccole dimensioni per realizzare tali goal. L'assegnazione dei task ai membri del team era consentita sia all'inizio degli sprint che durante, per uno sviluppo più flessibile.
 
-Matteo Castellucci ha svolto il ruolo di Product Owner e Scrum Master, conducendo i daily scrum, aggiornando i backlog degli sprint settimanali e producendo un report alla fine di ogni sprint.
+Matteo Castellucci ha svolto il ruolo di Product Owner, conducendo i daily scrum, aggiornando i backlog degli sprint settimanali e producendo un report alla fine di ogni sprint.
 
 ## Continuous Integration
 Per facilitare lo sviluppo in parallelo dei task assegnati ad ogni membro del team abbiamo organizzato il workflow su Git nel seguente modo: 

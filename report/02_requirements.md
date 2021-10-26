@@ -181,7 +181,4 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
 - Implementazione in Scala, compatibilità garantita sulla versione 3.0.2
 - Applicazione del paradigma di programmazione funzionale.
 - Implementazione della logica di gioco in Prolog, tramite la libreria TuProlog alla versione 3.3.0
-- Utilizzo della libreria ScalaFX per la realizzazione dell'interfaccia grafica.
-- Utilizzo delle librerie ScalaTest, TextFX per la realizzazione della suite di test.
-- Utilizzo di JaCoCo per l'analisi di code coverage dell'applicazione.
-- Utilizzo di Scalafmt per formattazione uniforme.
+- Applicazione del processo TDD ove possibile, utilizzando le librerie ScalaTest e TestFX per realizzare la suite di test.
