@@ -16,7 +16,7 @@ Il terzo componente è "Editor", quello relativo all'*editor* di livelli. Anche 
 
 Ultimo componente, ma non per questo meno importante, è quello relativo al menu principale, "Main Menu". Anche in questo caso questo è stato suddiviso solamente in un sotto-componente "*controller*" e un sotto-componente "*view*", dato che il menu principale è essenzialmente una componente visuale dell'applicazione e perciò non presenta alcun tipo di modello dei dati a cui fare riferimento. Il *controller* mette a disposizione della *view* tutte le operazioni che possono essere eseguite dal menu principale sotto forma di metodi. In primis, offre la possibilità di far partire il gioco per giocare un livello deserializzato da un file oppure per giocare un livello che fa parte della sequenza dei livelli offerti di default dall'applicazione. In secundis, offre la possibilità di aprire l'*editor* per modificare un livello vuoto, di cui conosciamo le informazioni fondamentali per mostrarlo all'utente, ovvero le sue dimensioni, oppure un livello costruito in precedenza e deserializzato da *file*. Inoltre, permette di mostrare all'utente quali sono i livelli che finora è riuscito a risolvere, qual è il volume della musica e degli effetti sonori attuali e modificarli a suo piacimento. Infine, permette di tornare indietro alla schermata principale del menu, dato che questo può essere composto di più sotto-pagine, ognuna relativa ad uno specifico gruppo di informazioni e di uscire dall'applicazione. Tutti questi servizi vengono offerti demandandoli al *controller* genitore, dato che o coinvolgono necessariamente un cambio di *view* nell'interfaccia grafica o necessitano dell'uso di servizi di persistenza che rimangono confinati nel *controller* di livello superiore. Se le impostazioni sono considerate come un unico informazione esposta dal *controller* genitore, nella componente *controller* "Main Menu" invece vengono scomposte nei singoli elementi così che eventuali ulteriori sotto-componenti possano accedere ai singoli settaggi indipendentemente. La componente "*view*" del "Main Menu" invece non espone alcun servizio dato che il *controller* non ha mai informazioni che deve richiedere alla *view* di visualizzare.
 
-![Design architetturale catturato tramite diagramma delle classi UML](imgs/architecture_classes.jpg){ width=100% }
+![Design architetturale catturato tramite diagramma delle classi UML](imgs/architecture_classes.png){ width=100% }
 
 Dalle specifiche precedentemente descritte sul DSL, si è deciso di costruire un linguaggio che le soddisfa con una grammatica libera dal contesto qui di seguito descritta. Per poter descrivere un nuovo livello, occorre aprire un nuovo blocco, il quale deve essere preceduto dalla parola "level". Ogni istruzione che definisce le caratteristiche del livello stesso deve essere posta su di una nuova riga, cioè deve essere separata dalla precedente tramite un carattere di "*newline*". Le istruzioni che possono essere specificate all'interno del blocco sono definite dalla seguente grammatica espressa in forma di Backus-Naur estesa
 
@@ -79,6 +79,22 @@ Dalle specifiche precedentemente descritte sul DSL, si è deciso di costruire un
 \end{itemize}
 ```
 
-![Diagramma del Domain Specific Language specificato tramite diagramma di sintassi](imgs/railroad.png){ width=100% }
+![Diagramma di sintassi del Domain Specific Language modellato](imgs/railroad.png){ width=100% }
 
 ## Design di dettaglio
+
+![Diagramma delle classi che illustra il design delle classi di dominio](imgs/cells_design.png){ width = 100% }
+
+![Diagramma delle classi che illustra il design dello stato del *model* di gioco](imgs/game_model_design.png){ width = 100% }
+
+![Diagramma degli stati che illustra il comportamento del componente "Game"](imgs/game_state_machine.png)
+
+![Diagramma di attività che illustra il comportamento del metodo "update"](imgs/update_method_design.png)
+
+![Diagramma delle classi che illustra il design dello stato del *model* dell'*editor*](imgs/editor_model_design.png)
+
+![Diagramma delle classi che illustra il design delle componenti che visualizzano la griglia di gioco](imgs/board_view_design.png)
+
+![Diagramma delle classi che illustra il design dei sotto-componenti "controller" e "view" di "Menu"](imgs/menu_design.png)
+
+![Diagramma delle classi che illustra il design del Domain Specific Language modellato](imgs/dsl_design.png)

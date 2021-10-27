@@ -16,7 +16,7 @@ Inoltre anche noi abbiamo voluto dare al giocatore non solo la possibilità di r
 
 ## Requisiti utente
 
-![Requisiti utente catturati tramite diagramma dei casi d'uso UML](imgs/use_cases.jpg)
+![Requisiti utente catturati tramite diagramma dei casi d'uso UML](imgs/use_cases.png){ width=100% }
 
 ## Requisiti funzionali
 
@@ -112,7 +112,7 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
       - se è presente un *Deleter* di fronte al *Generator* viene eliminato dal nuovo *Deleter* che ne occupa la sua posizione;
 
 
-![Diagramma del modello del dominio dell'applicazione catturato tramite diagramma delle classi UML](imgs/domain_classes.jpg)
+![Diagramma del modello del dominio dell'applicazione catturato tramite diagramma delle classi UML](imgs/domain_classes.png){ width=100% }
 
 ### Regole di gioco
 1. Le regole di gioco devono essere regole espresse tramite logica di primo ordine.
