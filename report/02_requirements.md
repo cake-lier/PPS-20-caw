@@ -119,8 +119,8 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
 2. Le regole del gioco definiscono il comportamento delle cellule *Mover*, *Generator* e *Rotator*, in quanto sono le uniche cellule che cambiano attivamento lo stato del livello, in quanto si muovono oppure spostano, ruotano o generano altre cellule.
 3. Le regole del gioco non definiscono il comportamento delle cellule *Block*, *Enemy*, *Wall* o *Deleter* in quanto non possono attivamente cambiare lo stato del livello finché una cellula non si sposta o viene spostata nella loro direzione.
 4. Per cambiare lo stato del livello, si applicano le regole del gioco nel seguente ordine:
-   - la regola del *Rotator*: applicato ai *Rotator*, ruota le cellule circostanti se queste sono ruotabili;
    - la regola del *Generator*: applicato ai *Generator*, effettua la generazione di una nuova cellula se le condizioni sono soddisfatte;
+   - la regola del *Rotator*: applicato ai *Rotator*, ruota le cellule circostanti se queste sono ruotabili;
    - la regola del *Mover*: applicato ai *Mover*, sposta il *Mover* e le cellule di fronte se le condizioni sono soddisfatte;
 5. Dato un gruppo di cellule dello stesso tipo, la precedenza di applicazione della corrispondente regola è data alla cellula che si trova più in alto e più a sinistra delle altre.
 
