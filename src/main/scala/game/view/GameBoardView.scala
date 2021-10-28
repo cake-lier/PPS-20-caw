@@ -73,9 +73,9 @@ object GameBoardView {
 
     drawSetupBoard(initialLevel.board)
 
-    override def drawGameBoard(board: Board[BaseCell]): Unit = draw(board.cells)
+    override def drawGameBoard(board: Board[BaseCell]): Unit = draw(board)
 
-    override def drawSetupBoard(board: Board[PlayableCell]): Unit = draw(board.cells, droppablePlayableArea = true)
+    override def drawSetupBoard(board: Board[PlayableCell]): Unit = draw(board, droppablePlayableArea = true)
 
     private def draw(cells: Set[PlayableCell] | Set[BaseCell], droppablePlayableArea: Boolean = false): Unit = {
       clearComponents()

@@ -5,11 +5,9 @@ import it.unibo.pps.caw.common.model.{Board, Position}
 import it.unibo.pps.caw.common.*
 import it.unibo.pps.caw.editor.model.EditorModelState
 
-import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellImage, CellView, DraggableImageView, ModelUpdater}
+import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellView, CellImage, ModelUpdater}
 import javafx.scene.Node
-import javafx.scene.effect.Glow
 import javafx.scene.image.ImageView
-import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
 
 /* Updates the editor model when the view is modified.
@@ -88,23 +86,14 @@ private object EditorBoardView {
     }
 
     override protected def drawImageView(imageView: ImageView, x: Int, y: Int): Unit = {
-      imageView.getImage match {
-        case CellImage.PlayAreaTile.image =>
-          imageView.setOnMouseClicked(e =>
-            if (e.getButton.equals(MouseButton.SECONDARY)) {
-              modelUpdater.removePlayableArea()
-              e.consume()
-            }
-          )
+      import it.unibo.pps.caw.common.view.{DraggableImageView, DroppableImageView}
+      import javafx.scene.input.MouseButton
+      imageView match {
+        case tile: DroppableImageView if (tile.getImage == CellImage.PlayAreaTile.image) =>
+          tile.setOnMouseClicked(e => if (e.getButton.equals(MouseButton.SECONDARY)) modelUpdater.removePlayableArea())
+        case cell: DraggableImageView =>
+          cell.setOnMouseClicked(e => if (e.getButton.equals(MouseButton.SECONDARY)) modelUpdater.removeCell(x, y))
         case _ =>
-          if (imageView.isInstanceOf[DraggableImageView]) {
-            imageView.setOnMouseClicked(e => {
-              if (e.getButton.equals(MouseButton.SECONDARY)) {
-                modelUpdater.removeCell(x, y)
-                e.consume()
-              }
-            })
-          }
       }
       super.drawImageView(imageView, x, y)
     }
@@ -113,6 +102,7 @@ private object EditorBoardView {
      * the selected tiles.
      */
     private def enablePlayableAreaSelection(imageView: ImageView): Unit = {
+      import javafx.scene.effect.Glow
       val glow = new Glow()
       imageView.setOnDragDetected(e => {
         startPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))

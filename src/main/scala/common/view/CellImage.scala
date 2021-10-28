@@ -8,7 +8,7 @@ import javafx.scene.image.Image
   * and retrieve the [[Image]] for the given enumeration.
   */
 enum CellImage(val imageName: String) {
-  val image: Image = Image("imgs/" + imageName + ".png")
+  val image: Image = Image(s"imgs/$imageName.png")
 
   /** The image of the enemy. */
   case Enemy extends CellImage("enemy")

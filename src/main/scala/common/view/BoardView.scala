@@ -18,7 +18,7 @@ trait ModelUpdater {
     * @param cellImageView
     *   the [[javafx.scene.image.ImageView]] that was moved by the player
     * @param newPosition
-    *   the position where the [[javafx.scene.image.ImageView]] was moved to
+    *   the [[Position]] where the [[javafx.scene.image.ImageView]] was moved to
     */
   def manageCell(cellImageView: ImageView, newPosition: Position): Unit
 }
@@ -28,12 +28,12 @@ trait ModelUpdater {
   */
 trait BoardView extends ViewComponent[GridPane]
 
-/** The abstract view that displays a [[it.unibo.pps.caw.common.model.Level]].
+/** The abstract view that displays a [[model.Level]].
   *
   * This abstract implementation of the trait [[BoardView]] provides all the necessary methods to draw a generic board. A board is
   * a grid with a size and a certain number of rows and columns; it has a pavement and potentially a playable area where the cells
-  * of a [[it.unibo.pps.caw.common.model.Level]] are placed and drawn. It receives in its constructor a [[ModelUpdater]],
-  * necessary to update the model after the view is modified by the player.
+  * of a [[model.Level]] are placed and drawn. It receives in its constructor a [[ModelUpdater]], necessary to update the model
+  * after the view is modified by the player.
   *
   * @param screenWidth
   *   the width of the screen necessary to calculate the board width
