@@ -166,8 +166,12 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
 3. I livelli di default non devono essere bloccati quando tutti i livelli precedenti non sono stati completati.
    - L'applicazione deve permettere di giocare i livelli di default nell'ordine in cui preferisce il giocatore.
 
-### Impostazioni
+### Musica ed effetti sonori
 1. L'applicazione deve fare persistenza del volume della musica e degli effetti sonori scelto dal giocatore.
+2. Dovranno essere emmessi eventi sonori quando:
+   - il gioco va avanti di uno step
+   - una cellula *Enemy* viene eliminata
+   - il livello viene completato
 
 ## Requisiti non funzionali
 
