@@ -51,7 +51,6 @@ object EditorView {
     audioPlayer: AudioPlayer
   ) extends AbstractViewComponent[Pane]("editor.fxml")
     with EditorView
-    with ModelUpdater
     with EditorModelUpdater {
     @FXML
     var backButton: Button = _
