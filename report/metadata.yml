@@ -17,7 +17,6 @@ header-includes:
   \usepackage{textcomp}
   \usepackage[a4paper, total={17cm, 24cm}]{geometry}
   \usepackage[format=plain,labelfont=bf,up,textfont=normal,up,justification=justified,singlelinecheck=false,skip=0.01\linewidth]{caption}
-  \usepackage{subcaption}
   \usepackage{indentfirst}
   \usepackage{float}
   \usepackage{graphicx}
@@ -31,4 +30,10 @@ header-includes:
 indent: true
 fontsize: 12pt
 papersize: a4
+toc: true
+bibliography: bibliography.bib
+csl: ieee
+from: markdown+raw_attribute+tex_math_dollars+link_attributes+citations
+to: pdf
+reference-section-title: "Bibliografia"
 ---
