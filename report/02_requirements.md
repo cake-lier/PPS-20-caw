@@ -17,6 +17,52 @@ Inoltre anche noi abbiamo voluto dare al giocatore non solo la possibilità di r
 
 ## Requisiti utente
 
+L’utente può usufruire delle seguenti funzionalità:
+
+- Fase di Gioco:
+  - Gestione della Board composta da:
+    - fase di setup:
+      - Drag & Drop di Celle del livello in spazi liberi dell'area giocabile
+    - fase di sviluppo del gioco:
+      - Ritorno in fase di setup. Le celle tornano nelle posizioni che avevano prima della fase di gioco.
+      - Foreword automatico del livello
+      - Single step della board
+  - Eventuale continuazione in un livello successivo (condizionata dalla sua presenza o meno)
+  - Ritorno al menu iniziale
+
+- Creazione di un livello:
+  - Tramite DSL
+  - Tramite Editor:
+    - Avvio dell'Editor in modalità "stand alone" utilizzando un livello precedentemente creato
+    - Gestione della Board composta da:
+      - Gestione dell'area giocabile:
+        - Definizione di un'area giocabile rettangolare mediante Drag & Drop sulle zone della board
+        - Rimozione l'area giocabile cliccando con il tasto destro del mouse sull'area stessa.
+      - Gestione delle Celle:
+        - Drag & Drop di Celle presenti attualmente sulla Board all'interno di qualunque zona libera
+        - Rimozione di tutte le Celle
+        - Rimozione di una singola Cella cliccando con il tasto destro del mouse sulla cella stessa.
+    - Gestione del dispenser di Celle che include:
+      - Drag & Drop di Celle dal dispenser su zone libere della board
+      - Trasformazione/Rotazione delle celle del dispenser in modo da ottenere ogni possibile Cella
+    - Salvataggio del livello corrente in formato JSON (a patto che l'area giocabile sia stata definita) nella directory specificata dall'utente
+    - Ritorno al menu iniziale/chiusura dell'editor dipendentemente dalla modalità adottata
+
+- Impostazioni:
+  - Settaggio volume della musica
+  - Settaggio volume degli effetti sonori
+  - Ritorno al menu iniziale
+
+- Menu:
+  - Accesso al menu dell'Editor che permette di:
+    - Aprire l'editor con un livello vuoto specificandone le dimensioni
+    - Aprire l'editor scegliendo un livello precedentemente creato
+  - Accesso alla schermata dei livelli preimpostati:
+    - Scegliere di giocare un livello dalla lista fornita
+  - Scegliere e giocare a un livello precedentemente creato dall'utente
+  - Accesso alla schermata impostazioni
+  - Chiusura del gioco
+
 ![Requisiti utente catturati tramite diagramma dei casi d'uso UML](imgs/use_cases.png){ width=100% }
 
 ## Requisiti funzionali
