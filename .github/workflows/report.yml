@@ -21,12 +21,12 @@ jobs:
         uses: docker://pandoc/latex:2.9
         with:
           args: >-
-            -f markdown+raw_attribute+tex_math_dollars+link_attributes
-            -t pdf
             -o report.pdf
+            -F pandoc-citeproc
             -N
-            --toc
             --metadata-file=report/metadata.yml
+            --bibliography=report/bibliography.bib
+            --csl=report/ieee.csl
             --resource-path=report
             ${{ steps.files_list.outputs.files }}
       - name: Upload

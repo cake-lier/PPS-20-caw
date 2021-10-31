@@ -31,8 +31,6 @@ indent: true
 fontsize: 12pt
 papersize: a4
 toc: true
-bibliography: bibliography.bib
-csl: ieee
 from: markdown+raw_attribute+tex_math_dollars+link_attributes+citations
 to: pdf
 reference-section-title: "Bibliografia"
