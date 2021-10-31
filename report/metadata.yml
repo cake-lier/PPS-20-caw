@@ -21,6 +21,7 @@ header-includes:
   \usepackage{float}
   \usepackage{graphicx}
   \floatplacement{figure}{H}
+  \usepackage{subfig}
   \usepackage{array}
   \newcounter{rowcntr}[table]
   \renewcommand{\therowcntr}{\thechapter.\arabic{rowcntr}}

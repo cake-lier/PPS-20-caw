@@ -103,11 +103,18 @@ Per quanto riguarda invece lo stato del componente "model" dell'*editor*, lo sta
 
 Un altro aspetto degno di nota riguarda la gestione degli *step* della simulazione gioco. Visto che le regole dovevano essere implementate nel linguaggio PROLOG, era necessario che l'interprete si interfacciasse con il resto dell'applicazione realizzata nel linguaggio scala. L'idea è stata perciò di applicare il pattern "*façade*", così da esporre solamente il servizio di interesse dell'interprete PROLOG, ovvero la possibilità di risolvere un *goal* e ottenere il corrispondente risultato. È nata così la classe "PrologEngine", dotata del metodo "solve" che riceve un "Goal" e produce un "Result". La *façade* però non interagisce direttamente con il *model* del gioco, ma viene utilizzata da un ulteriore classe, che è "RulesEngine". Questa classe nasce per isolare in un'unica entità la gestione degli aggiornamenti dello stato corrente della "Board" così da ottenere lo stato successivo e poterlo quindi mostrare all'utente. In questo modo, è stato possibile applicare "*separation of concerns*" sul "GameModel", dividendo la modifica del suo stato interno dai calcoli necessari per passare dallo stato corrente a quello successivo. Inoltre, "RulesEngine" non viene creata direttamente dal "GameModel", ma le viene passata, secondo il pattern "*dependency injection*". In questo modo, questo *model* dipende ancor più strettamente dall'interfaccia che "RulesEngine" fornisce e non dalla sua implementazione, seguendo il principio di "*dependency inversion*".
 
-<div id="">
-	![Diagramma delle classi che illustra il design dello stato del *model* di gioco](imgs/game_model_design.png){ width=50% }
-
-	![Diagramma delle classi che illustra il design dello stato del *model* dell'*editor*](imgs/editor_model_design.png){ width=50% }
-</div>
+```{=latex}
+	\begin{figure}[H]
+		\centering
+		\subfloat[Diagramma delle classi che illustra il design dello stato del \textit{model} di gioco]{
+			\includegraphics[width=0.475\linewidth]{report/imgs/game_model_design.png}	
+		}
+		\hspace{0.1cm}
+		\subfloat[Diagramma delle classi che illustra il design dello stato del \textit{model} dell'\textit{editor}]{
+	  		\includegraphics[width=0.475\linewidth]{report/imgs/editor_model_design.png}
+		}
+	\end{figure}
+```
 
 Il comportamento del metodo "update" di "RulesEngine" ha dovuto essere sviscerato nel dettaglio per far sì che potesse essere correttamente realizzato. Occorre premettere che la scelta del nome non è casuale, ma dovuta all'applicazione del pattern "Update Method" [@Nystrom]. Prima di poter effettuare lo "*step*" vero e proprio, è stato prima necessario convertire la "Board" di cellule in input affinché diventasse una griglia di "UpdatableCell", cioè cellule che possiedono degli ulteriori attributi per permetterne il corretto aggiornamento. Nella fattispecie, vengono dotate di un identificatore univoco, che permetta di distinguerle tra di loro, e da un *flag* che dica se la cellula ha già ricevuto aggiornamento oppure no.
 
