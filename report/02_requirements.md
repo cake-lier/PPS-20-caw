@@ -3,9 +3,10 @@
 ## Requisiti di business
 
 Come progetto volevamo replicare un gioco che fosse realizzabile in 60-80 ore come da richiesto dai requisiti d'esame. Di conseguenza, per la scelta del gioco abbiamo suggerito i seguenti propositi:
-- Il gioco deve avere il giusto livello di complessità per dimostrare le conoscenze acquisite durante il corso e completarlo nel monte ore stabilito.
-- Se possibile, la logica del gioco deve essere descritta con regole esprimibili tramite logica di primo ordine.
-- La componente grafica deve essere semplice ma efficace; non deve distogliere da altri aspetti fondamentali quali l'architettura e l'implementazione.
+
+ - Il gioco deve avere il giusto livello di complessità per dimostrare le conoscenze acquisite durante il corso e completarlo nel monte ore stabilito.
+ - Se possibile, la logica del gioco deve essere descritta con regole esprimibili tramite logica di primo ordine.
+ - La componente grafica deve essere semplice ma efficace; non deve distogliere da altri aspetti fondamentali quali l'architettura e l'implementazione.
 - Se possible, deve avere un elemento di gioco sufficientemente semplice da essere descritto con un Domain-Specific Language (DSL), come la struttura del livello o la mappa di gioco.
 
 Tra le tante proposte che ci sono venute in mente, la scelta è ricaduta sul puzzle game "Cell Machine" di Sam Hogan e sulla sua mod "Cell Machine Mystic Mod", in quanto soddisfano tutti i nostri requisiti.
@@ -30,6 +31,7 @@ A partire dai requisiti utente, si elencano i seguenti requisiti funzionali:
 3. Quando si seleziona o si gioca un livello, l'applicazione deve permettere al giocatore di tornare indietro al menù.
 
 Si elencano i seguenti requisiti opzionali:
+
 1. L'applicazione deve permettere all'utente di creare un nuovo livello o modificare un livello già esistente attraverso un *level editor*.
    - Il menù deve avere un'opzione per aprire il *level editor*.
    - L'editor deve avere l'opzione di tornare indietro al menù.

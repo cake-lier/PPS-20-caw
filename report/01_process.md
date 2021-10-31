@@ -52,4 +52,4 @@ Qui di seguito le GitHub Actions adoperate per automatizzare il workflow:
 - *Release* per sistemi Linux, MacOS e Windows in seguito alla creazione di un tag
 - esecuzione dei test ad ogni push su tutti i branch, eccetto main
 - report di JaCoCo (code coverage) ad ogni push sul branch develop
-- generazione del presente report come pdf ad ogni push sul branch main nella cartella report/
+- generazione del presente report come pdf ad ogni push sul branch main nella cartella report
