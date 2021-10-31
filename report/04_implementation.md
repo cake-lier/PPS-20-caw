@@ -26,9 +26,9 @@ Io e Yuqi abbiamo esteso la BoardView (già scritta da lei) in modo da poter ess
 ## Yuqi Sun
 
 Nella prima settimana ho lavorato principalmente sulle classi di *View* per fornire, già dopo il primo sprint, un'applicazione concreta con cui l'utente poteva interagire. Usando le librerie di *ScalaFX* e *JavaFX*, ho dunque scritto le classi:
-- *MainMenuView*: visualizza il menù principale dell'applicazione
-- *GameView*: visualizza il gioco; contiene una *BoardView*
-- *BoardView*: visualizza un livello, dove l'utente può fare *drag-and-drop* delle cellule di gioco
+- *MainMenuView*: visualizza il menù principale dell'applicazione;
+- *GameView*: visualizza il gioco; contiene una *BoardView*;
+- *BoardView*: visualizza un livello, dove l'utente può fare *drag-and-drop* delle cellule di gioco;
 
 *MainMenuView* e *GameView* sono state successivamente integrate con i metodi di *Controller* da Castellucci e Rughi.
 
@@ -41,8 +41,8 @@ In seguito, all'inserimento dell'editor, in collaborazione con Gardini, la class
 La classe astratta *BoardView* usa le classi *CellView* e *TileView* per disegnare il pavimento e le cellule del livello. In *CellView* ho usato un *union type*, in quanto deve essere in grado di gestire sia *BaseCell* sia *PlayableCell*: in questo modo si ha un unico costruttore che, a seconda del tipo effettivo della cellula, istanzia una *BaseCellView* o una *PlayableCellView*. Queste due classi sono l'implementazione concreta di una classe astratta *CellView*, che rifattorizza il codice comune per disegnare una cellula.
 
 *CellImage* è un *enumeration* che contiene tutte le possibili immagini usate per disegnare un livello:
-- è più pulito usare un *enum* per fare riferimento alle varie immagini invece del suo percorso;
-- permette di applicare il pattern *Flyweight*, in quanto ogni tipo di cellula condivide la stessa immagine;
+- è più pulito usare un *enum* invece del percorso per fare riferimento alle varie immagini;
+- in quanto ogni tipo di cellula, anche se in posizioni diverse, condivide la stessa immagine, ci permette di riusare lo stesso oggetto *Image*, applicando in questo modo il pattern *Flyweight*;
 
 ### Interazione View-Utente
 Ho implementato:
@@ -52,11 +52,11 @@ Ho implementato:
 Il *drag-and-drop* è implementato con le classi *DraggableImageView* e *DroppableImageView*, che aggiungono gli handler necessari all'ImageView di JavaFX.
 
 ### Aggiornamento della View
-Durante il gioco o la modifica di un livello, vengono effettuate modifiche alla *View*. Queste modifiche devono essere propagate al *Model* del gioco o dell'editor. Per fare ciò ho applicato il pattern *dependency injection*:
-- *GameBoardView* riceve nel costruttore il trait *ModelUpdater*, contenente un metodo che segnala lo spostamento di una cellula; *ModelUpdater* viene poi implementato da *GameView*, che chiama i metodi di *Controller* che modificano il *Model*.
-- *EditorBoardView* riceve in costruttore anche *EditorModelUpdater*, un trait che estende da *ModelUpdater* in quando lo spostamento di una cellula è comune sia al gioco sia all'editor, mentre l'aggiunta e l'eliminazione di una cellula e la selezione e la deselezione della *playable area* sono modifiche di *View* inerenti soltanto all'editor; *EditorModelUpdater* è implementato da *EditorView*, che chiama i metodi di *Controller* che modificano il *Model*.
+Per l'aggiornamento della view, il cui design è già stato descritto nel capitolo di "Design", ho implementato:
+- *ModelUpdater* e relativa implementazione in *GameView*;
+- *EditorModelUpdater* e relativa implementazione in *EditorView*;
 
-L'implementazione effettiva dei metodi di *Model* e *Controller* sono stati implementati dai miei compagni.
+Gli effettivi metodi di *Controller* che modificano il *Model* e che vengono chiamati da *ModelUpdater* e *EditorModelUpdater* sono stati implementati dai miei compagni.
 
 ### RulesEngine
 Ho contribuito alla classe *RulesEngine* aggiungendo un'ottimizzazione. Prolog, infatti, non è efficiente a calcolare il prossimo stato del livello quando questo contiene un alto numero di cellule, causando lag evidenti al gioco; per diminuire questo problema, le regole di Prolog ricevono una *board* contenente solo le cellule circostanti alla cellula su cui si vuole applicare la regola; dopo che Prolog ritorna un risultato, questo viene usato per aggiornare lo stato del livello.

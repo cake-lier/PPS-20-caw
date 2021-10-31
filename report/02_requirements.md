@@ -17,51 +17,51 @@ Inoltre anche noi abbiamo voluto dare al giocatore non solo la possibilità di r
 
 ## Requisiti utente
 
-L’utente può usufruire delle seguenti funzionalità:
+L’utente può usufruire delle seguenti funzionalità.
 
-- Fase di Gioco:
+### Fase di gioco
   - Gestione della Board composta da:
     - fase di setup:
-      - Drag & Drop di Celle del livello in spazi liberi dell'area giocabile
+      - drag&drop di Celle del livello in spazi liberi dell'area giocabile;
     - fase di sviluppo del gioco:
-      - Ritorno in fase di setup. Le celle tornano nelle posizioni che avevano prima della fase di gioco.
-      - Foreword automatico del livello
-      - Single step della board
-  - Eventuale continuazione in un livello successivo (condizionata dalla sua presenza o meno)
-  - Ritorno al menu iniziale
+      - ritorno in fase di setup: le celle tornano nelle posizioni che avevano prima della fase di gioco;
+      - foreword automatico del livello;
+      - single step del livello;
+  - Eventuale continuazione in un livello successivo (condizionata dalla sua presenza o meno).
+  - Ritorno al menu iniziale.
 
-- Creazione di un livello:
-  - Tramite DSL
-  - Tramite Editor:
-    - Avvio dell'Editor in modalità "stand alone" utilizzando un livello precedentemente creato
+### Creazione di un livello
+  - Creazione tramite DSL.
+  - Opzionalmente, creazione tramite editor
+    - Avvio dell'Editor in modalità "stand alone" utilizzando un livello precedentemente creato.
     - Gestione della Board composta da:
-      - Gestione dell'area giocabile:
-        - Definizione di un'area giocabile rettangolare mediante Drag & Drop sulle zone della board
-        - Rimozione l'area giocabile cliccando con il tasto destro del mouse sull'area stessa.
-      - Gestione delle Celle:
-        - Drag & Drop di Celle presenti attualmente sulla Board all'interno di qualunque zona libera
-        - Rimozione di tutte le Celle
-        - Rimozione di una singola Cella cliccando con il tasto destro del mouse sulla cella stessa.
-    - Gestione del dispenser di Celle che include:
-      - Drag & Drop di Celle dal dispenser su zone libere della board
-      - Trasformazione/Rotazione delle celle del dispenser in modo da ottenere ogni possibile Cella
-    - Salvataggio del livello corrente in formato JSON (a patto che l'area giocabile sia stata definita) nella directory specificata dall'utente
-    - Ritorno al menu iniziale/chiusura dell'editor dipendentemente dalla modalità adottata
+      - gestione dell'area giocabile:
+        - definizione di un'area giocabile rettangolare mediante drag&drop sulle zone della board;
+        - rimozione l'area giocabile cliccando con il tasto destro del mouse sull'area stessa;
+      - gestione delle cellule:
+        - drag&drop di cellule, presenti attualmente nel livello, verso qualunque altra posizione libera;
+        - rimozione di tutte le cellule;
+        - rimozione di una singola cellula cliccando con il tasto destro del mouse sulla cellula stessa;
+    - Gestione del dispenser di cellule che include:
+      - drag&drop di cellule dal dispenser sulle posizioni libere del livello
+      - trasformazione e rotazione delle cellule del dispenser in modo da ottenere ogni possibile cellula;
+    - Salvataggio del livello corrente in formato JSON (a patto che l'area giocabile sia stata definita) nella directory specificata dall'utente.
+    - Ritorno al menu iniziale/chiusura dell'editor dipendentemente dalla modalità adottata.
 
-- Impostazioni:
-  - Settaggio volume della musica
-  - Settaggio volume degli effetti sonori
-  - Ritorno al menu iniziale
+### Impostazioni
+  - Settaggio volume della musica.
+  - Settaggio volume degli effetti sonori.
+  - Ritorno al menu iniziale.
 
-- Menu:
+### Menu
   - Accesso al menu dell'Editor che permette di:
-    - Aprire l'editor con un livello vuoto specificandone le dimensioni
-    - Aprire l'editor scegliendo un livello precedentemente creato
+    - aprire l'editor con un livello vuoto specificandone le dimensioni;
+    - aprire l'editor scegliendo un livello precedentemente creato;
   - Accesso alla schermata dei livelli preimpostati:
-    - Scegliere di giocare un livello dalla lista fornita
-  - Scegliere e giocare a un livello precedentemente creato dall'utente
-  - Accesso alla schermata impostazioni
-  - Chiusura del gioco
+    - scegliere di giocare un livello dalla lista fornita;
+  - Scegliere e giocare a un livello precedentemente creato dall'utente.
+  - Accesso alla schermata impostazioni.
+  - Chiusura del gioco.
 
 ![Requisiti utente catturati tramite diagramma dei casi d'uso UML](imgs/use_cases.png){ width=100% }
 
@@ -185,10 +185,10 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
       - tutte le caratteristiche della cellula;
       - la dimensione dell'area e la posizione in cui deve essere collocata;
 3. Il DSL deve permettere di:
-   - salvare il livello
-   - stampare il livello
-   - giocare il livello
-   - modificare il livello con l'editor
+   - salvare il livello;
+   - stampare il livello;
+   - giocare il livello;
+   - modificare il livello con l'editor;
 4. Il DSL deve dare errore se:
    - il livello non ha dimensione;
    - la *Playable Area* è assente oppure occupa un'area maggiore del livello;
@@ -217,9 +217,9 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
 ### Musica ed effetti sonori
 1. L'applicazione deve fare persistenza del volume della musica e degli effetti sonori scelto dal giocatore.
 2. Dovranno essere emmessi eventi sonori quando:
-   - il gioco va avanti di uno step
-   - una cellula *Enemy* viene eliminata
-   - il livello viene completato
+   - il gioco va avanti di uno step;
+   - una cellula *Enemy* viene eliminata;
+   - il livello viene completato;
 
 ## Requisiti non funzionali
 
