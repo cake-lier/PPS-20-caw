@@ -105,3 +105,60 @@ Ho contribuito alla classe *RulesEngine* aggiungendo un'ottimizzazione. Prolog, 
 ### PROLOG
 
 Ho implementato le clausole *generator_right_next_state* e *generate_right*.
+
+## Testing
+Per le componenti di *Model*, *Storage* e *DSL* si è cercato di applicare un processo TDD, anche se a volte è venuto a meno, soprattutto in seguito a lunghe fasi di refactoring e redesign. Per la componente di *View* è stato applicato un approccio più tradizionale, verificandone il corretto funzionamento dopo la sua implementazione. Non sono stati effettuati test per le componenti di *Controller*.
+
+Per i test sono stati usati gli seguenti strumenti:
+
+- *ScalaTest*:
+   - in particolare è stato utilizzato *FunSpec* per rendere i test più facilmente interpretabili;
+- *TestFx* e *JUnit* per la componente di *View*:
+   - a causa di una difficile integrazione tra *TestFX* e *ScalaTest*, la scelta è ricaduta su *JUnit*;
+
+Come supporto al testing, sono state usate le *Github Actions*, una feature di Github che permette di automatizzare certi task durante lo sviluppo del software. Con queste *actions*, dopo ogni push tutti i test sono eseguiti automaticamente su una macchina virtuale, permettendoci di verificare che ogni modifica al codice non avesse compromesso i test e quindi il comportamento atteso dall'applicazione.
+
+Per la coverage dei test è stato usato JaCoCo, in quanto supporta Scala 3.
+
+### Model
+Della componente *Model* sono implementati i seguenti test:
+
+- corretto instanziamento e stato di tutte le entità di gioco:
+   - *BaseCell* e *PlayableCell*;
+   - *Dimensions* e *Position*;
+   - *Level*, *PlayableArea* e *Board*;
+- corretto funzionamento e aggiornamento del modello e stato dell'editor;
+- corretto instanziamento, funzionamento e aggiornamento del modello e stato del gioco;
+- corretto aggiornamento del livello e delle regole di Prolog;
+
+### Storage
+Della componente *Storage* è stato verificato che lettura, caricamento e salvataggio di file di risorse, di livello o di impostazioni avvenissero correttamente.
+
+### View
+Sono state testate tutte le principali *View* del gioco:
+
+- Menù principale:
+   - comportamento e stato atteso dei bottoni;
+- Impostazioni:
+   - comportamento e stato atteso degli slider per il volume; 
+   - persistenza del volume negli slider dopo la chiusura dell'applicazione;
+- Selezione dei livelli:
+   - comportamento e stato dei bottoni;
+   - persistenza dei livelli completati dopo la chiusura dell'applicazione;
+- Gioco:
+   - comportamento e stato dei bottoni prima e dopo le fasi di setup, gioco e reset del livello;
+   - presenza e assenza di drag-and-drop delle cellule;
+   - posizionamento delle cellule durante la simulazione;
+- Editor:
+   - comportamento e stato dei bottoni;
+   - presenza e assenza di cellule e area di gioco dopo azioni del giocatore;
+   - drag-and-drop e rimozione con tasto destra di cellule e playable area;
+   - rotazione del dispenser di cellule;
+
+### DSL
+È stato testato che fossero corrette:
+
+- lo stato delle cellule alla loro creazione;
+- lo stato del livello prima e dopo l'aggiunta delle dimensioni, della playable area e delle cellule e dopo la funzione di copia;
+- la visione testuale su terminale e il salvataggio del livello;
+- la visione testuale degli errori su terminale;
