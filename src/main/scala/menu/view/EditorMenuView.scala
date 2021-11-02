@@ -37,10 +37,10 @@ object EditorMenuView {
     override val innerComponent: Pane = loader.load[GridPane]
     private val changeListener: TextField => ChangeListener[String] = f =>
       (_, o, n) => {
-        if (n.matches("^([1-9]|[1-4][0-9]|50)?$"))
+        if (n.matches("^([1-9]|[1-2][0-9]|30)?$"))
           continue.setDisable(
-            (width.getText.isEmpty || width.getText.toInt < 2 || width.getText.toInt > 50) ||
-              (height.getText.isEmpty || height.getText.toInt < 2 || height.getText.toInt > 50)
+            (width.getText.isEmpty || width.getText.toInt < 2 || width.getText.toInt > 30) ||
+              (height.getText.isEmpty || height.getText.toInt < 2 || height.getText.toInt > 30)
           )
         else
           f.setText(o)

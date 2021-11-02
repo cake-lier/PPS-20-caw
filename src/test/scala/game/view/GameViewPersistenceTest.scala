@@ -39,7 +39,7 @@ class GameViewPersistenceTest extends ViewTest {
 
   @Test
   @Order(1)
-  def checkLevelsNotHighlited(robot: FxRobot): Unit = {
+  def checkLevelsNotHighlighted(robot: FxRobot): Unit = {
     clickOnPlayButton(robot)
     val levels: Set[Button] = getLevels(robot)
     levels
@@ -60,7 +60,7 @@ class GameViewPersistenceTest extends ViewTest {
 
   @Test
   @Order(3)
-  def checkFirstLevelIsHighlited(robot: FxRobot): Unit = {
+  def checkFirstLevelIsHighlighted(robot: FxRobot): Unit = {
     clickOnPlayButton(robot)
     val levels: Set[Button] = getLevels(robot)
     levels

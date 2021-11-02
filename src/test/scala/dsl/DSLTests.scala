@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream
 
 /** Tests for all the DSL operations, even when wrongly used. */
 class DSLTests extends AnyFunSpec with Matchers {
-  private val boardDimensions: Dimensions = (30, 40)
+  private val boardDimensions: Dimensions = (25, 30)
   private val playableAreaDimensions: Dimensions = (10, 20)
   private val playableAreaPosition: Position = (0, 0)
   private val playableArea: PlayableArea = PlayableArea(playableAreaDimensions)(playableAreaPosition)
@@ -31,8 +31,8 @@ class DSLTests extends AnyFunSpec with Matchers {
   private val cellsArea: Dimensions = (2, 2)
   private val fileStorage: FileStorage = FileStorage()
   private val levelParser: LevelParser = LevelParser(fileStorage)
-  private val negativeDimensionsError: String = "The dimensions given to an entity were negative"
-  private val negativePositionError: String = "The position given to an entity has negative coordinates"
+  private val positionNotInRangeError: String =
+    "The position given to an entity has coordinates which are not in a valid range, so between 0 and 29 included"
 
   describe("The DSL") {
     describe("when asked to print a correctly constructed level") {
@@ -120,33 +120,37 @@ class DSLTests extends AnyFunSpec with Matchers {
       }
     }
 
-    describe("when asked to print a level with negative dimensions") {
+    describe("when asked to print a level with dimensions not in the correct range") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(boardDimensions = Some(Dimensions(-30, 40)))
         }
-        err.toString shouldBe negativeDimensionsError
+        err.toString shouldBe (
+          "The chosen dimensions for the level are either too big or to small, so not in range between 2 and 30 included"
+        )
       }
     }
 
-    describe("when asked to print a level with a playable area with negative dimensions") {
+    describe("when asked to print a level with a playable area with dimensions not in the correct range") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(Dimensions(-30, 40))(playableAreaPosition)))
         }
-        err.toString shouldBe negativeDimensionsError
+        err.toString shouldBe (
+          "The chosen dimensions for the playable area are either too big or to small, so not in range between 1 and 30 included"
+        )
       }
     }
 
-    describe("when asked to print a level with a playable area with a negative position") {
+    describe("when asked to print a level with a playable area with position coordinates not in the correct range") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(playableAreaDimensions)(Position(-1, 0))))
         }
-        err.toString shouldBe negativePositionError
+        err.toString shouldBe positionNotInRangeError
       }
     }
 
@@ -171,13 +175,13 @@ class DSLTests extends AnyFunSpec with Matchers {
       }
     }
 
-    describe("when asked to print a level with a cell with a negative position") {
+    describe("when asked to print a level with a cell with a position not in the correct range") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(generator = BaseGeneratorCell(Orientation.Left)(Position(0, -5)))
         }
-        err.toString shouldBe negativePositionError
+        err.toString shouldBe positionNotInRangeError
       }
     }
 
@@ -185,7 +189,7 @@ class DSLTests extends AnyFunSpec with Matchers {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
-          buildBoardWithDSL(block = BaseBlockCell(Push.Vertical)(Position(50, 50)))
+          buildBoardWithDSL(block = BaseBlockCell(Push.Vertical)(Position(29, 29)))
         }
         err.toString shouldBe "A cell was placed outside the level bounds"
       }
