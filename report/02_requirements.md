@@ -94,24 +94,15 @@ Infine, il giocatore non vuole che l'applicazione sia lenta o che abbia errori c
 
 A partire dai requisiti utente, sono stati formulati i seguenti requisiti funzionali:
 
-1. Al suo avvio, l'applicazione deve mostrare un menu con le opzioni per permettere al giocatore di:
+1. Al suo avvio, l'applicazione deve mostrare un menu con le opzioni che permettono al giocatore di:
    - giocare un livello di default selezionandolo da una lista;
    - giocare un livello creato dall'utente caricandolo da file;
+   - accedere all'editor per creare un nuovo livello o modificare un livello già esistente;
+   - accedere alle impostazioni per modificare il volume della musica e degli effetti sonori;
    - uscire dall'applicazione;
-2. Il gioco deve avere le cellule di tipo *Mover*, *Generator*, *Block*, *Rotator*, *Enemy*, *Wall*.
+2. Il gioco deve avere le cellule di tipo *Mover*, *Generator*, *Block*, *Rotator*, *Enemy*, *Wall*, *Deleter*.
 3. Assieme all'applicazione, deve essere fornito un DSL con il quale il giocatore è in grado di creare un nuovo livello e salvarlo su file.
-4. Quando si seleziona o si gioca un livello, l'applicazione deve permettere al giocatore di tornare indietro al menu.
-
-Si elencano i seguenti requisiti opzionali:
-
-1. L'applicazione deve permettere all'utente di creare un nuovo livello o modificare un livello già esistente attraverso un *level editor*.
-   - Il menu deve avere un'opzione per aprire il *level editor*.
-   - L'editor deve avere l'opzione di tornare indietro al menu.
-2. Il gioco deve implementare la cellula di tipo *Deleter*.
-3. L'applicazione deve avere musica ed effetti sonori.
-   - Il menu deve avere un'opzione per accedere alle impostazioni dove si può modificare il volume della musica e degli effetti sonori.
-   - Le impostazioni devono avere l'opzione di tornare indietro al menu.
-4. Il gioco deve avere animazioni.
+4. Ad ogni "vista" dell'applicazione, deve essere presente un opzione per permettere al giocatore di tornare indietro al menu.
 
 Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazione.
 
