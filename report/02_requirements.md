@@ -7,84 +7,101 @@ Come progetto volevamo replicare un gioco che fosse realizzabile in 60-80 ore co
  - Il gioco deve avere il giusto livello di complessità per dimostrare le conoscenze acquisite durante il corso e completarlo nel monte ore stabilito.
  - Se possibile, la logica del gioco deve essere descritta con regole esprimibili tramite logica di primo ordine.
  - La componente grafica deve essere semplice ma efficace; non deve distogliere da altri aspetti fondamentali quali l'architettura e l'implementazione.
-- Se possible, deve avere un elemento di gioco sufficientemente semplice da essere descritto con un Domain-Specific Language (DSL), come la struttura del livello o la mappa di gioco.
+- Se possible, deve avere un elemento di gioco sufficientemente semplice da essere descritto con un *Domain-Specific Language* (DSL), come la struttura del livello o la mappa di gioco.
 
-Tra le tante proposte che ci sono venute in mente, la scelta è ricaduta sul puzzle game "Cell Machine" di Sam Hogan e sulla sua mod "Cell Machine Mystic Mod", in quanto soddisfano tutti i nostri requisiti.
+Tra le tante proposte che ci sono venute in mente, la scelta è ricaduta sul puzzle game "Cell Machine" di Sam Hogan e sulla sua mod "Cell Machine Mystic Mod", in quanto soddisfano tutti i nostri requisiti: è un gioco con il giusto grado di complessità sia implementativa sia grafica; le sue regole di gioco si possono esprimere con il linguaggio Prolog e i suoi livelli possono essere descritti con un DSL.
  
-L'idea del gioco è molto semplice: basato sul concetto di "cellular automaton", ogni livello è composto da una griglia bidimensionale di cellule, dotate di uno stato, capace di evolvere nel tempo sulla base di regole predefinite; usando il mouse, il giocatore deve spostare e riorganizzare le cellule a sua disposizione per eliminare quelle nemiche. Anche se le regole sono molto facili, le cellule, interagendo tra di loro, riescono a creare comportamenti più complessi, permettendo di risolvere livelli via via sempre più difficili. 
+L'idea del gioco è molto semplice: basato sul concetto di "cellular automaton", ogni livello è un "automaton" composto da una griglia bidimensionale che contiene varie cellule, ognuna dotata di stato e comportamento specifico; il livello si evolve e cambia di stato applicando le regole di gioco alle cellule contenute al suo interno. L'obiettivo del giocatore è spostare e riorganizzare le cellule in una disposizione che le renda capaci di eliminare quelle nemiche. Infatti, anche se le regole non sono complicate, le cellule, interagendo tra di loro, riescono a creare comportamenti più complessi, permettendo di risolvere livelli via via sempre più difficili.
  
-Inoltre anche noi abbiamo voluto dare al giocatore non solo la possibilità di risolvere puzzle ma anche quella di creare nuovi livelli che possono essere condivisi e giocabili da altri giocatori, una caratteristica che mancava nel gioco originale ma che è presenta nella mod. Con questa aggiunta, speravamo di offrire un gioco intrattenente, coinvolgente e dall'alta rigiocabilità, in quanto si può essere giocatori ma anche creatori di livelli.
+Inoltre anche noi abbiamo voluto dare al giocatore non solo la possibilità di risolvere puzzle ma anche quella di creare nuovi livelli che possono essere condivisi e giocati da altri giocatori, una caratteristica che mancava nel gioco originale ma che è presente nella mod. Con questa aggiunta, speravamo di offrire un gioco intrattenente, coinvolgente e dall'alta rigiocabilità, in quanto si può essere giocatori ma anche creatori di livelli.
 
 ## Requisiti utente
 
-L’utente può usufruire delle seguenti funzionalità.
+Un utente ha le seguenti richieste che vuole realizzate nel prodotto finale.
 
-### Fase di gioco
-  - Gestione della Board composta da:
-    - fase di setup:
-      - drag&drop di Celle del livello in spazi liberi dell'area giocabile;
-    - fase di sviluppo del gioco:
-      - ritorno in fase di setup: le celle tornano nelle posizioni che avevano prima della fase di gioco;
-      - foreword automatico del livello;
-      - single step del livello;
-  - Eventuale continuazione in un livello successivo (condizionata dalla sua presenza o meno).
-  - Ritorno al menu iniziale.
+### Giocare un livello
+Il giocatore vuole che il livello sia il più identico possibile a quello di "Cell Machine", cioè:
 
-### Creazione di un livello
-  - Creazione tramite DSL.
-  - Opzionalmente, creazione tramite editor
-    - Avvio dell'Editor in modalità "stand alone" utilizzando un livello precedentemente creato.
-    - Gestione della Board composta da:
-      - gestione dell'area giocabile:
-        - definizione di un'area giocabile rettangolare mediante drag&drop sulle zone della board;
-        - rimozione l'area giocabile cliccando con il tasto destro del mouse sull'area stessa;
-      - gestione delle cellule:
-        - drag&drop di cellule, presenti attualmente nel livello, verso qualunque altra posizione libera;
-        - rimozione di tutte le cellule;
-        - rimozione di una singola cellula cliccando con il tasto destro del mouse sulla cellula stessa;
-    - Gestione del dispenser di cellule che include:
-      - drag&drop di cellule dal dispenser sulle posizioni libere del livello
-      - trasformazione e rotazione delle cellule del dispenser in modo da ottenere ogni possibile cellula;
-    - Salvataggio del livello corrente in formato JSON (a patto che l'area giocabile sia stata definita) nella directory specificata dall'utente.
-    - Ritorno al menu iniziale/chiusura dell'editor dipendentemente dalla modalità adottata.
+ - avere tutte le cellule presenti nel gioco originale, inclusa la cellula *Deleter* aggiunta nella mod;
+ - avere il comportamento delle cellule durante l'evoluzione del livello simile al gioco originale;
 
-### Impostazioni
-  - Settaggio volume della musica.
-  - Settaggio volume degli effetti sonori.
-  - Ritorno al menu iniziale.
+Durante il gioco del livello il giocatore vuole:
 
-### Menu
-  - Accesso al menu dell'Editor che permette di:
+ - fare drag-and-drop delle cellule in posizioni libere entro un'area predefinita del livello;
+ - visualizzare l'evoluzione del livello in due modalità distinte:
+    - foreword automatico del livello;
+    - single step del livello;
+ - resettare il livello, portando le cellule nelle posizioni precedenti all'evoluzione;
+ - avere la possibilità di ritornare al menu iniziale;
+ - se esiste, avere la possibilità di passare immediatamente al livello successivo;
+
+### Creare di un livello
+Il giocatore vuole:
+
+ - creare un livello tramite DSL, dove può:
+    - definire l'area giocabile specificandone la dimensione e la posizione;
+    - aggiungere le cellule specificandone le caratteristiche e la posizione;
+    - salvare il livello creato;
+    - visualizzare in console, giocare o modificare tramite editor il livello creato;
+ - creare un livello tramite editor, dove può:
+    - avviare l'editor in modalità "stand alone" attraverso DSL con un livello precedentemente creato;
+    - gestire l'area giocabile, cioè:
+       - definire un'area giocabile rettangolare mediante drag-and-drop sul livello;
+       - rimuovere l'area giocabile con il tasto destro del mouse;
+    - gestire le cellule, cioè:
+       - fare drag-and-drop delle cellule, presenti attualmente nel livello, verso qualunque altra posizione libera;
+       - rimuovere una cellula con il tasto destro del mouse;
+    - resettare il livello, eliminando tutte le cellule e l'area giocabile;
+    - gestire il dispenser di cellule che include:
+      - fare drag&drop delle cellule dal dispenser alle posizioni libere del livello;
+      - trasformare e rotare le cellule del dispenser per ottenere ogni possibile cellula;
+    - salvare il livello corrente nella directory specificata dall'utente;
+    - ritornare al menu o chiudere l'editor;
+
+### Modificare le impostazioni
+Il giocatore vuole avere musica di sottofondo ed effetti sonori. Dunque, nelle impostazioni vuole poter:
+
+ - impostare il volume della musica;
+ - impostare il volume degli effetti sonori;
+ - ritornare al menu iniziale;
+
+### Accedere al menu
+
+Il giocatore vuole un menu che gli permette di:
+
+ - accedere alla schermata dei livelli di default da cui scegliere il livello da giocare;
+ - accedere al menu dell'editor che permette di:
     - aprire l'editor con un livello vuoto specificandone le dimensioni;
     - aprire l'editor scegliendo un livello precedentemente creato;
-  - Accesso alla schermata dei livelli preimpostati:
-    - scegliere di giocare un livello dalla lista fornita;
-  - Scegliere e giocare a un livello precedentemente creato dall'utente.
-  - Accesso alla schermata impostazioni.
-  - Chiusura del gioco.
+- scegliere e giocare a un livello precedentemente creato dal giocatore;
+- accedere alla schermata delle impostazioni;
+- chiudere il gioco.
 
 ![Requisiti utente catturati tramite diagramma dei casi d'uso UML](imgs/use_cases.png){ width=100% }
+
+Inoltre, il giocatore non vuole che l'applicazione sia lenta o che abbia errori che bloccano il suo utilizzo.
 
 ## Requisiti funzionali
 
 A partire dai requisiti utente, si elencano i seguenti requisiti funzionali:
 
-1. Al suo avvio, l'applicazione deve mostrare un menù con le opzioni per permettere al giocatore di:
+1. Al suo avvio, l'applicazione deve mostrare un menu con le opzioni per permettere al giocatore di:
    - giocare un livello di default selezionandolo da una lista;
    - giocare un livello creato dall'utente caricandolo da file;
    - uscire dall'applicazione;
-2. Assieme all'applicazione, deve essere fornito un DSL con il quale il giocatore è in grado di creare un nuovo livello e salvarlo su file.
-3. Quando si seleziona o si gioca un livello, l'applicazione deve permettere al giocatore di tornare indietro al menù.
+2. Il gioco deve avere le cellule di tipo *Mover*, *Generator*, *Block*, *Rotator*, *Enemy*, *Wall*.
+3. Assieme all'applicazione, deve essere fornito un DSL con il quale il giocatore è in grado di creare un nuovo livello e salvarlo su file.
+4. Quando si seleziona o si gioca un livello, l'applicazione deve permettere al giocatore di tornare indietro al menu.
 
 Si elencano i seguenti requisiti opzionali:
 
 1. L'applicazione deve permettere all'utente di creare un nuovo livello o modificare un livello già esistente attraverso un *level editor*.
-   - Il menù deve avere un'opzione per aprire il *level editor*.
-   - L'editor deve avere l'opzione di tornare indietro al menù.
+   - Il menu deve avere un'opzione per aprire il *level editor*.
+   - L'editor deve avere l'opzione di tornare indietro al menu.
 2. Il gioco deve implementare la cellula di tipo *Deleter*.
 3. L'applicazione deve avere musica ed effetti sonori.
-   - Il menù deve avere un'opzione per accedere alle impostazioni dove si può modificare il volume della musica e degli effetti sonori.
-   - Le impostazioni devono avere l'opzione di tornare indietro al menù.
+   - Il menu deve avere un'opzione per accedere alle impostazioni dove si può modificare il volume della musica e degli effetti sonori.
+   - Le impostazioni devono avere l'opzione di tornare indietro al menu.
 4. Il gioco deve avere animazioni.
 
 Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazione.
@@ -95,19 +112,19 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
    - Ogni cellula deve avere una posizione univoca nella griglia e un determinato comportamento a seconda del suo tipo.
       - I tipi di cellule sono: *Mover*, *Generator*, *Block*, *Rotator*, *Enemy*, *Wall*, *Deleter*.
    - Di default un livello deve essere circondato da un perimetro di cellule *Wall*.
-   - Il livello deve avere una sola *Playable Area*, ovvero un'area rettangolare del livello le cui cellule possono essere spostate.
-      - Il giocatore può spostare le cellule della *Playable Area* in una posizione diversa ma sempre interna alla *Playable Area*.
-      - Il giocatore non può spostare le cellule posizionate al di fuori della *Playable Area*.
-      - La *Playable Area* deve essere evidenziata per distinguerla dalla restante area del livello.
+   - Il livello deve avere una sola *area di gioco*, ovvero un'area rettangolare del livello le cui cellule possono essere spostate.
+      - Il giocatore può spostare le cellule dell'area di gioco in una posizione diversa ma sempre interna all'area di gioco.
+      - Il giocatore non può spostare le cellule posizionate al di fuori dell'area di gioco.
+      - L'area di gioco deve essere evidenziata per distinguerla dalla restante area del livello.
 3. L'obiettivo del livello è eliminare le cellule *Enemy*.
    - Un livello si dice *completato* quando tutte le cellule *Enemy* sono state eliminate.
 4. Il gioco deve prevedere due fasi distinte: *fase di setup* e *fase di gioco*.
-   - Nella fase di setup, il giocatore riorganizza le cellule posizionate all'interno della *Playable Area*.
-   - Decisa una certa disposizione delle cellule della *Playable Area*, il giocatore ha la possibilità di far partire la simulazione del livello, dando inizio alla fase di gioco.
+   - Nella fase di setup, il giocatore riorganizza le cellule posizionate all'interno dell'area di gioco.
+   - Decisa una certa disposizione delle cellule, il giocatore ha la possibilità di far partire la simulazione del livello, dando inizio alla fase di gioco.
    - Una *simulazione* è l'evolversi dello stato del livello secondo regole ben definite.
       - Cambiare di stato vuol dire applicare una sola volta le regole di gioco alle cellule, modificando lo stato delle cellule e di conseguenza lo stato del livello.
       - La simulazione termina quando tutte le cellule *Enemy* sono state eliminate o quando non è più applicabile nessuna regola.
-   -  Nella fase di gioco, le cellule non possono essere spostate dal giocatore.
+   -  Durante la fase di gioco, le cellule non possono essere spostate dal giocatore.
 3. Il giocatore deve avere la possibilità di:
    - visualizzare la simulazione in maniera continuativa o step-by-step;
    - mettere in pausa e riprendere la simulazione;
@@ -122,9 +139,9 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
    - Il dietro della cellula è la posizione adiacente opposta all'orientamente.
 2. Una cellula *Mover* si muove di una posizione nella direzione data dal suo orientamento.
    - Muovendosi, può spostare le cellule di fronte ad essa se queste hanno uno spostamento compatibile con quella del *Mover*.
-   - Non può spostare *Generator* o *Mover* se hanno un orientamento opposto.
-   - Non può spostare *Rotator* o *Wall*.
-   - Non può spostare *Block* se questo non può essere spostato nello stesso orientamento del *Mover*.
+   - Non può spostare un *Generator* o un *Mover* se hanno un orientamento opposto.
+   - Non può spostare un *Rotator* o un *Wall*.
+   - Non può spostare un *Block* se questo non può essere spostato nello stesso orientamento del *Mover*.
    - Non si muove quando incontra cellule che non può spostare.
 3. Una cellula *Generator* genera un'altra cellula nella direzione data dal suo orientamento.
    - Può generare se dietro al *Generator* è presente un'altra cellula.
@@ -132,7 +149,7 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
       - la cellula generata viene posizionata di fronte al *Generator*;
       - eventuali cellule che erano presenti di fronte al *Generator* vengono spostate di una posizione;
    - Non può generare cellule *Enemy*.
-   - Non può generare se la generazione incontra un *Mover* o un altro *Generator* con un orientamento opposto.
+   - Non può generare se la generazione incontra un *Mover* o un *Generator* con un orientamento opposto.
    - Non può generare se la generazione incontra un *Wall*.
    - Non può generare se la generazione incontra un *Block* che non può essere spostato nello stesso orientamento del *Generator*.
 4. Una cellula *Block* può essere spinta di una posizione da altre cellule.
@@ -150,7 +167,7 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
    - Oltre all'*Enemy*, viene eliminata anche la cellula che è stata spostata contro l'*Enemy*.
 7. Una cellula *Wall* non si muove.
    - Non può essere spostata né da un *Generator* né da un *Mover*.
-   - L'unico momento del gioco in cui si può muovere un *Wall* è durante la fase di setup quando questa è posizionata nella *Playable Area*.
+   - L'unico momento del gioco in cui si può muovere un *Wall* è durante la fase di setup quando questa è posizionata nell'area di gioco.
 8. Una cellula *Deleter* è in grado di rimuovere le altre cellule.
    - Rimuove qualsiasi tipo di cellula quando:
       - la cellula viene spinta contro il *Deleter*;
@@ -176,37 +193,39 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
 1. Il DSL deve essere il più vicino possibile al linguaggio umano.
 2. Il DSL deve permettere di:
    - creare un livello specificando la sua dimensione;
-   - aggiungere la *Playable Area*, specificando la sua dimensione e la posizione in cui deve essere collocata;
+   - aggiungere l'area di gioco, specificando la sua dimensione e la posizione in cui deve essere collocata;
    - aggiungere una cellula a una certa posizione specificando
       - l'orientamento se è un *Mover* o un *Generator*;
       - la rotazione se è un *Rotator*;
       - lo spostamento se è un *Block*;
    - aggiungere un gruppo di uno stesso tipo di cellule collocandole in una determinata area, specificando
-      - tutte le caratteristiche della cellula;
+      - tutte le caratteristiche del tipo di cellula;
       - la dimensione dell'area e la posizione in cui deve essere collocata;
 3. Il DSL deve permettere di:
-   - salvare il livello;
-   - stampare il livello;
-   - giocare il livello;
-   - modificare il livello con l'editor;
+   - salvare il livello su file JSON;
+   - visualizzare il livello in forma testuale su console;
+   - giocare il livello aprendo il gioco in modalità "stand alone";
+   - modificare il livello aprendo l'editor in modalità "stand alone";
 4. Il DSL deve dare errore se:
    - il livello non ha dimensione;
-   - la *Playable Area* è assente oppure occupa un'area maggiore del livello;
+   - l'area di gioco è assente oppure occupa un'area maggiore del livello;
    - si usano dimensioni negative;
-   - si usano posizioni dalle coordinate negative o al di fuori della dimensione del livello;
+   - si usano posizioni dalle coordinate negative o al di fuori del livello;
    - due o più cellule hanno la stessa posizione;
 
 ### Editor
 1. Dato un livello, l'editor permette il giocatore di modificarlo.
-2. Deve avere un menù dove il giocatore sceglie se:
+2. Deve avere un menu dove il giocatore sceglie se:
    - modificare un livello già esistente caricandolo da file;
    - creare un nuovo livello specificandone le dimensioni;
 3. Di default, il livello dell'editor è circondato da un perimetro di cellule *Wall* che non può essere rimosso.
-3. Il giocatore deve avere la possibilità di:
-   - selezionare e deselezionare la *Playable Area* del livello;
+4. Deve essere presente un dispenser di tutti i tipi di cellule che il giocatore può aggiungere al livello.
+   - Deve essere presente la possibilità di trasformare e ruotare le cellule del dispenser per ottenere ogni possibile cellula.
+5. Il giocatore deve avere la possibilità di:
+   - selezionare e deselezionare l'area di gioco del livello;
    - aggiungere, spostare e rimuovere qualunque tipo di cellula;
-   - resettare il livello, rimuovendo la *Playable Area* e le cellule;
-   - salvare su file il livello creato o modificato;
+   - resettare il livello, rimuovendo l'area di gioco e le cellule;
+   - salvare su file JSON il livello creato o modificato;
 
 ### Selezione dei livelli
 1. L'applicazione deve fare persistenza dei livelli completati dal giocatore.
@@ -215,22 +234,22 @@ Di seguito, si presenta una descrizione dettagliata dei requisiti dell'applicazi
    - L'applicazione deve permettere di giocare i livelli di default nell'ordine in cui preferisce il giocatore.
 
 ### Musica ed effetti sonori
-1. L'applicazione deve fare persistenza del volume della musica e degli effetti sonori scelto dal giocatore.
+1. L'applicazione deve fare persistenza del volume della musica e degli effetti sonori scelti dal giocatore.
 2. Dovranno essere emmessi eventi sonori quando:
-   - il gioco va avanti di uno step;
+   - la simulazione del livello avanza di uno step;
    - una cellula *Enemy* viene eliminata;
    - il livello viene completato;
 
 ## Requisiti non funzionali
 
-- Applicazione cross-platform, eseguibile su Windows, MacOS, Linux.
-- L'applicazione non deve interrompersi qualora si verifichi un errore, deve invece mostrare il messaggio di errore all'utente.
-- Interfaccia grafica reattiva.
+- L'applicazione deve essere cross-platform, eseguibile su Windows, MacOS e Linux.
+- L'applicazione non deve interrompersi qualora si verifichi un errore; deve invece mostrare il messaggio di errore all'utente.
+- L'interfaccia grafica deve essere reattiva.
 - L'applicazione deve essere fluida, non presentare stuttering o freezing su una macchina con requisiti minimi di 6GB di RAM, processore i5-2400.
 
 ## Requisiti implementativi
 
-- Implementazione in Scala, compatibilità garantita sulla versione 3.0.2
+- Implementazione in Scala, con compatibilità garantita sulla versione 3.0.2
 - Applicazione del paradigma di programmazione funzionale.
 - Implementazione della logica di gioco in Prolog, tramite la libreria TuProlog alla versione 3.3.0
 - Applicazione del processo TDD ove possibile, utilizzando le librerie ScalaTest e TestFX per realizzare la suite di test.
