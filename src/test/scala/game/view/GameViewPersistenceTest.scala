@@ -1,6 +1,7 @@
 package it.unibo.pps.caw.game.view
 
-import it.unibo.pps.caw.app.{ViewTest, TestApplicationView}
+import it.unibo.pps.caw.app.{TestApplicationView, ViewTest}
+import it.unibo.pps.caw.common.BoardViewTest
 import it.unibo.pps.caw.common.view.CellImage
 import javafx.scene.control.Button
 import javafx.scene.input.MouseButton
@@ -14,7 +15,7 @@ import java.nio.file.{Files, Path, Paths}
 import scala.jdk.CollectionConverters.given
 
 @TestMethodOrder(classOf[MethodOrderer.OrderAnnotation])
-class GameViewPersistenceTest extends ViewTest {
+class GameViewPersistenceTest extends GameTest {
 
   protected var stageWidth: Double = 0.0
   protected var stageHeight: Double = 0.0
@@ -71,18 +72,4 @@ class GameViewPersistenceTest extends ViewTest {
         }
       })
   }
-
-  private def getLevels(robot: FxRobot): Set[Button] =
-    robot.lookup[Button](_.getText.matches("\\d+")).queryAll[Button]().asScala.toSet
-
-  private def clickOnPlayButton(robot: FxRobot): Unit = robot.clickOn(_.getId == "playButton")
-
-  private def clickOnLevel(robot: FxRobot): Unit = robot.clickOn[Button](_.getText == "1")
-
-  private def moveMoverCell(robot: FxRobot): Unit =
-    val gameBoard = getBoard(robot)
-    robot
-      .drag(getImageView(gameBoard)(CellImage.MoverRight.image), MouseButton.PRIMARY)
-      .dropTo(getDropTile(gameBoard)(2, 4))
-
 }
