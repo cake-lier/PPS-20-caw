@@ -2,6 +2,46 @@
 
 ## Elena Rughi
 
+### Selezione dei livelli
+
+Durante il primo sprint ho realizzato la componente grafica per la selezione dei livelli, collaborando con Sun per integrare la schermata di selezione con il menu del gioco.
+In congruenza con le altre componenti grafiche dell'applicazione, *LevelSelectionView* è un *ViewComponent*, ovvero un wrapper realizzato da Sun, che viene istanziato con il proprio file fxml. Il trait *LevelSelectionController* corrispondente è implementato nel *MainMenuController*.<br>
+Ogni livello nella schermata di selezione è rappresentato da una propria *ViewComponent* chiamata *LevelButton* per consentire di mostrare un numero variabile di livelli, oltre che far partire il gioco sul livello selezionato.<br>
+Dopo aver aggiunto i *Settings*, nei quali si memorizzano i livelli completati, ho modificato *LevelButton* in modo che i livelli completati siano evidenziati.
+
+Il caricamento dei livelli da file e il salvataggio dei livelli creati dall'utente sono realizzati in *LevelStorage*.
+
+### GameController
+
+*GameController* espone le seguenti funzionalità:
+
+- step - eseguire un passo nella logica di gioco realizzata in Prolog, con conseguente aggiornamento della *Board* del livello
+- start/stop updates - avviare/fermare l'esecuzione automatica degli step; ho realizzato tale comportamento con uno *ScheduledExecutorService* che esegue ogni secondo uno step su un proprio thread, in quanto l'aggiornamento della *Board* è un'operazione pesante. Tale esecuzione periodica dello step viene incapsulata in una *ScheduledFuture* che ne consente la cancellazione.
+- passaggio al prossimo livello o reset del livello corrente; in entrambi i casi si ferma l'esecuzione periodica degli step di gioco
+- chiusura del livello - all'uscita dal livello che si stava giocando lo *ScheduledExecutorService* viene terminato.
+
+### Settings
+
+Durante il terzo sprint ho realizzato il salvataggio su file delle impostazioni di volume e dei livelli completati, così da poter mantenere tali informazioni tra diverse sessioni di gioco.<br>
+
+Poichè ho deciso di realizzare il file di settings in formato JSON, per semplificare la conversione da trait *Settings* a valore JSON della libreria Play JSON ho aggiunto un **implicit val** al companion object del trait *Settings* che lo traduce nel formato richiesto dalla libreria.<br>
+
+*SettingsStorage* fornisce le funzionalità di caricamento e di salvataggio delle impostazioni.<br>
+
+Le chiamate all'aggiornamento dei settings avvengono in *ApplicationController*, ovvero il controller di primo livello della nostra applicazione. Il salvataggio delle impostazioni avviene ogni volta che si esce dalla schermata delle impostazioni nel menu di gioco e al completamento di un livello. Ogni chiamata a `SettingsStorage.save` è eseguita in una *Future* che viene mantenuta in un set finchè non termina; in tal modo si relega la costosa operazione di scrittura su disco ad una computazione asincrona e alla chiusura dell'applicazione si attende il completamente del salvataggio delle impostazioni.
+
+### Logica di gioco
+
+Ho contribuito alla realizzazione del metodo `update` in *RulesEngine* e in Prolog ho realizzato la logica per la cella "move_left", modificato il comportamento delle generator per non generare celle nemiche e bug fixing.
+
+### Testing
+
+Ho scritto test per le seguenti classi:
+
+- FileStorage, SettingsStorage, LevelStorage
+- BaseCell, PlayableCell, UpdateCell
+- Level, LevelBuilder, Board
+
 ## Lorenzo Gardini
 
 ### Model
