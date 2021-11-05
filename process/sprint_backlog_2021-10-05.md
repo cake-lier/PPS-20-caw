@@ -70,37 +70,37 @@ Aggiungere la cellula trash al gioco, aumentare la coverage data dagli unit test
             <td>Unificare i test di serializzazione e deserializzazione, poi migliorarli</td>
             <td>Lorenzo Gardini</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Aggiungere unit test per prolog engine e le classi a lui correlate</td>
             <td>Lorenzo Gardini</td>
             <td>4</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>2</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Migliorare i test di GameModel, aggiungere i test per GameState</td>
             <td>Lorenzo Gardini</td>
             <td>3</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
         <tr>
             <td>Aggiungere unit test per tutte le classi del package "common.storage"</td>
@@ -179,13 +179,13 @@ Aggiungere la cellula trash al gioco, aumentare la coverage data dagli unit test
             <td>Aggiungere acceptance test per pagina input editor, editor</td>
             <td>Lorenzo Gardini</td>
             <td>6</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
+            <td>6</td>
+            <td>6</td>
+            <td>3</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
         </tr>
     </tbody>
 </table>
