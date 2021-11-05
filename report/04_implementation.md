@@ -44,24 +44,41 @@ Ho scritto test per le seguenti classi:
 
 ## Lorenzo Gardini
 
-### Model
+### GameModel
 
-Nella prima settimana mi sono dedicato all'implementazione delle classi che compongono gli elementi di primo livello del dominio del gioco (Cell, Board, Level, etc.) e la struttura del GameModel, dopodiché ho implementato la persistenza su file dei livelli tramite appositi serializzatore e deserializzatore.
+Nel mio primo *sprint* ho sviluppato le entità di primo livello del gioco. Ho utilizzato un *union type* *Cell* per definire l'entità atomica del gioco dal quale poi viene definita la gerachia con *BaseCell*, *PlayableCell* e *UpdateCell*. Poi ho implementato il concetto di *Board*, *Level* e di *PlayableArea*. Poi ho realizzato il *GameModel* seguendo il *dependency inversion principle* in modo da accettare un *RulesEngine* rendendolo indipendente dall'implementazione di quest'ultimo. Inoltre, il *GameModel* è immutabile ed ogni modifica effettuata su di esso provoca la creazione di una istanza ex novo.
 
-Successivamente, mi sono occupato di alcuni predicati in Prolog e di come integrarlo con Scala tramite PrologEngine e RulesEngine.
+### Permanenza Livelli
 
-Infine, mi sono dedicato alla parte di implementazione dell’EditorModel.
+Dopo aver scritto il Model ho implementato il *LevelParser* in modo che potessimo già avere la possibilità di caricare da file i Livelli. Il deserializer utilizza uno schema di regole, scritto da Castellucci, su come deve essere scritto un Livello in modo corretto.  Successivamente, durante lo sviluppo dell'*EditorController* ho aggiunto al parser anche la possibilità di serializzare su file i livelli creati dall'utente con l'Editor. In tutto il *LevelParser* viene fatto uso della *monade Try*.
 
-### Controller
+### PROLOG
 
-Ho realizzato i Controller per la gestione dell’Editor, quindi l’EditorMenuController e l’EditorController.
+Mi sono dedicato alla realizzazione di alcuni predicati "rotate_left_next_state", "generate_left_next_state", "generator_down_next_state", "arrow_top_next_state", "arrow_down_next_state".
 
-### View
+Ho realizzato l'integrazione tra Scala e PROLOG realizzando *PrologEngine*, un wrapper della librearia *tuProlog*, scritta in Java, utilizzando *type aliasing* per i concetti di *Goal*, *Result* e di *Clause*. Questo engine a sua volta viene wrappato nel *RulesEngine* nascondendone l'implementazione. In questa parte viene utilizzata l'*UpdateCell* per tenere conto dell'aggiornamento effettuato sulla board. L'aggiornamento della board viene effettuato in stile funzionale utilizzando una *tail recursion*.
 
-Per il lato View ho realizzato, utilizzando il file fxml scritto da Castellucci, la schermata delle impostazioni del gioco e la classe AudioPlayer che permette di inserire nel gioco musica ed effetti sonori.
+### GameEditor
 
-Ho gestito la parte grafica dell’editor, compreso il menu introduttivo.
-Io e Sun abbiamo esteso la BoardView (già scritta da lei) in modo da poter essere utilizzata anche dall’Editor.
+L'Editor è la parte che mi ha visto impegnato durante gli ultimi *sprints*. Mi sono dedicato al suo sviluppo nella sua interezza modificando ed ampliando alcuni file *.fxml* di grafica scritti da Castellucci e rifattorizzando la *BoardView* insieme a Sun in modo da poter essere utilizzata anche dall’Editor rispettando il principio *DRY*. Anche in questo caso l'*EditorModel* è immutabile ed ogni sua modifica comporta una creazione di un nuvo model ex novo.
+
+### Settings
+
+Ho aggiunto i settings per modificare, in modo _non persistente_, il volume della musica e degli effetti di gioco.
+
+### Audio
+
+Mi sono occupato del suono nel gioco realizzando *AudioPlayer* che permette di riprodurre musiche e suoni specificati nell'*enum Track* specificatamente in base al tipo di suono, definito nell'*enum AudioType*.
+
+### Testing
+
+Ho scritto i seguenti tests:
+
+- RulesEngine:  PrologEngineTest, ResultTest, RulesEngineTest
+- GameModel: GameModelTest, GameStateTest
+- EditorView: EditorViewTest
+- EditorModel: LevelEditorModelTest
+- Parser: LevelParserTest
 
 ## Matteo Castellucci
 
