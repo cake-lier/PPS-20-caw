@@ -32,7 +32,8 @@ Le chiamate all'aggiornamento dei settings avvengono in *ApplicationController*,
 
 ### Logica di gioco
 
-Ho contribuito alla realizzazione del metodo `update` in *RulesEngine* e in Prolog ho realizzato la logica per la cella "move_left", modificato il comportamento delle generator per non generare celle nemiche e bug fixing.
+Ho contribuito alla realizzazione del metodo `update` in *RulesEngine* e implementato la classe *UpdateCell*, che contiene extension methods dichiarati tramite la keyword `extension` introdotta con Scala 3.<br>
+In Prolog ho realizzato la logica per le celle "move_left" e "rotate_left", modificato il comportamento delle generator cell per non generare celle nemiche e bug fixing.
 
 ### Testing
 
