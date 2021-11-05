@@ -279,6 +279,7 @@ Di seguito, si presenta una descrizione dettagliata di ciascuno dei precedenti r
 ## Requisiti non funzionali
 
 - L'applicazione deve essere *cross-platform*, cioè eseguibile sia su Windows versione 10 20H2, sia su MacOS versione 10.13.6, che su Linux versione 5.14.13, o comunque su qualsiasi sistema operativo capace di supportare *Java Runtime Environment* versione 16 e successive.
+- L'applicazione deve essere sufficientemente modulare da poter riusare senza problemi i suoi componenti in contesti diversi. Non ci devono essere dipendenze tra i componenti, ma solo verso interfacce liberamente reimplementabili.
 - L'applicazione non deve mai interrompersi qualora si verifichi un errore; deve invece mostrare un messaggio di errore all'utente.
 - L'applicazione deve essere fluida, cioè non presentare *stuttering* o *freezing*, su una macchina con requisiti minimi di 6GB di RAM e processore Intel i5-2400.
 
