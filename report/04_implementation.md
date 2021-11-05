@@ -97,19 +97,23 @@ Ultimo aspetto implementativo a cui mi sono dedicato, come accennato già in pre
 
 ## Yuqi Sun
 
-Nella prima settimana ho lavorato principalmente sulle classi di *View* per fornire, già dopo il primo sprint, un'applicazione concreta con cui l'utente poteva interagire. Usando le librerie di *ScalaFX* e *JavaFX*, ho dunque scritto le classi:
+Nella prima settimana ho lavorato principalmente sulle classi di *View* per fornire, già dopo il primo sprint, un'applicazione concreta con cui l'utente poteva interagire. Usando le librerie di *ScalaFX* e *JavaFX*, ho realizzato le classi:
 
 - *MainMenuView*: visualizza il menù principale dell'applicazione;
 - *GameView*: visualizza il gioco; contiene una *BoardView*;
 - *BoardView*: visualizza un livello, dove l'utente può fare *drag-and-drop* delle cellule di gioco;
 
-*MainMenuView* e *GameView* sono state successivamente integrate con i metodi di *Controller* da Castellucci e Rughi.
+Tutte e tre le classi estendono da *AbstractViewComponent* e hanno un proprio file fxml, contenente la loro struttura e stile. *MainMenuView* e *GameView* sono state successivamente integrate con i metodi di *Controller* da Castellucci e Rughi.
 
-In seguito, all'inserimento dell'editor, in collaborazione con Gardini, la classe *BoardView* è stata rifattorizzata in una classe astratta che racchiude i metodi comuni necessari per disegnare una generica *board*. Sono state poi create le due classi concrete *GameBoardView* e *EditorBoardView*.
+In seguito, all'inserimento dell'editor, in collaborazione con Gardini, la classe *BoardView* è stata rifattorizzata in una classe astratta che racchiude i metodi comuni necessari per disegnare un generico livello. Sono state poi create le due classi concrete *GameBoardView* e *EditorBoardView*.
+
+Inoltre ho implementato le classi di test riguardanti la *View* del menu, della selezione dei livelli e del gioco.
 
 ### ViewComponent
 
-*ViewComponent* è un trait generico che fa da wrapper a un componente di JavaFX e racchiude la logica necessaria per instanziarlo. Il componente di JavaFX è facilmente accessibile dalle classi concrete grazie a una conversione implicita.
+*ViewComponent* è un trait generico che fa da wrapper a un componente di JavaFX. Con la class astratta *AbstractViewComponent*, che estende questo trait, si riesce a creare componenti di *view* modulari senza specificare ogni volta come inizializzarle, in quanto tutta la logica necessaria per instanziarle è già incapsulata all'interno di *AbstractViewComponent*.
+
+Il componente di JavaFX è facilmente accessibile dalle classi concrete grazie a una conversione implicita.
 
 ### Disegno del livello
 
@@ -144,7 +148,7 @@ Ho contribuito alla classe *RulesEngine* aggiungendo un'ottimizzazione. Prolog, 
 
 ### PROLOG
 
-Ho implementato le clausole *generator_right_next_state* e *generate_right*.
+Durante il secondo *sprint*, ho contribuito alla realizzazione delle regole di gioco in PROLOG. In particolare, ho implementato le clausole *generator_right_next_state* e *generate_right*.
 
 ## Testing
 Per le componenti di *Model*, *Storage* e *DSL* si è cercato di applicare un processo TDD, anche se a volte è venuto a meno, soprattutto in seguito a lunghe fasi di refactoring e redesign. Per la componente di *View* è stato applicato un approccio più tradizionale, verificandone il corretto funzionamento dopo la sua implementazione. Non sono stati effettuati test per le componenti di *Controller*.
@@ -196,9 +200,10 @@ Sono state testate tutte le principali *View* del gioco:
    - rotazione del dispenser di cellule;
 
 ### DSL
-È stato testato che fossero corrette:
+È stato testato che fossero corretti:
 
 - lo stato delle cellule alla loro creazione;
 - lo stato del livello prima e dopo l'aggiunta delle dimensioni, della playable area e delle cellule e dopo la funzione di copia;
-- la visione testuale su terminale e il salvataggio del livello;
-- la visione testuale degli errori su terminale;
+- la visualizzazione a riga di comando del livello;
+- la visualizzazione degli errori;
+- il salvataggio del livello;
