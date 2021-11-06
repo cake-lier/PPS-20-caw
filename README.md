@@ -61,7 +61,7 @@ There is a way to describe the presence of a single cell or a block of cells for
 
 ## Acknowledgements
 
-We thank Kevin MacLeod (incompetech.com) for letting us use its songs in our game. More precisely, the songs used are:
+We thank Kevin MacLeod (incompetech.com) for letting us use his songs in our game. More precisely, the songs used are:
 
 * Getting it done (in the editor)
 * Pookatori and friends (during the game)
