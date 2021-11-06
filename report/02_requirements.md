@@ -274,7 +274,7 @@ Di seguito, si presenta una descrizione dettagliata di ciascuno dei precedenti r
     2. Al giocatore deve essere notificato un errore nel caso in cui l'area di gioco sia assente.
     3. Al giocatore deve essere notificato un errore nel caso in cui l'area di gioco non sia interamente contenuta nel livello.
     4. Al giocatore deve essere notificato un errore nel caso in cui una cellula venga posizionata al di fuori dei limiti del livello.
-    5. Al giocatore deve essere notificato un errore nel caso in cui due o più cellule con caratteristiche diverse abbiano la stessa posizione.
+    5. Al giocatore deve essere notificato un errore nel caso in cui due o più cellule abbiano la stessa posizione.
 
 ## Requisiti non funzionali
 
