@@ -1,6 +1,6 @@
 # Processo
 
-Abbiamo adottato un processo di sviluppo "*Scrum inspired*": tale *framework* è adatto a *team* di piccole dimensioni e favorisce lo sviluppo di software che potrebbe presentare difficoltà inattese grazie al suo processo incrementale. Ciò è stato particolarmente utile nella realizzazione della nostra applicazione, poiché era il nostro primo progetto di dimensioni consistenti realizzato nel linguaggio "scala".
+Abbiamo adottato un processo di sviluppo "*Scrum inspired*": tale *framework* è adatto a *team* di piccole dimensioni e favorisce lo sviluppo di software che potrebbe presentare difficoltà inattese grazie al suo processo incrementale. Ciò è stato particolarmente utile nella realizzazione della nostra applicazione, poiché era il nostro primo progetto di dimensioni consistenti realizzato nel linguaggio "Scala".
 
 Il ruolo di "Product Owner" è stato ricoperto da Matteo Castellucci, che ha redatto e tenuto aggiornato il *product backlog*, ha condotto i vari *meeting*, ha creato gli *sprint backlog* e prodotto un piccolo *report* alla fine di ogni *sprint*.
 

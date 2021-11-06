@@ -285,7 +285,7 @@ Di seguito, si presenta una descrizione dettagliata di ciascuno dei precedenti r
 
 ## Requisiti implementativi
 
-- L'implementazione dell'applicazione deve essere fatta nel linguaggio "scala", con compatibilità garantita con la versione 3.0.2.
+- L'implementazione dell'applicazione deve essere fatta nel linguaggio "Scala", con compatibilità garantita con la versione 3.0.2.
 - Deve essere sfruttato lo strumento di *build automation* "Scala Build Tool" versione 1.5.5 per automatizzare la compilazione, il *testing* e il *deployment* degli artefatti rilasciati.
 - Lo sviluppo deve avvenire attingendo quanto più possibile al paradigma di programmazione funzionale.
 - L'implementazione della logica di gioco deve essere fatta nel linguaggio PROLOG, sfruttando la libreria "TuProlog" versione 3.3.0.

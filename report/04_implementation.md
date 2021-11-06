@@ -56,7 +56,7 @@ Dopo "GameModel", mi sono dedicato ad implementare "LevelParser", così da avere
 
 Mi sono dedicato alla realizzazione dei predicati "rotator_counterclockwise_next_state", "generate_left", "generator_left_next_state", "generate_top", "generator_top_next_state", "generate_down", "generator_down_next_state", "last_index_top", "move_top", "mover_top_next_state", "last_index_bottom", "move_bottom" e "mover_bottom_next_state".
 
-Ho realizzato l'integrazione tra scala e PROLOG creando "PrologEngine", una *façade* per la librearia "tuProlog", utilizzando *type aliasing* per i concetti di *Goal* e di *Clause*. Questa classe viene poi usata solamente da "RulesEngine", nascondendone l'implementazione. In quest'ultima classe viene utilizzata "UpdateCell" per tenere conto della progressione dell'aggiornamento durante uno "*step*" della simulazione. L'aggiornamento dello stato della griglia viene effettuato in stile funzionale attraverso un metodo che utilizza la *tail recursion*.
+Ho realizzato l'integrazione tra Scala e PROLOG creando "PrologEngine", una *façade* per la librearia "tuProlog", utilizzando *type aliasing* per i concetti di *Goal* e di *Clause*. Questa classe viene poi usata solamente da "RulesEngine", nascondendone l'implementazione. In quest'ultima classe viene utilizzata "UpdateCell" per tenere conto della progressione dell'aggiornamento durante uno "*step*" della simulazione. L'aggiornamento dello stato della griglia viene effettuato in stile funzionale attraverso un metodo che utilizza la *tail recursion*.
 
 ### GameEditor
 
@@ -84,7 +84,7 @@ Ho realizzato i seguenti test:
 
 ### Domain specific language
 
-Il mio sviluppo è partito dall'implementazione del *Domain Specific Language* per la creazione di nuovi livelli. Durante il primo *sprint* mi sono occupato di realizzare il design del linguaggio, specificandone il lessico e la sintassi. Dopodiché, sono passato ad implementare tutto ciò che poteva servire per farlo funzionare. Ho implementato un modello del dominio apposito, una serie di classi che rappresentano le parole che fanno parte del linguaggio e un *object* radice che contiene tutto ciò che può servire per utilizzare il DSL. Per fare questo mi sono servito sia degli strumenti messi a disposizione dalla versione 3 del linguaggio scala per la costruzione di DSL, cioè ho utilizzato le nuove "context functions", nonché parametri e valori impliciti, già disponibili a partire da scala 2. Inoltre, mi sono avvalso di alcune caratteristiche tipiche dei linguaggi funzionali come le *higher order functions* e il *currying*.
+Il mio sviluppo è partito dall'implementazione del *Domain Specific Language* per la creazione di nuovi livelli. Durante il primo *sprint* mi sono occupato di realizzare il design del linguaggio, specificandone il lessico e la sintassi. Dopodiché, sono passato ad implementare tutto ciò che poteva servire per farlo funzionare. Ho implementato un modello del dominio apposito, una serie di classi che rappresentano le parole che fanno parte del linguaggio e un *object* radice che contiene tutto ciò che può servire per utilizzare il DSL. Per fare questo mi sono servito sia degli strumenti messi a disposizione dalla versione 3 del linguaggio Scala per la costruzione di DSL, cioè ho utilizzato le nuove "context functions", nonché parametri e valori impliciti, già disponibili a partire da Scala 2. Inoltre, mi sono avvalso di alcune caratteristiche tipiche dei linguaggi funzionali come le *higher order functions* e il *currying*.
 
 Infine, mi sono dedicato a realizzare un componente che faccia da "validatore" per le informazioni che l'utente inserisce tramite il DSL, in maniera tale che non sia capace di costruire livelli non validi e, nel caso accada, venga bloccato con degli errori quanto più possibile eloquenti. Per fare in modo di non avere un validatore "fail-fast", cioè che si blocca al primo errore, ma uno che cerca di catturarne quanti più possibile, mi sono avvalso di un costrutto funzionale apposito che prende il nome di "validated", che è uno specifico tipo di funtore applicativo.
 
@@ -182,7 +182,7 @@ Per i test sono stati usati gli seguenti strumenti:
 
 Come supporto al *testing*, è stata usata la tecnologia di *continuous integration* "Github Actions", una *feature* di "Github" che permette di automatizzare certi compiti durante lo sviluppo del software. Tramite un'apposita *pipeline*, dopo ogni *push* tutti i test sono stati eseguiti automaticamente su di una macchina virtuale, permettendoci di verificare che ogni modifica al codice non avesse introdotto regressioni e quindi non avesse minato il comportamento atteso dall'applicazione.
 
-Per la coverage dei test è stata usata la libreria "JaCoCo", in quanto supporta la versione 3 del linguaggio scala.
+Per la coverage dei test è stata usata la libreria "JaCoCo", in quanto supporta la versione 3 del linguaggio Scala.
 
 ### Model
 
