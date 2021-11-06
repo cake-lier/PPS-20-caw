@@ -19,8 +19,8 @@ import scala.util.Using
   */
 trait ParentGameController {
 
-  /** Asks the parent controller to provide its instance of [[FileStorage]]. */
-  def getFileStorage(): FileStorage
+  /** Asks the parent controller to provide its instance of [[it.unibo.pps.caw.common.storage.FileStorage]]. */
+  val fileStorage: FileStorage
 
   /** Asks the parent controller to go back to the previous state of the application. */
   def closeGame(): Unit
@@ -45,10 +45,11 @@ trait ParentDefaultGameController extends ParentGameController {
 
 /** The controller which manages the game part of an application.
   *
-  * This controller is the mediator between the [[GameView]] and the [[GameModel]]. It intercepts the inputs of the player while
-  * playing the game coming from the [[GameView]] and updates the [[GameModel]] accordingly. Then, it shows the updated
-  * [[GameModel]] to the [[GameView]] so as to notify the user of the happened changes. It must be constructed through its
-  * companion object.
+  * This controller is the mediator between the [[it.unibo.pps.caw.game.view.GameView]] and the
+  * [[it.unibo.pps.caw.game.model.GameModel]]. It intercepts the inputs of the player while playing the game coming from the
+  * [[it.unibo.pps.caw.game.view.GameView]] and updates the [[it.unibo.pps.caw.game.model.GameModel]] accordingly. Then, it shows
+  * the updated [[it.unibo.pps.caw.game.model.GameModel]] to the [[it.unibo.pps.caw.game.view.GameView]] so as to notify the user
+  * of the happened changes. It must be constructed through its companion object.
   */
 trait GameController {
 
@@ -75,15 +76,17 @@ trait GameController {
   /** Goes to the next level, if the level currently played has a next level. If not, it simply closes the game. */
   def nextLevel(): Unit
 
-  /** Updates the [[GameModel]] moving the [[Cell]] which has a [[Position]] equal to the given old [[Position]] parameter to the
-    * [[Position]] given by the new [[Position]] parameter.
+  /** Updates the [[it.unibo.pps.caw.game.model.GameModel]] moving the [[it.unibo.pps.caw.common.model.cell.Cell]] which has a
+    * [[it.unibo.pps.caw.common.model.Position]] equal to the given current position parameter to the position given by the next
+    * position parameter.
     *
-    * @param oldPosition
-    *   the [[Position]] in which a [[Cell]] is located
-    * @param newPosition
-    *   the [[Position]] to which the [[Cell]] located at the old [[Position]] parameter is moved
+    * @param currentPosition
+    *   the [[it.unibo.pps.caw.common.model.Position]] in which a [[it.unibo.pps.caw.common.model.cell.Cell]] is located
+    * @param nextPosition
+    *   the [[it.unibo.pps.caw.common.model.Position]] to which the [[it.unibo.pps.caw.common.model.cell.Cell]] located at the
+    *   current position parameter is moved
     */
-  def moveCell(oldPosition: Position)(newPosition: Position): Unit
+  def moveCell(currentPosition: Position, nextPosition: Position): Unit
 }
 
 /** Companion object of the [[GameController]] trait, containing its factory method. */
@@ -94,12 +97,22 @@ object GameController {
     parentController: ParentGameController,
     view: GameView
   ) extends GameController {
-    protected val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
-    protected var updatesHandler: Option[ScheduledFuture[?]] = None
-    protected val rulesEngine: RulesEngine = createRulesEngine()
+    private val scheduler: ScheduledExecutorService = Executors.newSingleThreadScheduledExecutor()
+    private var updatesHandler: Option[ScheduledFuture[?]] = None
+
+    /* Creates a new GameModel to be used by this GameController given the needed RulesEngine. */
     protected def createModel(rulesEngine: RulesEngine): GameModel
 
-    protected var model: GameModel = createModel(rulesEngine)
+    protected var model: GameModel = createModel(
+      parentController
+        .fileStorage
+        .loadResource(path = "cellmachine.pl")
+        .map(RulesEngine(_))
+        .getOrElse({
+          view.showError(message = "Impossible to load rules file")
+          RulesEngine()
+        })
+    )
 
     view.drawLevel(model.state.levelInitialState, model.state.isCurrentLevelCompleted)
 
@@ -118,7 +131,7 @@ object GameController {
       if (model.state.isCurrentLevelCompleted) {
         pauseUpdates()
       }
-      view.drawLevelUpdate(model.state.levelCurrentState, model.state.didEnemyDie, model.state.isCurrentLevelCompleted)
+      view.drawPlayBoard(model.state.levelCurrentState.board, model.state.didEnemyDie, model.state.isCurrentLevelCompleted)
     }
 
     override def nextLevel(): Unit = {
@@ -134,7 +147,7 @@ object GameController {
     override def resetLevel(): Unit = {
       updatesHandler.foreach(_ => pauseUpdates())
       model = model.reset
-      view.drawLevelReset(model.state.levelInitialState)
+      view.drawSetupBoard(model.state.levelInitialState.board)
     }
 
     override def closeGame(): Unit = {
@@ -142,25 +155,15 @@ object GameController {
       parentController.closeGame()
     }
 
-    override def moveCell(oldPosition: Position)(newPosition: Position): Unit =
-      model = model.moveCell(oldPosition)(newPosition)
-
-    private def createRulesEngine(): RulesEngine =
-      parentController
-        .getFileStorage()
-        .loadResource("cellmachine.pl")
-        .map(RulesEngine(_))
-        .getOrElse({
-          view.showError("Impossible to load rules file")
-          RulesEngine()
-        })
+    override def moveCell(currentPosition: Position, nextPosition: Position): Unit =
+      model = model.moveCell(currentPosition, nextPosition)
   }
 
   /* Extension of the AbstractGameController class for playing a generic level. */
   private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level[BaseCell])
     extends AbstractGameController(parentController, view) {
 
-    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine, initialLevel)
+    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine)(initialLevel)
   }
 
   /* Extension of the AbstractGameController class for playing the default levels. */
@@ -171,7 +174,7 @@ object GameController {
     initialIndex: Int
   ) extends AbstractGameController(parentController, view) {
 
-    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine, levels, initialIndex)
+    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine)(levels, initialIndex)
 
     override def step(): Unit = {
       super.step()
@@ -183,15 +186,16 @@ object GameController {
 
   /** Returns a new instance of the [[GameController]] trait. It must receive the [[ParentGameController]], which it represents
     * its parent controller which provides all functionalities which must be delegated to this type of controllers, the
-    * [[GameView]] which will be called by and will call the returned [[GameController]] instance and the [[Level]] from which
-    * starting the game.
+    * [[it.unibo.pps.caw.game.view.GameView]] which will be called by and will call the returned [[GameController]] instance and
+    * the [[it.unibo.pps.caw.common.model.Level]] from which starting the game.
     *
     * @param parentController
     *   the parent controller of the returned [[GameController]]
     * @param view
-    *   the [[GameView]] which will be called by and which will call the returned [[GameController]] instance
+    *   the [[it.unibo.pps.caw.game.view.GameView]] which will be called by and which will call the returned [[GameController]]
+    *   instance
     * @param level
-    *   the [[Level]] from which starting the game
+    *   the [[it.unibo.pps.caw.common.model.Level]] from which starting the game
     * @return
     *   a new [[GameController]] instance
     */
@@ -200,18 +204,19 @@ object GameController {
 
   /** Returns a new instance of the [[GameController]] trait. It must receive the [[ParentDefaultGameController]], which it
     * represents its parent controller which provides all functionalities which must be delegated to this type of controllers, the
-    * [[GameView]] which will be called by and will call the returned [[GameController]] instance, the sequence of default
-    * [[Level]] which will be used during this game and the index of the default [[Level]] in the given sequence from which
-    * starting the game.
+    * [[it.unibo.pps.caw.game.view.GameView]] which will be called by and will call the returned [[GameController]] instance, the
+    * sequence of default [[it.unibo.pps.caw.common.model.Level]] which will be used during this game and the index of the default
+    * [[it.unibo.pps.caw.common.model.Level]] in the given sequence from which starting the game.
     *
     * @param parentController
     *   the parent controller of the returned [[GameController]]
     * @param view
-    *   the [[GameView]] which will be called by and which will call the returned [[GameController]] instance
+    *   the [[it.unibo.pps.caw.game.view.GameView]] which will be called by and which will call the returned [[GameController]]
+    *   instance
     * @param levels
-    *   the sequence of default [[Level]] to be used during this game
+    *   the sequence of default [[it.unibo.pps.caw.common.model.Level]] to be used during this game
     * @param levelIndex
-    *   the index of the default [[Level]] in the given sequence from which starting the game
+    *   the index of the default [[it.unibo.pps.caw.common.model.Level]] in the given sequence from which starting the game
     * @return
     *   a new [[GameController]] instance
     */

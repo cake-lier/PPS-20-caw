@@ -2,9 +2,11 @@ package it.unibo.pps.caw.game.view
 
 import it.unibo.pps.caw.common.model.Position
 import it.unibo.pps.caw.common.view.*
-import it.unibo.pps.caw.app.{ViewTest, TestApplicationView}
+import it.unibo.pps.caw.app.{TestApplicationView}
+import it.unibo.pps.caw.common.BoardViewTest
+import it.unibo.pps.caw.menu.view.LevelSelectionView
 import javafx.scene.control.Button
-import javafx.scene.image.{ImageView, Image}
+import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
 import javafx.scene.Scene
@@ -19,8 +21,8 @@ import org.testfx.util.WaitForAsyncUtils
 import java.util.concurrent.TimeUnit
 import scala.jdk.CollectionConverters.given
 
-/** Test for [[it.unibo.pps.caw.menu.LevelSelectionView]] and [[it.unibo.pps.caw.game.view.GameView]] */
-class GameViewTest extends ViewTest {
+/** Test for [[LevelSelectionView]] and [[it.unibo.pps.caw.game.view.GameView]] */
+class GameViewTest extends GameTest {
 
   protected var stageWidth: Double = 0.0
   protected var stageHeight: Double = 0.0
@@ -38,14 +40,12 @@ class GameViewTest extends ViewTest {
   @Test
   def testPlayButtonIsPresent(robot: FxRobot): Unit = testDefaultStateButton(buttonId = "playButton", text = "Play")(robot)
 
-  private def clickOnPlayButton(robot: FxRobot): Unit = robot.clickOn(_.getId == "playButton")
-
   @Test
   def testLevelSelectionViewHasAllControls(robot: FxRobot): Unit = {
     // when player clicks the play button
     clickOnPlayButton(robot)
     // levels should be present
-    val levels: Set[Button] = robot.lookup[Button](_.getText.matches("\\d+")).queryAll[Button]().asScala.toSet
+    val levels: Set[Button] = getLevels(robot)
     Assertions.assertEquals(24, levels.size)
     Assertions.assertEquals(24, levels.map(_.getText).size)
     levels.foreach(b =>
@@ -74,8 +74,6 @@ class GameViewTest extends ViewTest {
     FxAssertions.assertThat(button).isInvisible
     FxAssertions.assertThat(button).isEnabled
   }
-
-  private def clickOnLevel(robot: FxRobot): Unit = robot.clickOn[Button](_.getText == "1")
 
   @Test
   def testGameViewHasAllControls(robot: FxRobot): Unit = {
@@ -115,12 +113,6 @@ class GameViewTest extends ViewTest {
     robot.drag(enemyCell).dropTo(outsideTile)
     Assertions.assertEquals((7, 4), (GridPane.getColumnIndex(enemyCell), GridPane.getRowIndex(enemyCell)))
   }
-
-  private def moveMoverCell(robot: FxRobot): Unit =
-    val gameBoard = getBoard(robot)
-    robot
-      .drag(getImageView(gameBoard)(CellImage.MoverRight.image), MouseButton.PRIMARY)
-      .dropTo(getDropTile(gameBoard)(2, 4))
 
   private def clickOnPlaySimulationButton(robot: FxRobot): Unit = robot.clickOn(_.getId == "playSimulationButton")
 

@@ -20,7 +20,7 @@ class SettingsStorageTest extends AnyFunSpec with Matchers {
   describe("SettingsStorage") {
     describe("when asked to load the settings") {
       it("should correctly load settings file") {
-        Files.writeString(Paths.get(settingsFilePath), "{\"musicVolume\":0.8,\"soundVolume\":0.9,\"solvedLevels\":[7,2]}")
+        Files.writeString(Paths.get(settingsFilePath), "{\"musicVolume\":0.8,\"soundsVolume\":0.9,\"solvedLevels\":[7,2]}")
         settingsStorage.load() match {
           case Success(settings: Settings) => settings shouldBe Settings(0.8, 0.9, Set(7, 2))
           case _                           => fail("Settings were not correctly loaded")
@@ -53,7 +53,7 @@ class SettingsStorageTest extends AnyFunSpec with Matchers {
       it("should correctly write the settings to file") {
         settingsStorage.save(Settings(musicVolume = 0.1, soundVolume = 0.1, solvedLevels = Set(5, 3, 2)))
         Using(Source.fromFile(settingsFilePath))(_.getLines.mkString(" ")) match {
-          case Success(s) => s shouldBe "{\"musicVolume\":0.1,\"soundVolume\":0.1,\"solvedLevels\":[5,3,2]}"
+          case Success(s) => s shouldBe "{\"musicVolume\":0.1,\"soundsVolume\":0.1,\"solvedLevels\":[5,3,2]}"
           case _          => fail()
         }
       }

@@ -16,15 +16,6 @@ trait AudioPlayer {
     */
   def play(track: Track): Unit
 
-  /** Returns the volume at which all [[Track]] of a given [[AudioType]] are currently being played.
-    *
-    * @param audioType
-    *   the [[AudioType]] for which getting the volume
-    * @return
-    *   the volume at which all [[Track]] of a given [[AudioType]] are currently being played
-    */
-  def getVolume(audioType: AudioType): Double
-
   /** Sets the volume of all [[Track]] of a given [[AudioType]] to the specified value.
     * @param volume
     *   the value for the volume to be set
@@ -38,11 +29,19 @@ trait AudioPlayer {
 object AudioPlayer {
 
   /* Default implementation of the AudioPlayer trait. */
-  private class AudioPlayerImpl extends AudioPlayer {
+  private class AudioPlayerImpl(musicVolume: Double, private var soundsVolume: Double) extends AudioPlayer {
     private val musicPlayers: Map[Track, MediaPlayer] =
-      Track.values.filter(_.audioType == AudioType.Music).map(t => t -> createPlayer(t)).toMap
-    private var soundPlayers: Map[Track, Set[MediaPlayer]] = Map()
-    private var volumes: Map[AudioType, Double] = Map(AudioType.Sound -> 0.5, AudioType.Music -> 0.5)
+      Track
+        .values
+        .filter(_.audioType == AudioType.Music)
+        .map(t => {
+          val mediaPlayer = MediaPlayer(Media(getClass.getResource(t.filePath).toString))
+          mediaPlayer.cycleCount = MediaPlayer.Indefinite
+          mediaPlayer.volume = musicVolume
+          t -> mediaPlayer
+        })
+        .toMap
+    private var soundsPlayers: Map[Track, Set[MediaPlayer]] = Map()
 
     override def play(track: Track): Unit = track.audioType match {
       case AudioType.Music => {
@@ -50,38 +49,26 @@ object AudioPlayer {
         musicPlayers(track).play()
       }
       case AudioType.Sound => {
-        val soundPlayer: MediaPlayer = createPlayer(track)
-        soundPlayer.volume = volumes(AudioType.Sound)
-        soundPlayers += (track -> (soundPlayers.getOrElse(track, Set()) + soundPlayer))
-      }
-    }
-
-    override def getVolume(audioType: AudioType): Double = volumes(audioType)
-
-    override def setVolume(volume: Double, audioType: AudioType): Unit = {
-      volumes += (audioType -> volume)
-      audioType match {
-        case AudioType.Music => musicPlayers.foreach(_._2.setVolume(volume))
-        case AudioType.Sound => soundPlayers.values.flatten.foreach(_.setVolume(volume))
-      }
-    }
-
-    private def createPlayer(track: Track): MediaPlayer = {
-      val mediaPlayer = new MediaPlayer(new Media(getClass.getResource(track.filePath).toString))
-      track.audioType match {
-        case AudioType.Music => mediaPlayer.setCycleCount(MediaPlayer.Indefinite)
-        case AudioType.Sound => {
-          mediaPlayer.onReady = {
-            mediaPlayer.stop()
-            mediaPlayer.play()
-          }
-          mediaPlayer.onEndOfMedia = soundPlayers += (track -> (soundPlayers(track) - mediaPlayer))
+        val mediaPlayer = MediaPlayer(Media(getClass.getResource(track.filePath).toString))
+        mediaPlayer.onReady = {
+          mediaPlayer.stop()
+          mediaPlayer.play()
         }
+        mediaPlayer.onEndOfMedia = soundsPlayers += (track -> (soundsPlayers(track) - mediaPlayer))
+        mediaPlayer.volume = soundsVolume
+        soundsPlayers += (track -> (soundsPlayers.getOrElse(track, Set()) + mediaPlayer))
       }
-      mediaPlayer
+    }
+
+    override def setVolume(volume: Double, audioType: AudioType): Unit = audioType match {
+      case AudioType.Music => musicPlayers.foreach(_._2.setVolume(volume))
+      case AudioType.Sound => {
+        soundsPlayers.values.flatten.foreach(_.setVolume(volume))
+        soundsVolume = volume
+      }
     }
   }
 
   /** Returns a new instance of the [[AudioPlayer]] trait. */
-  def apply(): AudioPlayer = AudioPlayerImpl()
+  def apply(musicVolume: Double, soundsVolume: Double): AudioPlayer = AudioPlayerImpl(musicVolume, soundsVolume)
 }

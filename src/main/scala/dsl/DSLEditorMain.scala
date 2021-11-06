@@ -7,22 +7,22 @@ import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
 import it.unibo.pps.caw.common.view.StageResizer
 import it.unibo.pps.caw.common.view.sounds.AudioPlayer
 import it.unibo.pps.caw.editor.view.EditorView
-import it.unibo.pps.caw.editor.controller.ParentLevelEditorController
+import it.unibo.pps.caw.editor.controller.ParentEditorController
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.FlowPane
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.application.JFXApp3.PrimaryStage
 
-/** The main class for the application launched by the DSL when asked by the user to edit a level with the
-  * [[it.unibo.pps.caw.dsl.entities.Board]] which has been just created.
-  *
-  * This application needs to receive as its first and only argument the [[Path]] of the file containing the
-  * [[it.unibo.pps.caw.dsl.entities.Board]] to be used for playing. Then the "editor" interface will be launched, as if inside the
-  * main application after choosing to open the level editor. The only difference is that every control hinting to change the
-  * application state (such as a "back" button) will result in closing the launched application.
-  */
-object DSLEditorMain extends JFXApp3 {
+/* The main class for the application launched by the DSL when asked by the user to edit a level with the
+ * [[it.unibo.pps.caw.dsl.entities.Board]] which has been just created.
+ *
+ * This application needs to receive as its first and only argument the [[Path]] of the file containing the
+ * [[it.unibo.pps.caw.dsl.entities.Board]] to be used for playing. Then the "editor" interface will be launched, as if inside the
+ * main application after choosing to open the level editor. The only difference is that every control hinting to change the
+ * application state (such as a "back" button) will result in closing the launched application.
+ */
+private object DSLEditorMain extends JFXApp3 {
 
   override def start(): Unit = {
     stage = new PrimaryStage {
@@ -41,7 +41,7 @@ object DSLEditorMain extends JFXApp3 {
         _ => editorScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
         l => {
           editorScene.root.value = EditorView(
-            new ParentLevelEditorController {
+            new ParentEditorController {
 
               override def closeEditor(): Unit = sys.exit()
 
@@ -49,7 +49,7 @@ object DSLEditorMain extends JFXApp3 {
             },
             editorScene,
             backButtonText = "Close",
-            AudioPlayer(),
+            AudioPlayer(musicVolume = 0.5, soundsVolume = 0.5),
             l
           )
         }

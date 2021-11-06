@@ -4,26 +4,30 @@ import java.nio.file.{Files, OpenOption, Paths}
 import scala.io.Source
 import scala.util.{Try, Using}
 
-/** Represents the storage of files to disk: it allows to load project resources or external files. */
+/** Represents the storage of files on disk.
+  *
+  * This entity allows to load project resources or external files from disk or to store external files from disk. It must be
+  * constructed through its companion object.
+  */
 trait FileStorage {
 
-  /** Loads a resource from disk. It needs the path to the resource and returns a [[Try]] with the content of the file in a string
-    * if the loading was successful, an exception otherwise.
+  /** Loads a resource from disk. It needs the path to the resource and returns a [[scala.util.Try]] with the content of the file
+    * in a string if the loading was successful, an exception otherwise.
     *
     * @param path
     *   the path to the resource file to load
     * @return
-    *   a [[Try]] with the contents of the file in a string
+    *   a [[scala.util.Try]] with the contents of the file in a string
     */
   def loadResource(path: String): Try[String]
 
-  /** Loads a file from disk. It needs the absolute path to the file and returns a [[Try]] with the content of the file in a
-    * string if the loading was successful, an exception otherwise.
+  /** Loads a file from disk. It needs the absolute path to the file and returns a [[scala.util.Try]] with the content of the file
+    * in a string if the loading was successful, an exception otherwise.
     *
     * @param path
     *   the path to the file to load
     * @return
-    *   a [[Try]] with the contents of the file in a string
+    *   a [[scala.util.Try]] with the contents of the file in a string
     */
   def loadFile(path: String): Try[String]
 
@@ -32,25 +36,26 @@ trait FileStorage {
     *
     * @param path
     *   the path to the file to be written
-    * @param body
+    * @param content
     *   the content of the file to be written
     * @return
     *   an exception if it occurs during IO operations
     */
-  def writeFile(path: String, body: String): Try[Unit]
+  def writeFile(path: String, content: String): Try[Unit]
 }
 
-/** Companion object to the [[FileStorage]] trait */
+/** Companion object to the [[FileStorage]] trait, containing its factory method. */
 object FileStorage {
 
-  private class FileStorageImpl() extends FileStorage {
+  /* Default implementation of the FileStorage trait. */
+  private class FileStorageImpl extends FileStorage {
 
-    def loadResource(path: String): Try[String] = Using(Source.fromResource(path))(_.getLines.mkString(" "))
+    override def loadResource(path: String): Try[String] = Using(Source.fromResource(path))(_.getLines.mkString(" "))
 
-    def loadFile(path: String): Try[String] = Using(Source.fromFile(path))(_.getLines.mkString(" "))
+    override def loadFile(path: String): Try[String] = Using(Source.fromFile(path))(_.getLines.mkString(" "))
 
-    def writeFile(path: String, body: String): Try[Unit] =
-      Try(Files.writeString(Paths.get(path), body))
+    override def writeFile(path: String, content: String): Try[Unit] =
+      Try(Files.writeString(Paths.get(path), content))
   }
 
   /** Returns a new instance of the [[FileStorage]] trait. */

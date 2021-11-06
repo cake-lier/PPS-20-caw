@@ -12,11 +12,11 @@ class ResultTest extends AnyFunSpec with Matchers {
         Result("test(0)").value shouldBe "test(0)"
       }
       it("can retun only last term") {
-        Result("test(1,2)").getLastTerm shouldBe "2"
+        Result("test(1,2)").extractLastTerm shouldBe "2"
       }
-      describe("when getLastTerm is called and the result is in invalid format") {
+      describe("when extractLastTerm is called and the result is in invalid format") {
         it("throw InvaliTermException") {
-          the[InvalidTermException] thrownBy Result("test()").getLastTerm
+          the[InvalidTermException] thrownBy Result("test()").extractLastTerm
         }
       }
     }

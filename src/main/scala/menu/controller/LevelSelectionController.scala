@@ -1,15 +1,16 @@
-package it.unibo.pps.caw.menu
+package it.unibo.pps.caw.menu.controller
 
 /** The controller to be used by the level selection page in the main menu.
   *
-  * This controller is capable of providing all information and services which are useful to the [[LevelSelectionView]]. These
-  * information are about the number of [[Level]] currently playable and the services allow for the start of a new game given the
-  * index of the selected [[Level]]. Moreover, it is always possible to go back from the selected page to the main menu through
-  * this controller.
+  * This controller is capable of providing all information and services which are useful to the
+  * [[it.unibo.pps.caw.menu.view.LevelSelectionView]]. These information are about the number of
+  * [[it.unibo.pps.caw.common.model.Level]] currently playable and the services allow for the start of a new game given the index
+  * of the selected [[it.unibo.pps.caw.common.model.Level]]. Moreover, it is always possible to go back from the selected page to
+  * the main menu through this controller.
   */
 trait LevelSelectionController {
 
-  /** Returns the number of default [[Level]] available. */
+  /** Returns the number of default [[it.unibo.pps.caw.common.model.Level]] available. */
   val levelsCount: Int
 
   /** Returns the indexes of default solved levels. */

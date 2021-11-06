@@ -2,7 +2,7 @@ package it.unibo.pps.caw.editor.controller
 
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.common.model.{Dimensions, Level, Position}
-import it.unibo.pps.caw.editor.model.LevelEditorModel
+import it.unibo.pps.caw.editor.model.EditorModel
 import it.unibo.pps.caw.editor.view.EditorView
 
 /** The parent controller to the [[EditorController]].
@@ -10,7 +10,7 @@ import it.unibo.pps.caw.editor.view.EditorView
   * This trait abstracts the functionalities that the [[EditorController]] needs from its parent controller. In this way, the
   * [[EditorController]] is more modular since it can be reused in multiple contexts with multiple parent controllers.
   */
-trait ParentLevelEditorController {
+trait ParentEditorController {
 
   /** Asks the parent controller to close the editor. */
   def closeEditor(): Unit
@@ -26,11 +26,13 @@ trait ParentLevelEditorController {
 
 /** The controller that manages the editor.
   *
-  * It acts as a bridge between the [[EditorView]] and the [[LevelEditorModel]]. It receives the player inputs from the
-  * [[EditorView]] and consequently updates the [[LevelEditorModel]]; it then updates the [[EditorView]] with the newly updated
-  * [[LevelEditorModel]]. It must be constructed through its companion object.
+  * It acts as a bridge between the [[it.unibo.pps.caw.editor.view.EditorView]] and the
+  * [[it.unibo.pps.caw.editor.model.EditorModel]]. It receives the player inputs from the
+  * [[it.unibo.pps.caw.editor.view.EditorView]] and consequently updates the [[it.unibo.pps.caw.editor.model.EditorModel]]; it
+  * then updates the [[it.unibo.pps.caw.editor.view.EditorView]] with the newly updated
+  * [[it.unibo.pps.caw.editor.model.EditorModel]]. It must be constructed through its companion object.
   */
-sealed trait EditorController {
+trait EditorController {
 
   /** Closes the editor. */
   def closeEditor(): Unit
@@ -38,39 +40,45 @@ sealed trait EditorController {
   /** Resets the editor board, removing the playable area and all the cells present in the board. */
   def resetLevel(): Unit
 
-  /** Adds a new cell to the [[LevelEditorModel]].
+  /** Adds a new cell to the [[it.unibo.pps.caw.editor.model.EditorModel]].
+    *
     * @param cell
-    *   the [[BaseCell]] to be added
+    *   the [[it.unibo.pps.caw.common.model.cell.BaseCell]] to be added
     */
-  def setCell(cell: BaseCell): Unit
+  def addCell(cell: BaseCell): Unit
 
-  /** Updates the [[LevelEditorModel]] by moving the cell whose [[Position]] is equal to the given old [[Position]] to the new
-    * given [[Position]].
-    * @param oldPosition
-    *   the [[Position]] in which the cell was originally located
-    * @param newPosition
-    *   the [[Position]] to which the cell was moved
+  /** Updates the [[it.unibo.pps.caw.editor.model.EditorModel]] by moving the cell whose
+    * [[it.unibo.pps.caw.common.model.Position]] is equal to the given current position to the given next position.
+    *
+    * @param currentPosition
+    *   the [[it.unibo.pps.caw.common.model.Position]] in which the cell is currently located
+    * @param nextPosition
+    *   the [[it.unibo.pps.caw.common.model.Position]] to which the cell is going to be moved
     */
-  def updateCellPosition(oldPosition: Position, newPosition: Position): Unit
+  def updateCellPosition(currentPosition: Position, nextPosition: Position): Unit
 
-  /** Removes the cell whose [[Position]] is equal to the given [[Position]] from the [[LevelEditorModel]].
+  /** Removes the cell whose [[it.unibo.pps.caw.common.model.Position]] is equal to the given position from the
+    * [[it.unibo.pps.caw.editor.model.EditorModel]].
+    *
     * @param position
-    *   the [[Position]] of the cell that has to be removed
+    *   the [[it.unibo.pps.caw.common.model.Position]] of the cell that has to be removed
     */
   def removeCell(position: Position): Unit
 
-  /** Adds a [[it.unibo.pps.caw.common.model.PlayableArea]] to the [[LevelEditorModel]].
+  /** Adds a [[it.unibo.pps.caw.common.model.PlayableArea]] to the [[it.unibo.pps.caw.editor.model.EditorModel]].
+    *
     * @param position
-    *   the upper left [[Position]] where the [[it.unibo.pps.caw.common.model.PlayableArea]] is located
+    *   the upper left corner [[it.unibo.pps.caw.common.model.Position]] where the [[it.unibo.pps.caw.common.model .PlayableArea]]
+    *   is located
     * @param dimensions
-    *   the [[Dimensions]] of the [[it.unibo.pps.caw.common.model.PlayableArea]]
+    *   the [[it.unibo.pps.caw.common.model.Dimensions]] of the [[it.unibo.pps.caw.common.model.PlayableArea]]
     */
-  def setPlayableArea(position: Position, dimensions: Dimensions): Unit
+  def addPlayableArea(position: Position, dimensions: Dimensions): Unit
 
-  /** Removes the [[it.unibo.pps.caw.common.model.PlayableArea]] from the [[LevelEditorModel]] . */
+  /** Removes the [[it.unibo.pps.caw.common.model.PlayableArea]] from the [[it.unibo.pps.caw.editor.model.EditorModel]] . */
   def removePlayableArea(): Unit
 
-  /** Saves the current [[Level]] built by the user.
+  /** Saves the current [[it.unibo.pps.caw.common.model.Level]] built by the user.
     * @param path
     *   the path of the file where the level will be saved
     */
@@ -80,24 +88,23 @@ sealed trait EditorController {
 /** The companion object of [[EditorController]], containing its factory methods. */
 object EditorController {
   /* Abstract implementation of EditorController to factorize common behaviors. */
-  abstract class AbstractEditorController(parentLevelEditorController: ParentLevelEditorController, view: EditorView)
-    extends EditorController {
-    private var levelEditorModel: LevelEditorModel = createEditorModel()
+  abstract class AbstractEditorController(parentController: ParentEditorController, view: EditorView) extends EditorController {
+    private var levelEditorModel: EditorModel = createEditorModel()
 
-    view.drawLevelState(levelEditorModel.currentState)
+    view.drawState(levelEditorModel.state)
 
-    protected def createEditorModel(): LevelEditorModel
+    protected def createEditorModel(): EditorModel
 
     override def resetLevel(): Unit = updateShowLevel(levelEditorModel.resetLevel)
 
-    override def removeCell(position: Position): Unit = updateShowLevel(levelEditorModel.unsetCell(position))
+    override def removeCell(position: Position): Unit = updateShowLevel(levelEditorModel.removeCell(position))
 
-    override def setCell(cell: BaseCell): Unit = updateShowLevel(levelEditorModel.setCell(cell))
+    override def addCell(cell: BaseCell): Unit = updateShowLevel(levelEditorModel.addCell(cell))
 
-    override def removePlayableArea(): Unit = updateShowLevel(levelEditorModel.unsetPlayableArea)
+    override def removePlayableArea(): Unit = updateShowLevel(levelEditorModel.removePlayableArea)
 
-    override def setPlayableArea(position: Position, dimensions: Dimensions): Unit =
-      updateShowLevel(levelEditorModel.setPlayableArea(position, dimensions))
+    override def addPlayableArea(position: Position, dimensions: Dimensions): Unit =
+      updateShowLevel(levelEditorModel.addPlayableArea(position, dimensions))
 
     override def saveLevel(path: String): Unit =
       levelEditorModel
@@ -105,50 +112,50 @@ object EditorController {
         .fold(
           view.showError(message = "No playable area was set, could not save")
         )(
-          parentLevelEditorController.saveLevel(path, _)
+          parentController.saveLevel(path, _)
         )
 
-    override def closeEditor(): Unit = parentLevelEditorController.closeEditor()
+    override def closeEditor(): Unit = parentController.closeEditor()
 
-    override def updateCellPosition(oldPosition: Position, newPosition: Position): Unit =
-      updateShowLevel(levelEditorModel.updateCellPosition(oldPosition, newPosition))
+    override def updateCellPosition(currentPosition: Position, nextPosition: Position): Unit =
+      updateShowLevel(levelEditorModel.updateCellPosition(currentPosition, nextPosition))
 
-    private def updateShowLevel(newLevelEditorModel: LevelEditorModel): Unit = {
+    private def updateShowLevel(newLevelEditorModel: EditorModel): Unit = {
       levelEditorModel = newLevelEditorModel
-      view.drawLevelState(levelEditorModel.currentState)
+      view.drawState(levelEditorModel.state)
     }
   }
 
   /* Extension of the AbstractEditorController to create a new level from a empty board. */
   private class EmptyEditorController(
-    parentLevelEditorController: ParentLevelEditorController,
-    levelEditorView: EditorView,
+    parentController: ParentEditorController,
+    editorView: EditorView,
     width: Int,
     height: Int
-  ) extends AbstractEditorController(parentLevelEditorController: ParentLevelEditorController, levelEditorView: EditorView) {
+  ) extends AbstractEditorController(parentController: ParentEditorController, editorView: EditorView) {
 
-    override def createEditorModel(): LevelEditorModel = LevelEditorModel(width, height)
+    override def createEditorModel(): EditorModel = EditorModel(width, height)
   }
 
   /* Extension of the AbstractEditorController to create a new level from an existing level. */
   case class LevelEditorController(
-    parentLevelEditorController: ParentLevelEditorController,
-    levelEditorView: EditorView,
+    parentController: ParentEditorController,
+    view: EditorView,
     level: Level[BaseCell]
-  ) extends AbstractEditorController(parentLevelEditorController: ParentLevelEditorController, levelEditorView: EditorView) {
+  ) extends AbstractEditorController(parentController: ParentEditorController, view: EditorView) {
 
-    override def createEditorModel(): LevelEditorModel = LevelEditorModel(level)
+    override def createEditorModel(): EditorModel = EditorModel(level)
   }
 
-  /** Returns a new instance of the [[EditorController]] trait. It must receive the [[ParentLevelEditorController]], which it
+  /** Returns a new instance of the [[EditorController]] trait. It must receive the [[ParentEditorController]], which it
     * represents its parent controller which provides all the functionalities which must be delegated to this type of controller,
-    * the [[EditorView]] which will be called by and will call the returned [[EditorController]] instance and the width and height
-    * of the new level the player wants to create.
+    * the [[it.unibo.pps.caw.editor.view.EditorView]] which will be called by and will call the returned [[EditorController]]
+    * instance and the width and height of the new level the player wants to create.
     *
-    * @param parentLevelEditorController
+    * @param parentController
     *   the parent controller of the returned [[EditorController]]
-    * @param levelEditorView
-    *   the [[EditorView]]
+    * @param view
+    *   the [[it.unibo.pps.caw.editor.view.EditorView]]
     * @param width
     *   the width of the level the player wants to create
     * @param height
@@ -157,31 +164,31 @@ object EditorController {
     *   a new instance [[EditorController]]
     */
   def apply(
-    parentLevelEditorController: ParentLevelEditorController,
-    levelEditorView: EditorView,
+    parentController: ParentEditorController,
+    view: EditorView,
     width: Int,
     height: Int
   ): EditorController =
-    EmptyEditorController(parentLevelEditorController, levelEditorView, width, height)
+    EmptyEditorController(parentController, view, width, height)
 
-  /** Returns a new instance of the [[EditorController]] trait. It must receive the [[ParentLevelEditorController]], which it
+  /** Returns a new instance of the [[EditorController]] trait. It must receive the [[ParentEditorController]], which it
     * represents its parent controller which provides all the functionalities which must be delegated to this type of controller,
-    * the [[EditorView]] which will be called by and will call the returned [[EditorController]] instance and the [[Level]] that
-    * the player wants to edit.
+    * the [[it.unibo.pps.caw.editor.view.EditorView]] which will be called by and will call the returned [[EditorController]]
+    * instance and the [[it.unibo.pps.caw.common.model.Level]] that the player wants to edit.
     *
-    * @param parentLevelEditorController
+    * @param parentController
     *   the parent controller of the returned [[EditorController]]
-    * @param levelEditorView
-    *   the [[EditorView]]
+    * @param view
+    *   the [[it.unibo.pps.caw.editor.view.EditorView]]
     * @param level
-    *   the [[Level]] the player wants to edit
+    *   the [[it.unibo.pps.caw.common.model.Level]] the player wants to edit
     * @return
     *   a new instance [[EditorController]]
     */
   def apply(
-    parentLevelEditorController: ParentLevelEditorController,
-    levelEditorView: EditorView,
+    parentController: ParentEditorController,
+    view: EditorView,
     level: Level[BaseCell]
   ): EditorController =
-    LevelEditorController(parentLevelEditorController, levelEditorView, level)
+    LevelEditorController(parentController, view, level)
 }

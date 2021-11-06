@@ -8,10 +8,10 @@ import alice.tuprolog.Term
 
 import scala.util.matching.Regex
 
-/* An utility object for prolog serialization and deserialization */
+/* An utility object for prolog serialization and deserialization. */
 private object PrologParser {
 
-  /* Returns a Prolog cell(id, cellType, x, y) given its Scala cell */
+  /* Returns a Prolog cell(id, cellType, x, y) given its Scala cell. */
   def serializeCell(cell: UpdateCell): String = {
     val cellType: String = cell match {
       case _: UpdateWallCell           => "wall"
@@ -30,10 +30,11 @@ private object PrologParser {
     "cell" + Seq(cell.id, cellType, cell.position.x, cell.position.y).mkString("(", ",", ")")
   }
 
-  /* Returns a Prolog term given its cell.
-
-     If the cell is a mover or a rotator, it returns mover/rotator_next_state[board, x, y, NB].
-     If the cell is a generator, it returns generator_next_state[board, maxId, x, y, NB] */
+  /* Returns the Prolog clause given its cell.
+   *
+   * If the cell is a mover or a rotator, it returns mover/rotator_next_state[board, x, y, NB].
+   * If the cell is a generator, it returns generator_next_state[board, maxId, x, y, NB]
+   */
   def createSerializedPredicate(board: Board[UpdateCell], maxId: Long, cell: UpdateCell): Option[String] = {
     var seq = Seq(board.map(serializeCell).mkString("[", ",", "]"), cell.position.x, cell.position.y)
     if (cell.isInstanceOf[UpdateGeneratorCell]) {
@@ -48,7 +49,7 @@ private object PrologParser {
     }).map(_ + "_next_state" + seq.mkString("(", ",", ")"))
   }
 
-  /* Returns a Scala Board of fake cells given the Prolog Board */
+  /* Returns the Scala Board of UpdateCell given a Prolog Board. */
   def deserializeBoard(stringBoard: String): Board[UpdateCell] = {
     val regex: Regex =
       ("cell\\(\\d+,(?:mover_right|mover_left|mover_top|mover_down|generator_right|generator_left|generator_top|generator_down" +
@@ -62,32 +63,26 @@ private object PrologParser {
     )
   }
 
-  /* Returns a Scala fake cell given its Prolog cell*/
+  /* Returns a Scala UpdateCell given its Prolog cell. */
   def deserializeCell(stringCell: String): UpdateCell = {
     val s"cell($id,$cellType,$stringX,$stringY)" = stringCell
     val cellId: Int = id.toInt
     val position: Position = Position(stringX.toInt, stringY.toInt)
     val updated: Boolean = false // default value, properly set in nextState()
-
     cellType match {
-      case s"mover_$orientation" => UpdateMoverCell(position, Orientation.fromName(orientation).get, cellId, updated)
-      case "enemy"               => UpdateEnemyCell(position, cellId, updated)
-      case "wall"                => UpdateWallCell(position, cellId, updated)
+      case s"mover_$orientation" => UpdateMoverCell(position)(Orientation.fromName(orientation).get)(cellId)(updated)
+      case "enemy"               => UpdateEnemyCell(position)(cellId)(updated)
+      case "wall"                => UpdateWallCell(position)(cellId)(updated)
       case s"block$movement" =>
-        UpdateBlockCell(
-          position,
-          movement match {
-            case "_hor" => Push.Horizontal
-            case "_ver" => Push.Vertical
-            case _      => Push.Both
-          },
-          cellId,
-          updated
-        )
+        UpdateBlockCell(position)(movement match {
+          case "_hor" => Push.Horizontal
+          case "_ver" => Push.Vertical
+          case _      => Push.Both
+        })(cellId)(updated)
       case s"generator_$orientation" =>
-        UpdateGeneratorCell(position, Orientation.fromName(orientation).get, cellId, updated)
-      case s"rotator_$rotation" => UpdateRotatorCell(position, Rotation.fromName(rotation).get, cellId, updated)
-      case "deleter"            => UpdateDeleterCell(position, cellId, updated)
+        UpdateGeneratorCell(position)(Orientation.fromName(orientation).get)(cellId)(updated)
+      case s"rotator_$rotation" => UpdateRotatorCell(position)(Rotation.fromName(rotation).get)(cellId)(updated)
+      case "deleter"            => UpdateDeleterCell(position)(cellId)(updated)
     }
   }
 }

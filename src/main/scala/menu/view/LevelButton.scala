@@ -1,14 +1,16 @@
-package it.unibo.pps.caw.menu
+package it.unibo.pps.caw.menu.view
 
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import it.unibo.pps.caw.common.view.ViewComponent
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.menu.controller.LevelSelectionController
+
 import javafx.scene.control.Button
 
 /** A button on the "level selection" page in the main menu. */
-trait LevelButton extends ViewComponent[Button]
+private trait LevelButton extends ViewComponent[Button]
 
 /** Companion object used as a factory for new [[LevelButton]] instances. */
-object LevelButton {
+private object LevelButton {
 
   /** Creates a level button component given the index of the level which the button is associated to and the
     * [[MainMenuController]] used for switching to the game in order to play the level associated to this button.

@@ -33,7 +33,7 @@ object ViewComponent {
   abstract class AbstractViewComponent[A](fxmlFileName: String) extends ViewComponent[A] {
     protected val loader = FXMLLoader()
     loader.setController(this)
-    loader.setLocation(getClass.getResource("/fxml/" + fxmlFileName))
+    loader.setLocation(getClass.getResource(s"/fxml/$fxmlFileName"))
   }
 
   /** Converts a component into its wrapped object through [[ViewComponent.innerComponent]] property

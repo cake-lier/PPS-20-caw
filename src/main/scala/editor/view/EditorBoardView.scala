@@ -3,124 +3,106 @@ package it.unibo.pps.caw.editor.view
 import it.unibo.pps.caw.common.model.cell.PlayableCell
 import it.unibo.pps.caw.common.model.{Board, Position}
 import it.unibo.pps.caw.common.*
-import it.unibo.pps.caw.editor.model.LevelBuilderState
+import it.unibo.pps.caw.editor.model.EditorModelState
 
-import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellImage, CellView, DraggableImageView, ModelUpdater}
+import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellView, CellImage, ModelUpdater}
 import javafx.scene.Node
-import javafx.scene.effect.Glow
 import javafx.scene.image.ImageView
-import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
 
-/** The board displayed in the editor.
-  *
-  * In the editor, the player can modify the level board as they please: they can select and deselect the
-  * [[it.unibo.pps.caw.common.model.PlayableArea]] and add, move and remove cells both inside and outside the
-  * [[it.unibo.pps.caw.common.model.PlayableArea]]. It must be constructed through its companion object.
-  */
-sealed trait EditorBoardView extends BoardView {
+/* Updates the editor model when the view is modified.
+ *
+ * Its methods are called when a PlayableArea is placed to the board or removed from it by the player and when a Cell is
+ * removed by the player.
+ */
+private trait EditorModelUpdater extends ModelUpdater {
 
-  /** Draws the [[LevelBuilderState]] received in input.
-    *
-    * @param levelState
-    *   the [[LevelBuilderState]] to be drawn
-    */
-  def drawLevelState(levelState: LevelBuilderState): Unit
+  /* Creates a new PlayableArea, given its upper left Position and its lower right Position. */
+  def addPlayableArea(topLeftCorner: Position, downRightCorner: Position): Unit
+
+  /* Removes a Cell given its current Position. */
+  def removeCell(position: Position): Unit
+
+  /* Removes the previously added PlayableArea. */
+  def removePlayableArea(): Unit
 }
 
-/** Companion object of the [[EditorBoardView]] trait, containing its factory method. */
-object EditorBoardView {
+/* The board displayed in the editor.
+ *
+ * In the editor, the player can modify the level board as they please: they can select and deselect the
+ * PlayableArea and add, move and remove cells both inside and outside the PlayableArea. It must be constructed through its
+ * companion object.
+ */
+private trait EditorBoardView extends BoardView {
 
-  /** Returns a new instance of [[EditorBoardView]]. It receives the screen width and height, necessary to calculate the size of
-    * the board, the [[LevelBuilderState]] containing all the necessary information to draw the level, the [[ModelUpdater]] and
-    * the [[EditorUpdater]], necessary to update the model after the player modifies the view.
-    *
-    * @param screenWidth
-    *   the width of the screen necessary to calculate the board width
-    * @param screenHeight
-    *   the height of the screen necessary to calculate the board width
-    * @param levelState
-    *   the [[LevelBuilderState]] to be drawn
-    * @param model
-    *   the [[ModelUpdater]] necessary to update the model after view changes
-    * @param updater
-    *   the [[EditorUpdater]] necessary to update the model after view changes
-    * @return
-    *   a new instance of [[EditorBoardView]]
-    */
+  /* Draws the EditorModelState received in input. */
+  def drawState(state: EditorModelState): Unit
+}
+
+/* Companion object of the EditorBoardView trait, containing its factory method. */
+private object EditorBoardView {
+
+  /* Returns a new instance of EditorBoardView. It receives the screen width and height, necessary to calculate the size of
+   * the board, the EditorModelState containing all the necessary information to draw the level, the ModelUpdater and
+   * the EditorModelUpdater, necessary to update the model after the player modifies the view.
+   */
   def apply(
     screenWidth: Double,
     screenHeight: Double,
-    levelState: LevelBuilderState,
-    model: ModelUpdater,
-    updater: EditorUpdater
-  ): EditorBoardView =
-    EditorBoardViewImpl(screenWidth, screenHeight, levelState, model, updater)
+    levelState: EditorModelState,
+    modelUpdater: EditorModelUpdater
+  ): EditorBoardView = EditorBoardViewImpl(screenWidth, screenHeight, levelState, modelUpdater)
 
-  /* Extension of AbstractBoardView */
-  private case class EditorBoardViewImpl(
+  /* An extension of AbstractBoardView for the EditorView. */
+  private class EditorBoardViewImpl(
     screenWidth: Double,
     screenHeight: Double,
-    initialLevelState: LevelBuilderState,
-    modelUpdater: ModelUpdater,
-    updater: EditorUpdater
+    initialState: EditorModelState,
+    modelUpdater: EditorModelUpdater
   ) extends AbstractBoardView(
       screenWidth,
       screenHeight,
-      initialLevelState.dimensions.width,
-      initialLevelState.dimensions.height,
+      initialState.dimensions.width,
+      initialState.dimensions.height,
       modelUpdater
     )
     with EditorBoardView {
-    private var startPosition = Position(0, 0)
-    private var endPosition = Position(0, 0)
+    private var startPosition: Position = Position(0, 0)
+    private var endPosition: Position = Position(0, 0)
 
-    drawLevelState(initialLevelState)
+    drawState(initialState)
 
-    override def drawLevelState(levelState: LevelBuilderState): Unit = {
+    override def drawState(state: EditorModelState): Unit = {
       clearComponents()
-      drawPavement(droppablePavement = true)
-      levelState.playableArea match {
+      drawFloor(isDroppable = true)
+      state.playableArea match {
         case Some(p) =>
-          drawPlayableArea(p.position.x, p.position.y, p.dimensions.width, p.dimensions.height, droppablePlayableArea = true)
+          drawPlayableArea(p.position, p.dimensions, isDroppable = true)
         case _ => applyHandler(n => enablePlayableAreaSelection(n.asInstanceOf[ImageView]))
       }
-      levelState.board.foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
+      state
+        .board
+        .foreach(c => drawImageView(CellView(c, innerComponent).innerComponent, c.position.x, c.position.y))
     }
 
-    /** Adds an [[ImageView]] to the editor board, that is a view that can be removed if it was added by the user.
-      * @param node
-      *   the [[ImageView]] to be drawn to the board
-      * @param x
-      *   the x coordinate where the [[ImageView]] will be placed in the board
-      * @param y
-      *   the y coordinate where the [[ImageView]] will be placed in the board
-      */
-    override protected def drawImageView(node: ImageView, x: Int, y: Int): Unit = {
-      node.getImage match {
-        case CellImage.PlayAreaTile.image =>
-          node.setOnMouseClicked(e =>
-            if (e.getButton.equals(MouseButton.SECONDARY)) {
-              updater.removePlayableArea()
-              e.consume()
-            }
-          )
+    override protected def drawImageView(imageView: ImageView, x: Int, y: Int): Unit = {
+      import it.unibo.pps.caw.common.view.{DraggableImageView, DroppableImageView}
+      import javafx.scene.input.MouseButton
+      imageView match {
+        case tile: DroppableImageView if (tile.getImage == CellImage.PlayAreaTile.image) =>
+          tile.setOnMouseClicked(e => if (e.getButton.equals(MouseButton.SECONDARY)) modelUpdater.removePlayableArea())
+        case cell: DraggableImageView =>
+          cell.setOnMouseClicked(e => if (e.getButton.equals(MouseButton.SECONDARY)) modelUpdater.removeCell(x, y))
         case _ =>
-          if (node.isInstanceOf[DraggableImageView]) {
-            node.setOnMouseClicked(e => {
-              if (e.getButton.equals(MouseButton.SECONDARY)) {
-                updater.removeCell(x, y)
-                e.consume()
-              }
-            })
-          }
       }
-      super.drawImageView(node, x, y)
+      super.drawImageView(imageView, x, y)
     }
 
     /* Given an image view, adds the necessary JavaFX event handlers to select a playable area with the mouse and to highlight
-     * the selected tiles. */
+     * the selected tiles.
+     */
     private def enablePlayableAreaSelection(imageView: ImageView): Unit = {
+      import javafx.scene.effect.Glow
       val glow = new Glow()
       imageView.setOnDragDetected(e => {
         startPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
@@ -130,7 +112,7 @@ object EditorBoardView {
 
       imageView.setOnMouseDragReleased(e => {
         endPosition = Position(GridPane.getColumnIndex(imageView), GridPane.getRowIndex(imageView))
-        updater.createPlayableArea(startPosition, endPosition)
+        modelUpdater.addPlayableArea(startPosition, endPosition)
         e.consume()
       })
 

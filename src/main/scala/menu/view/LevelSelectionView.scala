@@ -1,10 +1,11 @@
-package it.unibo.pps.caw.menu
+package it.unibo.pps.caw.menu.view
 
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.view.ViewComponent
+import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import it.unibo.pps.caw.menu.controller.LevelSelectionController
+
 import javafx.fxml.FXML
-import javafx.scene.control.{ScrollPane, Button}
+import javafx.scene.control.{Button, ScrollPane}
 import javafx.scene.image.ImageView
 import javafx.scene.layout.{GridPane, Pane, RowConstraints}
 import scalafx.scene.Scene
@@ -13,22 +14,22 @@ import scalafx.scene.Scene
   *
   * This view component represents the "level selection" screen, which is part of the main menu. As such, its duty is to capture
   * all interactions with this specific part of the view and provide the expected functionalities such as allowing to choose the
-  * [[Level]] which starting the game with through the [[LevelSelectionController]]. It must be constructed through its companion
-  * object.
+  * [[it.unibo.pps.caw.common.model.Level]] which starting the game with through the
+  * [[it.unibo.pps.caw.menu.controller.LevelSelectionController]]. It must be constructed through its companion object.
   */
 trait LevelSelectionView extends ViewComponent[Pane]
 
-/** Companion object for the [[LevelSelectionView]] trait, being a factory for new [[LevelSelection]] instances. */
+/** Companion object for the [[LevelSelectionView]] trait, being a factory for new [[LevelSelectionView]] instances. */
 object LevelSelectionView {
 
-  /** Returns a new instance of the [[LevelSelectionView]] trait. It receives a ScalaFX'state [[Scene]] so as to draw and display
-    * itself on it and the [[LevelSelectionController]] so the constructed view can provide the services which should be
-    * accessible through itself.
+  /** Returns a new instance of the [[LevelSelectionView]] trait. It receives a ScalaFX [[scalafx.scene.Scene]] so as to draw and
+    * display itself on it and the [[it.unibo.pps.caw.menu.controller.LevelSelectionController]] so the constructed view can
+    * provide the services which should be accessible through itself.
     *
     * @param scene
-    *   the ScalaFX'state [[Scene]] on which the constructed [[LevelSelectionView]] will draw and display itself
+    *   the ScalaFX [[scalafx.scene.Scene]] on which the constructed [[LevelSelectionView]] will draw and display itself
     * @param controller
-    *   the [[LevelSelectionController]] associated to the created [[LevelSelectionView]]
+    *   the [[it.unibo.pps.caw.menu.controller.LevelSelectionController]] associated to the created [[LevelSelectionView]]
     * @return
     *   a new [[LevelSelectionView]] instance
     */

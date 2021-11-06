@@ -20,7 +20,8 @@ class GameStateTest extends AnyFunSpec with Matchers {
       .flatMap(LevelParser(FileStorage()).deserializeLevel)
       .map(toPlayableLevel)
       .get
-  private val currentLevel: Level[PlayableCell] = initialLevel
+  private val currentLevel: Level[BaseCell] =
+    Level(initialLevel.dimensions, initialLevel.board.map(_.toBaseCell), initialLevel.playableArea)
   private val currentLevelIndex: Int = 1
   private val hasNextLevel: Boolean = false
   private val didEnemyDie: Boolean = false

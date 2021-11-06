@@ -5,7 +5,7 @@ import it.unibo.pps.caw.common.model.cell.*
 import it.unibo.pps.caw.common.LevelParser
 import it.unibo.pps.caw.common.storage.FileStorage
 import it.unibo.pps.caw.dsl.CellsAtWorkDSL.*
-import it.unibo.pps.caw.dsl.errors.LevelBuilderStateError
+import it.unibo.pps.caw.dsl.validation.ValidationError
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -13,7 +13,7 @@ import java.io.ByteArrayOutputStream
 
 /** Tests for all the DSL operations, even when wrongly used. */
 class DSLTests extends AnyFunSpec with Matchers {
-  private val boardDimensions: Dimensions = (30, 40)
+  private val boardDimensions: Dimensions = (25, 30)
   private val playableAreaDimensions: Dimensions = (10, 20)
   private val playableAreaPosition: Position = (0, 0)
   private val playableArea: PlayableArea = PlayableArea(playableAreaDimensions)(playableAreaPosition)
@@ -31,10 +31,12 @@ class DSLTests extends AnyFunSpec with Matchers {
   private val cellsArea: Dimensions = (2, 2)
   private val fileStorage: FileStorage = FileStorage()
   private val levelParser: LevelParser = LevelParser(fileStorage)
+  private val positionNotInRangeError: String =
+    "The position given to an entity has coordinates which are not in a valid range, so between 0 and 29 included"
 
   describe("The DSL") {
-    describe("when asked to print a correctly constructed board") {
-      it("should correctly print the constructed board") {
+    describe("when asked to print a correctly constructed level") {
+      it("should correctly print the constructed level") {
         val out: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withOut(out) {
           buildBoardWithDSL()
@@ -50,10 +52,10 @@ class DSLTests extends AnyFunSpec with Matchers {
     }
 
     describe("when using the words for inserting multiple cells at the same time") {
-      it("should correctly print the constructed board") {
+      it("should correctly print the constructed level") {
         val out: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withOut(out) {
-          board {
+          level {
             withDimensions(boardDimensions.width, boardDimensions.height)
             hasPlayableArea
               .withDimensions(playableArea.dimensions.width, playableArea.dimensions.height)
@@ -98,94 +100,98 @@ class DSLTests extends AnyFunSpec with Matchers {
       }
     }
 
-    describe("when asked to print a board without dimensions") {
+    describe("when asked to print a level without dimensions") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(boardDimensions = None)
         }
-        err.toString shouldBe LevelBuilderStateError.DimensionsUnset.message
+        err.toString shouldBe "The dimensions were not set"
       }
     }
 
-    describe("when asked to print a board without a playable area") {
+    describe("when asked to print a level without a playable area") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = None)
         }
-        err.toString shouldBe LevelBuilderStateError.PlayableAreaUnset.message
+        err.toString shouldBe "The playable area was not set"
       }
     }
 
-    describe("when asked to print a board with negative dimensions") {
+    describe("when asked to print a level with dimensions not in the correct range") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(boardDimensions = Some(Dimensions(-30, 40)))
         }
-        err.toString shouldBe LevelBuilderStateError.NegativeDimensions.message
+        err.toString shouldBe (
+          "The chosen dimensions for the level are either too big or to small, so not in range between 2 and 30 included"
+        )
       }
     }
 
-    describe("when asked to print a board with a playable area with negative dimensions") {
+    describe("when asked to print a level with a playable area with dimensions not in the correct range") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(Dimensions(-30, 40))(playableAreaPosition)))
         }
-        err.toString shouldBe LevelBuilderStateError.NegativeDimensions.message
+        err.toString shouldBe (
+          "The chosen dimensions for the playable area are either too big or to small, so not in range between 1 and 30 included"
+        )
       }
     }
 
-    describe("when asked to print a board with a playable area with a negative position") {
+    describe("when asked to print a level with a playable area with position coordinates not in the correct range") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(playableAreaDimensions)(Position(-1, 0))))
         }
-        err.toString shouldBe LevelBuilderStateError.NegativePosition.message
+        err.toString shouldBe positionNotInRangeError
       }
     }
 
-    describe("when asked to print a board with a playable area outside the board bounds") {
+    describe("when asked to print a level with a playable area outside the level bounds") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(playableAreaDimensions)(Position(25, 25))))
         }
-        err.toString shouldBe LevelBuilderStateError.PlayableAreaNotInBounds.message
+        err.toString shouldBe "The playable area exceeds the level bounds"
       }
     }
 
-    describe("when asked to print a board with two cells in the same position") {
+    describe("when asked to print a level with two cells in the same position") {
       it("should print an error on stderr") {
         val position: Position = Position(10, 10)
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(mover = BaseMoverCell(Orientation.Right)(position), enemy = BaseEnemyCell(position))
         }
-        err.toString shouldBe LevelBuilderStateError.SamePositionForDifferentCells.message
+        err.toString shouldBe "Two or more cells have the same position"
       }
     }
 
-    describe("when asked to print a board with a cell with a negative position") {
+    describe("when asked to print a level with a cell with a position not in the correct range") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
           buildBoardWithDSL(generator = BaseGeneratorCell(Orientation.Left)(Position(0, -5)))
         }
-        err.toString shouldBe LevelBuilderStateError.NegativePosition.message
+        err.toString shouldBe positionNotInRangeError
       }
     }
 
-    describe("when asked to print a board with a cell outside the board bounds") {
+    describe("when asked to print a level with a cell outside the level bounds") {
       it("should print an error on stderr") {
         val err: ByteArrayOutputStream = ByteArrayOutputStream()
         Console.withErr(err) {
-          buildBoardWithDSL(block = BaseBlockCell(Push.Vertical)(Position(50, 50)))
+          buildBoardWithDSL(block = BaseBlockCell(Push.Vertical)(Position(29, 29)))
         }
-        err.toString shouldBe LevelBuilderStateError.CellOutsideBounds.message
+        err.toString shouldBe "A cell was placed outside the level bounds"
       }
     }
 
@@ -193,11 +199,11 @@ class DSLTests extends AnyFunSpec with Matchers {
     import scala.util.Using
     import scala.io.Source
 
-    describe("when asked to save a board to file") {
+    describe("when asked to save a level to file") {
       it("should produce the correct file") {
         val fileName: String = "level.json"
         val path: String = Paths.get(System.getProperty("user.home"), fileName).toString
-        board {
+        level {
           withDimensions(boardDimensions.width, boardDimensions.height)
           hasPlayableArea
             .withDimensions(playableArea.dimensions.width, playableArea.dimensions.height)
@@ -238,7 +244,7 @@ class DSLTests extends AnyFunSpec with Matchers {
     wall: BaseWallCell = wall,
     deleter: BaseDeleterCell = deleter
   ): Unit = {
-    board {
+    level {
       boardDimensions.foreach(d => withDimensions(d.width, d.height))
       playableArea.foreach(a =>
         hasPlayableArea withDimensions (a.dimensions.width, a.dimensions.height) at (a.position.x, a.position.y)

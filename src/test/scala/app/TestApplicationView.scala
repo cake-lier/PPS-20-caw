@@ -8,7 +8,7 @@ import it.unibo.pps.caw.common.model.Level
 import it.unibo.pps.caw.common.model.cell.BaseCell
 import it.unibo.pps.caw.editor.view.EditorView
 import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.menu.MainMenuView
+import it.unibo.pps.caw.menu.view.MainMenuView
 import javafx.application.Platform
 import javafx.scene.layout.Pane
 import javafx.stage.{Screen, Stage}
@@ -51,7 +51,7 @@ object TestApplicationView {
     stage.show()
     stage.setOnCloseRequest(_ => controller.exit())
     audioPlayer.setVolume(controller.settings.musicVolume, AudioType.Music)
-    audioPlayer.setVolume(controller.settings.soundVolume, AudioType.Sound)
+    audioPlayer.setVolume(controller.settings.soundsVolume, AudioType.Sound)
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
@@ -72,11 +72,11 @@ object TestApplicationView {
 
   }
 
-  /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX'state [[PrimaryStage]] for creating a view for
-    * the application.
+  /** Returns a new instance of the [[ApplicationView]] trait. It needs the ScalaFX [[PrimaryStage]] for creating a view for the
+    * application.
     *
     * @param stage
-    *   the ScalaFX'state [[PrimaryStage]] used for creating a view for the application
+    *   the ScalaFX [[PrimaryStage]] used for creating a view for the application
     * @return
     *   a new [[ApplicationView]] instance
     */

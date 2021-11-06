@@ -1,6 +1,6 @@
 package it.unibo.pps.caw.common.view
 
-import it.unibo.pps.caw.common.model.Position
+import it.unibo.pps.caw.common.model.{Dimensions, Position}
 import it.unibo.pps.caw.common.*
 import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
 import javafx.scene.image.ImageView
@@ -9,16 +9,16 @@ import javafx.scene.layout.{ColumnConstraints, GridPane, RowConstraints}
 /** Updates the model when view is modified.
   *
   * This trait is given to the [[BoardView]] constructor, as it is needed to propagate the view changes to the model. Its only
-  * method is called after the player moves an [[ImageView]] to a different position during the setup stage of the game or when
-  * the player adds a new [[ImageView]] to the board during the editing of a level.
+  * method is called after the player moves an [[javafx.scene.image.ImageView]] to a different position during the setup stage of
+  * the game or when the player adds a new [[javafx.scene.image.ImageView]] to the board during the editing of a level.
   */
 trait ModelUpdater {
 
-  /** Updates the model with the cell linked to the given [[ImageView]].
+  /** Updates the model with the cell which has the given [[javafx.scene.image.ImageView]].
     * @param cellImageView
-    *   the [[ImageView]] that was moved by the player
+    *   the [[javafx.scene.image.ImageView]] that was moved by the player
     * @param newPosition
-    *   the position where the [[ImageView]] was moved to
+    *   the [[Position]] where the [[javafx.scene.image.ImageView]] was moved to
     */
   def manageCell(cellImageView: ImageView, newPosition: Position): Unit
 }
@@ -28,12 +28,12 @@ trait ModelUpdater {
   */
 trait BoardView extends ViewComponent[GridPane]
 
-/** The abstract view that displays a [[Level]].
+/** The abstract view that displays a [[model.Level]].
   *
   * This abstract implementation of the trait [[BoardView]] provides all the necessary methods to draw a generic board. A board is
   * a grid with a size and a certain number of rows and columns; it has a pavement and potentially a playable area where the cells
-  * of a [[Level]] are placed and drawn. It receives in its constructor a [[ModelUpdater]], necessary to update the model after
-  * the view is modified by the player.
+  * of a [[model.Level]] are placed and drawn. It receives in its constructor a [[ModelUpdater]], necessary to update the model
+  * after the view is modified by the player.
   *
   * @param screenWidth
   *   the width of the screen necessary to calculate the board width
@@ -75,68 +75,54 @@ abstract class AbstractBoardView(
     innerComponent.getRowConstraints.add(rowConstraints)
   })
 
-  /** Places the board pavement. The board pavement can allow other [[ImageView]] to be dropped on top of it. By default, it is
-    * not possible to drop an [[ImageView]] on the board pavement.
+  /** Places the board floor. The board floor can allow other [[javafx.scene.image.ImageView]] to be dropped on top of it. By
+    * default, it is not possible to drop an [[javafx.scene.image.ImageView]] on the board floor.
     *
-    * @param droppablePavement
-    *   if it is possible to drop an [[ImageView]] on the board pavement
+    * @param isDroppable
+    *   if it is possible to drop an [[javafx.scene.image.ImageView]] on the board floor
     */
-  protected def drawPavement(droppablePavement: Boolean = false): Unit = {
+  protected def drawFloor(isDroppable: Boolean = false): Unit =
     for {
       x <- 0 until levelWidth
       y <- 0 until levelHeight
     } do
       drawImageView(
-        TileView.apply(CellImage.DefaultTile.image, innerComponent, droppablePavement, modelUpdater.manageCell).innerComponent,
+        TileView(CellImage.DefaultTile.image, innerComponent, isDroppable, modelUpdater.manageCell).innerComponent,
         x,
         y
       )
-  }
 
-  /** Places the playable area in the board. The playable area can allow other [[ImageView]] to be dropped on top of it. By
-    * default, it is not possible to drop an [[ImageView]] on the playable area.
+  /** Places the playable area in the board. The playable area can allow other [[javafx.scene.image.ImageView]] to be dropped on
+    * top of it. By default, it is not possible to drop an [[javafx.scene.image.ImageView]] on the playable area.
     *
-    * @param positionX
-    *   the upper left x coordinate of the playable area
-    * @param positionY
-    *   the upper left y coordinate of the playable area
-    * @param playableAreaWidth
-    *   the width of the playable area
-    * @param playableAreaHeight
-    *   the height of the playable area
-    * @param droppablePlayableArea
-    *   if it is possible to drop [[ImageView]] on the playable area
+    * @param position
+    *   the upper left corner position of the playable area
+    * @param dimensions
+    *   the dimensions of the playable area
+    * @param isDroppable
+    *   if it is possible to drop [[javafx.scene.image.ImageView]] on the playable area
     */
-  protected def drawPlayableArea(
-    positionX: Int,
-    positionY: Int,
-    playableAreaWidth: Int,
-    playableAreaHeight: Int,
-    droppablePlayableArea: Boolean = false
-  ): Unit = {
+  protected def drawPlayableArea(position: Position, dimensions: Dimensions, isDroppable: Boolean = false): Unit =
     for {
-      x <- 0 until playableAreaWidth
-      y <- 0 until playableAreaHeight
+      x <- 0 until dimensions.width
+      y <- 0 until dimensions.height
     } do
       drawImageView(
-        TileView
-          .apply(CellImage.PlayAreaTile.image, innerComponent, droppablePlayableArea, modelUpdater.manageCell)
-          .innerComponent,
-        x + positionX,
-        y + positionY
+        TileView(CellImage.PlayAreaTile.image, innerComponent, isDroppable, modelUpdater.manageCell).innerComponent,
+        x + position.x,
+        y + position.y
       )
-  }
 
-  /** Draws a generic [[ImageView]].
-    * @param node
-    *   the [[ImageView]] to be drawn in the board
+  /** Draws a generic [[javafx.scene.image.ImageView]].
+    * @param imageView
+    *   the [[javafx.scene.image.ImageView]] to be drawn in the board
     * @param x
-    *   the x coordinate where the [[ImageView]] will be placed in the board
+    *   the x coordinate where the [[javafx.scene.image.ImageView]] will be placed in the board
     * @param y
-    *   the y coordinate where the [[ImageView]] will be placed in the board
+    *   the y coordinate where the [[javafx.scene.image.ImageView]] will be placed in the board
     */
-  protected def drawImageView(node: ImageView, x: Int, y: Int): Unit = innerComponent.add(node, x, y)
+  protected def drawImageView(imageView: ImageView, x: Int, y: Int): Unit = innerComponent.add(imageView, x, y)
 
-  /** Clears the board. */
+  /** Clears the board, removing all the entities previously drawn. */
   protected def clearComponents(): Unit = innerComponent.getChildren.clear()
 }

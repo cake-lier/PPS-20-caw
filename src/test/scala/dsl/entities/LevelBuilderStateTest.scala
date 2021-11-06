@@ -16,7 +16,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 /** Tests for the [[LevelBuilderState]] trait. */
-class LevelStateBuilderTest extends AnyFunSpec with Matchers {
+class LevelBuilderStateTest extends AnyFunSpec with Matchers {
   private val position: Position = Position(1, 2)
   private val dimensions: Dimensions = Dimensions(10, 20)
 
@@ -26,12 +26,7 @@ class LevelStateBuilderTest extends AnyFunSpec with Matchers {
         val state: LevelBuilderState = LevelBuilderState()
         state.dimensions shouldBe empty
         state.playableArea shouldBe empty
-        state.moverCells shouldBe empty
-        state.generatorCells shouldBe empty
-        state.rotatorCells shouldBe empty
-        state.blockCells shouldBe empty
-        state.enemyCells shouldBe empty
-        state.wallCells shouldBe empty
+        state.cells shouldBe empty
       }
     }
 
@@ -53,48 +48,48 @@ class LevelStateBuilderTest extends AnyFunSpec with Matchers {
     describe("when a mover cell is added") {
       it("should contain the added mover cell") {
         val moverCell: BaseMoverCell = BaseMoverCell(Orientation.Right)(position)
-        val state: LevelBuilderState = LevelBuilderState(moverCells = Set(moverCell))
-        state.moverCells should contain(moverCell)
+        val state: LevelBuilderState = LevelBuilderState(cells = Seq(moverCell))
+        state.cells should contain(moverCell)
       }
     }
 
     describe("when a generator cell is added") {
       it("should contain the added generator cell") {
         val generatorCell: BaseGeneratorCell = BaseGeneratorCell(Orientation.Right)(position)
-        val state: LevelBuilderState = LevelBuilderState(generatorCells = Set(generatorCell))
-        state.generatorCells should contain(generatorCell)
+        val state: LevelBuilderState = LevelBuilderState(cells = Seq(generatorCell))
+        state.cells should contain(generatorCell)
       }
     }
 
     describe("when a rotator cell is added") {
       it("should contain the added rotator cell") {
         val rotatorCell: BaseRotatorCell = BaseRotatorCell(Rotation.Clockwise)(position)
-        val state: LevelBuilderState = LevelBuilderState(rotatorCells = Set(rotatorCell))
-        state.rotatorCells should contain(rotatorCell)
+        val state: LevelBuilderState = LevelBuilderState(cells = Seq(rotatorCell))
+        state.cells should contain(rotatorCell)
       }
     }
 
     describe("when a block cell is added") {
       it("should contain the added block cell") {
         val blockCell: BaseBlockCell = BaseBlockCell(Push.Vertical)(position)
-        val state: LevelBuilderState = LevelBuilderState(blockCells = Set(blockCell))
-        state.blockCells should contain(blockCell)
+        val state: LevelBuilderState = LevelBuilderState(cells = Seq(blockCell))
+        state.cells should contain(blockCell)
       }
     }
 
     describe("when a enemy cell is added") {
       it("should contain the added enemy cell") {
         val enemyCell: BaseEnemyCell = BaseEnemyCell(position)
-        val state: LevelBuilderState = LevelBuilderState(enemyCells = Set(enemyCell))
-        state.enemyCells should contain(enemyCell)
+        val state: LevelBuilderState = LevelBuilderState(cells = Seq(enemyCell))
+        state.cells should contain(enemyCell)
       }
     }
 
     describe("when a wall cell is added") {
       it("should contain the added wall cell") {
         val wallCell: BaseWallCell = BaseWallCell(position)
-        val state: LevelBuilderState = LevelBuilderState(wallCells = Set(wallCell))
-        state.wallCells should contain(wallCell)
+        val state: LevelBuilderState = LevelBuilderState(cells = Seq(wallCell))
+        state.cells should contain(wallCell)
       }
     }
 

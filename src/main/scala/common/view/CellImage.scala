@@ -2,14 +2,18 @@ package it.unibo.pps.caw.common.view
 
 import javafx.scene.image.Image
 
-/** The images used to draw a board. */
-enum CellImage(imageName: String) {
-  val image: Image = Image("imgs/" + imageName + ".png")
+/** The images used to draw a [[it.unibo.pps.caw.common.model.Level]].
+  *
+  * This enumeration is used to list all the different images used to draw a [[it.unibo.pps.caw.common.model.Level]] and to store
+  * and retrieve the [[Image]] for the given enumeration.
+  */
+enum CellImage(val imageName: String) {
+  val image: Image = Image(s"imgs/$imageName.png")
 
   /** The image of the enemy. */
   case Enemy extends CellImage("enemy")
 
-  /** The image of clockwise rotator. */
+  /** The image of the clockwise rotator. */
   case RotatorClockwise extends CellImage("rotator_clockwise")
 
   /** The image of the counterclockwise rotator. */

@@ -10,33 +10,37 @@ import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString, JsValue, Json}
 
 import scala.util.Try
 
-/** Parser for serialization and deserialization of [[Level]] components written in JSON format. */
+/** Parser for serialization and deserialization of [[it.unibo.pps.caw.common.model.Level]].
+  *
+  * The strings received to be deserialized and the strings produced after serialization must follow be in JSON format, which is
+  * the only supported format for serialization. It must be constructed through its companion object.
+  */
 trait LevelParser {
 
-  /** Serializes a [[Level]] instance, returns the level data as a string.
+  /** Serializes a [[it.unibo.pps.caw.common.model.Level]] instance, returns the level data as a string.
     *
     * @param level
-    *   the [[Level]] instance to serialize
+    *   the [[it.unibo.pps.caw.common.model.Level]] instance to serialize
     * @return
     *   the string of the level data, in JSON format
     */
   def serializeLevel(level: Level[BaseCell]): String
 
-  /** Deserializes a JSON string of a level, returns the corresponding [[Level]]. The JSON string must follow a schema for the
-    * validation, if not a [[IllegalArgumentException]] is thrown.
+  /** Deserializes a JSON string of a level, returns the corresponding [[it.unibo.pps.caw.common.model.Level]]. The JSON string
+    * must follow a schema for the validation, if not a [[IllegalArgumentException]] is thrown.
     *
-    * @param jsonStringLevel
+    * @param json
     *   the level data written in JSON format
     * @return
-    *   [[Level]] instance filled with the data from the JSON string
+    *   a [[it.unibo.pps.caw.common.model.Level]] instance filled with the data from the JSON string
     */
-  def deserializeLevel(jsonStringLevel: String): Try[Level[BaseCell]]
-
+  def deserializeLevel(json: String): Try[Level[BaseCell]]
 }
 
-/** Companion object to the [[LevelParser]] trait */
+/** Companion object to the [[LevelParser]] trait, containing its factory mehtod. */
 object LevelParser {
 
+  /* Default implementation of the FileStorage trait. */
   private class LevelParserImpl(fileStorage: FileStorage) extends LevelParser {
 
     override def serializeLevel(level: Level[BaseCell]): String =
@@ -53,17 +57,17 @@ object LevelParser {
                 "y" -> JsNumber(level.playableArea.position.y)
               )
             ),
-            "cells" -> parseCells(level.board.cells)
+            "cells" -> serializeCells(level.board.cells)
           )
         )
       )
 
-    override def deserializeLevel(jsonStringLevel: String): Try[Level[BaseCell]] = {
+    override def deserializeLevel(json: String): Try[Level[BaseCell]] = {
       for {
-        _ <- Try(if (jsonStringLevel.isEmpty) throw IllegalArgumentException())
-        _ <- isValidJson(jsonStringLevel)
+        _ <- Try(if (json.isEmpty) throw IllegalArgumentException())
+        _ <- isValidJson(json)
       } yield {
-        val jsonLevel = Json.parse(jsonStringLevel)
+        val jsonLevel = Json.parse(json)
         val jsonPlayableArea = (jsonLevel \ "playableArea").as[JsObject]
         val playableAreaDimensions = extractDimensions(jsonPlayableArea)
         val playableAreaPosition = extractPosition(jsonPlayableArea)
@@ -75,7 +79,7 @@ object LevelParser {
       }
     }
 
-    /* deserialize all cells in their specific types, grouping them into a Set */
+    /* Deserializes all cells in their specific types, grouping them into a Set. */
     private def deserializeCells(
       jsonLevel: JsObject,
       playableAreaPosition: Position,
@@ -140,14 +144,15 @@ object LevelParser {
       validationTry
     }
 
-    /* Extract the Dimensions of specific JSON item. */
+    /* Extract the Dimensions of a specific JSON item. */
     private def extractDimensions(dimensioned: JsValue): Dimensions =
       ((dimensioned \ "width").as[Int], (dimensioned \ "height").as[Int])
 
-    /* Extract the Position of specific JSON item. */
+    /* Extract the Position of a specific JSON item. */
     private def extractPosition(positioned: JsValue): Position = ((positioned \ "x").as[Int], (positioned \ "y").as[Int])
 
-    private def parseCell(cell: BaseCell): JsObject =
+    /* Serializes a given BaseCell into a JSON item. */
+    private def serializeCell(cell: BaseCell): JsObject =
       JsObject(Seq("x" -> JsNumber(cell.position.x), "y" -> JsNumber(cell.position.y))) ++
         (cell match {
           case BaseRotatorCell(r, _)   => JsObject(Seq("rotation" -> JsString(r.name)))
@@ -157,7 +162,8 @@ object LevelParser {
           case _                       => JsObject.empty
         })
 
-    private def parseCells(cells: Set[BaseCell]): JsObject =
+    /* Serializes a set of BaseCell into a JSON item. */
+    private def serializeCells(cells: Set[BaseCell]): JsObject =
       JsObject(
         cells
           .groupBy(_ match {
@@ -169,11 +175,18 @@ object LevelParser {
             case _: BaseGeneratorCell => CellType.Generator.name
             case _: BaseDeleterCell   => CellType.Deleter.name
           })
-          .map(t => t._1 -> JsArray(t._2.map(parseCell).toSeq))
+          .map(t => t._1 -> JsArray(t._2.map(serializeCell).toSeq))
           .toSeq
       )
   }
 
-  /** Returns a new instance of the [[LevelParser]] trait. */
+  /** Returns a new instance of the [[LevelParser]] trait given the storage from which retrieving the file containing the JSON
+    * schema of a [[it.unibo.pps.caw.common.model.Level]].
+    *
+    * @param fileStorage
+    *   the storage from which retrieving the file containing the JSON schema to be used
+    * @return
+    *   a new [[LevelParser]] instance
+    */
   def apply(fileStorage: FileStorage): LevelParser = LevelParserImpl(fileStorage)
 }
