@@ -6,7 +6,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 /** Tests for the [[EditorModelState]] trait. */
-class LevelBuilderStateTest extends AnyFunSpec with Matchers {
+class EditorModelStateTest extends AnyFunSpec with Matchers {
   private val dimensions: Dimensions = Dimensions(10, 8)
   private val board: Board[PlayableCell] = Board(
     PlayableMoverCell(Orientation.Right)((3, 2))(playable = true),
@@ -15,7 +15,7 @@ class LevelBuilderStateTest extends AnyFunSpec with Matchers {
   )
   private val playableArea: PlayableArea = PlayableArea((7, 5))((1, 1))
 
-  describe("A level builder state") {
+  describe("An editor model state") {
     describe("when first created with dimensions and board") {
       it("should return the given dimensions and board") {
         val state: EditorModelState = EditorModelState(dimensions)(board)

@@ -7,7 +7,7 @@ import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
 /** Tests for the [[EditorModel]] trait */
-class LevelEditorModelTest extends AnyFunSpec with Matchers {
+class EditorModelTest extends AnyFunSpec with Matchers {
   private val dimensions: Dimensions = (20, 20)
   private val playableAreaDimensions: Dimensions = (5, 5)
   private val playableAreaPosition: Position = (0, 0)
