@@ -103,38 +103,9 @@ object LevelBuilderStateValidator {
   def validateBuilderState(state: LevelBuilderState): Either[Seq[ValidationError], Level[BaseCell]] =
     checkBoardDimensions(state.dimensions)
       .andThen(d =>
-        (
-          checkPlayableArea(state.playableArea)(d),
-          checkCellPositions(
-            Seq(
-              state.moverCells.map(_.position),
-              state.generatorCells.map(_.position),
-              state.rotatorCells.map(_.position),
-              state.blockCells.map(_.position),
-              state.enemyCells.map(_.position),
-              state.wallCells.map(_.position),
-              state.deleterCells.map(_.position)
-            ).flatten
-          )(
-            d
-          )
-        ).mapN((a, _) => (d, a))
+        (checkPlayableArea(state.playableArea)(d), checkCellPositions(state.cells.map(_.position))(d)).mapN((a, _) => (d, a))
       )
-      .map(t =>
-        Level(
-          t._1,
-          Set(
-            state.moverCells,
-            state.generatorCells,
-            state.rotatorCells,
-            state.blockCells,
-            state.enemyCells,
-            state.wallCells,
-            state.deleterCells
-          ).flatten,
-          t._2
-        )
-      )
+      .map(t => Level(t._1, state.cells.toSet, t._2))
       .leftMap(_.toList)
       .toEither
 }

@@ -16,11 +16,11 @@ private trait CellsAdders extends PropertiesWord {
   /* Allows to duplicate any cell given a builder for the cell and the Dimensions and the Position of the upper left corner
    * of the area in which place the duplicated cells.
    */
-  private def duplicateCells[A <: Cell](cellBuilder: Position => A)(dimensions: Dimensions, position: Position): Iterable[A] =
+  private def duplicateCells[A <: Cell](builder: Position => A)(dimensions: Dimensions, position: Position): Iterable[A] =
     for {
       x <- 0 until dimensions.width
       y <- 0 until dimensions.height
-    } yield cellBuilder(Position(position.x + x, position.y + y))
+    } yield builder(Position(position.x + x, position.y + y))
 
   /* Contains helper methods for appending cell adding operations to the sequence of operations the user specifies. */
   private object CellsAddersHelpers {
@@ -37,14 +37,14 @@ private trait CellsAdders extends PropertiesWord {
       ops: ListBuffer[LevelBuilderState => LevelBuilderState],
       build: Orientation => Position => Iterable[BaseMoverCell]
     ): FacingWord =
-      addOrientableCells(ops, b => o => p => b.copy(moverCells = b.moverCells ++ build(o)(p)))
+      addOrientableCells(ops, b => o => p => b.copy(cells = b.cells ++ build(o)(p)))
 
     /* Append a BaseGeneratorCell cell adding operation to the sequence of operations specified by the user. */
     def addGeneratorCells(
       ops: ListBuffer[LevelBuilderState => LevelBuilderState],
       build: Orientation => Position => Iterable[BaseGeneratorCell]
     ): FacingWord =
-      addOrientableCells(ops, b => o => p => b.copy(generatorCells = b.generatorCells ++ build(o)(p)))
+      addOrientableCells(ops, b => o => p => b.copy(cells = b.cells ++ build(o)(p)))
 
     /* Append a "rotatable" cell adding operation to the sequence of operations specified by the user. */
     private def addRotatableCells(
@@ -58,7 +58,7 @@ private trait CellsAdders extends PropertiesWord {
       ops: ListBuffer[LevelBuilderState => LevelBuilderState],
       build: Rotation => Position => Iterable[BaseRotatorCell]
     ): RotatingWord =
-      addRotatableCells(ops, b => d => p => b.copy(rotatorCells = b.rotatorCells ++ build(d)(p)))
+      addRotatableCells(ops, b => d => p => b.copy(cells = b.cells ++ build(d)(p)))
 
     /* Append a "pushable" cell adding operation to the sequence of operations specified by the user. */
     private def addPushableCells(
@@ -72,7 +72,7 @@ private trait CellsAdders extends PropertiesWord {
       ops: ListBuffer[LevelBuilderState => LevelBuilderState],
       build: Push => Position => Iterable[BaseBlockCell]
     ): PushableWord =
-      addPushableCells(ops, b => m => p => b.copy(blockCells = b.blockCells ++ build(m)(p)))
+      addPushableCells(ops, b => m => p => b.copy(cells = b.cells ++ build(m)(p)))
 
     /* Append a simple cell adding operation to the sequence of operations specified by the user. */
     private def addCells(
@@ -86,18 +86,18 @@ private trait CellsAdders extends PropertiesWord {
       ops: ListBuffer[LevelBuilderState => LevelBuilderState],
       build: Position => Iterable[BaseEnemyCell]
     ): AtWord =
-      addCells(ops, b => p => b.copy(enemyCells = b.enemyCells ++ build(p)))
+      addCells(ops, b => p => b.copy(cells = b.cells ++ build(p)))
 
     /* Append a BaseWallCell adding operation to the sequence of operations specified by the user. */
     def addWallCells(ops: ListBuffer[LevelBuilderState => LevelBuilderState], build: Position => Iterable[BaseWallCell]): AtWord =
-      addCells(ops, b => p => b.copy(wallCells = b.wallCells ++ build(p)))
+      addCells(ops, b => p => b.copy(cells = b.cells ++ build(p)))
 
     /* Append a BaseDeleterCell adding operation to the sequence of operations specified by the user. */
     def addDeleterCells(
       ops: ListBuffer[LevelBuilderState => LevelBuilderState],
       build: Position => Iterable[BaseDeleterCell]
     ): AtWord =
-      addCells(ops, b => p => b.copy(deleterCells = b.deleterCells ++ build(p)))
+      addCells(ops, b => p => b.copy(cells = b.cells ++ build(p)))
   }
 
   import CellsAddersHelpers.*

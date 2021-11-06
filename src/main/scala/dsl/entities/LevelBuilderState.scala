@@ -23,26 +23,8 @@ trait LevelBuilderState {
     */
   val playableArea: Option[PlayableArea]
 
-  /** Returns the mover cells that have to be placed on the [[it.unibo.pps.caw.common.model.Level]] to be built. */
-  val moverCells: Set[BaseMoverCell]
-
-  /** Returns the generator cells that have to be placed on the [[it.unibo.pps.caw.common.model.Level]] to be built. */
-  val generatorCells: Set[BaseGeneratorCell]
-
-  /** Returns the rotator cells that have to be placed on the [[it.unibo.pps.caw.common.model.Level]] to be built. */
-  val rotatorCells: Set[BaseRotatorCell]
-
-  /** Returns the block cells that have to be placed on the [[it.unibo.pps.caw.common.model.Level]] to be built. */
-  val blockCells: Set[BaseBlockCell]
-
-  /** Returns the enemy cells that have to be placed on the [[it.unibo.pps.caw.common.model.Level]] to be built. */
-  val enemyCells: Set[BaseEnemyCell]
-
-  /** Returns the wall cells that have to be placed on the [[it.unibo.pps.caw.common.model.Level]] to be built. */
-  val wallCells: Set[BaseWallCell]
-
-  /** Returns the deleter cells that have to be placed on the [[it.unibo.pps.caw.common.model.Level]] to be built. */
-  val deleterCells: Set[BaseDeleterCell]
+  /** Returns the cells that have to be placed on the [[it.unibo.pps.caw.common.model.Level]] to be built. */
+  val cells: Seq[BaseCell]
 }
 
 /** Companion object of the [[LevelBuilderState]] trait, containing its factory methods. */
@@ -52,13 +34,7 @@ object LevelBuilderState {
   private case class BoardBuilderImpl(
     dimensions: Option[Dimensions],
     playableArea: Option[PlayableArea],
-    moverCells: Set[BaseMoverCell],
-    generatorCells: Set[BaseGeneratorCell],
-    rotatorCells: Set[BaseRotatorCell],
-    blockCells: Set[BaseBlockCell],
-    enemyCells: Set[BaseEnemyCell],
-    wallCells: Set[BaseWallCell],
-    deleterCells: Set[BaseDeleterCell]
+    cells: Seq[BaseCell]
   ) extends LevelBuilderState
 
   /** Returns a new instance of the [[LevelBuilderState]] trait.
@@ -69,44 +45,16 @@ object LevelBuilderState {
     * @param playableArea
     *   the [[it.unibo.pps.caw.common.model.PlayableArea]] of the [[LevelBuilderState]] to create, which is set to [[scala.None]]
     *   by default, which means unset
-    * @param moverCells
-    *   the mover cells stored by this [[LevelBuilderState]]
-    * @param generatorCells
-    *   the generator cells stored by this [[LevelBuilderState]]
-    * @param rotatorCells
-    *   the rotator cells stored by this [[LevelBuilderState]]
-    * @param blockCells
-    *   the block cells stored by this [[LevelBuilderState]]
-    * @param enemyCells
-    *   the enemy cells stored by this [[LevelBuilderState]]
-    * @param wallCells
-    *   the wall cells stored by this [[LevelBuilderState]]
-    * @param deleterCells
-    *   the deleter cells stored by this [[LevelBuilderState]]
+    * @param cells
+    *   the cells stored by this [[LevelBuilderState]]
     * @return
     *   a new instance of the [[LevelBuilderState]] trait
     */
   def apply(
     dimensions: Option[Dimensions] = None,
     playableArea: Option[PlayableArea] = None,
-    moverCells: Set[BaseMoverCell] = Set.empty,
-    generatorCells: Set[BaseGeneratorCell] = Set.empty,
-    rotatorCells: Set[BaseRotatorCell] = Set.empty,
-    blockCells: Set[BaseBlockCell] = Set.empty,
-    enemyCells: Set[BaseEnemyCell] = Set.empty,
-    wallCells: Set[BaseWallCell] = Set.empty,
-    deleterCells: Set[BaseDeleterCell] = Set.empty
-  ): LevelBuilderState = BoardBuilderImpl(
-    dimensions,
-    playableArea,
-    moverCells,
-    generatorCells,
-    rotatorCells,
-    blockCells,
-    enemyCells,
-    wallCells,
-    deleterCells
-  )
+    cells: Seq[BaseCell] = Seq.empty
+  ): LevelBuilderState = BoardBuilderImpl(dimensions, playableArea, cells)
 
   /** Extensions methods for the [[LevelBuilderState]] trait. */
   extension (builder: LevelBuilderState) {
@@ -120,50 +68,16 @@ object LevelBuilderState {
       * @param playableArea
       *   the [[it.unibo.pps.caw.common.model.PlayableArea]] of the [[LevelBuilderState]] to create, which is set to the playable
       *   area of the original instance by default
-      * @param moverCells
-      *   the [[it.unibo.pps.caw.common.model.cell.BaseMoverCell]] stored by this [[LevelBuilderState]], which are the mover cells
-      *   stored in the original instance by default
-      * @param generatorCells
-      *   the [[it.unibo.pps.caw.common.model.cell.BaseGeneratorCell]] stored by this [[LevelBuilderState]], which are the
-      *   generator cells stored in the original instance by default
-      * @param rotatorCells
-      *   the [[it.unibo.pps.caw.common.model.cell.BaseRotatorCell]] stored by this [[LevelBuilderState]], which are the rotator
-      *   cells stored in the original instance by default
-      * @param blockCells
-      *   the [[it.unibo.pps.caw.common.model.cell.BaseBlockCell]] stored by this [[LevelBuilderState]], which are the block cells
-      *   stored in the original instance by default
-      * @param enemyCells
-      *   the [[it.unibo.pps.caw.common.model.cell.BaseEnemyCell]] stored by this [[LevelBuilderState]], which are the enemy cells
-      *   stored in the original instance by default
-      * @param wallCells
-      *   the [[it.unibo.pps.caw.common.model.cell.BaseWallCell]] stored by this [[LevelBuilderState]], which are the wall cells
-      *   stored in the original instance by default
-      * @param deleterCells
-      *   the [[it.unibo.pps.caw.common.model.cell.BaseDeleterCell]] stored by this [[LevelBuilderState]], which are the deleter
-      *   cells stored in the original instance by default
+      * @param cells
+      *   the [[it.unibo.pps.caw.common.model.cell.BaseCell]] stored by this [[LevelBuilderState]], which are the cells stored in
+      *   the original instance by default
       * @return
       *   a new instance of the [[LevelBuilderState]] trait
       */
     def copy(
       dimensions: Option[Dimensions] = builder.dimensions,
       playableArea: Option[PlayableArea] = builder.playableArea,
-      moverCells: Set[BaseMoverCell] = builder.moverCells,
-      generatorCells: Set[BaseGeneratorCell] = builder.generatorCells,
-      rotatorCells: Set[BaseRotatorCell] = builder.rotatorCells,
-      blockCells: Set[BaseBlockCell] = builder.blockCells,
-      enemyCells: Set[BaseEnemyCell] = builder.enemyCells,
-      wallCells: Set[BaseWallCell] = builder.wallCells,
-      deleterCells: Set[BaseDeleterCell] = builder.deleterCells
-    ): LevelBuilderState = apply(
-      dimensions,
-      playableArea,
-      moverCells,
-      generatorCells,
-      rotatorCells,
-      blockCells,
-      enemyCells,
-      wallCells,
-      deleterCells
-    )
+      cells: Seq[BaseCell] = builder.cells
+    ): LevelBuilderState = apply(dimensions, playableArea, cells)
   }
 }
