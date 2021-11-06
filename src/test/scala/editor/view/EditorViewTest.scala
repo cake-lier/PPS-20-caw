@@ -6,6 +6,7 @@ import it.unibo.pps.caw.game.model.GameModel
 import com.sun.javafx.scene.input.DragboardHelper.DragboardAccessor
 import it.unibo.pps.caw.app.ViewTest
 import it.unibo.pps.caw.app.TestApplicationView
+import it.unibo.pps.caw.common.BoardViewTest
 import it.unibo.pps.caw.menu.view.EditorMenuView
 import javafx.scene.Node
 import javafx.scene.control.{Button, Slider, TextField}
@@ -28,7 +29,7 @@ import scala.annotation.tailrec
 import scala.jdk.CollectionConverters.given
 
 /** Tests for class [[EditorView]] and [[EditorMenuView]] */
-class EditorViewTest extends ViewTest {
+class EditorViewTest extends BoardViewTest {
 
   protected var stageWidth: Double = 0.0
   protected var stageHeight: Double = 0.0
