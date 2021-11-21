@@ -44,11 +44,14 @@ private object DSLGameMain extends JFXApp3 {
     LevelStorage(fileStorage, LevelParser(fileStorage))
       .loadLevel(parameters.raw(0))
       .fold(
-        _ => gameScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
+        e => {
+          println(e)
+          gameScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml"))
+        },
         l => {
           gameScene.root.value = GameView(
             new ParentGameController {
-              override val fileStorage: FileStorage = fileStorage
+              override val fileStorage: FileStorage = FileStorage()
 
               override def closeGame(): Unit = sys.exit()
             },
