@@ -47,8 +47,8 @@ jacocoExcludes := Seq(
 libraryDependencies ++= Seq(
   "org.scalactic" %% "scalactic" % "3.2.14" % Test,
   "org.scalatest" %% "scalatest" % "3.2.9" % Test,
-  "org.typelevel" %% "cats-core" % "2.6.1",
-  "org.typelevel" %% "cats-kernel" % "2.6.1",
+  "org.typelevel" %% "cats-core" % "2.8.0",
+  "org.typelevel" %% "cats-kernel" % "2.8.0",
   "com.typesafe.play" %% "play-json" % "2.10.0-RC7",
   "org.scalafx" %% "scalafx" % "16.0.0-R24",
   "io.vertx" % "vertx-json-schema" % "4.3.4",
