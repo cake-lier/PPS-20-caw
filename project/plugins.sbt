@@ -5,4 +5,4 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.4.6")
 
 resolvers += Resolver.jcenterRepo
 
-addSbtPlugin("net.aichler" % "sbt-jupiter-interface" % "0.8.4")
+addSbtPlugin("net.aichler" % "sbt-jupiter-interface" % "0.11.1")
