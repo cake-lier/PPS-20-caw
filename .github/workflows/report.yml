@@ -18,7 +18,7 @@ jobs:
           cd report
           echo "::set-output name=files::$(printf 'report/%s ' *.md)"
       - name: Convert with pandoc
-        uses: docker://pandoc/latex:2.9
+        uses: docker://pandoc/latex:2.19
         with:
           args: >-
             -o report.pdf
