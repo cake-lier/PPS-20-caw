@@ -50,7 +50,7 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-core" % "2.8.0",
   "org.typelevel" %% "cats-kernel" % "2.8.0",
   "com.typesafe.play" %% "play-json" % "2.10.0-RC7",
-  "org.scalafx" %% "scalafx" % "17.0.1-R26",
+  "org.scalafx" %% "scalafx" % "18.0.2-R29",
   "io.vertx" % "vertx-json-schema" % "4.3.4",
   "it.unibo.alice.tuprolog" % "tuprolog" % "3.3.0",
   "org.testfx" % "testfx-core" % "4.0.16-alpha" % Test,
