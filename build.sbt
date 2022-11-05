@@ -45,7 +45,7 @@ jacocoExcludes := Seq(
 )
 
 libraryDependencies ++= Seq(
-  "org.scalactic" %% "scalactic" % "3.2.9" % Test,
+  "org.scalactic" %% "scalactic" % "3.2.14" % Test,
   "org.scalatest" %% "scalatest" % "3.2.9" % Test,
   "org.typelevel" %% "cats-core" % "2.6.1",
   "org.typelevel" %% "cats-kernel" % "2.6.1",
