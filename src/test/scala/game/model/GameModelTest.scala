@@ -89,11 +89,11 @@ class GameModelTest extends AnyFunSpec with Matchers {
 
       describe("if there's no cell") {
         it("With single levels, should do nothing") {
-          assume(gameModelSingleLevel.state.levelCurrentState.board.cells.find(_.position == (4, 4)).isEmpty)
+          assume(gameModelSingleLevel.state.levelCurrentState.board.cells.find(_.position == Position(4, 4)).isEmpty)
           gameModelSingleLevel.moveCell((4, 4), (3, 3)) shouldBe gameModelSingleLevel
         }
         it("With multiple levels, should do nothing") {
-          assume(gameModelMultipleLevels.state.levelCurrentState.board.cells.find(_.position == (4, 4)).isEmpty)
+          assume(gameModelMultipleLevels.state.levelCurrentState.board.cells.find(_.position == Position(4, 4)).isEmpty)
           gameModelMultipleLevels.moveCell((4, 4), (3, 3)) shouldBe gameModelMultipleLevels
         }
       }
