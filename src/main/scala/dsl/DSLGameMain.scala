@@ -44,10 +44,7 @@ private object DSLGameMain extends JFXApp3 {
     LevelStorage(fileStorage, LevelParser(fileStorage))
       .loadLevel(parameters.raw(0))
       .fold(
-        e => {
-          println(e)
-          gameScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml"))
-        },
+        _ => gameScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
         l => {
           gameScene.root.value = GameView(
             new ParentGameController {
