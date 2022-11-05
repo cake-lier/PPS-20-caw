@@ -57,6 +57,6 @@ libraryDependencies ++= Seq(
   "org.junit.jupiter" % "junit-jupiter" % "5.9.1" % Test,
   "net.aichler" % "jupiter-interface" % JupiterKeys.jupiterVersion.value % Test,
   "org.testfx" % "testfx-junit5" % "4.0.16-alpha" % Test,
-  "org.assertj" % "assertj-core" % "3.21.0" % Test,
+  "org.assertj" % "assertj-core" % "3.23.1" % Test,
   "org.testfx" % "openjfx-monocle" % "jdk-12.0.1+2" % Test
 ) ++ Seq("base", "controls", "fxml", "graphics", "media").map(m => "org.openjfx" % s"javafx-$m" % "16" classifier osName)
