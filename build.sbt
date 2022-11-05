@@ -51,7 +51,7 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-kernel" % "2.6.1",
   "com.typesafe.play" %% "play-json" % "2.10.0-RC5",
   "org.scalafx" %% "scalafx" % "16.0.0-R24",
-  "io.vertx" % "vertx-json-schema" % "4.1.8",
+  "io.vertx" % "vertx-json-schema" % "4.3.4",
   "it.unibo.alice.tuprolog" % "tuprolog" % "3.3.0",
   "org.testfx" % "testfx-core" % "4.0.16-alpha" % Test,
   "org.junit.jupiter" % "junit-jupiter" % "5.9.1" % Test,
