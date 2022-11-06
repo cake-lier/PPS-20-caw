@@ -10,8 +10,8 @@ import common.model.cell.PlayableCell
   * This part of the [[EditorModel]] is responsible for collecting and recording pieces of information supplied by the player
   * while carrying out the [[it.unibo.pps.caw.common.model.Level]] building process thanks to the editor. This process creates a
   * new level from the ground up, meaning that the only mandatory information is about the
-  * [[it.unibo.pps.caw.common.model.Dimensions]] of the level. All other pieces of information are at the discretion of the
-  * player and they can not be given. It must be constructed through its companion object.
+  * [[it.unibo.pps.caw.common.model.Dimensions]] of the level. All other pieces of information are at the discretion of the player
+  * and they can not be given. It must be constructed through its companion object.
   */
 trait EditorModelState {
 

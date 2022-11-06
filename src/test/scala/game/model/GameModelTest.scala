@@ -191,13 +191,13 @@ class GameModelTest extends AnyFunSpec with Matchers {
     val levelDimensions: Dimensions = (levelWithWallsDimensions.width - 2, levelWithWallsDimensions.height - 2)
     board
       .map {
-        case BaseRotatorCell(r, p) => BaseRotatorCell(r)((p.x + 1, p.y + 1))
+        case BaseRotatorCell(r, p)   => BaseRotatorCell(r)((p.x + 1, p.y + 1))
         case BaseGeneratorCell(o, p) => BaseGeneratorCell(o)((p.x + 1, p.y + 1))
-        case BaseEnemyCell(p) => BaseEnemyCell((p.x + 1, p.y + 1))
-        case BaseMoverCell(o, p) => BaseMoverCell(o)((p.x + 1, p.y + 1))
-        case BaseBlockCell(d, p) => BaseBlockCell(d)((p.x + 1, p.y + 1))
-        case BaseWallCell(p) => BaseWallCell((p.x + 1, p.y + 1))
-        case _ => throw IllegalArgumentException()
+        case BaseEnemyCell(p)        => BaseEnemyCell((p.x + 1, p.y + 1))
+        case BaseMoverCell(o, p)     => BaseMoverCell(o)((p.x + 1, p.y + 1))
+        case BaseBlockCell(d, p)     => BaseBlockCell(d)((p.x + 1, p.y + 1))
+        case BaseWallCell(p)         => BaseWallCell((p.x + 1, p.y + 1))
+        case _                       => throw IllegalArgumentException()
       }
       .map(_.toPlayableCell(_ => false)) ++
       (0 to levelDimensions.width + 1).map(i => PlayableWallCell((i, 0))(false)) ++

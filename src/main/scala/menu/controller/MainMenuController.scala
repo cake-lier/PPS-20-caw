@@ -92,8 +92,7 @@ object MainMenuController {
 
   /* Default implementation of the MainMenuController trait. */
 
-  private class MainMenuControllerImpl(parentController: ParentMainMenuController)
-    extends MainMenuController {
+  private class MainMenuControllerImpl(parentController: ParentMainMenuController) extends MainMenuController {
 
     override val levelsCount: Int = parentController.levelsCount
 

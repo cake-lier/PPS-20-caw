@@ -49,7 +49,7 @@ object RulesEngine {
           .getOrElse(board)
           .map {
             case c if c.id > cellState.keySet.max => c.changeUpdatedProperty(updated = true) // new cell created by a generator
-            case c => c.changeUpdatedProperty(cellState(c.id))
+            case c                                => c.changeUpdatedProperty(cellState(c.id))
           }
 
       board -- partialBoard ++ resBoard

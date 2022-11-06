@@ -48,7 +48,7 @@ object Level {
     */
   def apply[A <: Cell](dimensions: Dimensions, board: Board[A], playableArea: PlayableArea): Level[A] =
     LevelImpl(dimensions, board, playableArea)
-  
+
   /** Contains extension methods to the [[Level]] trait. */
   extension [A <: Cell](l: Level[A]) {
 

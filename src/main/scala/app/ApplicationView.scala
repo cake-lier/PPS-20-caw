@@ -109,9 +109,7 @@ object ApplicationView {
       )
 
     override def showMainMenu(): Unit =
-      Platform.runLater(() =>
-        scene.root.value = MainMenuView(controller, audioPlayer, scene)
-      )
+      Platform.runLater(() => scene.root.value = MainMenuView(controller, audioPlayer, scene))
 
     override def showLevelEditor(width: Int, height: Int): Unit =
       Platform.runLater(() =>

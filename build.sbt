@@ -22,9 +22,10 @@ Compile / excludeFilter := "*.pl"
 assembly / mainClass := Some("it.unibo.pps.caw.app.Main")
 assembly / assemblyJarName := "caw.jar"
 assembly / assemblyMergeStrategy := {
-  case v if v == s"META-INF${Path.sep}io.netty.versions.properties" => MergeStrategy.discard
-  case "module-info.class"                                          => MergeStrategy.discard
-  case v                                                            => (ThisBuild / assemblyMergeStrategy).value(v)
+  case PathList("META-INF", "io.netty.versions.properties") => MergeStrategy.discard
+  case PathList("META-INF", "substrate", "config")          => MergeStrategy.discard
+  case "module-info.class"                                  => MergeStrategy.discard
+  case v                                                    => (ThisBuild / assemblyMergeStrategy).value(v)
 }
 
 lazy val osName = System.getProperty("os.name") match {
@@ -52,5 +53,10 @@ libraryDependencies ++= Seq(
   "net.aichler" % "jupiter-interface" % JupiterKeys.jupiterVersion.value % Test,
   "org.testfx" % "testfx-junit5" % "4.0.16-alpha" % Test,
   "org.assertj" % "assertj-core" % "3.23.1" % Test,
-  "org.testfx" % "openjfx-monocle" % "jdk-12.0.1+2" % Test
-) ++ Seq("base", "controls", "fxml", "graphics", "media").map(m => "org.openjfx" % s"javafx-$m" % "19" classifier osName)
+  "org.testfx" % "openjfx-monocle" % "jdk-12.0.1+2" % Test,
+  "org.openjfx" % "javafx-base" % "19" classifier osName,
+  "org.openjfx" % "javafx-controls" % "19" classifier osName,
+  "org.openjfx" % "javafx-fxml" % "19" classifier osName,
+  "org.openjfx" % "javafx-graphics" % "19" classifier osName,
+  "org.openjfx" % "javafx-media" % "19" classifier osName
+)

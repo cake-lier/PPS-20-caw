@@ -42,7 +42,7 @@ class FileStorageTest extends AnyFunSpec with Matchers {
       |  }
       |}
       |""".stripMargin
-  
+
   describe("FileStorage") {
     describe("when asked to load a resource") {
       it("should correctly load the resource") {
