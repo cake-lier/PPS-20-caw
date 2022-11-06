@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.common.view.sounds
+package it.unibo.pps.caw
+package common.view.sounds
 
 import scalafx.scene.media.{Media, MediaPlayer}
 import scala.util.Success
@@ -44,11 +45,10 @@ object AudioPlayer {
     private var soundsPlayers: Map[Track, Set[MediaPlayer]] = Map()
 
     override def play(track: Track): Unit = track.audioType match {
-      case AudioType.Music => {
+      case AudioType.Music =>
         (musicPlayers - track).foreach(_._2.stop())
         musicPlayers(track).play()
-      }
-      case AudioType.Sound => {
+      case AudioType.Sound =>
         val mediaPlayer = MediaPlayer(Media(getClass.getResource(track.filePath).toString))
         mediaPlayer.onReady = {
           mediaPlayer.stop()
@@ -57,15 +57,13 @@ object AudioPlayer {
         mediaPlayer.onEndOfMedia = soundsPlayers += (track -> (soundsPlayers(track) - mediaPlayer))
         mediaPlayer.volume = soundsVolume
         soundsPlayers += (track -> (soundsPlayers.getOrElse(track, Set()) + mediaPlayer))
-      }
     }
 
     override def setVolume(volume: Double, audioType: AudioType): Unit = audioType match {
       case AudioType.Music => musicPlayers.foreach(_._2.setVolume(volume))
-      case AudioType.Sound => {
+      case AudioType.Sound =>
         soundsPlayers.values.flatten.foreach(_.setVolume(volume))
         soundsVolume = volume
-      }
     }
   }
 

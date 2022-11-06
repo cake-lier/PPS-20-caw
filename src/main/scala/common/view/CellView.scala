@@ -1,6 +1,8 @@
-package it.unibo.pps.caw.common.view
+package it.unibo.pps.caw
+package common.view
 
-import it.unibo.pps.caw.common.model.cell.*
+import common.model.cell.*
+
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.GridPane
 
@@ -44,8 +46,8 @@ object CellView {
 
     override protected def getImageView: ImageView = ImageView()
 
-    import ImagePatternMatching._
-    import it.unibo.pps.caw.common.view.CellImage.*
+    import ImagePatternMatching.*
+    import common.view.CellImage.*
     override protected def getImage: Image = cell match {
       case BaseRotatorCell(rotation, _)      => imageFromRotation(rotation)
       case BaseGeneratorCell(orientation, _) => imageFromGeneratorOrientation(orientation)
@@ -62,8 +64,8 @@ object CellView {
 
     override protected def getImageView: ImageView = if (cell.playable) DraggableImageView() else ImageView()
 
-    import ImagePatternMatching._
-    import it.unibo.pps.caw.common.view.CellImage.*
+    import ImagePatternMatching.*
+    import common.view.CellImage.*
     override protected def getImage: Image = cell match {
       case PlayableRotatorCell(rotation, _, _)      => imageFromRotation(rotation)
       case PlayableGeneratorCell(orientation, _, _) => imageFromGeneratorOrientation(orientation)
@@ -77,7 +79,7 @@ object CellView {
 
   /* Helper object to factorize common pattern matching of a cell orientation, rotation or push. */
   private object ImagePatternMatching {
-    import it.unibo.pps.caw.common.view.CellImage.*
+    import common.view.CellImage.*
     def imageFromMoverOrientation(orientation: Orientation): Image = orientation match {
       case Orientation.Right => MoverRight.image
       case Orientation.Down  => MoverDown.image
@@ -98,7 +100,7 @@ object CellView {
       case Push.Horizontal => BlockHorizontal.image
     }
 
-    def imageFromRotation(rotation: Rotation) = rotation match {
+    def imageFromRotation(rotation: Rotation): Image = rotation match {
       case Rotation.Clockwise        => RotatorClockwise.image
       case Rotation.Counterclockwise => RotatorCounterclockwise.image
     }

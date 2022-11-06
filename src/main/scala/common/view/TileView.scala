@@ -1,6 +1,8 @@
-package it.unibo.pps.caw.common.view
+package it.unibo.pps.caw
+package common.view
 
-import it.unibo.pps.caw.common.model.Position
+import common.model.Position
+
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.{GridPane, Pane}
 
@@ -21,7 +23,7 @@ private object TileView {
     droppable: Boolean,
     dropHandler: (ImageView, Position) => Unit
   ) extends TileView {
-    override val innerComponent = if (droppable) DroppableImageView(dropHandler) else ImageView()
+    override val innerComponent: ImageView = if (droppable) DroppableImageView(dropHandler) else ImageView()
     innerComponent.fitWidthProperty().bind(gridPane.heightProperty().divide(gridPane.getRowConstraints.size()))
     innerComponent.setPreserveRatio(true)
     innerComponent.setImage(tileImage)

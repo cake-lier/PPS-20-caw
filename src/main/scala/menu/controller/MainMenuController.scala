@@ -1,7 +1,8 @@
-package it.unibo.pps.caw.menu.controller
+package it.unibo.pps.caw
+package menu.controller
 
-import it.unibo.pps.caw.common.storage.Settings
-import it.unibo.pps.caw.menu.view.MainMenuView
+import common.storage.Settings
+import menu.view.MainMenuView
 
 /** The parent controller to the [[MainMenuController]].
   *
@@ -91,7 +92,7 @@ object MainMenuController {
 
   /* Default implementation of the MainMenuController trait. */
 
-  private class MainMenuControllerImpl(parentController: ParentMainMenuController, view: MainMenuView)
+  private class MainMenuControllerImpl(parentController: ParentMainMenuController)
     extends MainMenuController {
 
     override val levelsCount: Int = parentController.levelsCount
@@ -132,5 +133,5 @@ object MainMenuController {
     *   a new [[MainMenuController]] instance
     */
   def apply(parentController: ParentMainMenuController, view: MainMenuView): MainMenuController =
-    MainMenuControllerImpl(parentController, view)
+    MainMenuControllerImpl(parentController)
 }

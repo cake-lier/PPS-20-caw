@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.common.view.sounds
+package it.unibo.pps.caw
+package common.view.sounds
 
 /** The possible audio types for a given [[Track]]. */
 enum AudioType {

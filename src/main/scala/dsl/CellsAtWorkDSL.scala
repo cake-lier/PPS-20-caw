@@ -1,8 +1,9 @@
-package it.unibo.pps.caw.dsl
+package it.unibo.pps.caw
+package dsl
 
-import it.unibo.pps.caw.common.model.{Dimensions, PlayableArea}
-import it.unibo.pps.caw.dsl.entities.LevelBuilderState
-import it.unibo.pps.caw.dsl.words.{AtWord, WithDimensionsWord}
+import common.model.{Dimensions, PlayableArea}
+import dsl.entities.LevelBuilderState
+import dsl.words.{AtWord, WithDimensionsWord}
 
 import scala.collection.mutable.ListBuffer
 

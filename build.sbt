@@ -36,13 +36,7 @@ lazy val osName = System.getProperty("os.name") match {
 ThisBuild / resolvers += Resolver.jcenterRepo
 Test / fork := true
 
-jacocoExcludes := Seq(
-  "**Main*",
-  "**ApplicationView*",
-  "**AudioPlayer*",
-  "**DSLEditorMain*",
-  "**DSLGameMain*"
-)
+coverageEnabled := true
 
 libraryDependencies ++= Seq(
   "org.scalactic" %% "scalactic" % "3.2.14" % Test,
@@ -59,4 +53,4 @@ libraryDependencies ++= Seq(
   "org.testfx" % "testfx-junit5" % "4.0.16-alpha" % Test,
   "org.assertj" % "assertj-core" % "3.23.1" % Test,
   "org.testfx" % "openjfx-monocle" % "jdk-12.0.1+2" % Test
-) ++ Seq("base", "controls", "fxml", "graphics", "media").map(m => "org.openjfx" % s"javafx-$m" % "16" classifier osName)
+) ++ Seq("base", "controls", "fxml", "graphics", "media").map(m => "org.openjfx" % s"javafx-$m" % "19" classifier osName)

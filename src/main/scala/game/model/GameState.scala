@@ -1,7 +1,8 @@
-package it.unibo.pps.caw.game.model
+package it.unibo.pps.caw
+package game.model
 
-import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
+import common.model.Level
+import common.model.cell.{BaseCell, PlayableCell}
 
 /** The state of the game, an entity collecting all information about the state of the [[GameModel]], which runs the current game.
   *

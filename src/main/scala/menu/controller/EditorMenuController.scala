@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.menu.controller
+package it.unibo.pps.caw
+package menu.controller
 
 /** The controller that manages the editor menu.
   *

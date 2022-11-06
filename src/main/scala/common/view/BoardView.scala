@@ -1,10 +1,12 @@
-package it.unibo.pps.caw.common.view
+package it.unibo.pps.caw
+package common.view
 
-import it.unibo.pps.caw.common.model.{Dimensions, Position}
-import it.unibo.pps.caw.common.*
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
+import common.*
+import common.model.{Dimensions, Position}
+import common.view.ViewComponent.AbstractViewComponent
+
 import javafx.scene.image.ImageView
-import javafx.scene.layout.{ColumnConstraints, GridPane, RowConstraints}
+import javafx.scene.layout.*
 
 /** Updates the model when view is modified.
   *

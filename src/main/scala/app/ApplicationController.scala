@@ -1,22 +1,24 @@
-package it.unibo.pps.caw.app
+package it.unibo.pps.caw
+package app
 
-import it.unibo.pps.caw.editor.controller.ParentEditorController
-import it.unibo.pps.caw.game.controller.ParentDefaultGameController
+import common.LevelParser
+import common.model.Level
+import common.model.cell.BaseCell
+import common.storage.*
+import editor.controller.ParentEditorController
+import game.controller.ParentDefaultGameController
+import menu.controller.ParentMainMenuController
 
-import scala.util.Try
 import cats.implicits.given
-import it.unibo.pps.caw.common.LevelParser
-import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.model.cell.BaseCell
-import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage, Settings, SettingsStorage}
-import it.unibo.pps.caw.menu.controller.ParentMainMenuController
 import play.api.libs.json.Json
 
-import concurrent.ExecutionContext.Implicits.global
 import java.util.concurrent.ConcurrentHashMap
-import scala.concurrent.Future
+import scala.collection.mutable
 import scala.collection.mutable.Set
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.jdk.CollectionConverters.given
+import scala.util.Try
 
 /** The controller of the main application.
   *
@@ -31,26 +33,26 @@ object ApplicationController {
 
   /* Default implementation of the ApplicationController trait. */
   private class ApplicationControllerImpl(view: ApplicationView) extends ApplicationController {
-    override val fileStorage = FileStorage()
+    override val fileStorage: FileStorage = FileStorage()
 
     private val levelParser = LevelParser(fileStorage)
     private val levelStorage = LevelStorage(fileStorage, levelParser)
     private val settingsStorage = SettingsStorage(fileStorage)
     private var _settings: Settings = settingsStorage.load().getOrElse(settingsStorage.defaultSettings)
-    private val futures: Set[Future[Try[Unit]]] = ConcurrentHashMap.newKeySet[Future[Try[Unit]]]().asScala
+    private val futures: mutable.Set[Future[Try[Unit]]] = ConcurrentHashMap.newKeySet[Future[Try[Unit]]]().asScala
 
     override def closeGame(): Unit = view.showMainMenu()
 
     override def addSolvedLevel(index: Int): Unit = {
       _settings = _settings.copy(solvedLevels = _settings.solvedLevels + index)
-      saveSettings(_settings)
+      saveSettings()
     }
 
     private val levelFiles: Seq[Level[BaseCell]] =
       (for {
         f <- fileStorage.loadResource(path = "levels.json")
         s <- Json.parse(f).as[Seq[String]].map(n => fileStorage.loadResource(path = s"levels/$n")).sequence
-        l <- s.map(levelParser.deserializeLevel(_)).sequence
+        l <- s.map(levelParser.deserializeLevel _).sequence
       } yield l).getOrElse {
         view.showError(message = ApplicationControllerError.CouldNotLoadLevel.message)
         Seq.empty
@@ -63,11 +65,11 @@ object ApplicationController {
     override def startGame(levelPath: String): Unit =
       levelStorage
         .loadLevel(levelPath)
-        .fold(_ => view.showError(message = ApplicationControllerError.CouldNotLoadLevel.message), view.showGame(_))
+        .fold(_ => view.showError(message = ApplicationControllerError.CouldNotLoadLevel.message), view.showGame)
 
     override def startGame(levelIndex: Int): Unit = view.showGame(levelFiles, levelIndex)
 
-    private def saveSettings(s: Settings): Unit = {
+    private def saveSettings(): Unit = {
       val future: Future[Try[Unit]] = Future(
         settingsStorage.save(settings).recover(_ => view.showError(ApplicationControllerError.CouldNotSaveSettings.message))
       )
@@ -77,7 +79,7 @@ object ApplicationController {
 
     override def saveVolumeSettings(musicVolume: Double, soundsVolume: Double): Unit = {
       _settings = _settings.copy(musicVolume = musicVolume, soundsVolume = soundsVolume)
-      saveSettings(_settings)
+      saveSettings()
     }
 
     override def openEditor(width: Int, height: Int): Unit = view.showLevelEditor(width, height)
@@ -85,7 +87,7 @@ object ApplicationController {
     override def openEditor(levelPath: String): Unit =
       levelStorage
         .loadLevel(levelPath)
-        .fold(_ => view.showError(message = ApplicationControllerError.CouldNotLoadLevel.message), view.showLevelEditor(_))
+        .fold(_ => view.showError(message = ApplicationControllerError.CouldNotLoadLevel.message), view.showLevelEditor)
 
     override def showMainMenu(): Unit = view.showMainMenu()
 

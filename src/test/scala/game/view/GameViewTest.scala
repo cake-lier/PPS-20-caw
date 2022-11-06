@@ -1,10 +1,12 @@
-package it.unibo.pps.caw.game.view
+package it.unibo.pps.caw
+package game.view
 
-import it.unibo.pps.caw.common.model.Position
-import it.unibo.pps.caw.common.view.*
-import it.unibo.pps.caw.app.{TestApplicationView}
-import it.unibo.pps.caw.common.BoardViewTest
-import it.unibo.pps.caw.menu.view.LevelSelectionView
+import app.TestApplicationView
+import common.model.Position
+import common.view.*
+import common.BoardViewTest
+import menu.view.LevelSelectionView
+
 import javafx.scene.control.Button
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.MouseButton
@@ -48,10 +50,10 @@ class GameViewTest extends GameTest {
     val levels: Set[Button] = getLevels(robot)
     Assertions.assertEquals(24, levels.size)
     Assertions.assertEquals(24, levels.map(_.getText).size)
-    levels.foreach(b =>
+    levels.foreach(b => {
       FxAssertions.assertThat(b).isVisible
       FxAssertions.assertThat(b).isEnabled
-    )
+    })
     // the back button should be present
     testDefaultStateButton(buttonId = "backButton", text = "Back")(robot)
   }
@@ -80,8 +82,6 @@ class GameViewTest extends GameTest {
     // when player clicks on the 1st level
     clickOnPlayButton(robot)
     clickOnLevel(robot)
-    // the game board should be present
-    val gameBoard: GridPane = getBoard(robot)
     // the play button should be present
     testDefaultStateButton(buttonId = "playSimulationButton", text = "Play")(robot)
     // the step button should be present
@@ -152,7 +152,7 @@ class GameViewTest extends GameTest {
     setUpGame(robot)
     clickOnPlaySimulationButton(robot)
     clickOnPauseSimulationButton(robot)
-    // the play simutlation button text should change from 'Pause' to 'Play'
+    // the play simulation button text should change from 'Pause' to 'Play'
     testDefaultStateButton(buttonId = "playSimulationButton", text = "Play")(robot)
     // the step button should be enabled
     testDefaultStateButton(buttonId = "stepSimulationButton", text = "Step")(robot)

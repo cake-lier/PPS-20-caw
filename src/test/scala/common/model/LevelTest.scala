@@ -1,6 +1,8 @@
-package it.unibo.pps.caw.common.model
+package it.unibo.pps.caw
+package common.model
 
-import it.unibo.pps.caw.common.model.cell.{BaseCell, BaseEnemyCell, BaseMoverCell, BaseWallCell, Orientation}
+import common.model.cell.*
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 

@@ -1,8 +1,9 @@
-package it.unibo.pps.caw.menu.view
+package it.unibo.pps.caw
+package menu.view
 
-import it.unibo.pps.caw.common.view.{FilePicker, ViewComponent}
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.menu.controller.EditorMenuController
+import common.view.{FilePicker, ViewComponent}
+import common.view.ViewComponent.AbstractViewComponent
+import menu.controller.EditorMenuController
 
 import javafx.beans.value.ChangeListener
 import javafx.fxml.FXML
@@ -50,7 +51,7 @@ object EditorMenuView {
     width.textProperty().addListener(changeListener(width))
     height.textProperty().addListener(changeListener(height))
     backButton.setOnMouseClicked(_ => controller.goBack())
-    loadFile.setOnMouseClicked(_ => FilePicker.forLevelFile(scene).openFile().foreach(controller.openEditor(_)))
+    loadFile.setOnMouseClicked(_ => FilePicker.forLevelFile(scene).openFile().foreach(controller.openEditor))
     continue.setOnMouseClicked(_ => controller.openEditor(width.getText.toInt, height.getText.toInt))
   }
 

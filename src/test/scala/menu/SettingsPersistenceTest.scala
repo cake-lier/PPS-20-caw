@@ -1,15 +1,14 @@
-package it.unibo.pps.caw.menu
+package it.unibo.pps.caw
+package menu
 
-import it.unibo.pps.caw
-import it.unibo.pps.caw.app
-import it.unibo.pps.caw.game.view
-import it.unibo.pps.caw.app.TestApplicationView
+import app.TestApplicationView
+
 import javafx.stage.Stage
 import org.junit.jupiter.api.*
 import org.testfx.api.{FxRobot, FxToolkit}
 import org.testfx.framework.junit5.{Start, Stop}
 
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.*
 
 @TestMethodOrder(classOf[MethodOrderer.OrderAnnotation])
 class SettingsPersistenceTest extends AbstractSettingsTest {

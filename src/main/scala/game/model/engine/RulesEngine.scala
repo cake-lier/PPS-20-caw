@@ -1,9 +1,10 @@
-package it.unibo.pps.caw.game.model.engine
+package it.unibo.pps.caw
+package game.model.engine
 
-import it.unibo.pps.caw.common.model.*
-import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.game.model.*
-import UpdateCell.toUpdateCell
+import common.model.*
+import common.model.cell.*
+import game.model.*
+import game.model.engine.UpdateCell.toUpdateCell
 
 import scala.annotation.tailrec
 
@@ -46,10 +47,10 @@ object RulesEngine {
           .createSerializedPredicate(partialBoard, cellState.keySet.max + 1, cell)
           .map(p => PrologParser.deserializeBoard(engine.solve(p).extractLastTerm))
           .getOrElse(board)
-          .map(_ match {
-            case c if (c.id > cellState.keySet.max) => c.changeUpdatedProperty(updated = true) // new cell created by a generator
-            case c                                  => c.changeUpdatedProperty(cellState(c.id))
-          })
+          .map {
+            case c if c.id > cellState.keySet.max => c.changeUpdatedProperty(updated = true) // new cell created by a generator
+            case c => c.changeUpdatedProperty(cellState(c.id))
+          }
 
       board -- partialBoard ++ resBoard
     }
@@ -84,15 +85,14 @@ object RulesEngine {
       @tailrec
       def updateBoard(cells: Seq[UpdateCell], board: Board[UpdateCell]): Board[UpdateCell] = {
         Seq(
-          cells.filter(_.isInstanceOf[GeneratorCell]).toSeq.sorted,
-          cells.filter(_.isInstanceOf[RotatorCell]).toSeq.sorted,
-          cells.filter(_.isInstanceOf[MoverCell]).toSeq.sorted
+          cells.filter(_.isInstanceOf[GeneratorCell]).sorted,
+          cells.filter(_.isInstanceOf[RotatorCell]).sorted,
+          cells.filter(_.isInstanceOf[MoverCell]).sorted
         ).flatten match {
-          case h :: t if (!h.updated) => {
+          case h :: _ if !h.updated =>
             val newBoard = nextState(board, h)
             updateBoard(newBoard.toSeq, newBoard)
-          }
-          case h :: t => updateBoard(t, board) // ignore already updated cells
+          case _ :: t => updateBoard(t, board) // ignore already updated cells
           case _      => board
         }
       }

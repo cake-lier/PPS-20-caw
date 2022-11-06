@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.common.storage
+package it.unibo.pps.caw
+package common.storage
 
 import play.api.libs.json.{Json, JsValue}
 
@@ -51,7 +52,7 @@ object SettingsStorage {
             val json = Json.parse(jsonString)
             Settings((json \ "musicVolume").as[Double], (json \ "soundsVolume").as[Double], (json \ "solvedLevels").as[Set[Int]])
           }
-        case Failure(e: FileNotFoundException) =>
+        case Failure(_: FileNotFoundException) =>
           fileStorage.writeFile(filePath, defaultSettingsJson.toString) match {
             case Failure(e) => Failure(e)
             case _          => Success(defaultSettings)

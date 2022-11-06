@@ -1,9 +1,10 @@
-package it.unibo.pps.caw.editor.controller
+package it.unibo.pps.caw
+package editor.controller
 
-import it.unibo.pps.caw.common.model.cell.BaseCell
-import it.unibo.pps.caw.common.model.{Dimensions, Level, Position}
-import it.unibo.pps.caw.editor.model.EditorModel
-import it.unibo.pps.caw.editor.view.EditorView
+import common.model.*
+import common.model.cell.BaseCell
+import editor.model.EditorModel
+import editor.view.EditorView
 
 /** The parent controller to the [[EditorController]].
   *
@@ -159,7 +160,7 @@ object EditorController {
     * @param width
     *   the width of the level the player wants to create
     * @param height
-    *   the height of the level the playaer wants to create
+    *   the height of the level the player wants to create
     * @return
     *   a new instance [[EditorController]]
     */

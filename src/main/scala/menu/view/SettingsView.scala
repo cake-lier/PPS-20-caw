@@ -1,13 +1,15 @@
-package it.unibo.pps.caw.menu.view
+package it.unibo.pps.caw
+package menu.view
 
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
-import it.unibo.pps.caw.common.view.ViewComponent
-import it.unibo.pps.caw.menu.controller.SettingsController
+import common.view.ViewComponent.AbstractViewComponent
+import common.view.sounds.{AudioPlayer, AudioType}
+import common.view.ViewComponent
+import menu.controller.SettingsController
+
 import javafx.fxml.FXML
+import javafx.scene.control.{Button, Slider}
 import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
-import javafx.scene.control.{Button, Slider}
 
 /** The "settings" page on the main menu.
   *
@@ -36,10 +38,10 @@ object SettingsView {
     *   a new [[SettingsView]] instance
     */
   def apply(controller: SettingsController, audioPlayer: AudioPlayer, scene: Scene): SettingsView =
-    SettingsViewImpl(controller, audioPlayer, scene)
+    SettingsViewImpl(controller, audioPlayer)
 
   /* Default implementation of the SettingsView trait. */
-  private final class SettingsViewImpl(controller: SettingsController, audioPlayer: AudioPlayer, scene: Scene)
+  private final class SettingsViewImpl(controller: SettingsController, audioPlayer: AudioPlayer)
     extends AbstractViewComponent[Pane]("settings_page.fxml")
     with SettingsView {
     @FXML

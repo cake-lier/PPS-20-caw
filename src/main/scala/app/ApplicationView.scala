@@ -1,16 +1,18 @@
-package it.unibo.pps.caw.app
+package it.unibo.pps.caw
+package app
 
-import it.unibo.pps.caw.editor.view.EditorView
-import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.model.cell.BaseCell
-import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
-import it.unibo.pps.caw.common.view.{StageResizer, ViewComponent}
-import it.unibo.pps.caw.menu.view.MainMenuView
+import common.model.Level
+import common.model.cell.BaseCell
+import common.view.{StageResizer, ViewComponent}
+import common.view.sounds.{AudioPlayer, AudioType}
+import editor.view.EditorView
+import game.view.GameView
+import menu.view.MainMenuView
+
 import javafx.application.Platform
 import javafx.scene.layout.Pane
-import scalafx.scene.control.Alert
 import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.scene.control.Alert
 import scalafx.scene.Scene
 import scalafx.scene.image.Image
 
@@ -89,7 +91,7 @@ object ApplicationView {
     stage.maximized = false
     stage.title = "Cells at Work"
     stage.icons.add(Image(ClassLoader.getSystemResourceAsStream("imgs/app_icon.png")))
-    scene.root.value = MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
+    scene.root.value = MainMenuView(controller, audioPlayer, scene)
     stage.scene = scene
     stage.show()
     stage.setOnCloseRequest(_ => controller.exit())
@@ -108,7 +110,7 @@ object ApplicationView {
 
     override def showMainMenu(): Unit =
       Platform.runLater(() =>
-        scene.root.value = MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
+        scene.root.value = MainMenuView(controller, audioPlayer, scene)
       )
 
     override def showLevelEditor(width: Int, height: Int): Unit =

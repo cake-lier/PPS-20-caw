@@ -1,6 +1,8 @@
-package it.unibo.pps.caw.common.view
+package it.unibo.pps.caw
+package common.view
 
-import it.unibo.pps.caw.common.model.Position
+import common.model.Position
+
 import javafx.scene.image.ImageView
 import javafx.scene.input.TransferMode
 import javafx.scene.layout.GridPane
@@ -10,7 +12,7 @@ class DroppableImageView(dropHandler: (ImageView, Position) => Unit) extends Ima
   super.setOnDragDropped(e => {
     if (e.getDragboard.hasImage) {
       dropHandler(e.getGestureSource.asInstanceOf[ImageView], Position(GridPane.getColumnIndex(this), GridPane.getRowIndex(this)))
-      e.setDropCompleted(true);
+      e.setDropCompleted(true)
       e.consume()
     }
   })

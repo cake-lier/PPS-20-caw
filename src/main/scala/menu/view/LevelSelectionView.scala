@@ -1,13 +1,14 @@
-package it.unibo.pps.caw.menu.view
+package it.unibo.pps.caw
+package menu.view
 
-import it.unibo.pps.caw.common.view.ViewComponent
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.menu.controller.LevelSelectionController
+import common.view.ViewComponent
+import common.view.ViewComponent.AbstractViewComponent
+import menu.controller.LevelSelectionController
 
 import javafx.fxml.FXML
 import javafx.scene.control.{Button, ScrollPane}
 import javafx.scene.image.ImageView
-import javafx.scene.layout.{GridPane, Pane, RowConstraints}
+import javafx.scene.layout.*
 import scalafx.scene.Scene
 
 /** The "level selection" page on the main menu.
@@ -34,18 +35,16 @@ object LevelSelectionView {
     *   a new [[LevelSelectionView]] instance
     */
   def apply(scene: Scene, controller: LevelSelectionController): LevelSelectionView =
-    LevelSelectionViewImpl(scene, controller)
+    LevelSelectionViewImpl(controller)
 
   /* Default implementation of the LevelSelectionView trait. */
-  private final class LevelSelectionViewImpl(scene: Scene, controller: LevelSelectionController)
+  private final class LevelSelectionViewImpl(controller: LevelSelectionController)
     extends AbstractViewComponent[Pane]("level_selection_page.fxml")
     with LevelSelectionView {
     @FXML
     var backButton: Button = _
     @FXML
     var buttonsPane: GridPane = _
-    @FXML
-    var buttonsPaneContainer: ScrollPane = _
     @FXML
     var arrowsIcon: ImageView = _
 

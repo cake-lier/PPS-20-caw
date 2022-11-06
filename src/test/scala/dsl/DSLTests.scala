@@ -1,11 +1,13 @@
-package it.unibo.pps.caw.dsl
+package it.unibo.pps.caw
+package dsl
 
-import it.unibo.pps.caw.common.model.{Dimensions, Level, PlayableArea, Position}
-import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.common.LevelParser
-import it.unibo.pps.caw.common.storage.FileStorage
-import it.unibo.pps.caw.dsl.CellsAtWorkDSL.*
-import it.unibo.pps.caw.dsl.validation.ValidationError
+import common.model.*
+import common.model.cell.*
+import common.LevelParser
+import common.storage.FileStorage
+import dsl.CellsAtWorkDSL.*
+import dsl.validation.ValidationError
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -126,9 +128,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(boardDimensions = Some(Dimensions(-30, 40)))
         }
-        err.toString shouldBe (
-          "The chosen dimensions for the level are either too big or to small, so not in range between 2 and 30 included"
-        )
+        err.toString shouldBe "The chosen dimensions for the level are either too big or to small, so not in range between 2 and 30 included"
       }
     }
 
@@ -138,9 +138,7 @@ class DSLTests extends AnyFunSpec with Matchers {
         Console.withErr(err) {
           buildBoardWithDSL(playableArea = Some(PlayableArea(Dimensions(-30, 40))(playableAreaPosition)))
         }
-        err.toString shouldBe (
-          "The chosen dimensions for the playable area are either too big or to small, so not in range between 1 and 30 included"
-        )
+        err.toString shouldBe "The chosen dimensions for the playable area are either too big or to small, so not in range between 1 and 30 included"
       }
     }
 
@@ -196,8 +194,8 @@ class DSLTests extends AnyFunSpec with Matchers {
     }
 
     import java.nio.file.{Files, Paths}
-    import scala.util.Using
     import scala.io.Source
+    import scala.util.Using
 
     describe("when asked to save a level to file") {
       it("should produce the correct file") {
@@ -208,10 +206,10 @@ class DSLTests extends AnyFunSpec with Matchers {
           hasPlayableArea
             .withDimensions(playableArea.dimensions.width, playableArea.dimensions.height)
             .at(playableArea.position.x, playableArea.position.y)
-          hasMoverCell facing (moverOrientation) at (mover.position.x, mover.position.y)
-          hasGeneratorCell facing (generatorOrientation) at (generator.position.x, generator.position.y)
-          hasRotatorCell rotating (rotatorRotation) at (rotator.position.x, rotator.position.y)
-          hasBlockCell pushable (blockPush) at (block.position.x, block.position.y)
+          hasMoverCell facing moverOrientation at (mover.position.x, mover.position.y)
+          hasGeneratorCell facing generatorOrientation at (generator.position.x, generator.position.y)
+          hasRotatorCell rotating rotatorRotation at (rotator.position.x, rotator.position.y)
+          hasBlockCell pushable blockPush at (block.position.x, block.position.y)
           hasEnemyCell at (enemy.position.x, enemy.position.y)
           hasWallCell at (wall.position.x, wall.position.y)
           hasDeleterCell at (deleter.position.x, deleter.position.y)

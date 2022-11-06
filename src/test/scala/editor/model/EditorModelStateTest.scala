@@ -1,7 +1,9 @@
-package it.unibo.pps.caw.editor.model
+package it.unibo.pps.caw
+package editor.model
 
-import it.unibo.pps.caw.common.model.cell.{Orientation, PlayableCell, PlayableEnemyCell, PlayableMoverCell, PlayableWallCell}
-import it.unibo.pps.caw.common.model.{Board, Dimensions, PlayableArea, Position}
+import common.model.*
+import common.model.cell.*
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 

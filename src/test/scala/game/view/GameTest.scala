@@ -1,7 +1,9 @@
-package it.unibo.pps.caw.game.view
+package it.unibo.pps.caw
+package game.view
 
-import it.unibo.pps.caw.common.BoardViewTest
-import it.unibo.pps.caw.common.view.CellImage
+import common.BoardViewTest
+import common.view.CellImage
+
 import javafx.scene.control.Button
 import javafx.scene.input.MouseButton
 import org.testfx.api.FxRobot

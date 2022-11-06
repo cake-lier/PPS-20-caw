@@ -1,9 +1,10 @@
-package it.unibo.pps.caw.dsl
+package it.unibo.pps.caw
+package dsl
 
-import it.unibo.pps.caw.common.model.{Dimensions, Position}
-import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.dsl.entities.LevelBuilderState
-import it.unibo.pps.caw.dsl.words.{AtWord, FacingWord, InAnAreaWord, PushableWord, RotatingWord}
+import common.model.{Dimensions, Position}
+import common.model.cell.*
+import dsl.entities.LevelBuilderState
+import dsl.words.*
 
 import scala.collection.mutable.ListBuffer
 

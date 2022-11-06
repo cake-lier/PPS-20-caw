@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.game.model.engine
+package it.unibo.pps.caw
+package game.model.engine
 
 import alice.tuprolog.{Struct, Term}
 

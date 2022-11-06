@@ -1,8 +1,9 @@
-package it.unibo.pps.caw.menu.view
+package it.unibo.pps.caw
+package menu.view
 
-import it.unibo.pps.caw.common.view.ViewComponent
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.menu.controller.LevelSelectionController
+import common.view.ViewComponent
+import common.view.ViewComponent.AbstractViewComponent
+import menu.controller.LevelSelectionController
 
 import javafx.scene.control.Button
 

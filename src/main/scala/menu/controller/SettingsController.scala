@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.menu.controller
+package it.unibo.pps.caw
+package menu.controller
 
 /** The controller to be used by the settings page in the main menu.
   *

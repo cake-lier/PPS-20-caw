@@ -1,14 +1,16 @@
-package it.unibo.pps.caw.dsl
+package it.unibo.pps.caw
+package dsl
 
-import it.unibo.pps.caw.game.controller.ParentGameController
-import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.common.LevelParser
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
-import it.unibo.pps.caw.common.view.StageResizer
-import it.unibo.pps.caw.common.view.sounds.AudioPlayer
-import it.unibo.pps.caw.menu.view.MainMenuView
+import common.LevelParser
+import common.model.Level
+import common.storage.{FileStorage, LevelStorage}
+import common.view.StageResizer
+import common.view.ViewComponent.AbstractViewComponent
+import common.view.sounds.AudioPlayer
+import game.controller.ParentGameController
+import game.view.GameView
+import menu.view.MainMenuView
+
 import javafx.application.Platform
 import javafx.fxml.FXMLLoader
 import javafx.scene.control.Alert
@@ -42,7 +44,7 @@ private object DSLGameMain extends JFXApp3 {
     stage.scene = gameScene
     val fileStorage = FileStorage()
     LevelStorage(fileStorage, LevelParser(fileStorage))
-      .loadLevel(parameters.raw(0))
+      .loadLevel(parameters.raw.head)
       .fold(
         _ => gameScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
         l => {

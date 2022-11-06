@@ -1,8 +1,10 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw
+package common
 
-import it.unibo.pps.caw.common.model.*
-import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.common.storage.FileStorage
+import common.model.*
+import common.model.cell.*
+import common.storage.FileStorage
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -49,7 +51,7 @@ class LevelParserTest extends AnyFunSpec with Matchers {
     describe("when empty") {
       it("should produce IllegalArgumentException") {
         levelParser.deserializeLevel("") match {
-          case Failure(x: IllegalArgumentException) => succeed
+          case Failure(_: IllegalArgumentException) => succeed
           case _                                    => fail("Left should be IllegalArgumentException")
         }
       }
@@ -57,7 +59,7 @@ class LevelParserTest extends AnyFunSpec with Matchers {
     describe("when with invalid format") {
       it("should produce IllegalArgumentException") {
         levelParser.deserializeLevel(fileStorage.loadResource("invalid_test_level.json").get) match {
-          case Failure(x: IllegalArgumentException) => succeed
+          case Failure(_: IllegalArgumentException) => succeed
           case _                                    => fail("Left should be IllegalArgumentException")
         }
       }

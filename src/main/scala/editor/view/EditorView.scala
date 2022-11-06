@@ -1,19 +1,22 @@
-package it.unibo.pps.caw.editor.view
+package it.unibo.pps.caw
+package editor.view
 
-import it.unibo.pps.caw.common.model.{Level, Position}
-import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.common.view.CellImage.*
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
-import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView, FilePicker, ModelUpdater, ViewComponent}
-import it.unibo.pps.caw.editor.controller.{EditorController, ParentEditorController}
-import it.unibo.pps.caw.editor.model.EditorModelState
+import common.model.{Level, Position}
+import common.model.cell.*
+import common.view.*
+import common.view.CellImage.*
+import common.view.ViewComponent.AbstractViewComponent
+import common.view.sounds.{AudioPlayer, Track}
+import editor.controller.{EditorController, ParentEditorController}
+import editor.model.EditorModelState
+
 import javafx.application.Platform
 import javafx.fxml.{FXML, FXMLLoader}
-import javafx.geometry.{HPos, Insets, VPos}
+import javafx.geometry.{HPos, VPos}
 import javafx.scene.control.Button
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.{GridPane, Pane}
+import scalafx.geometry.Insets
 import scalafx.scene.Scene
 import scalafx.scene.control.Alert
 import scalafx.scene.control.Alert.AlertType
@@ -286,7 +289,7 @@ object EditorView {
     * @param boardHeight
     *   the height of the new empty level
     * @return
-    *   a new instance of [[EditorView]] displaying an new empty level with the given widht and height
+    *   a new instance of [[EditorView]] displaying an new empty level with the given width and height
     */
   def apply(
     parentLevelEditorController: ParentEditorController,

@@ -1,10 +1,11 @@
-package it.unibo.pps.caw.view
+package it.unibo.pps.caw
+package menu
 
-import it.unibo.pps.caw.app.{TestApplicationView, ViewTest}
-import it.unibo.pps.caw.menu.view.MainMenuView
+import app.{TestApplicationView, ViewTest}
+import menu.view.MainMenuView
+
 import javafx.stage.Stage
 import org.junit.jupiter.api.Test
-import org.scalatest.DoNotDiscover
 import org.testfx.api.{FxRobot, FxToolkit}
 import org.testfx.framework.junit5.{Start, Stop}
 

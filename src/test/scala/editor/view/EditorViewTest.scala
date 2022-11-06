@@ -1,29 +1,30 @@
-package it.unibo.pps.caw.editor.view
+package it.unibo.pps.caw
+package editor.view
 
-import it.unibo.pps.caw.common.view.{CellImage, DraggableImageView}
-import it.unibo.pps.caw.editor.view.EditorView
-import it.unibo.pps.caw.game.model.GameModel
+import app.{TestApplicationView, ViewTest}
+import common.view.{CellImage, DraggableImageView}
+import common.BoardViewTest
+import editor.view.EditorView
+import game.model.GameModel
+import menu.view.EditorMenuView
+
 import com.sun.javafx.scene.input.DragboardHelper.DragboardAccessor
-import it.unibo.pps.caw.app.ViewTest
-import it.unibo.pps.caw.app.TestApplicationView
-import it.unibo.pps.caw.common.BoardViewTest
-import it.unibo.pps.caw.menu.view.EditorMenuView
 import javafx.scene.Node
-import javafx.scene.control.{Button, Slider, TextField}
+import javafx.scene.control.*
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
 import javafx.stage.Stage
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.{assertEquals, fail}
 import org.junit.jupiter.api.TestInstance.Lifecycle
 import org.junit.jupiter.api.extension.ExtendWith
-import org.junit.jupiter.api.{Assertions, BeforeAll, Test, TestInstance}
 import org.testfx.api.{FxRobot, FxToolkit}
 import org.testfx.assertions.api.Assertions as FxAssertions
-import org.testfx.framework.junit5.{ApplicationExtension, Start, Stop}
+import org.testfx.framework.junit5.*
 import org.testfx.util.WaitForAsyncUtils
 
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.*
 import java.util.concurrent.TimeUnit
 import scala.annotation.tailrec
 import scala.jdk.CollectionConverters.given
@@ -51,7 +52,7 @@ class EditorViewTest extends BoardViewTest {
     getBoard(robot)
       .getChildren
       .asScala
-      .filter(_.isInstanceOf[ImageView])
+      .filter(e => e.isInstanceOf[ImageView])
       .map(_.asInstanceOf[ImageView])
       .find(i =>
         i.getImage.getUrl != CellImage.DefaultTile.image.getUrl &&
@@ -152,7 +153,7 @@ class EditorViewTest extends BoardViewTest {
   def testHowTo(robot: FxRobot): Unit = {
     def getTopLeftNodeGridPane(robot: FxRobot): Option[Node] =
       robot
-        .lookup[GridPane](_.isInstanceOf[GridPane])
+        .lookup[GridPane](e => e.isInstanceOf[GridPane])
         .query[GridPane]
         .getChildren
         .asScala
@@ -353,7 +354,7 @@ class EditorViewTest extends BoardViewTest {
       .getChildren
       .asScala
       .filter(n => GridPane.getColumnIndex(n) == coordinates._1 && GridPane.getRowIndex(n) == coordinates._2)
-      .filter(_.isInstanceOf[ImageView])
+      .filter(e => e.isInstanceOf[ImageView])
       .map(_.asInstanceOf[ImageView])
       .toSet
 

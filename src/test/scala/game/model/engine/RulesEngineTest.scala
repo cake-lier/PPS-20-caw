@@ -1,8 +1,9 @@
-package it.unibo.pps.caw.game.model.engine
+package it.unibo.pps.caw
+package game.model.engine
 
-import it.unibo.pps.caw.common.model.Board
-import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.common.storage.FileStorage
+import common.model.Board
+import common.model.cell.*
+import common.storage.FileStorage
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -14,7 +15,6 @@ import scala.util.Using
 class RulesEngineTest extends AnyFunSpec with Matchers {
   private val fileStorage: FileStorage = FileStorage()
   private val rulesEngine: RulesEngine = RulesEngine(fileStorage.loadResource("cellmachine.pl").get)
-  private val maxId: Long = 4
 
   private val moverRightBoard: Board[BaseCell] = Board(
     BaseMoverCell(Orientation.Right)((0, 0)),

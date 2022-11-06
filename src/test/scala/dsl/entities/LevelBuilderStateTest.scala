@@ -1,17 +1,9 @@
-package it.unibo.pps.caw.dsl.entities
+package it.unibo.pps.caw
+package dsl.entities
 
-import it.unibo.pps.caw.common.model.{Dimensions, PlayableArea, Position}
-import it.unibo.pps.caw.common.model.cell.{
-  BaseBlockCell,
-  BaseEnemyCell,
-  BaseGeneratorCell,
-  BaseMoverCell,
-  BaseRotatorCell,
-  BaseWallCell,
-  Orientation,
-  Push,
-  Rotation
-}
+import common.model.*
+import common.model.cell.*
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 

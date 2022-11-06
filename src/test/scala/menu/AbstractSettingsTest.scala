@@ -1,7 +1,8 @@
 package it.unibo.pps.caw
 package menu
 
-import it.unibo.pps.caw.app.ViewTest
+import app.ViewTest
+
 import javafx.scene.control.Slider
 import org.junit.jupiter.api.Assertions
 import org.testfx.api.FxRobot

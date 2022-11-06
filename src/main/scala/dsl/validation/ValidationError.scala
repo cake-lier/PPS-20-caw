@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.dsl.validation
+package it.unibo.pps.caw
+package dsl.validation
 
 /* An error that can arise while validating of the data inserted in a LevelBuilderState while
  * building a Level.

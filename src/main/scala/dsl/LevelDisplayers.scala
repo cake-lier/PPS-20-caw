@@ -1,10 +1,11 @@
-package it.unibo.pps.caw.dsl
+package it.unibo.pps.caw
+package dsl
 
-import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.model.cell.BaseCell
-import it.unibo.pps.caw.common.LevelParser
-import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
-import it.unibo.pps.caw.dsl.entities.LevelBuilderState
+import common.model.Level
+import common.model.cell.BaseCell
+import common.LevelParser
+import common.storage.{FileStorage, LevelStorage}
+import dsl.entities.LevelBuilderState
 
 import scala.collection.mutable.ListBuffer
 
@@ -15,7 +16,7 @@ import scala.collection.mutable.ListBuffer
  * in JSON format.
  */
 private trait LevelDisplayers {
-  import it.unibo.pps.caw.dsl.validation.LevelBuilderStateValidator
+  import dsl.validation.LevelBuilderStateValidator
 
   /* Generalizes the behavior of the methods in this module. */
   private def executeAction(ops: ListBuffer[LevelBuilderState => LevelBuilderState])(action: Level[BaseCell] => Unit): Unit =
@@ -51,8 +52,8 @@ private trait LevelDisplayers {
   def saveIt(path: String)(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit =
     executeAction(ops)(levelStorage.saveLevel(path, _))
 
-  import java.time.LocalDateTime
   import java.nio.file.Files
+  import java.time.LocalDateTime
 
   /* Launches an application with the given launcher after storing the level being currently built onto in a temporary file. */
   private def launchApplication(ops: ListBuffer[LevelBuilderState => LevelBuilderState])(launcher: Array[String] => Unit): Unit =
@@ -71,7 +72,7 @@ private trait LevelDisplayers {
     * @param ops
     *   the list of operations to which add this specific operation
     */
-  def playIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops)(DSLGameMain.main(_))
+  def playIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops)(DSLGameMain.main)
 
   /** Opens the application for editing a [[it.unibo.pps.caw.common.model.Level]] as created by the user through the DSL after
     * checking the correctness of the stored data and serializing it in JSON format into a temporary file. This means that, if not
@@ -82,5 +83,5 @@ private trait LevelDisplayers {
     * @param ops
     *   the list of operations to which add this specific operation
     */
-  def editIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops)(DSLEditorMain.main(_))
+  def editIt(using ops: ListBuffer[LevelBuilderState => LevelBuilderState]): Unit = launchApplication(ops)(DSLEditorMain.main)
 }

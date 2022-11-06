@@ -1,18 +1,19 @@
-package it.unibo.pps.caw.app
+package it.unibo.pps.caw
+package app
 
-import it.unibo.pps.caw.app.{ApplicationController, ApplicationView}
-import it.unibo.pps.caw.app.DummyAudioPlayer
-import it.unibo.pps.caw.common.view.ViewComponent
-import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType}
-import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.model.cell.BaseCell
-import it.unibo.pps.caw.editor.view.EditorView
-import it.unibo.pps.caw.game.view.GameView
-import it.unibo.pps.caw.menu.view.MainMenuView
+import app.{ApplicationController, ApplicationView, DummyAudioPlayer}
+import common.model.Level
+import common.model.cell.BaseCell
+import common.view.ViewComponent
+import common.view.sounds.{AudioPlayer, AudioType}
+import editor.view.EditorView
+import game.view.GameView
+import menu.view.MainMenuView
+
 import javafx.application.Platform
+import javafx.geometry.Rectangle2D
 import javafx.scene.layout.Pane
 import javafx.stage.{Screen, Stage}
-import javafx.geometry.Rectangle2D
 import scalafx.scene.control.Alert
 import scalafx.scene.Scene
 
@@ -46,7 +47,7 @@ object TestApplicationView {
     stage.setResizable(false)
     stage.setMaximized(false)
     stage.setTitle("Cells at Work")
-    scene.root.value = MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
+    scene.root.value = MainMenuView(controller, audioPlayer, scene)
     stage.setScene(scene.delegate)
     stage.show()
     stage.setOnCloseRequest(_ => controller.exit())
@@ -55,14 +56,14 @@ object TestApplicationView {
 
     override def showError(message: String): Unit = Platform.runLater(() => Alert(Alert.AlertType.Error, message).showAndWait())
 
-    override def showGame(level: Level[BaseCell]) = scene.root.value =
+    override def showGame(level: Level[BaseCell]): Unit = scene.root.value =
       GameView(controller, audioPlayer, level, scene, backButtonText = "Menu")
 
     override def showGame(levels: Seq[Level[BaseCell]], levelIndex: Int): Unit =
       scene.root.value = GameView(controller, audioPlayer, levels, levelIndex, scene, backButtonText = "Menu")
 
     override def showMainMenu(): Unit =
-      scene.root.value = MainMenuView(controller, audioPlayer, controller.levelsCount, scene, controller.levelsCount == 0)
+      scene.root.value = MainMenuView(controller, audioPlayer, scene)
 
     override def showLevelEditor(width: Int, height: Int): Unit =
       scene.root.value = EditorView(controller, scene, backButtonText = "Menu", audioPlayer, width, height)

@@ -1,6 +1,7 @@
-package it.unibo.pps.caw.common.model.cell
+package it.unibo.pps.caw
+package common.model.cell
 
-import it.unibo.pps.caw.common.model.Position
+import common.model.Position
 
 /** A [[Cell]] which has the capability to tell whether or not it is playable and hence movable by the player.
   *

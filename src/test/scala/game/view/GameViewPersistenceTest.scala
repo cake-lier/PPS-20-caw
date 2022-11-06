@@ -1,8 +1,10 @@
-package it.unibo.pps.caw.game.view
+package it.unibo.pps.caw
+package game.view
 
-import it.unibo.pps.caw.app.{TestApplicationView, ViewTest}
-import it.unibo.pps.caw.common.BoardViewTest
-import it.unibo.pps.caw.common.view.CellImage
+import app.{TestApplicationView, ViewTest}
+import common.BoardViewTest
+import common.view.CellImage
+
 import javafx.scene.control.Button
 import javafx.scene.input.MouseButton
 import javafx.scene.layout.GridPane
@@ -11,7 +13,7 @@ import org.junit.jupiter.api.*
 import org.testfx.api.{FxRobot, FxToolkit}
 import org.testfx.framework.junit5.{Start, Stop}
 
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.*
 import scala.jdk.CollectionConverters.given
 
 @TestMethodOrder(classOf[MethodOrderer.OrderAnnotation])

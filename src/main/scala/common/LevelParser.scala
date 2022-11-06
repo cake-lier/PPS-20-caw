@@ -1,14 +1,16 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw
+package common
 
-import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea, Position}
-import it.unibo.pps.caw.common.model.cell.*
+import common.model.*
+import common.model.cell.*
+import common.storage.FileStorage
+
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
-import io.vertx.json.schema.{SchemaParser, SchemaRouter, SchemaRouterOptions}
-import it.unibo.pps.caw.common.storage.FileStorage
-import play.api.libs.json.{JsArray, JsNumber, JsObject, JsString, JsValue, Json}
+import io.vertx.json.schema.*
+import play.api.libs.json.*
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
 /** Parser for serialization and deserialization of [[it.unibo.pps.caw.common.model.Level]].
   *
@@ -37,11 +39,11 @@ trait LevelParser {
   def deserializeLevel(json: String): Try[Level[BaseCell]]
 }
 
-/** Companion object to the [[LevelParser]] trait, containing its factory mehtod. */
+/** Companion object to the [[LevelParser]] trait, containing its factory method. */
 object LevelParser {
 
   /* Default implementation of the FileStorage trait. */
-  private class LevelParserImpl(fileStorage: FileStorage) extends LevelParser {
+  private case class LevelParserImpl(fileStorage: FileStorage) extends LevelParser {
 
     override def serializeLevel(level: Level[BaseCell]): String =
       Json.prettyPrint(
@@ -73,18 +75,14 @@ object LevelParser {
         val playableAreaPosition = extractPosition(jsonPlayableArea)
         Level(
           extractDimensions(jsonLevel),
-          deserializeCells((jsonLevel \ "cells").as[JsObject], playableAreaPosition, playableAreaDimensions),
+          deserializeCells((jsonLevel \ "cells").as[JsObject]),
           PlayableArea(playableAreaDimensions)(playableAreaPosition)
         )
       }
     }
 
     /* Deserializes all cells in their specific types, grouping them into a Set. */
-    private def deserializeCells(
-      jsonLevel: JsObject,
-      playableAreaPosition: Position,
-      playableAreaDimensions: Dimensions
-    ): Board[BaseCell] =
+    private def deserializeCells(jsonLevel: JsObject): Board[BaseCell] =
       Board(
         jsonLevel
           .value
@@ -92,7 +90,7 @@ object LevelParser {
             a
               .as[JsArray]
               .value
-              .map(c =>
+              .map(c => {
                 val position = extractPosition(c)
                 CellType.fromName(t) match {
                   case Some(CellType.Mover) =>
@@ -120,7 +118,7 @@ object LevelParser {
                   case Some(CellType.Deleter) => Some(BaseDeleterCell(position))
                   case _                      => None
                 }
-              )
+              })
               .filter(_.isDefined)
               .map(_.get)
               .toSet
@@ -129,20 +127,23 @@ object LevelParser {
       )
 
     /* Validate the provided JSON in string format with the schema. */
-    private def isValidJson(json: String): Try[Unit] = {
-      val vertx: Vertx = Vertx.vertx()
-      val validationTry: Try[Unit] = for {
-        s <- fileStorage.loadResource("board_schema.json")
-        _ <- Try {
-          SchemaParser
-            .createDraft201909SchemaParser(SchemaRouter.create(vertx, SchemaRouterOptions()))
-            .parseFromString(s)
-            .validateSync(JsonObject(json))
-        }.recover(_ => throw IllegalArgumentException())
-      } yield ()
-      vertx.close()
-      validationTry
-    }
+    private def isValidJson(json: String): Try[Unit] =
+      fileStorage
+        .loadResource("board_schema.json")
+        .flatMap(s =>
+          if (
+            Validator
+              .create(
+                JsonSchema.of(JsonObject(s)),
+                JsonSchemaOptions().setDraft(Draft.DRAFT201909).setBaseUri("https://github.com/cake-lier/PPS-20-caw")
+              )
+              .validate(JsonObject(json))
+              .getValid
+          )
+            Success(())
+          else
+            Failure(new IllegalArgumentException())
+        )
 
     /* Extract the Dimensions of a specific JSON item. */
     private def extractDimensions(dimensioned: JsValue): Dimensions =
@@ -166,7 +167,7 @@ object LevelParser {
     private def serializeCells(cells: Set[BaseCell]): JsObject =
       JsObject(
         cells
-          .groupBy(_ match {
+          .groupBy {
             case _: BaseWallCell      => CellType.Wall.name
             case _: BaseEnemyCell     => CellType.Enemy.name
             case _: BaseMoverCell     => CellType.Mover.name
@@ -174,7 +175,7 @@ object LevelParser {
             case _: BaseBlockCell     => CellType.Block.name
             case _: BaseGeneratorCell => CellType.Generator.name
             case _: BaseDeleterCell   => CellType.Deleter.name
-          })
+          }
           .map(t => t._1 -> JsArray(t._2.map(serializeCell).toSeq))
           .toSeq
       )

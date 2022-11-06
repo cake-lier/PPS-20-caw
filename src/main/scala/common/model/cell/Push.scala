@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.common.model.cell
+package it.unibo.pps.caw
+package common.model.cell
 
 /** A direction in which a [[Cell]] can be pushed.
   *

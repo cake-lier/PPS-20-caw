@@ -1,6 +1,7 @@
-package it.unibo.pps.caw.dsl.words
+package it.unibo.pps.caw
+package dsl.words
 
-import it.unibo.pps.caw.common.model.Dimensions
+import common.model.Dimensions
 
 /** The "inAnArea" word, used for specifying the [[it.unibo.pps.caw.common.model.Dimensions]] of an area of the
   * [[it.unibo.pps.caw.common.model.Level]] which is populated with the same type of cells.

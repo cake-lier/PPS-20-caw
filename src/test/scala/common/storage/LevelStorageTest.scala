@@ -1,13 +1,16 @@
-package it.unibo.pps.caw.common.storage
+package it.unibo.pps.caw
+package common.storage
 
-import it.unibo.pps.caw.common.LevelParser
-import it.unibo.pps.caw.common.model.{Board, Level, PlayableArea}
-import it.unibo.pps.caw.common.model.cell.{BaseEnemyCell, BaseMoverCell, BaseWallCell, Orientation}
+import common.LevelParser
+import common.model.*
+import common.model.cell.*
+
+import io.vertx.core.json.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
-import java.nio.file.{InvalidPathException, Paths, Files}
 import java.io.{File, FileNotFoundException}
+import java.nio.file.*
 import scala.io.Source
 import scala.util.{Failure, Using}
 
@@ -33,6 +36,34 @@ class LevelStorageTest extends AnyFunSpec with Matchers {
     ),
     PlayableArea((7, 5))((1, 1))
   )
+  private val levelSaveTarget =
+    """
+      |{
+      |  "width" : 10,
+      |  "height" : 8,
+      |  "playableArea" : {
+      |    "width" : 7,
+      |    "height" : 5,
+      |    "x" : 1,
+      |    "y" : 1
+      |  },
+      |  "cells" : {
+      |    "mover" : [ {
+      |      "x" : 3,
+      |      "y" : 2,
+      |      "orientation" : "right"    
+      |    } ],
+      |    "enemy" : [ {
+      |      "x" : 4,      
+      |      "y" : 3
+      |    } ],
+      |    "wall" : [ {
+      |      "x" : 1,
+      |      "y" : 1
+      |    } ]
+      |  }
+      |}
+      |""".stripMargin
 
   describe("LevelStorage") {
     describe("when asked to load a level") {
@@ -42,9 +73,9 @@ class LevelStorageTest extends AnyFunSpec with Matchers {
       }
       describe("if the level path is not valid") {
         it("should produce a FileNotFoundException") {
-          val path = System.getProperty("user.home") + File.separator + "nonexistantLevel"
+          val path = System.getProperty("user.home") + File.separator + "nonexistentLevel"
           levelStorage.loadLevel(path) match {
-            case Failure(e: FileNotFoundException) => succeed
+            case Failure(_: FileNotFoundException) => succeed
             case _                                 => fail("Did not produce FileNotFoundException")
           }
         }
@@ -53,7 +84,7 @@ class LevelStorageTest extends AnyFunSpec with Matchers {
         it("should produce an IllegalArgumentException") {
           val path = getClass.getResource("/invalid_test_level.json").getPath
           levelStorage.loadLevel(path) match {
-            case Failure(e: IllegalArgumentException) => succeed
+            case Failure(_: IllegalArgumentException) => succeed
             case _                                    => fail("Did not produce IllegalArgumentException")
           }
         }
@@ -64,13 +95,9 @@ class LevelStorageTest extends AnyFunSpec with Matchers {
       it("should correctly save the level") {
         val path = System.getProperty("user.home") + File.separator + "levelStorageTesting.json"
         levelStorage.saveLevel(path, levelSave)
-        Using(Source.fromFile(path))(_.getLines.mkString).get shouldBe levelSaveTarget
+        Json.decodeValue(Using(Source.fromFile(path))(_.getLines.mkString).get) shouldBe Json.decodeValue(levelSaveTarget)
         Files.deleteIfExists(Paths.get(path))
       }
     }
   }
-
-  private val levelSaveTarget =
-    "{  \"width\" : 10,  \"height\" : 8,  \"playableArea\" : {    \"width\" : 7,    \"height\" : 5,    \"x\" : 1,    \"y\" : 1  },  \"cells\" : {    \"mover\" : [ {      \"x\" : 3,      \"y\" : 2,      \"orientation\" : \"right\"    } ],    \"enemy\" : [ {      \"x\" : 4,      \"y\" : 3    } ],    \"wall\" : [ {      \"x\" : 1,      \"y\" : 1    } ]  }}"
-
 }

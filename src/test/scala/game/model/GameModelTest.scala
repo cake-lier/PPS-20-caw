@@ -1,11 +1,13 @@
-package it.unibo.pps.caw.game.model
+package it.unibo.pps.caw
+package game.model
 
-import it.unibo.pps.caw.common.LevelParser
-import it.unibo.pps.caw.common.model.{Board, Dimensions, Level, PlayableArea, Position}
-import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
-import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.common.storage.FileStorage
-import it.unibo.pps.caw.game.model.engine.RulesEngine
+import common.LevelParser
+import common.model.*
+import common.model.cell.*
+import common.model.cell.PlayableCell.toPlayableCell
+import common.storage.FileStorage
+import game.model.engine.RulesEngine
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -19,8 +21,8 @@ class GameModelTest extends AnyFunSpec with Matchers {
   private val rulesEngine: RulesEngine = RulesEngine(loadFile("cellmachine.pl"))
   private val level1: Level[BaseCell] = levelParser.deserializeLevel(loadFile("level01.json")).get
   private val level2: Level[BaseCell] = levelParser.deserializeLevel(loadFile("level02.json")).get
-  private val gameModelSingleLevel: GameModel = GameModel(rulesEngine)(level1)
-  private val gameModelMultipleLevels: GameModel = GameModel(rulesEngine)(Seq(level1, level2), 1)
+  private val gameModelSingleLevel: GameModel = GameModel(rulesEngine, level1)
+  private val gameModelMultipleLevels: GameModel = GameModel(rulesEngine, Seq(level1, level2), 1)
 
   describe("The game model") {
     describe("when first created") {
@@ -70,18 +72,16 @@ class GameModelTest extends AnyFunSpec with Matchers {
       }
       describe("if position already used") {
         it("With single levels, should return a new gameModel but the board is not updated") {
-          assume(gameModelSingleLevel.state.levelCurrentState.board.cells.find(_.position == Position(7, 4)).isDefined)
+          assume(gameModelSingleLevel.state.levelCurrentState.board.cells.exists(_.position == Position(7, 4)))
           gameModelSingleLevel.moveCell((2, 2), (7, 4)).state.levelCurrentState shouldBe GameModel(
-            rulesEngine
-          )(
+            rulesEngine,
             level1
           ).state.levelCurrentState
         }
         it("With multiple levels, should do nothing") {
-          assume(gameModelMultipleLevels.state.levelCurrentState.board.cells.find(_.position == Position(7, 4)).isDefined)
+          assume(gameModelMultipleLevels.state.levelCurrentState.board.cells.exists(_.position == Position(7, 4)))
           gameModelMultipleLevels.moveCell((2, 2), (7, 4)).state.levelCurrentState shouldBe GameModel(
-            rulesEngine
-          )(
+            rulesEngine,
             level1
           ).state.levelCurrentState
         }
@@ -89,11 +89,11 @@ class GameModelTest extends AnyFunSpec with Matchers {
 
       describe("if there's no cell") {
         it("With single levels, should do nothing") {
-          assume(gameModelSingleLevel.state.levelCurrentState.board.cells.find(_.position == Position(4, 4)).isEmpty)
+          assume(!gameModelSingleLevel.state.levelCurrentState.board.cells.exists(_.position == Position(4, 4)))
           gameModelSingleLevel.moveCell((4, 4), (3, 3)) shouldBe gameModelSingleLevel
         }
         it("With multiple levels, should do nothing") {
-          assume(gameModelMultipleLevels.state.levelCurrentState.board.cells.find(_.position == Position(4, 4)).isEmpty)
+          assume(!gameModelMultipleLevels.state.levelCurrentState.board.cells.exists(_.position == Position(4, 4)))
           gameModelMultipleLevels.moveCell((4, 4), (3, 3)) shouldBe gameModelMultipleLevels
         }
       }
@@ -190,15 +190,15 @@ class GameModelTest extends AnyFunSpec with Matchers {
   private def convertBoard(levelWithWallsDimensions: Dimensions, board: Board[BaseCell]): Board[PlayableCell] =
     val levelDimensions: Dimensions = (levelWithWallsDimensions.width - 2, levelWithWallsDimensions.height - 2)
     board
-      .map(_ match {
-        case BaseRotatorCell(r, p)   => BaseRotatorCell(r)((p.x + 1, p.y + 1))
+      .map {
+        case BaseRotatorCell(r, p) => BaseRotatorCell(r)((p.x + 1, p.y + 1))
         case BaseGeneratorCell(o, p) => BaseGeneratorCell(o)((p.x + 1, p.y + 1))
-        case BaseEnemyCell(p)        => BaseEnemyCell((p.x + 1, p.y + 1))
-        case BaseMoverCell(o, p)     => BaseMoverCell(o)((p.x + 1, p.y + 1))
-        case BaseBlockCell(d, p)     => BaseBlockCell(d)((p.x + 1, p.y + 1))
-        case BaseWallCell(p)         => BaseWallCell((p.x + 1, p.y + 1))
-        case _                       => throw IllegalArgumentException()
-      })
+        case BaseEnemyCell(p) => BaseEnemyCell((p.x + 1, p.y + 1))
+        case BaseMoverCell(o, p) => BaseMoverCell(o)((p.x + 1, p.y + 1))
+        case BaseBlockCell(d, p) => BaseBlockCell(d)((p.x + 1, p.y + 1))
+        case BaseWallCell(p) => BaseWallCell((p.x + 1, p.y + 1))
+        case _ => throw IllegalArgumentException()
+      }
       .map(_.toPlayableCell(_ => false)) ++
       (0 to levelDimensions.width + 1).map(i => PlayableWallCell((i, 0))(false)) ++
       (0 to levelDimensions.width + 1).map(i => PlayableWallCell((i, levelDimensions.height + 1))(false)) ++

@@ -1,7 +1,8 @@
-package it.unibo.pps.caw.editor.model
+package it.unibo.pps.caw
+package editor.model
 
-import it.unibo.pps.caw.common.model.cell.{BaseEnemyCell, PlayableCell, PlayableEnemyCell, PlayableWallCell}
-import it.unibo.pps.caw.common.model.{Board, Dimensions, PlayableArea, Position}
+import common.model.*
+import common.model.cell.*
 
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
@@ -25,7 +26,7 @@ class EditorModelTest extends AnyFunSpec with Matchers {
         EditorModel(dimensions.width, dimensions.height).state shouldBe emptyLevel
       }
     }
-    describe("when resetted") {
+    describe("when reset") {
       it("should return another instance of itself") {
         EditorModel(dimensions.width, dimensions.height).resetLevel should not equals
           EditorModel(dimensions.width, dimensions.height)

@@ -1,15 +1,17 @@
-package it.unibo.pps.caw.game.view
+package it.unibo.pps.caw
+package game.view
 
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.model.{Board, Level, Position}
-import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
-import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
-import it.unibo.pps.caw.common.view.{ModelUpdater, ViewComponent}
-import it.unibo.pps.caw.game.controller.{GameController, ParentDefaultGameController, ParentGameController}
+import common.model.*
+import common.model.cell.{BaseCell, PlayableCell}
+import common.view.{ModelUpdater, ViewComponent}
+import common.view.ViewComponent.AbstractViewComponent
+import common.view.sounds.{AudioPlayer, Track}
+import game.controller.*
+
 import javafx.application.Platform
 import javafx.event.EventHandler
 import javafx.fxml.FXML
-import javafx.geometry.{HPos, Insets, VPos}
+import javafx.geometry.*
 import javafx.scene.control.{Alert, Button}
 import javafx.scene.control.Alert.AlertType
 import javafx.scene.image.ImageView
@@ -71,7 +73,6 @@ object GameView {
 
   /* Abstract implementation of the GameView trait for factorizing common behaviors. */
   private abstract class AbstractGameView(
-    parentController: ParentGameController,
     audioPlayer: AudioPlayer,
     scene: Scene,
     backButtonText: String
@@ -104,14 +105,14 @@ object GameView {
       stepSimulationButton.setDisable(false)
     }
 
-    private var startSimulationHandler: EventHandler[MouseEvent] = _ => {
+    private val startSimulationHandler: EventHandler[MouseEvent] = _ => {
       controller.startUpdates()
       playSimulationButton.setText("Pause")
       playSimulationButton.setOnMouseClicked(endSimulationHandler)
       stepSimulationButton.setDisable(true)
       resetButton.setVisible(true)
     }
-    private var endSimulationHandler: EventHandler[MouseEvent] = _ => {
+    private val endSimulationHandler: EventHandler[MouseEvent] = _ => {
       controller.pauseUpdates()
       resetButtons()
     }
@@ -195,7 +196,7 @@ object GameView {
     levelIndex: Int,
     scene: Scene,
     backButtonText: String
-  ) extends AbstractGameView(parentController, audioPlayer, scene, backButtonText) {
+  ) extends AbstractGameView(audioPlayer, scene, backButtonText) {
 
     override protected def createController(): GameController = GameController(parentController, this, levels, levelIndex)
   }
@@ -207,7 +208,7 @@ object GameView {
     level: Level[BaseCell],
     scene: Scene,
     backButtonText: String
-  ) extends AbstractGameView(parentController, audioPlayer, scene, backButtonText) {
+  ) extends AbstractGameView(audioPlayer, scene, backButtonText) {
 
     override protected def createController(): GameController = GameController(parentController, this, level)
   }

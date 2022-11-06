@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.common.storage
+package it.unibo.pps.caw
+package common.storage
 
 import com.fasterxml.jackson.core.JsonParseException
 import org.scalatest.funspec.AnyFunSpec
@@ -31,10 +32,9 @@ class SettingsStorageTest extends AnyFunSpec with Matchers {
           Files.deleteIfExists(Paths.get(settingsFilePath))
           val defaultSettings = Settings(musicVolume = 0.5, soundVolume = 0.5, Set())
           settingsStorage.load() match {
-            case Success(settings: Settings) => {
+            case Success(settings: Settings) =>
               settings shouldBe defaultSettings
               File(settingsFilePath) should exist
-            }
             case _ => fail()
           }
         }
@@ -43,7 +43,7 @@ class SettingsStorageTest extends AnyFunSpec with Matchers {
         it("should produce a JsonParseException") {
           Files.writeString(Paths.get(settingsFilePath), "corrupted settings file")
           settingsStorage.load() match {
-            case Failure(e: JsonParseException) => succeed
+            case Failure(_: JsonParseException) => succeed
             case _                              => fail("Did not produce JsonParseException")
           }
         }

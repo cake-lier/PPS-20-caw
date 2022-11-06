@@ -1,8 +1,10 @@
-package it.unibo.pps.caw.common
+package it.unibo.pps.caw
+package common
+
+import app.ViewTest
 
 import javafx.scene.image.{Image, ImageView}
 import javafx.scene.layout.GridPane
-import it.unibo.pps.caw.app.ViewTest
 import org.testfx.api.FxRobot
 
 import scala.jdk.CollectionConverters.given
@@ -22,7 +24,7 @@ trait BoardViewTest extends ViewTest {
     board
       .getChildren
       .asScala
-      .filter(_.isInstanceOf[ImageView])
+      .filter(e => e.isInstanceOf[ImageView])
       .map(_.asInstanceOf[ImageView])
       .find(_.getImage == image)
       .get

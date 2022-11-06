@@ -1,12 +1,14 @@
-package it.unibo.pps.caw.menu.view
+package it.unibo.pps.caw
+package menu.view
 
-import it.unibo.pps.caw.common.view.ViewComponent.AbstractViewComponent
-import it.unibo.pps.caw.common.view.{FilePicker, ViewComponent}
-import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, Track}
-import it.unibo.pps.caw.menu.controller.{MainMenuController, ParentMainMenuController}
+import common.view.{FilePicker, ViewComponent}
+import common.view.ViewComponent.AbstractViewComponent
+import common.view.sounds.{AudioPlayer, Track}
+import menu.controller.{MainMenuController, ParentMainMenuController}
+
 import javafx.fxml.FXML
-import javafx.scene.layout.{GridPane, Pane}
 import javafx.scene.control.Button
+import javafx.scene.layout.{GridPane, Pane}
 import scalafx.scene.Scene
 
 /** The view which displays the main menu of the application.
@@ -38,23 +40,12 @@ object MainMenuView {
     * @return
     *   a new [[MainMenuView]] instance
     */
-  def apply(
-    parentController: ParentMainMenuController,
-    audioPlayer: AudioPlayer,
-    levelsCount: Int,
-    scene: Scene,
-    disableLevels: Boolean
-  ): MainMenuView =
-    MainMenuViewImpl(parentController, audioPlayer, levelsCount, scene, disableLevels)
+  def apply(parentController: ParentMainMenuController, audioPlayer: AudioPlayer, scene: Scene): MainMenuView =
+    MainMenuViewImpl(parentController, audioPlayer, scene)
 
   /* Default implementation of the MainMenuView trait. */
-  private final class MainMenuViewImpl(
-    parentController: ParentMainMenuController,
-    audioPlayer: AudioPlayer,
-    levelsCount: Int,
-    scene: Scene,
-    disableLevels: Boolean
-  ) extends AbstractViewComponent[Pane]("main_menu_page.fxml")
+  private final class MainMenuViewImpl(parentController: ParentMainMenuController, audioPlayer: AudioPlayer, scene: Scene)
+    extends AbstractViewComponent[Pane]("main_menu_page.fxml")
     with MainMenuView {
     @FXML
     var playButton: Button = _
@@ -76,7 +67,7 @@ object MainMenuView {
       playButton.setDisable(false)
       playButton.setOnMouseClicked(_ => scene.root.value = LevelSelectionView(scene, controller))
     }
-    loadButton.setOnMouseClicked(_ => FilePicker.forLevelFile(scene).openFile().foreach(controller.startGame(_)))
+    loadButton.setOnMouseClicked(_ => FilePicker.forLevelFile(scene).openFile().foreach(controller.startGame))
     settingsButton.setOnMouseClicked(_ => scene.root.value = SettingsView(controller, audioPlayer, scene))
     editorButton.setOnMouseClicked(_ => scene.root.value = EditorMenuView(controller, scene))
     exitButton.setOnMouseClicked(_ => controller.exit())

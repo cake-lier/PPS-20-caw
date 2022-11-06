@@ -1,10 +1,11 @@
-package it.unibo.pps.caw.game.model
+package it.unibo.pps.caw
+package game.model
 
-import it.unibo.pps.caw.common.model.{Board, Level, PlayableArea, Position}
-import it.unibo.pps.caw.common.model.Board.*
-import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
-import it.unibo.pps.caw.game.model.engine.RulesEngine
+import common.model.*
+import common.model.Board.*
+import common.model.cell.*
+import common.model.cell.PlayableCell.toPlayableCell
+import game.model.engine.RulesEngine
 
 /** The model of the game, the component containing all its business logic.
   *
@@ -19,7 +20,7 @@ import it.unibo.pps.caw.game.model.engine.RulesEngine
   * in the [[it.unibo.pps.caw.common.model.PlayableArea]] of the level and arrange the cells as they please. The second phase is
   * the phase where the time starts ticking and the system evolve and the player can not interact with the world anymore. Giving
   * that the player not necessarily configured the level to destroy all enemy cells the first time, it is given to the player the
-  * possibility to reset the state of the game to just before the second phase beginned.
+  * possibility to reset the state of the game to just before the second phase begins.
   */
 trait GameModel {
 
@@ -45,7 +46,7 @@ trait GameModel {
     */
   def update: GameModel
 
-  /** Makes the game to swith to the next [[it.unibo.pps.caw.common.model.Level]]. This is only possible if the current level has
+  /** Makes the game to switch to the next [[it.unibo.pps.caw.common.model.Level]]. This is only possible if the current level has
     * been completed. If not, no action will be performed.
     *
     * @return
@@ -53,7 +54,7 @@ trait GameModel {
     */
   def nextLevel: GameModel
 
-  /** Resets the current [[it.unibo.pps.caw.common.model.Level]] to its state before the second phase of the game beginned, so
+  /** Resets the current [[it.unibo.pps.caw.common.model.Level]] to its state before the second phase of the game begins, so
     * before the first call to the [[GameModel.update]] method, allowing again the player to arrange the
     * [[it.unibo.pps.caw.common.model.cell.Cell]] in this level.
     *
@@ -97,7 +98,7 @@ object GameModel {
     * @return
     *   whether or not a [[it.unibo.pps.caw.common.model.Level]] is completed
     */
-  private def isLevelCompleted(board: Board[? <: Cell]): Boolean = board.filter(_.isInstanceOf[EnemyCell]).size == 0
+  private def isLevelCompleted(board: Board[? <: Cell]): Boolean = !board.exists(_.isInstanceOf[EnemyCell])
 
   /* Default implementation of the GameModel trait. */
   private class GameModelImpl(
@@ -109,37 +110,9 @@ object GameModel {
     currentBoard: Board[BaseCell]
   ) extends GameModel {
 
-    /* Alternative constructor to be used by the "apply" factory method. */
-    def this(
-      rulesEngine: RulesEngine,
-      levels: Seq[Level[BaseCell]],
-      initialLevel: Level[PlayableCell],
-      initialIndex: Int,
-      initialBoard: Board[BaseCell]
-    ) =
-      this(
-        rulesEngine,
-        GameState(
-          initialLevel,
-          Level(
-            initialLevel.dimensions,
-            initialLevel.board.map(_.toBaseCell),
-            initialLevel.playableArea
-          ),
-          initialIndex,
-          initialIndex + 1 <= levels.length,
-          didEnemyDie = false,
-          isLevelCompleted(initialBoard)
-        ),
-        isSetupCompleted = false,
-        levels,
-        initialBoard,
-        initialBoard
-      )
-
     override def update: GameModel = {
       val updatedBoard: Board[BaseCell] = rulesEngine.update(currentBoard)
-      val enemiesInBoard: Board[? <: Cell] => Int = _.filter(_.isInstanceOf[EnemyCell]).size
+      val enemiesInBoard: Board[? <: Cell] => Int = _.count(_.isInstanceOf[EnemyCell])
       GameModelImpl(
         rulesEngine,
         state.copy(
@@ -156,7 +129,7 @@ object GameModel {
 
     override def nextLevel: GameModel =
       if (state.hasNextLevel && state.isCurrentLevelCompleted)
-        GameModel(rulesEngine)(levels, state.currentLevelIndex + 1)
+        GameModel(rulesEngine, levels, state.currentLevelIndex + 1)
       else
         this
 
@@ -185,7 +158,7 @@ object GameModel {
       ) {
         lazy val current: Position = currentPosition
         (currentBoard.find(_.position == nextPosition), currentBoard.find(_.position == current)) match {
-          case (None, Some(c)) => {
+          case (None, Some(c)) =>
             val newBoard: Board[BaseCell] =
               currentBoard.filter(_.position != current) + c.changePositionProperty(_ => nextPosition)
             GameModelImpl(
@@ -205,7 +178,6 @@ object GameModel {
               newBoard,
               newBoard
             )
-          }
           case _ => this
         }
       } else {
@@ -225,7 +197,7 @@ object GameModel {
     * @return
     *   a new [[GameModel]] instance
     */
-  def apply(rulesEngine: RulesEngine)(levels: Seq[Level[BaseCell]], initialIndex: Int): GameModel = {
+  def apply(rulesEngine: RulesEngine, levels: Seq[Level[BaseCell]], initialIndex: Int): GameModel = {
     val boardWithCorners: Board[BaseCell] =
       levels(initialIndex - 1)
         .board
@@ -241,17 +213,30 @@ object GameModel {
     val playableAreaWithCorners: PlayableArea = PlayableArea(levels(initialIndex - 1).playableArea.dimensions)(
       (levels(initialIndex - 1).playableArea.position.x + 1, levels(initialIndex - 1).playableArea.position.y + 1)
     )
+    val initialLevel: Level[PlayableCell] = Level(
+      (levels(initialIndex - 1).dimensions.width + 2, levels(initialIndex - 1).dimensions.height + 2),
+      boardWithCorners.map(
+        _.toPlayableCell(c => isPositionInsidePlayableArea(c.position)(playableAreaWithCorners))
+      ),
+      playableAreaWithCorners
+    )
     GameModelImpl(
       rulesEngine,
-      levels,
-      Level(
-        (levels(initialIndex - 1).dimensions.width + 2, levels(initialIndex - 1).dimensions.height + 2),
-        boardWithCorners.map(
-          _.toPlayableCell(c => isPositionInsidePlayableArea(c.position)(playableAreaWithCorners))
+      GameState(
+        initialLevel,
+        Level(
+          initialLevel.dimensions,
+          initialLevel.board.map(_.toBaseCell),
+          initialLevel.playableArea
         ),
-        playableAreaWithCorners
+        initialIndex,
+        initialIndex + 1 <= levels.length,
+        didEnemyDie = false,
+        isLevelCompleted(boardWithCorners)
       ),
-      initialIndex,
+      isSetupCompleted = false,
+      levels,
+      boardWithCorners,
       boardWithCorners
     )
   }
@@ -265,5 +250,5 @@ object GameModel {
     * @return
     *   a new [[GameModel]] instance
     */
-  def apply(rulesEngine: RulesEngine)(level: Level[BaseCell]): GameModel = GameModel(rulesEngine)(Seq(level), 1)
+  def apply(rulesEngine: RulesEngine, level: Level[BaseCell]): GameModel = GameModel(rulesEngine, Seq(level), 1)
 }

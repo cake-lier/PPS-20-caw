@@ -1,7 +1,8 @@
-package it.unibo.pps.caw.dsl.entities
+package it.unibo.pps.caw
+package dsl.entities
 
-import it.unibo.pps.caw.common.model.{Dimensions, PlayableArea}
-import it.unibo.pps.caw.common.model.cell.*
+import common.model.{Dimensions, PlayableArea}
+import common.model.cell.*
 
 /** A data structure to be used for collecting data useful for the creation of a new [[it.unibo.pps.caw.common.model.Level]]
   * instance.

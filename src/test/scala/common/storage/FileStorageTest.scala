@@ -1,5 +1,7 @@
-package it.unibo.pps.caw.common.storage
+package it.unibo.pps.caw
+package common.storage
 
+import io.vertx.core.json.Json
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -12,16 +14,44 @@ import scala.util.{Failure, Success, Using}
 /** Tests for the [[FileStorage]] trait. */
 class FileStorageTest extends AnyFunSpec with Matchers {
   private val fileStorage = FileStorage()
-
+  private val level01 =
+    """
+      |{   
+      |  "width": 8,
+      |  "height": 5,
+      |  "playableArea": {
+      |    "width": 4,
+      |    "height": 5,
+      |    "x": 0,
+      |    "y": 0
+      |  },   
+      |  "cells": {
+      |    "mover": [
+      |      {
+      |        "orientation": "right",
+      |        "x": 1,
+      |        "y": 1
+      |      }
+      |    ],     
+      |    "enemy": [
+      |      {
+      |        "x": 6,
+      |        "y": 3
+      |      }
+      |    ]
+      |  }
+      |}
+      |""".stripMargin
+  
   describe("FileStorage") {
     describe("when asked to load a resource") {
       it("should correctly load the resource") {
-        fileStorage.loadResource("level01.json").get shouldBe level01
+        Json.decodeValue(fileStorage.loadResource("level01.json").get) shouldBe Json.decodeValue(level01)
       }
       describe("if the resource does not exist") {
         it("should produce a FileNotFoundException") {
-          fileStorage.loadResource("nonexistant") match {
-            case Failure(e: FileNotFoundException) => succeed
+          fileStorage.loadResource("nonexistent") match {
+            case Failure(_: FileNotFoundException) => succeed
             case _                                 => fail("Did not produce FileNotFoundException")
           }
         }
@@ -38,9 +68,9 @@ class FileStorageTest extends AnyFunSpec with Matchers {
       }
       describe("if the file does not exist") {
         it("should produce a FileNotFoundException") {
-          val path = System.getProperty("user.home") + File.separator + "nonexistant"
+          val path = System.getProperty("user.home") + File.separator + "nonexistent"
           fileStorage.loadFile(path) match {
-            case Failure(e: FileNotFoundException) => succeed
+            case Failure(_: FileNotFoundException) => succeed
             case _                                 => fail("Did not produce FileNotFoundException")
           }
         }
@@ -57,7 +87,4 @@ class FileStorageTest extends AnyFunSpec with Matchers {
       }
     }
   }
-
-  private val level01 =
-    "{   \"width\": 8,   \"height\": 5,   \"playableArea\": {     \"width\": 4,     \"height\": 5,     \"x\": 0,     \"y\": 0   },   \"cells\": {     \"mover\": [       {         \"orientation\": \"right\",         \"x\": 1,         \"y\": 1       }     ],     \"enemy\": [       {         \"x\": 6,         \"y\": 3       }     ]   } }"
 }

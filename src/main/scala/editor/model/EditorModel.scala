@@ -1,9 +1,9 @@
-package it.unibo.pps.caw.editor.model
+package it.unibo.pps.caw
+package editor.model
 
-import it.unibo.pps.caw.common.model.{Board, Dimensions, PlayableArea, Position}
-import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
+import common.model.*
+import common.model.cell.*
+import common.model.cell.PlayableCell.toPlayableCell
 
 /** The model of the editor, containing all its business logic.
   *

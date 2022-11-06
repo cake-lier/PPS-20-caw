@@ -1,8 +1,9 @@
-package it.unibo.pps.caw.game.model.engine
+package it.unibo.pps.caw
+package game.model.engine
 
-import it.unibo.pps.caw.common.model.{Board, Position}
-import it.unibo.pps.caw.common.model.cell.{Orientation, Push, Rotation}
-import it.unibo.pps.caw.game.model._
+import common.model.{Board, Position}
+import common.model.cell.*
+import game.model.*
 
 import alice.tuprolog.Term
 
@@ -65,7 +66,7 @@ private object PrologParser {
 
   /* Returns a Scala UpdateCell given its Prolog cell. */
   def deserializeCell(stringCell: String): UpdateCell = {
-    val s"cell($id,$cellType,$stringX,$stringY)" = stringCell
+    val s"cell($id,$cellType,$stringX,$stringY)" = stringCell: @unchecked
     val cellId: Int = id.toInt
     val position: Position = Position(stringX.toInt, stringY.toInt)
     val updated: Boolean = false // default value, properly set in nextState()

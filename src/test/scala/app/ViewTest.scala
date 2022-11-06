@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.app
+package it.unibo.pps.caw
+package app
 
 import javafx.scene.Node
 import javafx.scene.control.Button
@@ -21,8 +22,8 @@ abstract class ViewTest {
     System.setProperty("java.awt.headless", "true")
     System.setProperty("prism.order", "sw")
     System.setProperty("prism.text", "t2k")
-    WaitForAsyncUtils.checkAllExceptions = false;
-    WaitForAsyncUtils.autoCheckException = false;
+    WaitForAsyncUtils.checkAllExceptions = false
+    WaitForAsyncUtils.autoCheckException = false
   }
 
   protected def getButtonById(id: String)(robot: FxRobot): Button = robot.lookup(_.getId == id).queryButton()

@@ -1,10 +1,11 @@
-package it.unibo.pps.caw.common.model
+package it.unibo.pps.caw
+package common.model
 
 /** The position of an entity in the game world.
   *
   * Being the world a two-dimensional grid, the [[Position]] is represented by two coordinates: the x coordinate and the y
   * coordinate, also known as "column" and "row", in this order. Again, following the idea of a grid, the coordinates can only be
-  * integer non-negative numbers. Differently from the standard Carthesian plane, the y coordinate grows moving torwards the
+  * integer non-negative numbers. Differently from the standard Cartesian plane, the y coordinate grows moving towards the
   * bottom and not moving torwards the top. This means that [[Position]] with a greater y coordinate are in fact lower in the area
   * in which they are contained. It must be constructed through its companion object.
   */

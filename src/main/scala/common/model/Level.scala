@@ -1,6 +1,7 @@
-package it.unibo.pps.caw.common.model
+package it.unibo.pps.caw
+package common.model
 
-import it.unibo.pps.caw.common.model.cell.Cell
+import common.model.cell.Cell
 
 /** A level of the game, with its structure and its cells.
   *
@@ -47,7 +48,7 @@ object Level {
     */
   def apply[A <: Cell](dimensions: Dimensions, board: Board[A], playableArea: PlayableArea): Level[A] =
     LevelImpl(dimensions, board, playableArea)
-
+  
   /** Contains extension methods to the [[Level]] trait. */
   extension [A <: Cell](l: Level[A]) {
 
@@ -61,8 +62,6 @@ object Level {
       *   the [[Board]] of [[it.unibo.pps.caw.common.model.cell.Cell]] of the created [[Level]]
       * @param playableArea
       *   the [[PlayableArea]] of the created [[Level]]
-      * @tparam A
-      *   the type of [[it.unibo.pps.caw.common.model.cell.Cell]] inside the [[Board]] which is part of this [[Level]]
       * @return
       *   a new [[Level]] instance copied from the given one
       */

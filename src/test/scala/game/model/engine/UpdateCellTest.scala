@@ -1,8 +1,10 @@
-package it.unibo.pps.caw.game.model.engine
+package it.unibo.pps.caw
+package game.model.engine
 
-import it.unibo.pps.caw.common.model.Position
-import it.unibo.pps.caw.common.model.cell.*
-import it.unibo.pps.caw.game.model.engine.UpdateCell.toUpdateCell
+import common.model.Position
+import common.model.cell.*
+import game.model.engine.UpdateCell.toUpdateCell
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 

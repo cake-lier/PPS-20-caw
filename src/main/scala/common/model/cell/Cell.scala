@@ -1,6 +1,7 @@
-package it.unibo.pps.caw.common.model.cell
+package it.unibo.pps.caw
+package common.model.cell
 
-import it.unibo.pps.caw.common.model.Position
+import common.model.Position
 
 /** A cell, an element of a [[it.unibo.pps.caw.common.model.Board]] in the game.
   *

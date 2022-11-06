@@ -1,13 +1,14 @@
-package it.unibo.pps.caw.game.controller
+package it.unibo.pps.caw
+package game.controller
 
-import it.unibo.pps.caw.common.model.{Level, Position}
-import it.unibo.pps.caw.common.model.cell.BaseCell
-import it.unibo.pps.caw.common.storage.FileStorage
-import it.unibo.pps.caw.game.model.GameModel
-import it.unibo.pps.caw.game.model.engine.RulesEngine
-import it.unibo.pps.caw.game.view.GameView
+import common.model.{Level, Position}
+import common.model.cell.BaseCell
+import common.storage.FileStorage
+import game.model.GameModel
+import game.model.engine.RulesEngine
+import game.view.GameView
 
-import java.util.concurrent.{Executors, ScheduledExecutorService, ScheduledFuture, TimeUnit}
+import java.util.concurrent.*
 import scala.io.Source
 import scala.util.Using
 
@@ -163,7 +164,7 @@ object GameController {
   private class ExternalGameController(parentController: ParentGameController, view: GameView, initialLevel: Level[BaseCell])
     extends AbstractGameController(parentController, view) {
 
-    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine)(initialLevel)
+    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine, initialLevel)
   }
 
   /* Extension of the AbstractGameController class for playing the default levels. */
@@ -174,7 +175,7 @@ object GameController {
     initialIndex: Int
   ) extends AbstractGameController(parentController, view) {
 
-    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine)(levels, initialIndex)
+    override protected def createModel(rulesEngine: RulesEngine): GameModel = GameModel(rulesEngine, levels, initialIndex)
 
     override def step(): Unit = {
       super.step()

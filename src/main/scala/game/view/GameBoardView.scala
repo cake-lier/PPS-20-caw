@@ -1,9 +1,9 @@
-package it.unibo.pps.caw.game.view
+package it.unibo.pps.caw
+package game.view
 
-import it.unibo.pps.caw.common.model.{Board, Level}
-import it.unibo.pps.caw.common.model.cell.{BaseCell, Cell, PlayableCell}
-
-import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellView, ModelUpdater}
+import common.model.{Board, Level}
+import common.model.cell.*
+import common.view.*
 
 /** The board displayed during the game.
   *

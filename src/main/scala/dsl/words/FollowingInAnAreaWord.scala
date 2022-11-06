@@ -1,8 +1,9 @@
-package it.unibo.pps.caw.dsl.words
+package it.unibo.pps.caw
+package dsl.words
 
-import it.unibo.pps.caw.common.model.Position
-import it.unibo.pps.caw.common.model.cell.{Orientation, Push, Rotation}
-import it.unibo.pps.caw.dsl.CellsAtWorkDSL.{OrientationWord, PushWord, RotationWord}
+import common.model.Position
+import common.model.cell.*
+import dsl.CellsAtWorkDSL.*
 
 /** Used for creating a union type between all words that can follow the [[InAnAreaWord]] in a phrase. */
 sealed trait FollowingInAnAreaWord
@@ -55,7 +56,7 @@ sealed trait FacingWord extends FollowingInAnAreaWord {
     * structure to the phrase. It returns the [[AtWord]] to use next for completing the sentence.
     *
     * @param orientationWord
-    *   the word specifing the [[it.unibo.pps.caw.common.model.cell.Orientation]] of an entity
+    *   the word specifying the [[it.unibo.pps.caw.common.model.cell.Orientation]] of an entity
     * @return
     *   the [[AtWord]] that the user must then use for completing the sentence
     */

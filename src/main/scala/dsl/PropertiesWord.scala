@@ -1,6 +1,7 @@
-package it.unibo.pps.caw.dsl
+package it.unibo.pps.caw
+package dsl
 
-import it.unibo.pps.caw.common.model.cell.{Orientation, Push, Rotation}
+import common.model.cell.*
 
 /* Contains all words for specifying properties of Cell.
  *

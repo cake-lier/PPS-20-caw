@@ -1,6 +1,7 @@
-package it.unibo.pps.caw.common.model
+package it.unibo.pps.caw
+package common.model
 
-import it.unibo.pps.caw.common.model.cell.*
+import common.model.cell.*
 
 /** A group of cells in the game world.
   *
@@ -20,7 +21,7 @@ trait Board[A <: Cell] {
 object Board {
 
   /* Default implementation of the Board trait. */
-  private case class BoardImpl[A <: Cell](val cells: Set[A]) extends Board[A]
+  private case class BoardImpl[A <: Cell](cells: Set[A]) extends Board[A]
 
   /** Returns a new instance of the [[Board]] trait given the [[it.unibo.pps.caw.common.model.cell.Cell]] that are contained into
     * the [[Board]] itself. If two or more [[it.unibo.pps.caw.common.model.cell.Cell]] have the same [[Position]], only the first

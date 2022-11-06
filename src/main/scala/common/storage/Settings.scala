@@ -1,6 +1,7 @@
-package it.unibo.pps.caw.common.storage
+package it.unibo.pps.caw
+package common.storage
 
-import play.api.libs.json.{Json, Writes, JsValue}
+import play.api.libs.json.{JsObject, Json, JsValue, Writes}
 
 /** Representation of game settings: the music volume, the SFX volume and the indexes of completed default levels.
   *
@@ -61,11 +62,10 @@ object Settings {
   }
 
   /** Allows for a [[Settings]] value to be converted to a [[play.api.libs.json.JsValue]]. */
-  implicit val settingsWrites: Writes[Settings] = new Writes[Settings] {
-    override def writes(settings: Settings) = Json.obj(
-      "musicVolume" -> settings.musicVolume,
-      "soundsVolume" -> settings.soundsVolume,
-      "solvedLevels" -> settings.solvedLevels
+  implicit val settingsWrites: Writes[Settings] = s =>
+    Json.obj(
+      "musicVolume" -> s.musicVolume,
+      "soundsVolume" -> s.soundsVolume,
+      "solvedLevels" -> s.solvedLevels
     )
-  }
 }

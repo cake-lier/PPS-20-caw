@@ -15,9 +15,9 @@ jobs:
       with:
         java-version: "adopt@1.16"
     - name: Build and Run coverage
-      run: sbt -v -Dfile.encoding=UTF-8 +jacoco
-    - name: Upload JaCoCo coverage report
+      run: sbt -v -Dfile.encoding=UTF-8 +clean +coverage +test +coverageReport
+    - name: Upload Scoverage coverage report
       uses: actions/upload-artifact@v3
       with:
-        name: jacoco-report
-        path: target/scala-3.0.2/jacoco/report/
+        name: scoverage-report
+        path: target/scala-3.2.1/scoverage-report/

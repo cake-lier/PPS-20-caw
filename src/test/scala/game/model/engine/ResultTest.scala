@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.game.model.engine
+package it.unibo.pps.caw
+package game.model.engine
 
 import alice.tuprolog.InvalidTermException
 import org.scalatest.funspec.AnyFunSpec
@@ -11,7 +12,7 @@ class ResultTest extends AnyFunSpec with Matchers {
       it("doesn't change value") {
         Result("test(0)").value shouldBe "test(0)"
       }
-      it("can retun only last term") {
+      it("can return only last term") {
         Result("test(1,2)").extractLastTerm shouldBe "2"
       }
       describe("when extractLastTerm is called and the result is in invalid format") {

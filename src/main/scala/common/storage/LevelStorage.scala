@@ -1,8 +1,9 @@
-package it.unibo.pps.caw.common.storage
+package it.unibo.pps.caw
+package common.storage
 
-import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.LevelParser
-import it.unibo.pps.caw.common.model.cell.BaseCell
+import common.model.Level
+import common.LevelParser
+import common.model.cell.BaseCell
 
 import java.io.File
 import scala.util.Try

@@ -1,10 +1,12 @@
-package it.unibo.pps.caw.game.model
+package it.unibo.pps.caw
+package game.model
 
-import it.unibo.pps.caw.common.LevelParser
-import it.unibo.pps.caw.common.model.{Board, Level}
-import it.unibo.pps.caw.common.model.cell.{BaseCell, PlayableCell}
-import it.unibo.pps.caw.common.storage.FileStorage
-import it.unibo.pps.caw.common.model.cell.PlayableCell.toPlayableCell
+import common.LevelParser
+import common.model.{Board, Level}
+import common.model.cell.{BaseCell, PlayableCell}
+import common.model.cell.PlayableCell.toPlayableCell
+import common.storage.FileStorage
+
 import org.scalatest.funspec.AnyFunSpec
 import org.scalatest.matchers.should.Matchers
 

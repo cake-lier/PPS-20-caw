@@ -1,6 +1,7 @@
-package it.unibo.pps.caw.common.model.cell
+package it.unibo.pps.caw
+package common.model.cell
 
-import it.unibo.pps.caw.common.model.Position
+import common.model.Position
 
 /** A base cell, with no added properties with respect to the original [[Cell]] type. */
 sealed trait BaseCell extends Cell
@@ -34,7 +35,7 @@ object BaseCell {
 /** A [[RotatorCell]] which is also a [[BaseCell]]. */
 sealed trait BaseRotatorCell extends RotatorCell with BaseCell
 
-/** Compation object of the [[BaseRotatorCell]] trait, containing its utility methods. */
+/** Companion object of the [[BaseRotatorCell]] trait, containing its utility methods. */
 object BaseRotatorCell {
 
   /* Default implementation of the BaseRotatorCell trait. */
@@ -64,7 +65,7 @@ object BaseRotatorCell {
 /** A [[GeneratorCell]] which is also a [[BaseCell]]. */
 sealed trait BaseGeneratorCell extends GeneratorCell with BaseCell
 
-/** Compation object of the [[BaseGeneratorCell]] trait, containing its utility methods. */
+/** Companion object of the [[BaseGeneratorCell]] trait, containing its utility methods. */
 object BaseGeneratorCell {
 
   /* Default implementation of the BaseGeneratorCell trait. */
@@ -94,7 +95,7 @@ object BaseGeneratorCell {
 /** An [[EnemyCell]] which is also a [[BaseCell]]. */
 sealed trait BaseEnemyCell extends EnemyCell with BaseCell
 
-/** Compation object of the [[BaseEnemyCell]] trait, containing its utility methods. */
+/** Companion object of the [[BaseEnemyCell]] trait, containing its utility methods. */
 object BaseEnemyCell {
 
   /* Default implementation of the BaseEnemyCell trait. */
@@ -122,7 +123,7 @@ object BaseEnemyCell {
 /** A [[MoverCell]] which is also a [[BaseCell]]. */
 sealed trait BaseMoverCell extends MoverCell with BaseCell
 
-/** Compation object of the [[BaseMoverCell]] trait, containing its utility methods. */
+/** Companion object of the [[BaseMoverCell]] trait, containing its utility methods. */
 object BaseMoverCell {
 
   /* Default implementation of the BaseMoverCell trait. */
@@ -152,7 +153,7 @@ object BaseMoverCell {
 /** A [[BlockCell]] which is also a [[BaseCell]]. */
 sealed trait BaseBlockCell extends BlockCell with BaseCell
 
-/** Compation object of the [[BaseBlockCell]] trait, containing its utility methods. */
+/** Companion object of the [[BaseBlockCell]] trait, containing its utility methods. */
 object BaseBlockCell {
 
   /* Default implementation of the BaseBlockCell trait. */
@@ -182,7 +183,7 @@ object BaseBlockCell {
 /** A [[WallCell]] which is also a [[BaseCell]]. */
 sealed trait BaseWallCell extends WallCell with BaseCell
 
-/** Compation object of the [[BaseWallCell]] trait, containing its utility methods. */
+/** Companion object of the [[BaseWallCell]] trait, containing its utility methods. */
 object BaseWallCell {
 
   /* Default implementation of the BaseWallCell trait. */
@@ -210,7 +211,7 @@ object BaseWallCell {
 /** A [[DeleterCell]] which is also a [[BaseCell]]. */
 sealed trait BaseDeleterCell extends DeleterCell with BaseCell
 
-/** Compation object of the [[BaseDeleterCell]] trait, containing its utility methods. */
+/** Companion object of the [[BaseDeleterCell]] trait, containing its utility methods. */
 object BaseDeleterCell {
 
   /* Default implementation of the BaseDeleterCell trait. */

@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.common.view
+package it.unibo.pps.caw
+package common.view
 
 import javafx.scene.Scene
 import scalafx.stage.FileChooser

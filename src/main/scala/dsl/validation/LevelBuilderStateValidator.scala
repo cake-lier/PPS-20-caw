@@ -1,14 +1,16 @@
-package it.unibo.pps.caw.dsl.validation
+package it.unibo.pps.caw
+package dsl.validation
 
-import it.unibo.pps.caw.dsl.entities.LevelBuilderState
+import common.model.*
+import common.model.cell.BaseCell
+import dsl.entities.LevelBuilderState
+
 import cats.data.ValidatedNel
 import cats.implicits.given
 import cats.syntax.apply
-import it.unibo.pps.caw.common.model.{Dimensions, Level, PlayableArea, Position}
-import it.unibo.pps.caw.common.model.cell.BaseCell
 
 /** Contains the method for validating the correctness of a [[it.unibo.pps.caw.dsl.entities.LevelBuilderState]] entity and extract
-  * the informations for building a [[it.unibo.pps.caw.common.model.Level]].
+  * the pieces of information for building a [[it.unibo.pps.caw.common.model.Level]].
   *
   * This object is a module for containing methods which can check the correctness of a
   * [[it.unibo.pps.caw.dsl.entities.LevelBuilderState]] entity, so it can be then built into a
@@ -26,7 +28,7 @@ object LevelBuilderStateValidator {
 
     /* Checks if the given values are in the given range, using the given error if not. */
     private def checkValuesAreInRange(values: Int*)(range: Range)(error: ValidationError): ValidationResult[Unit] =
-      if (values.forall(range.contains(_))) ().validNel else error.invalidNel
+      if (values.forall(range.contains)) ().validNel else error.invalidNel
 
     /* Checks if the given Dimensions are in range for the Level Dimensions values, so between 2 and 30 included. */
     private def checkLevelDimensionsAreInRange(dimensions: Dimensions): ValidationResult[Unit] =
@@ -82,7 +84,7 @@ object LevelBuilderStateValidator {
     /* Checks whether or not the given cells Positions are valid. */
     def checkCellPositions(positions: Seq[Position])(boardDimensions: Dimensions): ValidationResult[Unit] =
       checkNonDuplicatePositions(positions)
-        .product(positions.map(checkPositionCoordinatesAreInRange(_)).sequence_)
+        .product(positions.map(checkPositionCoordinatesAreInRange).sequence_)
         .andThen(_ => positions.map(checkPositionInBounds(_, boardDimensions)).sequence_)
   }
 
@@ -97,7 +99,7 @@ object LevelBuilderStateValidator {
     * @param state
     *   the [[it.unibo.pps.caw.dsl.entities.LevelBuilderState]] to be checked and to be used for building
     * @return
-    *   an [[scala.util.Either]] with the built [[it.unibo.pps.caw.common.model.Level]] if the check succeedes or with all the
+    *   an [[scala.util.Either]] with the built [[it.unibo.pps.caw.common.model.Level]] if the check succeeds or with all the
     *   encountered [[ValidationError]] if the check fails
     */
   def validateBuilderState(state: LevelBuilderState): Either[Seq[ValidationError], Level[BaseCell]] =

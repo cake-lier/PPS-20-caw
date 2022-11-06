@@ -1,4 +1,5 @@
-package it.unibo.pps.caw.common.storage
+package it.unibo.pps.caw
+package common.storage
 
 import java.nio.file.{Files, OpenOption, Paths}
 import scala.io.Source

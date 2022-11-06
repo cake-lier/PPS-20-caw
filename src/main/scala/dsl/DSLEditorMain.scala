@@ -1,18 +1,20 @@
-package it.unibo.pps.caw.dsl
+package it.unibo.pps.caw
+package dsl
 
-import it.unibo.pps.caw.common.LevelParser
-import it.unibo.pps.caw.common.model.cell.BaseCell
-import it.unibo.pps.caw.common.model.Level
-import it.unibo.pps.caw.common.storage.{FileStorage, LevelStorage}
-import it.unibo.pps.caw.common.view.StageResizer
-import it.unibo.pps.caw.common.view.sounds.AudioPlayer
-import it.unibo.pps.caw.editor.view.EditorView
-import it.unibo.pps.caw.editor.controller.ParentEditorController
+import common.LevelParser
+import common.model.cell.BaseCell
+import common.model.Level
+import common.storage.{FileStorage, LevelStorage}
+import common.view.StageResizer
+import common.view.sounds.AudioPlayer
+import editor.controller.ParentEditorController
+import editor.view.EditorView
+
 import javafx.fxml.FXMLLoader
 import javafx.scene.layout.FlowPane
 import scalafx.application.JFXApp3
-import scalafx.scene.Scene
 import scalafx.application.JFXApp3.PrimaryStage
+import scalafx.scene.Scene
 
 /* The main class for the application launched by the DSL when asked by the user to edit a level with the
  * [[it.unibo.pps.caw.dsl.entities.Board]] which has been just created.
@@ -36,7 +38,7 @@ private object DSLEditorMain extends JFXApp3 {
     val fileStorage = FileStorage()
     val levelManager = LevelStorage(fileStorage, LevelParser(fileStorage))
     levelManager
-      .loadLevel(parameters.raw(0))
+      .loadLevel(parameters.raw.head)
       .fold(
         _ => editorScene.root.value = FXMLLoader.load[FlowPane](ClassLoader.getSystemResource("fxml/empty.fxml")),
         l => {

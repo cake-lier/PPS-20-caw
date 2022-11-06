@@ -1,11 +1,12 @@
-package it.unibo.pps.caw.editor.view
+package it.unibo.pps.caw
+package editor.view
 
-import it.unibo.pps.caw.common.model.cell.PlayableCell
-import it.unibo.pps.caw.common.model.{Board, Position}
-import it.unibo.pps.caw.common.*
-import it.unibo.pps.caw.editor.model.EditorModelState
+import common.*
+import common.model.{Board, Position}
+import common.model.cell.PlayableCell
+import common.view.*
+import editor.model.EditorModelState
 
-import it.unibo.pps.caw.common.view.{AbstractBoardView, BoardView, CellView, CellImage, ModelUpdater}
 import javafx.scene.Node
 import javafx.scene.image.ImageView
 import javafx.scene.layout.GridPane
@@ -86,10 +87,10 @@ private object EditorBoardView {
     }
 
     override protected def drawImageView(imageView: ImageView, x: Int, y: Int): Unit = {
-      import it.unibo.pps.caw.common.view.{DraggableImageView, DroppableImageView}
+      import common.view.{DraggableImageView, DroppableImageView}
       import javafx.scene.input.MouseButton
       imageView match {
-        case tile: DroppableImageView if (tile.getImage == CellImage.PlayAreaTile.image) =>
+        case tile: DroppableImageView if tile.getImage == CellImage.PlayAreaTile.image =>
           tile.setOnMouseClicked(e => if (e.getButton.equals(MouseButton.SECONDARY)) modelUpdater.removePlayableArea())
         case cell: DraggableImageView =>
           cell.setOnMouseClicked(e => if (e.getButton.equals(MouseButton.SECONDARY)) modelUpdater.removeCell(x, y))

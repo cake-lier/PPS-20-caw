@@ -1,6 +1,7 @@
-package it.unibo.pps.caw.app
+package it.unibo.pps.caw
+package app
 
-import it.unibo.pps.caw.common.view.sounds.{AudioPlayer, AudioType, Track}
+import common.view.sounds.*
 
 object DummyAudioPlayer {
 
