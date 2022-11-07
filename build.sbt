@@ -52,7 +52,7 @@ libraryDependencies ++= Seq(
   "org.assertj" % "assertj-core" % "3.23.1" % Test,
   "org.testfx" % "openjfx-monocle" % "jdk-12.0.1+2" % Test,
   "org.openjfx" % "javafx-base" % "19" classifier osName,
-  "org.openjfx" % "javafx-controls" % "18.0.2" classifier osName,
+  "org.openjfx" % "javafx-controls" % "19" classifier osName,
   "org.openjfx" % "javafx-fxml" % "16" classifier osName,
   "org.openjfx" % "javafx-graphics" % "16" classifier osName,
   "org.openjfx" % "javafx-media" % "16" classifier osName
