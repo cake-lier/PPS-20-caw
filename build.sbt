@@ -2,7 +2,7 @@ name := "PPS-20-caw"
 
 version := "0.1"
 
-scalaVersion := "3.2.1"
+scalaVersion := "3.2.2"
 
 scalacOptions ++= Seq("-language:implicitConversions")
 
