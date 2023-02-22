@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup scala
-        uses: olafurpg/setup-scala@v13
+        uses: olafurpg/setup-scala@v14
         with:
           java-version: "adopt@1.16"
       - name: Deploy
@@ -31,7 +31,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup scala
-        uses: olafurpg/setup-scala@v13
+        uses: olafurpg/setup-scala@v14
         with:
           java-version: "adopt@1.16"
       - name: Deploy
@@ -50,7 +50,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup scala
-        uses: olafurpg/setup-scala@v13
+        uses: olafurpg/setup-scala@v14
         with:
           java-version: "adopt@1.16"
       - name: Deploy
