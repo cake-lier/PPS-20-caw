@@ -54,6 +54,6 @@ libraryDependencies ++= Seq(
   "org.openjfx" % "javafx-base" % "20" classifier osName,
   "org.openjfx" % "javafx-controls" % "20" classifier osName,
   "org.openjfx" % "javafx-fxml" % "20" classifier osName,
-  "org.openjfx" % "javafx-graphics" % "19.0.2.1" classifier osName,
+  "org.openjfx" % "javafx-graphics" % "20" classifier osName,
   "org.openjfx" % "javafx-media" % "19.0.2.1" classifier osName
 )
