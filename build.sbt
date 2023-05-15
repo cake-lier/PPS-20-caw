@@ -37,7 +37,7 @@ ThisBuild / resolvers += Resolver.jcenterRepo
 Test / fork := true
 
 libraryDependencies ++= Seq(
-  "org.scalactic" %% "scalactic" % "3.2.15" % Test,
+  "org.scalactic" %% "scalactic" % "3.2.16" % Test,
   "org.scalatest" %% "scalatest" % "3.2.15" % Test,
   "org.typelevel" %% "cats-core" % "2.9.0",
   "org.typelevel" %% "cats-kernel" % "2.9.0",
