@@ -51,7 +51,7 @@ libraryDependencies ++= Seq(
   "org.testfx" % "testfx-junit5" % "4.0.16-alpha" % Test,
   "org.assertj" % "assertj-core" % "3.24.2" % Test,
   "org.testfx" % "openjfx-monocle" % "jdk-12.0.1+2" % Test,
-  "org.openjfx" % "javafx-base" % "20.0.1" classifier osName,
+  "org.openjfx" % "javafx-base" % "20.0.2" classifier osName,
   "org.openjfx" % "javafx-controls" % "20.0.1" classifier osName,
   "org.openjfx" % "javafx-fxml" % "20.0.1" classifier osName,
   "org.openjfx" % "javafx-graphics" % "20.0.1" classifier osName,
