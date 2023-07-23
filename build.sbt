@@ -46,7 +46,7 @@ libraryDependencies ++= Seq(
   "io.vertx" % "vertx-json-schema" % "4.4.4",
   "it.unibo.alice.tuprolog" % "tuprolog" % "3.3.0",
   "org.testfx" % "testfx-core" % "4.0.16-alpha" % Test,
-  "org.junit.jupiter" % "junit-jupiter" % "5.9.3" % Test,
+  "org.junit.jupiter" % "junit-jupiter" % "5.10.0" % Test,
   "net.aichler" % "jupiter-interface" % JupiterKeys.jupiterVersion.value % Test,
   "org.testfx" % "testfx-junit5" % "4.0.16-alpha" % Test,
   "org.assertj" % "assertj-core" % "3.24.2" % Test,
